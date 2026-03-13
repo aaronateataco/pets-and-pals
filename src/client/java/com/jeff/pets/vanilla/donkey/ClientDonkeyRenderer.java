@@ -1,30 +1,45 @@
 package com.jeff.pets.vanilla.donkey;
 
 import com.jeff.pets.vanilla.passive.ClientDonkey;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.model.animal.equine.DonkeyModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.DonkeyRenderState;
 import net.minecraft.client.renderer.entity.state.EquineRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-public class ClientDonkeyRenderer<T extends ClientDonkey> extends MobRenderer<@NotNull ClientDonkey, @NotNull EquineRenderState, @NotNull ClientDonkeyModel> {
+import static com.jeff.pets.Pet.CONFIG;
+
+public class ClientDonkeyRenderer extends MobRenderer<@NotNull ClientDonkey, @NotNull DonkeyRenderState, @NotNull DonkeyModel> {
     public static ModelLayerLocation DONKEY_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientdonkey"), "main");
 
     public ClientDonkeyRenderer(EntityRendererProvider.Context context) {
-        super(context, new ClientDonkeyModel(context.bakeLayer(ModelLayers.DONKEY)), 0.5f);
+        super(context, new DonkeyModel(context.bakeLayer(ModelLayers.DONKEY)), 0.5f);
     }
 
-    public @NotNull Identifier getTextureLocation(EquineRenderState donkeyRenderState) {
+    public static LayerDefinition createBodyLayer() {
+        DonkeyModel.createBodyMesh(CubeDeformation.NONE);
+        return LayerDefinition.create(new MeshDefinition(), 64, 32);
+    }
+
+    public @NotNull Identifier getTextureLocation(DonkeyRenderState donkeyRenderState) {
         return Identifier.withDefaultNamespace("textures/entity/horse/donkey.png");
     }
 
-    public EquineRenderState createRenderState() {
-        return new EquineRenderState();
+    protected void scale(DonkeyRenderState state, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+        }
     }
 
-    public void extractRenderState(T abstractChestedHorse, EquineRenderState donkeyRenderState, float f) {
-        super.extractRenderState(abstractChestedHorse, donkeyRenderState, f);
+    public DonkeyRenderState createRenderState() {
+        return new DonkeyRenderState();
     }
 }

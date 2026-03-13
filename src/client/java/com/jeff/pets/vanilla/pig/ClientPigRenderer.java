@@ -18,17 +18,24 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.jeff.pets.Pet.CONFIG;
 
-public class ClientPigRenderer extends MobRenderer<@NotNull ClientPig, @NotNull LivingEntityRenderState, @NotNull PigModel> {
+public class ClientPigRenderer extends MobRenderer<@NotNull ClientPig, @NotNull LivingEntityRenderState, @NotNull ClientPigModel> {
     public static final ModelLayerLocation PIG_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientpig"), "main");
     public String pigTexturePath;
 
     public ClientPigRenderer(EntityRendererProvider.Context context) {
-        super(context, new PigModel(context.bakeLayer(ModelLayers.PIG)), 0.7F);
+        super(context, new ClientPigModel(context.bakeLayer(ModelLayers.PIG)), 0.7F);
     }
 
     public static LayerDefinition createBasePigModel() {
-        PigModel.createBodyLayer(CubeDeformation.NONE);
+        ClientPigModel.createBodyLayer(CubeDeformation.NONE);
         return LayerDefinition.create(new MeshDefinition(), 64, 64);
+    }
+
+    @Override
+    protected void scale(@NotNull LivingEntityRenderState livingEntityRenderState, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+        }
     }
 
     public void submit(LivingEntityRenderState pigRenderState, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, @NotNull CameraRenderState cameraRenderState) {

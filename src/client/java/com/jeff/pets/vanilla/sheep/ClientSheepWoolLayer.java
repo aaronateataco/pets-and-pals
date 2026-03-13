@@ -20,16 +20,16 @@ import java.util.Objects;
 
 import static com.jeff.pets.Pet.CONFIG;
 
-public class ClientSheepWoolLayer extends RenderLayer<@NotNull SheepRenderState, @NotNull SheepModel> {
+public class ClientSheepWoolLayer extends RenderLayer<@NotNull SheepRenderState, @NotNull ClientSheepModel> {
     public static final ModelLayerLocation SHEEP_WOOL_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("textures/entity/sheep/sheep_wool.png"), "main");
     private final EntityModel<@NotNull SheepRenderState> adultModel;
-    private final EntityModel<@NotNull SheepRenderState> babyModel;
+    private final EntityModel<@NotNull SheepRenderState> babyModel;;
     int woolColor;
 
-    public ClientSheepWoolLayer(RenderLayerParent<@NotNull SheepRenderState, @NotNull SheepModel> renderLayerParent, EntityModelSet entityModelSet) {
+    public ClientSheepWoolLayer(RenderLayerParent<@NotNull SheepRenderState, @NotNull ClientSheepModel> renderLayerParent, EntityModelSet entityModelSet) {
         super(renderLayerParent);
-        this.adultModel = new SheepFurModel(entityModelSet.bakeLayer(ModelLayers.SHEEP_WOOL));
-        this.babyModel = new SheepFurModel(entityModelSet.bakeLayer(ModelLayers.SHEEP_BABY_WOOL));
+        this.adultModel = new ClientSheepFurModel(entityModelSet.bakeLayer(ModelLayers.SHEEP_WOOL));
+        this.babyModel = new ClientSheepFurModel(entityModelSet.bakeLayer(ModelLayers.SHEEP_BABY_WOOL));
     }
 
     public void submit(@NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int i, SheepRenderState sheepRenderState, float f, float g) {
@@ -69,9 +69,8 @@ public class ClientSheepWoolLayer extends RenderLayer<@NotNull SheepRenderState,
             woolColor = 1381656;
         }
 
-        EntityModel<@NotNull SheepRenderState> entityModel = this.adultModel;
         submitNodeCollector.submitModel(
-                entityModel,
+                adultModel,
                 sheepRenderState,
                 poseStack,
                 RenderTypes.entityCutoutNoCull(SHEEP_WOOL_LOCATION.model()),
@@ -81,7 +80,6 @@ public class ClientSheepWoolLayer extends RenderLayer<@NotNull SheepRenderState,
                 null,
                 sheepRenderState.outlineColor,
                 null
-        )
-        ;
+        );
     }
 }

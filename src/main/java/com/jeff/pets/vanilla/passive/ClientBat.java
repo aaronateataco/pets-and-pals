@@ -92,7 +92,6 @@ public class ClientBat extends TamableAnimal {
         LivingEntity owner = this.getOwner();
         if (owner != null) {
 
-
             if (owner.hasPassenger(this)) {
                 if (owner.isCrouching() && owner.isJumping()) {
                     this.stopRiding();

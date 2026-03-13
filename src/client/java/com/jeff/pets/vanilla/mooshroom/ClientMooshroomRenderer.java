@@ -1,6 +1,9 @@
 package com.jeff.pets.vanilla.mooshroom;
 
+import com.jeff.pets.vanilla.cow.ClientCowModel;
+import com.jeff.pets.vanilla.passive.ClientCow;
 import com.jeff.pets.vanilla.passive.ClientMooshroom;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -13,13 +16,19 @@ import java.util.Objects;
 
 import static com.jeff.pets.Pet.CONFIG;
 
-public class ClientMooshroomRenderer extends MobRenderer<@NotNull ClientMooshroom, @NotNull LivingEntityRenderState, @NotNull ClientMooshroomModel> {
+public class ClientMooshroomRenderer extends MobRenderer<@NotNull ClientMooshroom, @NotNull LivingEntityRenderState, @NotNull ClientCowModel> {
     public static final ModelLayerLocation MOOSHROOM_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientmooshroom"), "main");
 
     String mooshroomTexturePath;
 
     public ClientMooshroomRenderer(EntityRendererProvider.Context context) {
-        super(context, new ClientMooshroomModel(context.bakeLayer(ModelLayers.COW)), 0.7F);
+        super(context, new ClientCowModel(context.bakeLayer(ModelLayers.COW)), 0.7F);
+    }
+
+    protected void scale(LivingEntityRenderState state, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+        }
     }
 
     public @NotNull Identifier getTextureLocation(LivingEntityRenderState cowRenderState) {

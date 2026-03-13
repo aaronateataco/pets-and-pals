@@ -55,17 +55,17 @@ public class ClientEvokerModel extends EntityModel<@NotNull EvokerRenderState> {
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
 
-        public void setupAnim(EvokerRenderState illagerRenderState){
-            super.setupAnim(illagerRenderState);
-            float f = illagerRenderState.walkAnimationSpeed;
-            float g = illagerRenderState.walkAnimationPos;
-            this.rightLeg.xRot = Mth.cos((double) (g * 0.6662F)) * 1.4F * f * 0.5F;
-            this.rightLeg.yRot = 0.0F;
-            this.rightLeg.zRot = 0.0F;
-            this.leftLeg.xRot = Mth.cos((double) (g * 0.6662F + (float) Math.PI)) * 1.4F * f * 0.5F;
-            this.leftLeg.yRot = 0.0F;
-            this.leftLeg.zRot = 0.0F;
-            this.rightArm.visible = false;
-            this.leftArm.visible = false;
+    public void setupAnim(EvokerRenderState illagerRenderState) {
+        super.setupAnim(illagerRenderState);
+        float f = illagerRenderState.walkAnimationSpeed;
+        float g = illagerRenderState.walkAnimationPos;
+        this.rightLeg.xRot = Mth.cos(g * 0.6662F) * 1.4F * f * 0.5F;
+        this.rightLeg.yRot = 0.0F;
+        this.rightLeg.zRot = 0.0F;
+        this.leftLeg.xRot = Mth.cos(g * 0.6662F + (float) Math.PI) * 1.4F * f * 0.5F;
+        this.leftLeg.yRot = 0.0F;
+        this.leftLeg.zRot = 0.0F;
+        this.rightArm.visible = false;
+        this.leftArm.visible = false;
     }
 }

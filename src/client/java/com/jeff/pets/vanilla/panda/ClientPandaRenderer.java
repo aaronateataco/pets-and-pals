@@ -1,6 +1,7 @@
 package com.jeff.pets.vanilla.panda;
 
 import com.jeff.pets.vanilla.neutral.ClientPanda;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.animal.panda.PandaModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -17,6 +18,12 @@ public class ClientPandaRenderer extends MobRenderer<@NotNull ClientPanda, @NotN
 
     public ClientPandaRenderer(EntityRendererProvider.Context context) {
         super(context, new PandaModel(context.bakeLayer(ModelLayers.PANDA)), 0.75f);
+    }
+
+    protected void scale(PandaRenderState state, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+        }
     }
 
     @Override

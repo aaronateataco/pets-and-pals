@@ -1,6 +1,7 @@
 package com.jeff.pets.vanilla.nautilus;
 
 import com.jeff.pets.vanilla.neutral.ClientNautilus;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.animal.nautilus.NautilusModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -18,6 +19,12 @@ public class ClientNautilusRenderer extends MobRenderer<@NotNull ClientNautilus,
 
     public ClientNautilusRenderer(EntityRendererProvider.Context context) {
         super(context, new NautilusModel(context.bakeLayer(ModelLayers.NAUTILUS)), 0.75f);
+    }
+
+    protected void scale(NautilusRenderState state, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+        }
     }
 
     @Override

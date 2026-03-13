@@ -1,7 +1,6 @@
 package com.jeff.pets.custom.racoon;
 
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.animal.fox.FoxModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
@@ -54,13 +53,14 @@ public class RacoonModel extends EntityModel<@NotNull LivingEntityRenderState> {
 
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
+
     public void setupAnim(LivingEntityRenderState racoonRenderState) {
         super.setupAnim(racoonRenderState);
         float f = racoonRenderState.walkAnimationSpeed;
         float g = racoonRenderState.walkAnimationPos;
-        this.rightFrontLeg.xRot = Mth.cos(g * 0.6662F + (float)Math.PI) * 1.4F * f;
+        this.rightFrontLeg.xRot = Mth.cos(g * 0.6662F + (float) Math.PI) * 1.4F * f;
         this.leftFrontLeg.xRot = Mth.cos(g * 0.6662F) * 1.4F * f;
-        this.rightHindLeg.xRot = Mth.cos(g * 0.6662F + (float)Math.PI) * 1.4F * f;
+        this.rightHindLeg.xRot = Mth.cos(g * 0.6662F + (float) Math.PI) * 1.4F * f;
         this.leftHindLeg.xRot = Mth.cos(g * 0.6662F) * 1.4F * f;
         this.rightHindLeg.visible = true;
         this.leftHindLeg.visible = true;

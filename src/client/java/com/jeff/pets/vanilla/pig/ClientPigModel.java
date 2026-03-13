@@ -1,0 +1,27 @@
+package com.jeff.pets.vanilla.pig;
+
+import net.minecraft.client.model.animal.pig.PigModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.entity.state.PigRenderState;
+
+import static com.jeff.pets.Pet.CONFIG;
+
+public class ClientPigModel extends PigModel {
+
+    private final ModelPart head;
+
+    public ClientPigModel(ModelPart modelPart) {
+        super(modelPart);
+        this.head = modelPart.getChild("head");
+    }
+
+    public void setupAnim(LivingEntityRenderState state) {
+        super.setupAnim(state);
+        if (CONFIG.isBaby) {
+            head.xScale = 1.5f;
+            head.yScale = 1.5f;
+            head.zScale = 1.5f;
+        }
+    }
+}

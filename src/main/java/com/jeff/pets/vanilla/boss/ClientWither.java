@@ -1,5 +1,6 @@
 package com.jeff.pets.vanilla.boss;
 
+import com.jeff.pets.CanFly;
 import com.jeff.pets.custom.Duck;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
@@ -8,8 +9,6 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -24,6 +23,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 
+@CanFly
 public class ClientWither extends TamableAnimal {
     public ClientWither(EntityType<? extends @NotNull TamableAnimal> entityType, Level level) {
         super(entityType, level);
@@ -167,10 +167,10 @@ public class ClientWither extends TamableAnimal {
             }
         }
 
-        int ambient = (int) (Math.random() * (60 * 20));
+        /*int ambient = (int) (Math.random() * (60 * 20));
         if (ambient == 1) {
             level().playLocalSound(this, SoundEvents.BLAZE_AMBIENT, SoundSource.AMBIENT, 1.0f, 1.0f);
-        }
+        }*/
     }
 
     @Override

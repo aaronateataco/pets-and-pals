@@ -13,6 +13,7 @@ import org.jetbrains.annotations.NotNull;
 public class ClientEndermiteRenderer extends MobRenderer<@NotNull ClientEndermite, @NotNull LivingEntityRenderState, @NotNull EndermiteModel> {
 
     public static final ModelLayerLocation ENDERMITE_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientendermite"), "main");
+
     public ClientEndermiteRenderer(EntityRendererProvider.Context context) {
         super(context, new EndermiteModel(context.bakeLayer(ModelLayers.ENDERMITE)), 0.75f);
     }

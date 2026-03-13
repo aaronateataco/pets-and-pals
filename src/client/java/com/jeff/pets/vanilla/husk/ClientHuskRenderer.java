@@ -1,6 +1,8 @@
 package com.jeff.pets.vanilla.husk;
 
 import com.jeff.pets.vanilla.hostile.ClientHusk;
+import com.jeff.pets.vanilla.zombie.ClientZombieModel;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.monster.zombie.ZombieModel;
@@ -10,12 +12,20 @@ import net.minecraft.client.renderer.entity.state.ZombieRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-public class ClientHuskRenderer extends MobRenderer<@NotNull ClientHusk, @NotNull ZombieRenderState, @NotNull ZombieModel<@NotNull ZombieRenderState>> {
+import static com.jeff.pets.Pet.CONFIG;
+
+public class ClientHuskRenderer extends MobRenderer<@NotNull ClientHusk, @NotNull ZombieRenderState, @NotNull ClientZombieModel> {
 
     public static final ModelLayerLocation HUSK_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clienthusk"), "main");
 
     public ClientHuskRenderer(EntityRendererProvider.Context context) {
-        super(context, new ZombieModel<>(context.bakeLayer(ModelLayers.HUSK)), 0.75F);
+        super(context, new ClientZombieModel(context.bakeLayer(ModelLayers.HUSK)), 0.75F);
+    }
+
+    protected void scale(ZombieRenderState state, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+        }
     }
 
     @Override

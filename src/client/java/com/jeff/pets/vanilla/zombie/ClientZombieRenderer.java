@@ -1,6 +1,7 @@
 package com.jeff.pets.vanilla.zombie;
 
 import com.jeff.pets.vanilla.hostile.ClientZombie;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -15,16 +16,23 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.jeff.pets.Pet.CONFIG;
 
-public class ClientZombieRenderer extends MobRenderer<@NotNull ClientZombie, @NotNull ZombieRenderState, @NotNull ZombieModel<@NotNull ZombieRenderState>> {
+public class ClientZombieRenderer extends MobRenderer<@NotNull ClientZombie, @NotNull ZombieRenderState, @NotNull ClientZombieModel> {
 
     public static final ModelLayerLocation ZOMBIE_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientzombie"), "main");
 
     public ClientZombieRenderer(EntityRendererProvider.Context context) {
-        super(context, new ZombieModel<>(context.bakeLayer(ModelLayers.ZOMBIE)), 0.75f);
+        super(context, new ClientZombieModel(context.bakeLayer(ModelLayers.ZOMBIE)), 0.75f);
+    }
+
+    @Override
+    protected void scale(@NotNull ZombieRenderState livingEntityRenderState, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+        }
     }
 
     public static LayerDefinition createBaseZombieLayer() {
-        ZombieModel.createMesh(CubeDeformation.NONE, 0);
+        ClientZombieModel.createMesh(CubeDeformation.NONE, 0);
         return LayerDefinition.create(new MeshDefinition(), 64, 64);
     }
 

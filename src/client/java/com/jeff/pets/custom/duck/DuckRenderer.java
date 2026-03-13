@@ -2,6 +2,7 @@ package com.jeff.pets.custom.duck;
 
 import com.jeff.pets.PetsInitializer;
 import com.jeff.pets.custom.Duck;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.Identifier;
@@ -17,6 +18,13 @@ public class DuckRenderer extends MobRenderer<@NotNull Duck, @NotNull DuckRender
 
     public DuckRenderer(final EntityRendererProvider.Context context) {
         super(context, new DuckModel(context.bakeLayer(DuckModel.LAYER_LOCATION)), 0.3F);
+    }
+
+    @Override
+    protected void scale(@NotNull DuckRenderState livingEntityRenderState, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.6f, 0.6f, 0.6f);
+        }
     }
 
     public DuckRenderState createRenderState() {

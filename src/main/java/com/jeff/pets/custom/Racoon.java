@@ -8,7 +8,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
@@ -29,6 +28,8 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 
+import static com.jeff.pets.PetsInitializer.RACOON;
+
 public class Racoon extends TamableAnimal {
     public static final EntityDataAccessor<@NotNull Boolean> IS_SERVER_ENTITY =
             SynchedEntityData.defineId(Racoon.class, EntityDataSerializers.BOOLEAN);
@@ -43,7 +44,7 @@ public class Racoon extends TamableAnimal {
 
     @Override
     public @Nullable AgeableMob getBreedOffspring(@NotNull ServerLevel serverLevel, @NotNull AgeableMob ageableMob) {
-        return null;
+        return RACOON.create(serverLevel, EntitySpawnReason.BREEDING);
     }
 
     @Override
@@ -132,7 +133,6 @@ public class Racoon extends TamableAnimal {
                 this.setOrderedToSit(true);
             } else {
                 this.stopRiding();
-                System.out.println("hi");
             }
         }
         return InteractionResult.SUCCESS;

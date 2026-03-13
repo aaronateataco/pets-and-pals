@@ -1,6 +1,7 @@
 package com.jeff.pets.vanilla.horse;
 
 import com.jeff.pets.vanilla.passive.ClientHorse;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.animal.equine.HorseModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -26,6 +27,12 @@ public class ClientHorseRenderer extends MobRenderer<@NotNull ClientHorse, @NotN
     public static LayerDefinition createBaseHorseLayer() {
         HorseModel.createBodyMesh(CubeDeformation.NONE);
         return LayerDefinition.create(new MeshDefinition(), 64, 64);
+    }
+
+    protected void scale(EquineRenderState state, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+        }
     }
 
     public @NotNull Identifier getTextureLocation(EquineRenderState horseRenderState) {

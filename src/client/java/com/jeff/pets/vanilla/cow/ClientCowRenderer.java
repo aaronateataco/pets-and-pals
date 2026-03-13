@@ -1,6 +1,7 @@
 package com.jeff.pets.vanilla.cow;
 
 import com.jeff.pets.vanilla.passive.ClientCow;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.animal.cow.CowModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -12,12 +13,12 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.jeff.pets.Pet.CONFIG;
 
-public class ClientCowRenderer extends MobRenderer<@NotNull ClientCow, @NotNull CowRenderState, @NotNull CowModel> {
+public class ClientCowRenderer extends MobRenderer<@NotNull ClientCow, @NotNull CowRenderState, @NotNull ClientCowModel> {
     public static ModelLayerLocation COW_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientcow"), "main");
     String cowTexturePath;
 
     public ClientCowRenderer(EntityRendererProvider.Context context) {
-        super(context, new CowModel(context.bakeLayer(ModelLayers.COW)), 0.7F);
+        super(context, new ClientCowModel(context.bakeLayer(ModelLayers.COW)), 0.7F);
     }
 
     public @NotNull Identifier getTextureLocation(CowRenderState cowRenderState) {
@@ -32,8 +33,13 @@ public class ClientCowRenderer extends MobRenderer<@NotNull ClientCow, @NotNull 
         return Identifier.withDefaultNamespace(cowTexturePath);
     }
 
+    protected void scale(CowRenderState state, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+        }
+    }
+
     public CowRenderState createRenderState() {
         return new CowRenderState();
     }
-
 }

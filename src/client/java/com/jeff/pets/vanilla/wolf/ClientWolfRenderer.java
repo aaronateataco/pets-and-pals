@@ -1,6 +1,7 @@
 package com.jeff.pets.vanilla.wolf;
 
 import com.jeff.pets.vanilla.neutral.ClientWolf;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.animal.wolf.WolfModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -15,16 +16,23 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.jeff.pets.Pet.CONFIG;
 
-public class ClientWolfRenderer extends MobRenderer<@NotNull ClientWolf, @NotNull WolfRenderState, @NotNull WolfModel> {
+public class ClientWolfRenderer extends MobRenderer<@NotNull ClientWolf, @NotNull WolfRenderState, @NotNull ClientWolfModel> {
 
     public static final ModelLayerLocation WOLF_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientwolf"), "main");
 
     public ClientWolfRenderer(EntityRendererProvider.Context context) {
-        super(context, new WolfModel(context.bakeLayer(ModelLayers.WOLF)), 0.75f);
+        super(context, new ClientWolfModel(context.bakeLayer(ModelLayers.WOLF)), 0.75f);
+    }
+
+    @Override
+    protected void scale(@NotNull WolfRenderState livingEntityRenderState, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+        }
     }
 
     public static LayerDefinition createBodyLayer() {
-        WolfModel.createMeshDefinition(CubeDeformation.NONE);
+        ClientWolfModel.createMeshDefinition(CubeDeformation.NONE);
         return LayerDefinition.create(new MeshDefinition(), 64, 32);
     }
 

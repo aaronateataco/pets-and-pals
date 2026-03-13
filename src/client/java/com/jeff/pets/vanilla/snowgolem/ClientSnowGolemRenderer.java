@@ -6,6 +6,7 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.layers.SnowGolemHeadLayer;
 import net.minecraft.client.renderer.entity.state.SnowGolemRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
@@ -16,7 +17,7 @@ public class ClientSnowGolemRenderer extends MobRenderer<@NotNull ClientSnowGole
 
     public ClientSnowGolemRenderer(EntityRendererProvider.Context context) {
         super(context, new SnowGolemModel(context.bakeLayer(ModelLayers.SNOW_GOLEM)), 0.5F);
-        this.addLayer(new ClientSnowGolemHeadLayer(this, context.getBlockRenderDispatcher()));
+        this.addLayer(new SnowGolemHeadLayer(this, context.getBlockRenderDispatcher()));
     }
 
     public @NotNull Identifier getTextureLocation(SnowGolemRenderState snowGolemRenderState) {

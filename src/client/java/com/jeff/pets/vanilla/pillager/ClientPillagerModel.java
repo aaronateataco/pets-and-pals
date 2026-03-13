@@ -53,16 +53,16 @@ public class ClientPillagerModel extends EntityModel<IllagerRenderState> {
     public void setupAnim(IllagerRenderState illagerRenderState) {
         float f = illagerRenderState.walkAnimationSpeed;
         float g = illagerRenderState.walkAnimationPos;
-        this.rightArm.xRot = Mth.cos((double) (g * 0.6662F + (float) Math.PI)) * 2.0F * f * 0.5F;
+        this.rightArm.xRot = Mth.cos(g * 0.6662F + (float) Math.PI) * 2.0F * f * 0.5F;
         this.rightArm.yRot = 0.0F;
         this.rightArm.zRot = 0.0F;
-        this.leftArm.xRot = Mth.cos((double) (g * 0.6662F)) * 2.0F * f * 0.5F;
+        this.leftArm.xRot = Mth.cos(g * 0.6662F) * 2.0F * f * 0.5F;
         this.leftArm.yRot = 0.0F;
         this.leftArm.zRot = 0.0F;
-        this.rightLeg.xRot = Mth.cos((double) (g * 0.6662F)) * 1.4F * f * 0.5F;
+        this.rightLeg.xRot = Mth.cos(g * 0.6662F) * 1.4F * f * 0.5F;
         this.rightLeg.yRot = 0.0F;
         this.rightLeg.zRot = 0.0F;
-        this.leftLeg.xRot = Mth.cos((double) (g * 0.6662F + (float) Math.PI)) * 1.4F * f * 0.5F;
+        this.leftLeg.xRot = Mth.cos(g * 0.6662F + (float) Math.PI) * 1.4F * f * 0.5F;
         this.leftLeg.yRot = 0.0F;
         this.leftLeg.zRot = 0.0F;
     }

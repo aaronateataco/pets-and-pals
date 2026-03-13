@@ -1,4 +1,4 @@
-package com.jeff.pets.vanilla.parrot;
+package com.jeff.pets.vanilla.parched.parrot;
 
 import com.jeff.pets.vanilla.passive.ClientParrot;
 import net.minecraft.client.model.animal.parrot.ParrotModel;

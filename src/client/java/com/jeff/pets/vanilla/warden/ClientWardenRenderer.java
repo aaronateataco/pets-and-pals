@@ -6,16 +6,9 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.monster.warden.WardenModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.RenderLayerParent;
-import net.minecraft.client.renderer.entity.WardenRenderer;
-import net.minecraft.client.renderer.entity.layers.LivingEntityEmissiveLayer;
 import net.minecraft.client.renderer.entity.state.WardenRenderState;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Function;
 
 public class ClientWardenRenderer extends MobRenderer<@NotNull ClientWarden, @NotNull WardenRenderState, @NotNull WardenModel> {
 

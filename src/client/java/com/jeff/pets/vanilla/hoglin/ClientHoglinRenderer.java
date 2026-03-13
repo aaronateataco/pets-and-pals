@@ -1,6 +1,7 @@
 package com.jeff.pets.vanilla.hoglin;
 
 import com.jeff.pets.vanilla.hostile.ClientHoglin;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.monster.hoglin.HoglinModel;
@@ -14,12 +15,18 @@ import java.util.Objects;
 
 import static com.jeff.pets.Pet.CONFIG;
 
-public class ClientHoglinRenderer extends MobRenderer<@NotNull ClientHoglin, @NotNull HoglinRenderState, @NotNull HoglinModel> {
+public class ClientHoglinRenderer extends MobRenderer<@NotNull ClientHoglin, @NotNull HoglinRenderState, @NotNull ClientHoglinModel> {
 
     public static final ModelLayerLocation HOGLIN_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clienthoglin"), "main");
 
     public ClientHoglinRenderer(EntityRendererProvider.Context context) {
-        super(context, new HoglinModel(context.bakeLayer(ModelLayers.HOGLIN)), 0.75f);
+        super(context, new ClientHoglinModel(context.bakeLayer(ModelLayers.HOGLIN)), 0.75f);
+    }
+
+    protected void scale(HoglinRenderState state, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+        }
     }
 
     @Override

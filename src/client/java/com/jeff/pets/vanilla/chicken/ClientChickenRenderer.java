@@ -1,9 +1,10 @@
 package com.jeff.pets.vanilla.chicken;
 
 import com.jeff.pets.vanilla.passive.ClientChicken;
-import net.minecraft.client.model.animal.chicken.ChickenModel;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.ChickenRenderState;
@@ -14,13 +15,13 @@ import java.util.Objects;
 
 import static com.jeff.pets.Pet.CONFIG;
 
-public class ClientChickenRenderer extends MobRenderer<@NotNull ClientChicken, @NotNull ChickenRenderState, @NotNull ChickenModel> {
+public class ClientChickenRenderer extends MobRenderer<@NotNull ClientChicken, @NotNull ChickenRenderState, @NotNull ClientChickenModel> {
     public static final ModelLayerLocation CHICKEN_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientchicken"), "main");
 
     public String chickenTexturePath;
 
     public ClientChickenRenderer(EntityRendererProvider.Context context) {
-        super(context, new ChickenModel(context.bakeLayer(ModelLayers.CHICKEN)), 0.3F);
+        super(context, new ClientChickenModel(context.bakeLayer(ModelLayers.CHICKEN)), 0.3F);
     }
 
     @Override
@@ -38,5 +39,11 @@ public class ClientChickenRenderer extends MobRenderer<@NotNull ClientChicken, @
             chickenTexturePath = "textures/entity/chicken/warm_chicken.png";
         }
         return Identifier.withDefaultNamespace(chickenTexturePath);
+    }
+    @Override
+    protected void scale(ChickenRenderState state, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+        }
     }
 }

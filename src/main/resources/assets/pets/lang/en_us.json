@@ -1,0 +1,8 @@
+{
+  "entity.pets.duck": "Duck",
+  "entity.pets.penguin": "Penguin",
+  "entity.pets.racoon": "Racoon",
+  "entity.pets.head": "Floating Head",
+  "sound.pets.duck_ambient": "Duck Quacks",
+  "sound.pets.penguin_ambient": "Penguin Chirps"
+}

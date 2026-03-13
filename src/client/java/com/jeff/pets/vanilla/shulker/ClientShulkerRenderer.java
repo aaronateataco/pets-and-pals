@@ -24,7 +24,7 @@ public class ClientShulkerRenderer extends MobRenderer<@NotNull ClientShulker, @
     public @NotNull Identifier getTextureLocation(ShulkerRenderState state) {
         String shulkerFile;
         String folderPath = "textures/entity/shulker/";
-        switch(CONFIG.shulkerSkin) {
+        switch (CONFIG.shulkerSkin) {
             case "normal" -> shulkerFile = "shulker.png";
             case "black" -> shulkerFile = "shulker_black.png";
             case "brown" -> shulkerFile = "shulker_brown.png";

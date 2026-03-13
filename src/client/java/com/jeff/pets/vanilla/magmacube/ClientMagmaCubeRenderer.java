@@ -11,8 +11,6 @@ import net.minecraft.client.renderer.entity.state.SlimeRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 import static com.jeff.pets.Pet.CONFIG;
 
 public class ClientMagmaCubeRenderer extends MobRenderer<@NotNull ClientMagmaCube, @NotNull SlimeRenderState, @NotNull MagmaCubeModel> {

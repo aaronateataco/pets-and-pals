@@ -124,4 +124,25 @@ public class PetsConfig implements ConfigData {
     public String enderDragonName;
     public String witherName;
     public String witherSkin;
+
+    public String angryGhastName;
+    public String batatoName;
+    public String diamondChickenName;
+    public String loveGolemName;
+    public String megaSpudName;
+    public String moonCowName;
+    public String nerdCreeperName;
+    public String pinkWitherName;
+    public String plaguewhaleSlabName;
+    public String poisonousPotatoZombieName;
+    public String potatoHuskName;
+    public String rayTracingName;
+    public String redstoneBugName;
+    public String smilingCreeperName;
+    public String toxfinSlabName;
+
+    public String headSkin;
+    public String headName;
+
+    public boolean isBaby;
 }

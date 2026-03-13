@@ -111,7 +111,6 @@ public class ClientSheep extends TamableAnimal {
                 this.setOrderedToSit(true);
             } else {
                 this.stopRiding();
-                System.out.println("hi");
             }
         }
         return InteractionResult.SUCCESS;

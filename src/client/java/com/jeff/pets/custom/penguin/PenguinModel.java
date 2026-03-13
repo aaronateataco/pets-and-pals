@@ -2,7 +2,6 @@ package com.jeff.pets.custom.penguin;
 
 import com.jeff.pets.PetsInitializer;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.animal.fox.FoxModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;

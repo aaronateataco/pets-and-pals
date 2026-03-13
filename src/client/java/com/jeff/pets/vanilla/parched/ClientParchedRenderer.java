@@ -4,10 +4,10 @@ import com.jeff.pets.vanilla.hostile.ClientParched;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.monster.skeleton.SkeletonModel;
-import net.minecraft.client.renderer.entity.*;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.SkeletonRenderState;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.monster.skeleton.Parched;
 import org.jetbrains.annotations.NotNull;
 
 public class ClientParchedRenderer extends MobRenderer<@NotNull ClientParched, @NotNull SkeletonRenderState, @NotNull SkeletonModel<@NotNull SkeletonRenderState>> {

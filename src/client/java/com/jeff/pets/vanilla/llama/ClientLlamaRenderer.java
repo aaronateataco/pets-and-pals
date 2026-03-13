@@ -1,6 +1,7 @@
 package com.jeff.pets.vanilla.llama;
 
 import com.jeff.pets.vanilla.neutral.ClientLlama;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.animal.llama.LlamaModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -15,19 +16,25 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.jeff.pets.Pet.CONFIG;
 
-public class ClientLlamaRenderer extends MobRenderer<@NotNull ClientLlama, @NotNull LlamaRenderState, @NotNull LlamaModel> {
+public class ClientLlamaRenderer extends MobRenderer<@NotNull ClientLlama, @NotNull LlamaRenderState, @NotNull ClientLlamaModel> {
 
     public static final ModelLayerLocation LLAMA_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientllama"), "main");
     public String llamaTexturePath;
 
     public ClientLlamaRenderer(EntityRendererProvider.Context context) {
-        super(context, new LlamaModel(context.bakeLayer(ModelLayers.LLAMA)), 0.75F);
+        super(context, new ClientLlamaModel(context.bakeLayer(ModelLayers.LLAMA)), 0.75F);
     }
 
     public static LayerDefinition createLlamaLayer() {
-        LlamaModel.createBodyLayer(CubeDeformation.NONE);
+        ClientLlamaModel.createBodyLayer(CubeDeformation.NONE);
 
         return LayerDefinition.create(new MeshDefinition(), 128, 64);
+    }
+
+    protected void scale(LlamaRenderState state, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+        }
     }
 
     @Override

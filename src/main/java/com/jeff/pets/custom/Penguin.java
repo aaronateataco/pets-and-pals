@@ -1,10 +1,8 @@
 package com.jeff.pets.custom;
 
-import com.jeff.pets.PetsInitializer;
 import com.jeff.pets.PetsSounds;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -38,25 +36,25 @@ import org.jspecify.annotations.Nullable;
 import static com.jeff.pets.PetsInitializer.PENGUIN;
 
 public class Penguin extends TamableAnimal {
+    public static final EntityDataAccessor<@NotNull Boolean> IS_SERVER_ENTITY =
+            SynchedEntityData.defineId(Penguin.class, EntityDataSerializers.BOOLEAN);
     public float flap;
     public float flapSpeed;
     public float oFlapSpeed;
     public float oFlap;
     public float flapping = 1.0F;
+    public ServerPlayer owner = (ServerPlayer) this.getOwner();
     private float nextFlap = 1.0F;
     private boolean isFlapping = this.flyDist > this.nextFlap;
-
-    public ServerPlayer owner = (ServerPlayer) this.getOwner();
 
     public Penguin(EntityType<? extends @NotNull TamableAnimal> entityType, Level level) {
         super(entityType, level);
     }
-    public static final EntityDataAccessor<@NotNull Boolean> IS_SERVER_ENTITY =
-            SynchedEntityData.defineId(Penguin.class, EntityDataSerializers.BOOLEAN);
 
     public static AttributeSupplier.Builder createAttributes() {
         return Animal.createAnimalAttributes().add(Attributes.MAX_HEALTH, 8.0F).add(Attributes.MOVEMENT_SPEED, 0.25F);
     }
+
     @Override
     protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
         super.defineSynchedData(builder);
@@ -179,7 +177,6 @@ public class Penguin extends TamableAnimal {
                 this.setOrderedToSit(true);
             } else {
                 this.stopRiding();
-                System.out.println("hi");
             }
         }
         return InteractionResult.SUCCESS;

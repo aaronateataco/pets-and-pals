@@ -1,6 +1,7 @@
 package com.jeff.pets.vanilla.camel;
 
 import com.jeff.pets.vanilla.passive.ClientCamel;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.animal.camel.CamelModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -23,6 +24,12 @@ public class ClientCamelRenderer extends MobRenderer<@NotNull ClientCamel, @NotN
         super(context, new CamelModel(context.bakeLayer(ModelLayers.CAMEL)), 0.7F);
     }
 
+    protected void scale(CamelRenderState state, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.45f, 0.45f, 0.45f);
+        }
+    }
+
     public @NotNull Identifier getTextureLocation(CamelRenderState camelRenderState) {
         if (Objects.equals(CONFIG.camelSkin, "camel")) {
             camelTexturePath = "textures/entity/camel/camel.png";
@@ -38,15 +45,4 @@ public class ClientCamelRenderer extends MobRenderer<@NotNull ClientCamel, @NotN
         return new CamelRenderState();
     }
 
-    public void extractRenderState(ClientCamel camel, CamelRenderState camelRenderState, float f) {
-        super.extractRenderState(camel, camelRenderState, f);
-        camelRenderState.saddle = camel.getItemBySlot(EquipmentSlot.SADDLE).copy();
-        camelRenderState.isRidden = camel.isVehicle();
-        /*camelRenderState.jumpCooldown = Math.max((float)camel.getJumpCooldown() - f, 0.0F);
-        camelRenderState.sitAnimationState.copyFrom(camel.sitAnimationState);
-        camelRenderState.sitPoseAnimationState.copyFrom(camel.sitPoseAnimationState);
-        camelRenderState.sitUpAnimationState.copyFrom(camel.sitUpAnimationState);
-        camelRenderState.idleAnimationState.copyFrom(camel.idleAnimationState);
-        camelRenderState.dashAnimationState.copyFrom(camel.dashAnimationState);*/
-    }
 }

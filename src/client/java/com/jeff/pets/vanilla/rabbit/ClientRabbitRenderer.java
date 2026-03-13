@@ -1,6 +1,7 @@
 package com.jeff.pets.vanilla.rabbit;
 
 import com.jeff.pets.vanilla.passive.ClientRabbit;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.animal.rabbit.RabbitModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -8,23 +9,29 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.entity.state.RabbitRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import static com.jeff.pets.Pet.CONFIG;
 
-public class ClientRabbitRenderer extends MobRenderer<@NotNull ClientRabbit, @NotNull RabbitRenderState, @NotNull RabbitModel> {
+public class ClientRabbitRenderer extends MobRenderer<@NotNull ClientRabbit, @NotNull RabbitRenderState, @NotNull ClientRabbitModel> {
     public static final ModelLayerLocation RABBIT_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientrabbit"), "main");
     public String rabbitTextureLocation;
 
     public ClientRabbitRenderer(EntityRendererProvider.Context context) {
-        super(context, new RabbitModel(context.bakeLayer(ModelLayers.RABBIT)), 0.3F);
+        super(context, new ClientRabbitModel(context.bakeLayer(ModelLayers.RABBIT)), 0.3F);
+    }
+
+    @Override
+    protected void scale(@NotNull RabbitRenderState livingEntityRenderState, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+        }
     }
 
     public static LayerDefinition createBaseRabbitLayer() {
-        RabbitModel.createBodyLayer(false);
+        ClientRabbitModel.createBodyLayer(false);
         return LayerDefinition.create(new MeshDefinition(), 64, 32);
     }
 

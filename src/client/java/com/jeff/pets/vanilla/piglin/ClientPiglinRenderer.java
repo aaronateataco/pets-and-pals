@@ -1,6 +1,7 @@
 package com.jeff.pets.vanilla.piglin;
 
 import com.jeff.pets.vanilla.neutral.ClientPiglin;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -15,13 +16,19 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.jeff.pets.Pet.CONFIG;
 
-public class ClientPiglinRenderer extends MobRenderer<@NotNull ClientPiglin, @NotNull PiglinRenderState, @NotNull PiglinModel> {
+public class ClientPiglinRenderer extends MobRenderer<@NotNull ClientPiglin, @NotNull PiglinRenderState, @NotNull ClientPiglinModel> {
 
     public static ModelLayerLocation PIGLIN_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientpiglin"), "main");
     private String piglinTexturePath;
 
     public ClientPiglinRenderer(EntityRendererProvider.Context context) {
-        super(context, new PiglinModel(context.bakeLayer(ModelLayers.PIGLIN)), 0.75f);
+        super(context, new ClientPiglinModel(context.bakeLayer(ModelLayers.PIGLIN)), 0.75f);
+    }
+
+    protected void scale(PiglinRenderState state, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+        }
     }
 
     public static LayerDefinition createBodyLayer() {

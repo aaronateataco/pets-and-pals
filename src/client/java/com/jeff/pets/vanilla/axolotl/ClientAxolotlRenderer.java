@@ -1,6 +1,7 @@
 package com.jeff.pets.vanilla.axolotl;
 
 import com.jeff.pets.vanilla.passive.ClientAxolotl;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.animal.axolotl.AxolotlModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -34,6 +35,12 @@ public class ClientAxolotlRenderer extends MobRenderer<@NotNull ClientAxolotl, @
             }
         }
         return Identifier.withDefaultNamespace(axolotlTextureLocation);
+    }
+
+    protected void scale(AxolotlRenderState state, PoseStack poseStack)  {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+        }
     }
 
     public AxolotlRenderState createRenderState() {

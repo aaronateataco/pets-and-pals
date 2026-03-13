@@ -1,6 +1,7 @@
 package com.jeff.pets.vanilla.strider;
 
 import com.jeff.pets.vanilla.passive.ClientStrider;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.monster.strider.StriderModel;
@@ -21,6 +22,13 @@ public class ClientStriderRenderer extends MobRenderer<@NotNull ClientStrider, @
 
     public ClientStriderRenderer(EntityRendererProvider.Context context) {
         super(context, new StriderModel(context.bakeLayer(ModelLayers.STRIDER)), 0.5F);
+    }
+
+    @Override
+    protected void scale(@NotNull StriderRenderState livingEntityRenderState, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+        }
     }
 
     @Override

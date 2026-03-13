@@ -10,10 +10,6 @@ import net.minecraft.client.renderer.entity.state.GhastRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
-import static com.jeff.pets.Pet.CONFIG;
-
 public class ClientGhastRenderer extends MobRenderer<@NotNull ClientGhast, @NotNull GhastRenderState, @NotNull GhastModel> {
 
     public static final ModelLayerLocation GHAST_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientghast"), "main");

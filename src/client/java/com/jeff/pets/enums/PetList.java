@@ -6,6 +6,7 @@ import net.minecraft.network.chat.Component;
 public enum PetList implements NameableEnum {
     allay,
     armadillo,
+    head,
     axolotl,
     bat,
     bee,
@@ -34,6 +35,7 @@ public enum PetList implements NameableEnum {
     ghast,
     goat,
     guardian,
+    happy_ghast,
     hoglin,
     horse,
     husk,
@@ -76,7 +78,22 @@ public enum PetList implements NameableEnum {
     wither,
     wolf,
     zombie,
-    zombie_villager;
+    zombie_villager,
+    angry_ghast,
+    batato,
+    diamond_chicken,
+    love_golem,
+    mega_spud,
+    moon_cow,
+    nerd_creeper,
+    pink_wither,
+    plaguewhale_slab,
+    poisonous_potato_zombie,
+    ray_tracing,
+    redstone_bug,
+    smiling_creeper,
+    toxifin_slab,
+    potato_husk;
 
 
     @Override

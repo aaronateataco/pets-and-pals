@@ -2,10 +2,11 @@ package com.jeff.pets.vanilla.villager;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.npc.VillagerModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.entity.state.VillagerRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
@@ -14,7 +15,7 @@ import java.util.Objects;
 
 import static com.jeff.pets.Pet.CONFIG;
 
-public class ClientVillagerProfessionLayer extends RenderLayer<@NotNull LivingEntityRenderState, @NotNull ClientVillagerModel> {
+public class ClientVillagerProfessionLayer extends RenderLayer<@NotNull VillagerRenderState, @NotNull VillagerModel> {
 
     public static final ModelLayerLocation ARMORER_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("textures/entity/villager/profession/armorer.png"), "main");
     public static final ModelLayerLocation BUTCHER_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("textures/entity/villager/profession/butcher.png"), "main");
@@ -31,12 +32,12 @@ public class ClientVillagerProfessionLayer extends RenderLayer<@NotNull LivingEn
     public static final ModelLayerLocation TOOLSMITH_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("textures/entity/villager/profession/toolsmith.png"), "main");
     public static final ModelLayerLocation WEAPONSMITH_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("textures/entity/villager/profession/weaponsmith.png"), "main");
 
-    public ClientVillagerProfessionLayer(RenderLayerParent<@NotNull LivingEntityRenderState, @NotNull ClientVillagerModel> renderLayerParent) {
+    public ClientVillagerProfessionLayer(RenderLayerParent<@NotNull VillagerRenderState, @NotNull VillagerModel> renderLayerParent) {
         super(renderLayerParent);
     }
 
     @Override
-    public void submit(@NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int i, LivingEntityRenderState entityRenderState, float f, float g) {
+    public void submit(@NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int i, VillagerRenderState entityRenderState, float f, float g) {
         poseStack.pushPose();
         poseStack.scale(1.001f, 1.001f, 1.001f);
         if (Objects.equals(CONFIG.villagerSkin, "armorer")) {

@@ -1,6 +1,7 @@
 package com.jeff.pets.vanilla.fox;
 
 import com.jeff.pets.vanilla.neutral.ClientFox;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.animal.fox.FoxModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -14,12 +15,18 @@ import java.util.Objects;
 
 import static com.jeff.pets.Pet.CONFIG;
 
-public class ClientFoxRenderer extends MobRenderer<@NotNull ClientFox, @NotNull FoxRenderState, @NotNull FoxModel> {
+public class ClientFoxRenderer extends MobRenderer<@NotNull ClientFox, @NotNull FoxRenderState, @NotNull ClientFoxModel> {
     public static final ModelLayerLocation FOX_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientfox"), "main");
     public String foxTexturePath;
 
     public ClientFoxRenderer(EntityRendererProvider.Context context) {
-        super(context, new FoxModel(context.bakeLayer(ModelLayers.FOX)), 0.75f);
+        super(context, new ClientFoxModel(context.bakeLayer(ModelLayers.FOX)), 0.75f);
+    }
+
+    protected void scale(FoxRenderState state, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+        }
     }
 
     @Override

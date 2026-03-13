@@ -3,7 +3,10 @@ package com.jeff.pets.vanilla.enderdragon;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
-import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.boss.enderdragon.DragonFlightHistory;
 import org.jetbrains.annotations.NotNull;
@@ -31,24 +34,16 @@ public class ClientEnderDragonModel extends EntityModel<@NotNull ClientEnderDrag
     private final ModelPart rightRearLegTip;
     private final ModelPart rightRearFoot;
 
-    private static String neckName(int i) {
-        return "neck" + i;
-    }
-
-    private static String tailName(int i) {
-        return "tail" + i;
-    }
-
     public ClientEnderDragonModel(ModelPart root) {
         super(root);
         this.head = root.getChild("head");
         this.jaw = this.head.getChild("jaw");
 
-        for(int i = 0; i < this.neckParts.length; ++i) {
+        for (int i = 0; i < this.neckParts.length; ++i) {
             this.neckParts[i] = root.getChild(neckName(i));
         }
 
-        for(int i = 0; i < this.tailParts.length; ++i) {
+        for (int i = 0; i < this.tailParts.length; ++i) {
             this.tailParts[i] = root.getChild(tailName(i));
         }
 
@@ -71,6 +66,14 @@ public class ClientEnderDragonModel extends EntityModel<@NotNull ClientEnderDrag
         this.rightRearFoot = this.rightRearLegTip.getChild("right_hind_foot");
     }
 
+    private static String neckName(int i) {
+        return "neck" + i;
+    }
+
+    private static String tailName(int i) {
+        return "tail" + i;
+    }
+
     public static LayerDefinition createBodyLayer() {
         MeshDefinition meshDefinition = new MeshDefinition();
         PartDefinition partDefinition = meshDefinition.getRoot();
@@ -79,12 +82,12 @@ public class ClientEnderDragonModel extends EntityModel<@NotNull ClientEnderDrag
         partDefinition2.addOrReplaceChild("jaw", CubeListBuilder.create().addBox("jaw", -6.0F, 0.0F, -16.0F, 12, 4, 16, 176, 65), PartPose.offset(0.0F, 4.0F, -8.0F));
         CubeListBuilder cubeListBuilder = CubeListBuilder.create().addBox("box", -5.0F, -5.0F, -5.0F, 10, 10, 10, 192, 104).addBox("scale", -1.0F, -9.0F, -3.0F, 2, 4, 6, 48, 0);
 
-        for(int i = 0; i < 5; ++i) {
-            partDefinition.addOrReplaceChild(neckName(i), cubeListBuilder, PartPose.offset(0.0F, 20.0F, -12.0F - (float)i * 10.0F));
+        for (int i = 0; i < 5; ++i) {
+            partDefinition.addOrReplaceChild(neckName(i), cubeListBuilder, PartPose.offset(0.0F, 20.0F, -12.0F - (float) i * 10.0F));
         }
 
-        for(int i = 0; i < 12; ++i) {
-            partDefinition.addOrReplaceChild(tailName(i), cubeListBuilder, PartPose.offset(0.0F, 10.0F, 60.0F + (float)i * 10.0F));
+        for (int i = 0; i < 12; ++i) {
+            partDefinition.addOrReplaceChild(tailName(i), cubeListBuilder, PartPose.offset(0.0F, 10.0F, 60.0F + (float) i * 10.0F));
         }
 
         PartDefinition partDefinition3 = partDefinition.addOrReplaceChild("body", CubeListBuilder.create().addBox("body", -12.0F, 1.0F, -16.0F, 24, 24, 64, 0, 0).addBox("scale", -1.0F, -5.0F, -10.0F, 2, 6, 12, 220, 53).addBox("scale", -1.0F, -5.0F, 10.0F, 2, 6, 12, 220, 53).addBox("scale", -1.0F, -5.0F, 30.0F, 2, 6, 12, 220, 53), PartPose.offset(0.0F, 3.0F, 8.0F));
@@ -109,13 +112,13 @@ public class ClientEnderDragonModel extends EntityModel<@NotNull ClientEnderDrag
 
     public void setupAnim(ClientEnderDragonRenderState enderDragonRenderState) {
         super.setupAnim(enderDragonRenderState);
-        float f = enderDragonRenderState.flapTime * ((float)Math.PI * 2F);
-        this.jaw.xRot = (Mth.sin((double)f) + 1.0F) * 0.2F;
-        float g = Mth.sin((double)(f - 1.0F)) + 1.0F;
+        float f = enderDragonRenderState.flapTime * ((float) Math.PI * 2F);
+        this.jaw.xRot = (Mth.sin(f) + 1.0F) * 0.2F;
+        float g = Mth.sin(f - 1.0F) + 1.0F;
         g = (g * g + g * 2.0F) * 0.05F;
         this.root.y = (g - 2.0F) * 16.0F;
         this.root.z = -48.0F;
-        this.root.xRot = g * 2.0F * ((float)Math.PI / 180F);
+        this.root.xRot = g * 2.0F * ((float) Math.PI / 180F);
         float h = this.neckParts[0].x;
         float i = this.neckParts[0].y;
         float j = this.neckParts[0].z;
@@ -124,33 +127,33 @@ public class ClientEnderDragonModel extends EntityModel<@NotNull ClientEnderDrag
         float l = Mth.wrapDegrees(enderDragonRenderState.getHistoricalPos(5).yRot() - enderDragonRenderState.getHistoricalPos(10).yRot());
         float m = Mth.wrapDegrees(enderDragonRenderState.getHistoricalPos(5).yRot() + l / 2.0F);
 
-        for(int n = 0; n < 5; ++n) {
+        for (int n = 0; n < 5; ++n) {
             ModelPart modelPart = this.neckParts[n];
             DragonFlightHistory.Sample sample2 = enderDragonRenderState.getHistoricalPos(5 - n);
-            float o = Mth.cos((double)((float)n * 0.45F + f)) * 0.15F;
-            modelPart.yRot = Mth.wrapDegrees(sample2.yRot() - sample.yRot()) * ((float)Math.PI / 180F) * 1.5F;
-            modelPart.xRot = o + enderDragonRenderState.getHeadPartYOffset(n, sample, sample2) * ((float)Math.PI / 180F) * 1.5F * 5.0F;
-            modelPart.zRot = -Mth.wrapDegrees(sample2.yRot() - m) * ((float)Math.PI / 180F) * 1.5F;
+            float o = Mth.cos((float) n * 0.45F + f) * 0.15F;
+            modelPart.yRot = Mth.wrapDegrees(sample2.yRot() - sample.yRot()) * ((float) Math.PI / 180F) * 1.5F;
+            modelPart.xRot = o + enderDragonRenderState.getHeadPartYOffset(n, sample, sample2) * ((float) Math.PI / 180F) * 1.5F * 5.0F;
+            modelPart.zRot = -Mth.wrapDegrees(sample2.yRot() - m) * ((float) Math.PI / 180F) * 1.5F;
             modelPart.y = i;
             modelPart.z = j;
             modelPart.x = h;
-            h -= Mth.sin((double)modelPart.yRot) * Mth.cos((double)modelPart.xRot) * 10.0F;
-            i += Mth.sin((double)modelPart.xRot) * 10.0F;
-            j -= Mth.cos((double)modelPart.yRot) * Mth.cos((double)modelPart.xRot) * 10.0F;
+            h -= Mth.sin(modelPart.yRot) * Mth.cos(modelPart.xRot) * 10.0F;
+            i += Mth.sin(modelPart.xRot) * 10.0F;
+            j -= Mth.cos(modelPart.yRot) * Mth.cos(modelPart.xRot) * 10.0F;
         }
 
         this.head.y = i;
         this.head.z = j;
         this.head.x = h;
         DragonFlightHistory.Sample sample3 = enderDragonRenderState.getHistoricalPos(0);
-        this.head.yRot = Mth.wrapDegrees(sample3.yRot() - sample.yRot()) * ((float)Math.PI / 180F);
-        this.head.xRot = Mth.wrapDegrees(enderDragonRenderState.getHeadPartYOffset(6, sample, sample3)) * ((float)Math.PI / 180F) * 1.5F * 5.0F;
-        this.head.zRot = -Mth.wrapDegrees(sample3.yRot() - m) * ((float)Math.PI / 180F);
-        this.body.zRot = -l * 1.5F * ((float)Math.PI / 180F);
-        this.leftWing.xRot = 0.125F - Mth.cos((double)f) * 0.2F;
+        this.head.yRot = Mth.wrapDegrees(sample3.yRot() - sample.yRot()) * ((float) Math.PI / 180F);
+        this.head.xRot = Mth.wrapDegrees(enderDragonRenderState.getHeadPartYOffset(6, sample, sample3)) * ((float) Math.PI / 180F) * 1.5F * 5.0F;
+        this.head.zRot = -Mth.wrapDegrees(sample3.yRot() - m) * ((float) Math.PI / 180F);
+        this.body.zRot = -l * 1.5F * ((float) Math.PI / 180F);
+        this.leftWing.xRot = 0.125F - Mth.cos(f) * 0.2F;
         this.leftWing.yRot = -0.25F;
-        this.leftWing.zRot = -(Mth.sin((double)f) + 0.125F) * 0.8F;
-        this.leftWingTip.zRot = (Mth.sin((double)(f + 2.0F)) + 0.5F) * 0.75F;
+        this.leftWing.zRot = -(Mth.sin(f) + 0.125F) * 0.8F;
+        this.leftWingTip.zRot = (Mth.sin(f + 2.0F) + 0.5F) * 0.75F;
         this.rightWing.xRot = this.leftWing.xRot;
         this.rightWing.yRot = -this.leftWing.yRot;
         this.rightWing.zRot = -this.leftWing.zRot;
@@ -163,22 +166,23 @@ public class ClientEnderDragonModel extends EntityModel<@NotNull ClientEnderDrag
         h = this.tailParts[0].x;
         sample = enderDragonRenderState.getHistoricalPos(11);
 
-        for(int q = 0; q < 12; ++q) {
+        for (int q = 0; q < 12; ++q) {
             DragonFlightHistory.Sample sample4 = enderDragonRenderState.getHistoricalPos(12 + q);
-            p += Mth.sin((double)((float)q * 0.45F + f)) * 0.05F;
+            p += Mth.sin((float) q * 0.45F + f) * 0.05F;
             ModelPart modelPart2 = this.tailParts[q];
-            modelPart2.yRot = (Mth.wrapDegrees(sample4.yRot() - sample.yRot()) * 1.5F + 180.0F) * ((float)Math.PI / 180F);
-            modelPart2.xRot = p + (float)(sample4.y() - sample.y()) * ((float)Math.PI / 180F) * 1.5F * 5.0F;
-            modelPart2.zRot = Mth.wrapDegrees(sample4.yRot() - m) * ((float)Math.PI / 180F) * 1.5F;
+            modelPart2.yRot = (Mth.wrapDegrees(sample4.yRot() - sample.yRot()) * 1.5F + 180.0F) * ((float) Math.PI / 180F);
+            modelPart2.xRot = p + (float) (sample4.y() - sample.y()) * ((float) Math.PI / 180F) * 1.5F * 5.0F;
+            modelPart2.zRot = Mth.wrapDegrees(sample4.yRot() - m) * ((float) Math.PI / 180F) * 1.5F;
             modelPart2.y = i;
             modelPart2.z = j;
             modelPart2.x = h;
-            i += Mth.sin((double)modelPart2.xRot) * 10.0F;
-            j -= Mth.cos((double)modelPart2.yRot) * Mth.cos((double)modelPart2.xRot) * 10.0F;
-            h -= Mth.sin((double)modelPart2.yRot) * Mth.cos((double)modelPart2.xRot) * 10.0F;
+            i += Mth.sin(modelPart2.xRot) * 10.0F;
+            j -= Mth.cos(modelPart2.yRot) * Mth.cos(modelPart2.xRot) * 10.0F;
+            h -= Mth.sin(modelPart2.yRot) * Mth.cos(modelPart2.xRot) * 10.0F;
         }
 
     }
+
     private void poseLimbs(float f, ModelPart modelPart, ModelPart modelPart2, ModelPart modelPart3, ModelPart modelPart4, ModelPart modelPart5, ModelPart modelPart6) {
         modelPart4.xRot = 1.0F + f * 0.1F;
         modelPart5.xRot = 0.5F + f * 0.1F;

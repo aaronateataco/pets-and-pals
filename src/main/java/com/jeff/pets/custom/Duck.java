@@ -44,14 +44,15 @@ import static com.jeff.pets.PetsInitializer.DUCK;
 
 public class Duck extends ShoulderRidingEntity {
 
+    public static final EntityDataAccessor<@NotNull Boolean> IS_SERVER_ENTITY =
+            SynchedEntityData.defineId(Duck.class, EntityDataSerializers.BOOLEAN);
+    public static final EntityDataAccessor<@NotNull Integer> DUCK_SKIN =
+            SynchedEntityData.defineId(Duck.class, EntityDataSerializers.INT);
     public float flap;
     public float flapSpeed;
     public float oFlapSpeed;
     public float oFlap;
     public float flapping = 1.0F;
-    private float nextFlap = 1.0F;
-
-    public ServerPlayer owner = (ServerPlayer) this.getOwner();
 
     /*public boolean setEntityOnShoulder(CompoundTag compoundTag, ServerPlayer serverPlayer) {
         if (!this.isPassenger() && this.onGround() && !this.isInWater() && !this.isInPowderSnow) {
@@ -84,12 +85,8 @@ public class Duck extends ShoulderRidingEntity {
 
         return false;
     }*/
-
-    public static final EntityDataAccessor<@NotNull Boolean> IS_SERVER_ENTITY =
-            SynchedEntityData.defineId(Duck.class, EntityDataSerializers.BOOLEAN);
-
-    public static final EntityDataAccessor<@NotNull Integer> DUCK_SKIN =
-            SynchedEntityData.defineId(Duck.class, EntityDataSerializers.INT);
+    public ServerPlayer owner = (ServerPlayer) this.getOwner();
+    private float nextFlap = 1.0F;
 
     public Duck(final EntityType<? extends @NotNull Duck> type, final Level level) {
         super(type, level);
@@ -97,6 +94,13 @@ public class Duck extends ShoulderRidingEntity {
 
     public static AttributeSupplier.Builder createAttributes() {
         return Animal.createAnimalAttributes().add(Attributes.MAX_HEALTH, 500.0F).add(Attributes.MOVEMENT_SPEED, 0.25F);
+    }
+
+    public static float rotlerp(float start, float end) {
+        float f = Mth.wrapDegrees(end - start);
+        if (f > 10.0f) f = 10.0f;
+        if (f < -10.0f) f = -10.0f;
+        return start + f;
     }
 
     @Override
@@ -112,13 +116,6 @@ public class Duck extends ShoulderRidingEntity {
 
     public void setServerEntity(Boolean value) {
         this.entityData.set(IS_SERVER_ENTITY, value);
-    }
-
-    public static float rotlerp(float start, float end) {
-        float f = Mth.wrapDegrees(end - start);
-        if (f > 10.0f) f = 10.0f;
-        if (f < -10.0f) f = -10.0f;
-        return start + f;
     }
 
     public void aiStep() {
@@ -235,7 +232,6 @@ public class Duck extends ShoulderRidingEntity {
                 this.setOrderedToSit(true);
             } else {
                 this.stopRiding();
-                System.out.println("hi");
             }
         }
         return InteractionResult.SUCCESS;
@@ -346,6 +342,7 @@ public class Duck extends ShoulderRidingEntity {
         this.setServerEntity(input.getBooleanOr("isServerEntity", true));
         this.entityData.set(DUCK_SKIN, input.getIntOr("variant", 1));
     }
+
     @Override
     public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> key) {
         if (!this.level().isClientSide()) {

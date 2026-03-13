@@ -1,6 +1,7 @@
 package com.jeff.pets.vanilla.bee;
 
 import com.jeff.pets.vanilla.neutral.ClientBee;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.animal.bee.BeeModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -20,6 +21,12 @@ public class ClientBeeRenderer extends MobRenderer<@NotNull ClientBee, @NotNull 
 
     public ClientBeeRenderer(EntityRendererProvider.Context context) {
         super(context, new BeeModel(context.bakeLayer(ModelLayers.BEE)), 0.4f);
+    }
+
+    protected void scale(BeeRenderState state, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+        }
     }
 
     @Override

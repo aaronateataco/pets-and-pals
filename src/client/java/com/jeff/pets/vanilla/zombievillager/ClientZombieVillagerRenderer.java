@@ -1,6 +1,7 @@
 package com.jeff.pets.vanilla.zombievillager;
 
 import com.jeff.pets.vanilla.hostile.ClientZombieVillager;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.monster.zombie.ZombieVillagerModel;
@@ -10,13 +11,22 @@ import net.minecraft.client.renderer.entity.state.ZombieVillagerRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
+import static com.jeff.pets.Pet.CONFIG;
+
 public class ClientZombieVillagerRenderer extends MobRenderer<@NotNull ClientZombieVillager, @NotNull ZombieVillagerRenderState, @NotNull ZombieVillagerModel<@NotNull ZombieVillagerRenderState>> {
 
     public static final ModelLayerLocation ZOMBIE_VILLAGER_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientzombievillager"), "main");
 
     public ClientZombieVillagerRenderer(EntityRendererProvider.Context context) {
-        super(context, new ZombieVillagerModel<>(context.bakeLayer(ModelLayers.ZOMBIE_VILLAGER)), 0.75f);
+        super(context, new ClientZombieVillagerModel(context.bakeLayer(ModelLayers.ZOMBIE_VILLAGER)), 0.75f);
         this.addLayer(new ClientZombieVillagerProfessionLayer(this));
+    }
+
+    @Override
+    protected void scale(@NotNull ZombieVillagerRenderState livingEntityRenderState, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+           poseStack.scale(0.5f, 0.5f, 0.5f);
+        }
     }
 
     @Override

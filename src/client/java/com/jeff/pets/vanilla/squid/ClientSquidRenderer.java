@@ -33,19 +33,14 @@ public class ClientSquidRenderer extends MobRenderer<@NotNull ClientSquid, @NotN
         return Identifier.withDefaultNamespace(squidTexturePath);
     }
 
+    @Override
+    protected void scale(@NotNull SquidRenderState livingEntityRenderState, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+        }
+    }
+
     public SquidRenderState createRenderState() {
         return new SquidRenderState();
-    }
-
-    public void extractRenderState(ClientSquid squid, SquidRenderState squidRenderState, float f) {
-        super.extractRenderState(squid, squidRenderState, f);
-    }
-
-    protected void setupRotations(SquidRenderState squidRenderState, PoseStack poseStack, float f, float g) {
-        poseStack.translate(0.0F, squidRenderState.isBaby ? 0.25F : 0.5F, 0.0F);
-        poseStack.mulPose(Axis.YP.rotationDegrees(180.0F - f));
-        poseStack.mulPose(Axis.XP.rotationDegrees(squidRenderState.xBodyRot));
-        poseStack.mulPose(Axis.YP.rotationDegrees(squidRenderState.zBodyRot));
-        poseStack.translate(0.0F, squidRenderState.isBaby ? -0.6F : -1.2F, 0.0F);
     }
 }

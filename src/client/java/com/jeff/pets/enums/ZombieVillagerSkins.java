@@ -19,6 +19,7 @@ public enum ZombieVillagerSkins implements NameableEnum {
     toolsmith,
     unemployed,
     weaponsmith;
+
     @Override
     public Component getDisplayName() {
         return Component.literal(String.valueOf(this));
