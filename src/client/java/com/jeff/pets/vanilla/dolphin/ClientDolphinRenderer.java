@@ -23,6 +23,7 @@ public class ClientDolphinRenderer extends MobRenderer<@NotNull ClientDolphin, @
         return Identifier.withDefaultNamespace("textures/entity/dolphin.png");
     }
 
+    @Override
     protected void scale(DolphinRenderState state, @NotNull PoseStack poseStack) {
         poseStack.scale(0.5f, 0.5f, 0.5f);
     }
@@ -32,4 +33,8 @@ public class ClientDolphinRenderer extends MobRenderer<@NotNull ClientDolphin, @
         return new DolphinRenderState();
     }
 
+    @Override
+    public void extractRenderState(ClientDolphin dolphin, DolphinRenderState state, float f) {
+
+    }
 }

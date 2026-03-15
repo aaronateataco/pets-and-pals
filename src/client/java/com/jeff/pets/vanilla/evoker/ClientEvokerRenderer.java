@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.EvokerRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.PropertyKey;
 
 public class ClientEvokerRenderer extends MobRenderer<@NotNull ClientEvoker, @NotNull EvokerRenderState, @NotNull ClientEvokerModel> {
     public static final ModelLayerLocation EVOKER_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientevoker"), "main");
@@ -24,5 +25,11 @@ public class ClientEvokerRenderer extends MobRenderer<@NotNull ClientEvoker, @No
     @Override
     public EvokerRenderState createRenderState() {
         return new EvokerRenderState();
+    }
+
+    @Override
+    public void extractRenderState(ClientEvoker evoker, EvokerRenderState state, float f) {
+        super.extractRenderState(evoker, state, f);
+        state.isUpsideDown = evoker.getPlainTextName().equals("Grumm") || evoker.getPlainTextName().equals("Dinnerbone");
     }
 }

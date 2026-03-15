@@ -27,4 +27,10 @@ public class ClientVexRenderer extends MobRenderer<@NotNull ClientVex, @NotNull 
     public VexRenderState createRenderState() {
         return new VexRenderState();
     }
+
+    @Override
+    public void extractRenderState(ClientVex vex, VexRenderState state, float f) {
+        super.extractRenderState(vex, state, f);
+        state.isUpsideDown = vex.getPlainTextName().equals("Grumm") || vex.getPlainTextName().equals("Dinnerbone");
+    }
 }

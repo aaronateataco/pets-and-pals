@@ -1,7 +1,6 @@
 package com.jeff.pets.vanilla.mooshroom;
 
 import com.jeff.pets.vanilla.cow.ClientCowModel;
-import com.jeff.pets.vanilla.passive.ClientCow;
 import com.jeff.pets.vanilla.passive.ClientMooshroom;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -14,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientMooshroomRenderer extends MobRenderer<@NotNull ClientMooshroom, @NotNull LivingEntityRenderState, @NotNull ClientCowModel> {
     public static final ModelLayerLocation MOOSHROOM_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientmooshroom"), "main");
@@ -25,12 +24,14 @@ public class ClientMooshroomRenderer extends MobRenderer<@NotNull ClientMooshroo
         super(context, new ClientCowModel(context.bakeLayer(ModelLayers.COW)), 0.7F);
     }
 
+    @Override
     protected void scale(LivingEntityRenderState state, @NotNull PoseStack poseStack) {
         if (CONFIG.isBaby) {
             poseStack.scale(0.5f, 0.5f, 0.5f);
         }
     }
 
+    @Override
     public @NotNull Identifier getTextureLocation(LivingEntityRenderState cowRenderState) {
         if (Objects.equals(CONFIG.mooshroomSkin, "red")) {
             mooshroomTexturePath = "textures/entity/cow/red_mooshroom.png";
@@ -42,8 +43,14 @@ public class ClientMooshroomRenderer extends MobRenderer<@NotNull ClientMooshroo
         return Identifier.withDefaultNamespace(mooshroomTexturePath);
     }
 
+    @Override
     public LivingEntityRenderState createRenderState() {
         return new LivingEntityRenderState();
+    }
+
+    @Override
+    public void extractRenderState(ClientMooshroom mooshroom, LivingEntityRenderState state, float f) {
+        super.extractRenderState(mooshroom, state, f);
     }
 
 }

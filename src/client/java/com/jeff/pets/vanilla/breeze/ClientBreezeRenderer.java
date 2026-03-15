@@ -5,6 +5,7 @@ import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.monster.breeze.BreezeModel;
+import net.minecraft.client.renderer.entity.BreezeRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.BreezeWindLayer;
@@ -29,5 +30,12 @@ public class ClientBreezeRenderer extends MobRenderer<@NotNull ClientBreeze, @No
     @Override
     public BreezeRenderState createRenderState() {
         return new BreezeRenderState();
+    }
+
+    @Override
+    public  void extractRenderState(ClientBreeze breeze, BreezeRenderState state, float f) {
+        super.extractRenderState(breeze, state, f);
+        state.idle.start(0);
+        state.isUpsideDown = breeze.getPlainTextName().equals("Grumm") || breeze.getPlainTextName().equals("Dinnerbone");
     }
 }

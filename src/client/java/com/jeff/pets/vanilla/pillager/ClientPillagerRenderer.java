@@ -25,4 +25,10 @@ public class ClientPillagerRenderer extends MobRenderer<@NotNull ClientPillager,
     public IllagerRenderState createRenderState() {
         return new IllagerRenderState();
     }
+
+    @Override
+    public void extractRenderState(ClientPillager pillager, IllagerRenderState state, float f) {
+        super.extractRenderState(pillager, state, f);
+        state.isUpsideDown = pillager.getPlainTextName().equals("Grumm") || pillager.getPlainTextName().equals("Dinnerbone");
+    }
 }

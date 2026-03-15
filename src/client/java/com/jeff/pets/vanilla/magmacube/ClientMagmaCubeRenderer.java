@@ -11,17 +11,17 @@ import net.minecraft.client.renderer.entity.state.SlimeRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientMagmaCubeRenderer extends MobRenderer<@NotNull ClientMagmaCube, @NotNull SlimeRenderState, @NotNull MagmaCubeModel> {
 
     public static final ModelLayerLocation MAGMA_CUBE_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientmagmacube"), "main");
 
     public ClientMagmaCubeRenderer(EntityRendererProvider.Context context) {
-        super(context, new MagmaCubeModel(context.bakeLayer(ModelLayers.MAGMA_CUBE)), 500f);
-        this.scale(new SlimeRenderState(), new PoseStack());
+        super(context, new MagmaCubeModel(context.bakeLayer(ModelLayers.MAGMA_CUBE)), 0.75f);
     }
 
+    @Override
     protected void scale(SlimeRenderState slimeRenderState, @NotNull PoseStack poseStack) {
         int magmaCubeScale = switch (CONFIG.magmaCubeSkin) {
             case "small" -> 1;
@@ -42,5 +42,11 @@ public class ClientMagmaCubeRenderer extends MobRenderer<@NotNull ClientMagmaCub
     @Override
     public SlimeRenderState createRenderState() {
         return new SlimeRenderState();
+    }
+
+    @Override
+    public void extractRenderState(ClientMagmaCube magmaCube, SlimeRenderState state, float f) {
+        super.extractRenderState(magmaCube, state, f);
+        state.isUpsideDown = magmaCube.getPlainTextName().equals("Grumm") || magmaCube.getPlainTextName().equals("Dinnerbone");
     }
 }

@@ -33,4 +33,10 @@ public class MegaSpudRenderer extends MobRenderer<@NotNull MegaSpud, @NotNull Sl
     public SlimeRenderState createRenderState() {
         return new SlimeRenderState();
     }
+
+    @Override
+    public void extractRenderState(MegaSpud spud, SlimeRenderState state, float f) {
+        super.extractRenderState(spud, state, f);
+        state.isUpsideDown = spud.getPlainTextName().equals("Grumm") || spud.getPlainTextName().equals("Dinnerbone");
+    }
 }

@@ -4,7 +4,6 @@ import com.jeff.pets.vanilla.hostile.ClientHoglin;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.model.monster.hoglin.HoglinModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.HoglinRenderState;
@@ -13,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientHoglinRenderer extends MobRenderer<@NotNull ClientHoglin, @NotNull HoglinRenderState, @NotNull ClientHoglinModel> {
 
@@ -23,6 +22,7 @@ public class ClientHoglinRenderer extends MobRenderer<@NotNull ClientHoglin, @No
         super(context, new ClientHoglinModel(context.bakeLayer(ModelLayers.HOGLIN)), 0.75f);
     }
 
+    @Override
     protected void scale(HoglinRenderState state, @NotNull PoseStack poseStack) {
         if (CONFIG.isBaby) {
             poseStack.scale(0.5f, 0.5f, 0.5f);
@@ -45,5 +45,11 @@ public class ClientHoglinRenderer extends MobRenderer<@NotNull ClientHoglin, @No
     @Override
     public HoglinRenderState createRenderState() {
         return new HoglinRenderState();
+    }
+
+    @Override
+    public void extractRenderState(ClientHoglin hoglin, HoglinRenderState state, float f) {
+        super.extractRenderState(hoglin, state, f);
+        state.isUpsideDown = hoglin.getPlainTextName().equals("Grumm") || hoglin.getPlainTextName().equals("Dinnerbone");
     }
 }

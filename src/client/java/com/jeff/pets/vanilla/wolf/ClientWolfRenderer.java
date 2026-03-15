@@ -2,7 +2,6 @@ package com.jeff.pets.vanilla.wolf;
 
 import com.jeff.pets.vanilla.neutral.ClientWolf;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.model.animal.wolf.WolfModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -14,7 +13,7 @@ import net.minecraft.client.renderer.entity.state.WolfRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientWolfRenderer extends MobRenderer<@NotNull ClientWolf, @NotNull WolfRenderState, @NotNull ClientWolfModel> {
 
@@ -59,5 +58,10 @@ public class ClientWolfRenderer extends MobRenderer<@NotNull ClientWolf, @NotNul
     @Override
     public WolfRenderState createRenderState() {
         return new WolfRenderState();
+    }
+
+    @Override
+    public void extractRenderState(ClientWolf wolf, WolfRenderState state, float f) {
+        super.extractRenderState(wolf, state, f);
     }
 }

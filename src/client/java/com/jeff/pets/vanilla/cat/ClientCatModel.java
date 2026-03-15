@@ -1,12 +1,10 @@
 package com.jeff.pets.vanilla.cat;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import kotlin._Assertions;
 import net.minecraft.client.model.animal.feline.CatModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.state.CatRenderState;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientCatModel extends CatModel {
     public ClientCatModel(ModelPart modelPart) {

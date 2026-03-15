@@ -29,4 +29,10 @@ public class ClientBoggedRenderer extends MobRenderer<@NotNull ClientBogged, @No
     public BoggedRenderState createRenderState() {
         return new BoggedRenderState();
     }
+
+    @Override
+    public void extractRenderState(ClientBogged bogged, BoggedRenderState state, float f) {
+        super.extractRenderState(bogged, state, f);
+        state.isUpsideDown = bogged.getPlainTextName().equals("Grumm") || bogged.getPlainTextName().equals("Dinnerbone");
+    }
 }

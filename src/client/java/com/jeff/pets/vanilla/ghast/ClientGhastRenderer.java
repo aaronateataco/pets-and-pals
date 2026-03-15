@@ -27,4 +27,10 @@ public class ClientGhastRenderer extends MobRenderer<@NotNull ClientGhast, @NotN
     public GhastRenderState createRenderState() {
         return new GhastRenderState();
     }
+
+    @Override
+    public void extractRenderState(ClientGhast ghast, GhastRenderState state, float f) {
+        super.extractRenderState(ghast, state, f);
+        state.isUpsideDown = ghast.getPlainTextName().equals("Grumm") || ghast.getPlainTextName().equals("Dinnerbone");
+    }
 }

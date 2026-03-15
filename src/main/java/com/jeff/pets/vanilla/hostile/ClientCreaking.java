@@ -115,7 +115,7 @@ public class ClientCreaking extends TamableAnimal {
 
             if (distance > 2.0) {
 
-                this.walkAnimation.setSpeed(3F);
+                this.walkAnimation.setSpeed(1F);
 
                 Vec3 targetPos = owner.position();
                 Vec3 dir = targetPos.subtract(this.position()).normalize();
@@ -124,7 +124,7 @@ public class ClientCreaking extends TamableAnimal {
                 this.setYHeadRot(this.getYRot());
                 this.yBodyRot = Mth.rotateIfNecessary(this.yBodyRot, this.yHeadRot, 50.0f);
 
-                double speed = 0.15;
+                double speed = owner.getSpeed() * 2;
                 this.setDeltaMovement(dir.x * speed, this.getDeltaMovement().y, dir.z * speed);
             } else {
                 this.lookAt(owner, 5, 0);

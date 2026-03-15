@@ -17,11 +17,19 @@ public class ClientCodRenderer extends MobRenderer<@NotNull ClientCod, @NotNull 
         super(context, new CodModel(context.bakeLayer(ModelLayers.COD)), 0.3F);
     }
 
+    @Override
     public @NotNull Identifier getTextureLocation(LivingEntityRenderState livingEntityRenderState) {
         return Identifier.withDefaultNamespace("textures/entity/fish/cod.png");
     }
 
+    @Override
     public LivingEntityRenderState createRenderState() {
         return new LivingEntityRenderState();
+    }
+
+    @Override
+    public void extractRenderState(ClientCod cod, LivingEntityRenderState state, float f) {
+        super.extractRenderState(cod, state, f);
+        state.isUpsideDown = cod.getPlainTextName().equals("Grumm") || cod.getPlainTextName().equals("Dinnerbone");
     }
 }

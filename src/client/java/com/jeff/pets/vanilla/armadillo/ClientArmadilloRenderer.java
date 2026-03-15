@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.state.ArmadilloRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientArmadilloRenderer extends MobRenderer<@NotNull ClientArmadillo, @NotNull ArmadilloRenderState, ArmadilloModel> {
 
@@ -35,5 +35,11 @@ public class ClientArmadilloRenderer extends MobRenderer<@NotNull ClientArmadill
     @Override
     public ArmadilloRenderState createRenderState() {
         return new ArmadilloRenderState();
+    }
+
+    @Override
+    public void extractRenderState(ClientArmadillo armadillo, ArmadilloRenderState state, float f) {
+        super.extractRenderState(armadillo, state, f);
+        state.isUpsideDown = armadillo.getPlainTextName().equals("Grumm") || armadillo.getPlainTextName().equals("Dinnerbone");
     }
 }

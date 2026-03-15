@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.state.AxolotlRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientAxolotlRenderer extends MobRenderer<@NotNull ClientAxolotl, @NotNull AxolotlRenderState, @NotNull AxolotlModel> {
     public static final ModelLayerLocation AXOLOTL_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientaxolotl"), "main");
@@ -22,6 +22,7 @@ public class ClientAxolotlRenderer extends MobRenderer<@NotNull ClientAxolotl, @
         super(context, new AxolotlModel(context.bakeLayer(ModelLayers.AXOLOTL)), 0.5F);
     }
 
+    @Override
     public @NotNull Identifier getTextureLocation(AxolotlRenderState axolotlRenderState) {
         switch (CONFIG.axolotlSkin) {
             case "pink" -> axolotlTextureLocation = "textures/entity/axolotl/axolotl_lucy.png";
@@ -37,17 +38,20 @@ public class ClientAxolotlRenderer extends MobRenderer<@NotNull ClientAxolotl, @
         return Identifier.withDefaultNamespace(axolotlTextureLocation);
     }
 
-    protected void scale(AxolotlRenderState state, PoseStack poseStack)  {
+    @Override
+    protected void scale(AxolotlRenderState state, @NotNull PoseStack poseStack)  {
         if (CONFIG.isBaby) {
             poseStack.scale(0.5f, 0.5f, 0.5f);
         }
     }
 
+    @Override
     public AxolotlRenderState createRenderState() {
         return new AxolotlRenderState();
     }
 
-    public void extractRenderState(ClientAxolotl axolotl, AxolotlRenderState axolotlRenderState, float f) {
-        super.extractRenderState(axolotl, axolotlRenderState, f);
+    public void extractRenderState(ClientAxolotl axolotl, AxolotlRenderState state, float f) {
+        super.extractRenderState(axolotl, state, f);
+        state.isUpsideDown = axolotl.getPlainTextName().equals("Grumm") || axolotl.getPlainTextName().equals("Dinnerbone");
     }
 }

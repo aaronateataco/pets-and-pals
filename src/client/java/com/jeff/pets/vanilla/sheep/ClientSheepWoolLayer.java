@@ -2,8 +2,6 @@ package com.jeff.pets.vanilla.sheep;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.animal.sheep.SheepFurModel;
-import net.minecraft.client.model.animal.sheep.SheepModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -18,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientSheepWoolLayer extends RenderLayer<@NotNull SheepRenderState, @NotNull ClientSheepModel> {
     public static final ModelLayerLocation SHEEP_WOOL_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("textures/entity/sheep/sheep_wool.png"), "main");

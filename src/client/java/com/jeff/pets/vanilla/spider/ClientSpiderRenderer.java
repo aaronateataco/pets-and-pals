@@ -27,4 +27,10 @@ public class ClientSpiderRenderer extends MobRenderer<@NotNull ClientSpider, @No
     public LivingEntityRenderState createRenderState() {
         return new LivingEntityRenderState();
     }
+
+    @Override
+    public void extractRenderState(ClientSpider spider, LivingEntityRenderState state, float f) {
+        super.extractRenderState(spider, state, f);
+        state.isUpsideDown = spider.getPlainTextName().equals("Grumm") || spider.getPlainTextName().equals("Dinnerbone");
+    }
 }

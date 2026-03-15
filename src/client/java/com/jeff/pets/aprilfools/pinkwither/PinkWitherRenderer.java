@@ -32,5 +32,7 @@ public class PinkWitherRenderer extends MobRenderer<@NotNull PinkWither, @NotNul
     public void extractRenderState(PinkWither wither, WitherRenderState state, float f) {
         super.extractRenderState(wither, state, f);
         state.yHeadRots = new float[]{wither.getYHeadRot(), wither.getYHeadRot(), wither.getYHeadRot()};
+        state.isUpsideDown = wither.getPlainTextName().equals("Grumm") || wither.getPlainTextName().equals("Dinnerbone");
+
     }
 }

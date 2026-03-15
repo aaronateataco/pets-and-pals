@@ -26,11 +26,9 @@ public class ClientDrownedOuterLayer extends RenderLayer<@NotNull ZombieRenderSt
 
     @Override
     public void submit(@NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int i, ZombieRenderState entityRenderState, float f, float g) {
-        int overlayCoords = LivingEntityRenderer.getOverlayCoords(entityRenderState, 0.0f);
-        poseStack.pushPose();
-        poseStack.scale(1.1f, 1.1f, 1.1f);
+        int overlayCoords = ClientDrownedRenderer.getOverlayCoords(entityRenderState, 0.0f);
+        poseStack.scale(1f, 1f, 1f);
         submitNodeCollector.order(1).submitModel(this.drownedModel, entityRenderState, poseStack, RenderTypes.entityTranslucent(Identifier.withDefaultNamespace("textures/entity/zombie/drowned_outer_layer.png")), i, overlayCoords, -1, null, entityRenderState.outlineColor, null);
-        poseStack.popPose();
     }
 
 }

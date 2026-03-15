@@ -34,5 +34,6 @@ public class ClientPhantomRenderer extends MobRenderer<@NotNull ClientPhantom, @
     public void extractRenderState(ClientPhantom phantom, PhantomRenderState state, float f) {
         super.extractRenderState(phantom, state, f);
         state.flapTime = phantom.getId() * 3 + state.ageInTicks;
+        state.isUpsideDown = phantom.getPlainTextName().equals("Grumm") || phantom.getPlainTextName().equals("Dinnerbone");
     }
 }

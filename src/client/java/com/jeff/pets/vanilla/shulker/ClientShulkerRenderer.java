@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.state.ShulkerRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientShulkerRenderer extends MobRenderer<@NotNull ClientShulker, @NotNull ShulkerRenderState, @NotNull ShulkerModel> {
 
@@ -54,5 +54,6 @@ public class ClientShulkerRenderer extends MobRenderer<@NotNull ClientShulker, @
         super.extractRenderState(shulker, state, f);
         state.yBodyRot = 180;
         state.peekAmount = 1;
+        state.isUpsideDown = shulker.getPlainTextName().equals("Grumm") || shulker.getPlainTextName().equals("Dinnerbone");
     }
 }

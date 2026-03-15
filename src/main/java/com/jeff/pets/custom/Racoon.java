@@ -1,51 +1,38 @@
 package com.jeff.pets.custom;
 
-import com.jeff.pets.PetsSounds;
+import com.jeff.pets.custom.Duck;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientGamePacketListener;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.ServerLevelAccessor;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 
-import static com.jeff.pets.PetsInitializer.RACOON;
-
 public class Racoon extends TamableAnimal {
+    public Racoon(EntityType<? extends @NotNull TamableAnimal> entityType, Level level) {
+        super(entityType, level);
+    }
+
     public static final EntityDataAccessor<@NotNull Boolean> IS_SERVER_ENTITY =
             SynchedEntityData.defineId(Racoon.class, EntityDataSerializers.BOOLEAN);
-
-    public Racoon(final EntityType<? extends @NotNull Racoon> type, final Level level) {
-        super(type, level);
-    }
-
-    public static AttributeSupplier.Builder createAttributes() {
-        return Animal.createAnimalAttributes().add(Attributes.MAX_HEALTH, 12.0F).add(Attributes.MOVEMENT_SPEED, 0.25F);
-    }
-
-    @Override
-    public @Nullable AgeableMob getBreedOffspring(@NotNull ServerLevel serverLevel, @NotNull AgeableMob ageableMob) {
-        return RACOON.create(serverLevel, EntitySpawnReason.BREEDING);
-    }
 
     @Override
     protected void defineSynchedData(SynchedEntityData.@NotNull Builder builder) {
@@ -61,36 +48,13 @@ public class Racoon extends TamableAnimal {
         this.entityData.set(IS_SERVER_ENTITY, value);
     }
 
-    public void aiStep() {
-        super.aiStep();
-
-        Vec3 movement = this.getDeltaMovement();
-        if (!this.onGround() && movement.y < (double) 0.0F) {
-            this.setDeltaMovement(movement.multiply(1.0F, 0.6, 1.0F));
-        }
+    public static AttributeSupplier.Builder createAttributes() {
+        return Animal.createAnimalAttributes().add(Attributes.MAX_HEALTH, 8.0F).add(Attributes.MOVEMENT_SPEED, 0.23F);
     }
 
     @Override
     public boolean isFood(@NotNull ItemStack itemStack) {
-        return itemStack.is(Items.CAKE);
-    }
-
-    @Override
-    public SpawnGroupData finalizeSpawn(final @NotNull ServerLevelAccessor level, final @NotNull DifficultyInstance difficulty, final @NotNull EntitySpawnReason spawnReason, final @Nullable SpawnGroupData groupData) {
-        this.setServerEntity(true);
-        return super.finalizeSpawn(level, difficulty, spawnReason, groupData);
-    }
-
-    @Override
-    public void registerGoals() {
-
-        this.goalSelector.addGoal(2, new FloatGoal(this));
-        this.goalSelector.addGoal(3, new PanicGoal(this, 1.4d));
-        this.goalSelector.addGoal(4, new TemptGoal(this, 1.0f, stack -> stack.is(Items.CAKE), false));
-
-        this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
-        this.goalSelector.addGoal(6, new RandomStrollGoal(this, 1.0D));
-        this.goalSelector.addGoal(8, new FollowOwnerGoal(this, 1, 2, 10));
+        return false;
     }
 
     @Override
@@ -120,7 +84,7 @@ public class Racoon extends TamableAnimal {
             this.level().addParticle(
                     ParticleTypes.HEART,
                     this.getX(),
-                    this.getY() + 1,
+                    this.getY() + 2,
                     this.getZ(),
                     5, 5, 5
             );
@@ -143,6 +107,7 @@ public class Racoon extends TamableAnimal {
         super.tick();
         LivingEntity owner = this.getOwner();
         if (owner != null) {
+
 
             if (owner.hasPassenger(this)) {
                 if (owner.isCrouching() && owner.isJumping()) {
@@ -178,7 +143,7 @@ public class Racoon extends TamableAnimal {
                 this.setYHeadRot(this.getYRot());
                 this.yBodyRot = Mth.rotateIfNecessary(this.yBodyRot, this.yHeadRot, 50.0f);
 
-                double speed = 0.15;
+                double speed = owner.getSpeed() * 2;
                 this.setDeltaMovement(dir.x * speed, this.getDeltaMovement().y, dir.z * speed);
             } else {
                 this.lookAt(owner, 5, 0);
@@ -189,12 +154,10 @@ public class Racoon extends TamableAnimal {
 
             if (yHeightToOwner > 1) {
                 this.jumpFromGround();
-                this.processFlappingMovement();
             }
 
             if (yHeightToOwner > -1) {
                 this.setDeltaMovement(this.getDeltaMovement().add(0, -0.01, 0));
-                this.processFlappingMovement();
             }
 
             if (!this.onGround()) {
@@ -221,14 +184,15 @@ public class Racoon extends TamableAnimal {
             }
         }
 
-        if (this.walkAnimation.isMoving()) {
-            level().playLocalSound(this, SoundEvents.CHICKEN_STEP, SoundSource.NEUTRAL, 1.0f, 1.0f);
-        }
-
-        int ambient = (int) (Math.random() * (60 * 20));
+        /*int ambient = (int) (Math.random() * (60 * 20));
         if (ambient == 1) {
-            level().playLocalSound(this, PetsSounds.PENGUIN_AMBIENT, SoundSource.NEUTRAL, 1.0f, 1.0f);
-        }
+            level().playLocalSound(this, SoundEvents.BOGGED_AMBIENT, SoundSource.AMBIENT, 1.0f, 1.0f);
+        }*/
+    }
+
+    @Override
+    public @Nullable AgeableMob getBreedOffspring(@NotNull ServerLevel serverLevel, @NotNull AgeableMob ageableMob) {
+        return null;
     }
 
     @Override
@@ -239,14 +203,11 @@ public class Racoon extends TamableAnimal {
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull ValueOutput output) {
-        super.addAdditionalSaveData(output);
-        output.putBoolean("isServerEntity", true);
-    }
-
-    @Override
-    public void readAdditionalSaveData(@NotNull ValueInput input) {
-        super.readAdditionalSaveData(input);
-        this.setServerEntity(input.getBooleanOr("isServerEntity", true));
+    public @NotNull Packet<@NotNull ClientGamePacketListener> getAddEntityPacket(@NotNull ServerEntity serverEntity) {
+        if (this.level().isClientSide()) {
+            return new ClientboundAddEntityPacket(this, serverEntity);
+        } else {
+            return super.getAddEntityPacket(serverEntity);
+        }
     }
 }

@@ -27,4 +27,10 @@ public class ClientWardenRenderer extends MobRenderer<@NotNull ClientWarden, @No
     public WardenRenderState createRenderState() {
         return new WardenRenderState();
     }
+
+    @Override
+    public void extractRenderState(ClientWarden warden, WardenRenderState state, float f) {
+        super.extractRenderState(warden, state, f);
+        state.isUpsideDown = warden.getPlainTextName().equals("Grumm") || warden.getPlainTextName().equals("Dinnerbone");
+    }
 }

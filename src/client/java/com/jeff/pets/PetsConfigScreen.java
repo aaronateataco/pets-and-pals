@@ -42,12 +42,12 @@ public class PetsConfigScreen implements ModMenuApi {
                                     .option(Option.<Boolean>createBuilder()
                                             .name(Component.literal("Pet Toggle"))
                                             .description(OptionDescription.of(Component.literal("A toggle for whether your pet will appear.")))
-                                            .binding(true, () -> CONFIG.petSummonedPreference, newVal -> {
-                                                CONFIG.petSummonedPreference = newVal;
+                                            .binding(true, () -> CONFIG.petOn, newVal -> {
+                                                CONFIG.petOn = newVal;
                                                 if (newVal) {
-                                                    Pet.summonPet();
+                                                    Central.summonPet();
                                                 } else {
-                                                    Pet.despawnPet();
+                                                    Central.despawnPet();
                                                 }
                                             })
                                             .controller(TickBoxControllerBuilder::create)
@@ -78,9 +78,9 @@ public class PetsConfigScreen implements ModMenuApi {
                                                         }
                                                     },
                                                     newVal -> {
-                                                        Pet.despawnPet();
+                                                        Central.despawnPet();
                                                         CONFIG.activePet = String.valueOf(newVal);
-                                                        Pet.summonPet();
+                                                        Central.summonPet();
                                                     }
                                             )
                                             .controller(EnumDropdownControllerBuilder::create)
@@ -274,7 +274,7 @@ public class PetsConfigScreen implements ModMenuApi {
                                                             case "potato_husk" -> CONFIG.potatoHuskName = name;
                                                             case "head" -> CONFIG.headName = name;
                                                         }
-                                                        Pet.refreshPetNames();
+                                                        Central.refreshPetNames();
                                                     }
                                             )
 
@@ -294,6 +294,7 @@ public class PetsConfigScreen implements ModMenuApi {
                                                         case "axolotl" -> AxolotlSkins.valueOf(CONFIG.axolotlSkin);
                                                         case "camel" -> CamelSkins.valueOf(CONFIG.camelSkin);
                                                         case "chicken" -> ChickenSkins.valueOf(CONFIG.chickenSkin);
+                                                        case "creeper", "nerd_creeper", "smiling_creeper" -> CreeperSkins.valueOf(CONFIG.creeperSkin);
                                                         case "copper_golem" ->
                                                                 CopperGolemSkins.valueOf(CONFIG.copperGolemSkin);
                                                         case "cow" -> CowSkins.valueOf(CONFIG.cowSkin);
@@ -779,7 +780,7 @@ public class PetsConfigScreen implements ModMenuApi {
                                                             CONFIG.shulkerSkin = "yellow";
                                                         }
                                                     }
-                                                    case "creeper" -> {
+                                                    case "creeper", "nerd_creeper", "smiling_creeper" -> {
                                                         if (Objects.equals(val, "normal")) {
                                                             CONFIG.creeperSkin = "normal";
                                                         } else if (Objects.equals(val, "charged")) {
@@ -812,6 +813,7 @@ public class PetsConfigScreen implements ModMenuApi {
                                                     case "axolotl" -> enumClass = AxolotlSkins.class;
                                                     case "camel" -> enumClass = CamelSkins.class;
                                                     case "chicken" -> enumClass = ChickenSkins.class;
+                                                    case "creeper", "nerd_creeper", "smiling_creeper" -> enumClass = CreeperSkins.class;
                                                     case "copper_golem" -> enumClass = CopperGolemSkins.class;
                                                     case "cow" -> enumClass = CowSkins.class;
                                                     case "frog" -> enumClass = FrogSkins.class;

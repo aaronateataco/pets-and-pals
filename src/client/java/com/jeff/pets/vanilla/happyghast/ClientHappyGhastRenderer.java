@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.entity.state.HappyGhastRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientHappyGhastRenderer extends MobRenderer<@NotNull ClientHappyGhast, @NotNull HappyGhastRenderState, @NotNull HappyGhastModel> {
 
@@ -29,6 +29,7 @@ public class ClientHappyGhastRenderer extends MobRenderer<@NotNull ClientHappyGh
         return LayerDefinition.create(new MeshDefinition(), 128, 128);
     }
 
+    @Override
     protected void scale(HappyGhastRenderState state, @NotNull PoseStack poseStack) {
         if (CONFIG.isBaby) {
             poseStack.scale(0.2375F, 0.2375F, 0.2375F);
@@ -43,5 +44,11 @@ public class ClientHappyGhastRenderer extends MobRenderer<@NotNull ClientHappyGh
     @Override
     public HappyGhastRenderState createRenderState() {
         return new HappyGhastRenderState();
+    }
+
+    @Override
+    public void extractRenderState(ClientHappyGhast happyGhast, HappyGhastRenderState state, float f) {
+        super.extractRenderState(happyGhast, state, f);
+        state.isUpsideDown = happyGhast.getPlainTextName().equals("Grumm") || happyGhast.getPlainTextName().equals("Dinnerbone");
     }
 }

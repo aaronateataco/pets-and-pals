@@ -27,4 +27,10 @@ public class ClientRavagerRenderer extends MobRenderer<@NotNull ClientRavager, @
     public RavagerRenderState createRenderState() {
         return new RavagerRenderState();
     }
+
+    @Override
+    public void extractRenderState(ClientRavager ravager, RavagerRenderState state, float f) {
+        super.extractRenderState(ravager, state, f);
+        state.isUpsideDown = ravager.getPlainTextName().equals("Grumm") || ravager.getPlainTextName().equals("Dinnerbone");
+    }
 }

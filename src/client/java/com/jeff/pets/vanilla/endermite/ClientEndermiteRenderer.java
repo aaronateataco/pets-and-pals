@@ -27,4 +27,10 @@ public class ClientEndermiteRenderer extends MobRenderer<@NotNull ClientEndermit
     public LivingEntityRenderState createRenderState() {
         return new LivingEntityRenderState();
     }
+
+    @Override
+    public void extractRenderState(ClientEndermite endermite, LivingEntityRenderState state, float f) {
+        super.extractRenderState(endermite, state, f);
+        state.isUpsideDown = endermite.getPlainTextName().equals("Grumm") || endermite.getPlainTextName().equals("Dinnerbone");
+    }
 }

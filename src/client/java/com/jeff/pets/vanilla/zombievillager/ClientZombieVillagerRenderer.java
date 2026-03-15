@@ -7,11 +7,12 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.monster.zombie.ZombieVillagerModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.ZombieRenderState;
 import net.minecraft.client.renderer.entity.state.ZombieVillagerRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientZombieVillagerRenderer extends MobRenderer<@NotNull ClientZombieVillager, @NotNull ZombieVillagerRenderState, @NotNull ZombieVillagerModel<@NotNull ZombieVillagerRenderState>> {
 
@@ -37,5 +38,11 @@ public class ClientZombieVillagerRenderer extends MobRenderer<@NotNull ClientZom
     @Override
     public ZombieVillagerRenderState createRenderState() {
         return new ZombieVillagerRenderState();
+    }
+
+    @Override
+    public void extractRenderState(ClientZombieVillager zombieVillager, ZombieVillagerRenderState state, float f) {
+        super.extractRenderState(zombieVillager, state, f);
+        state.isUpsideDown = zombieVillager.getPlainTextName().equals("Grumm") || zombieVillager.getPlainTextName().equals("Dinnerbone");
     }
 }

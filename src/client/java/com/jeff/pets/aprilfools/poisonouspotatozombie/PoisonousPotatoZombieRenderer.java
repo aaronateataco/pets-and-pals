@@ -5,14 +5,14 @@ import com.jeff.pets.vanilla.zombie.ClientZombieModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.model.monster.zombie.ZombieModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.ZombieRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
+import static com.jeff.pets.Central.poisonousPotatoZombie;
 
 public class PoisonousPotatoZombieRenderer extends MobRenderer<@NotNull PoisonousPotatoZombie, @NotNull ZombieRenderState, @NotNull ClientZombieModel> {
 
@@ -37,5 +37,11 @@ public class PoisonousPotatoZombieRenderer extends MobRenderer<@NotNull Poisonou
     @Override
     public ZombieRenderState createRenderState() {
         return new ZombieRenderState();
+    }
+
+    @Override
+    public void extractRenderState(PoisonousPotatoZombie zombie, ZombieRenderState state, float f) {
+        super.extractRenderState(zombie, state, f);
+        state.isUpsideDown = zombie.getPlainTextName().equals("Grumm") || zombie.getPlainTextName().equals("Dinnerbone");
     }
 }

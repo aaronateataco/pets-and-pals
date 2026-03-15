@@ -10,11 +10,12 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.EquineRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientHorseRenderer extends MobRenderer<@NotNull ClientHorse, @NotNull EquineRenderState, @NotNull HorseModel> {
     public static final ModelLayerLocation HORSE_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clienthorse"), "main");
@@ -55,4 +56,9 @@ public class ClientHorseRenderer extends MobRenderer<@NotNull ClientHorse, @NotN
         return new EquineRenderState();
     }
 
+    @Override
+    public void extractRenderState(ClientHorse horse, EquineRenderState state, float f) {
+        super.extractRenderState(horse, state, f);
+        state.isUpsideDown = horse.getPlainTextName().equals("Grumm") || horse.getPlainTextName().equals("Dinnerbone");
+    }
 }

@@ -8,11 +8,14 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.monster.zombie.ZombieModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.ZombieRenderer;
 import net.minecraft.client.renderer.entity.state.ZombieRenderState;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.Pose;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
+
 
 public class ClientHuskRenderer extends MobRenderer<@NotNull ClientHusk, @NotNull ZombieRenderState, @NotNull ClientZombieModel> {
 
@@ -36,5 +39,12 @@ public class ClientHuskRenderer extends MobRenderer<@NotNull ClientHusk, @NotNul
     @Override
     public ZombieRenderState createRenderState() {
         return new ZombieRenderState();
+    }
+
+    @Override
+    public void extractRenderState(ClientHusk husk, ZombieRenderState state, float f) {
+        super.extractRenderState(husk, state, f);
+        state.isUpsideDown = husk.getPlainTextName().equals("Grumm") || husk.getPlainTextName().equals("Dinnerbone");
+        state.pose = Pose.SITTING;
     }
 }

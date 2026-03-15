@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientWitherRenderer extends MobRenderer<@NotNull ClientWither, @NotNull WitherRenderState, @NotNull WitherBossModel> {
 
@@ -53,5 +53,6 @@ public class ClientWitherRenderer extends MobRenderer<@NotNull ClientWither, @No
     public void extractRenderState(ClientWither wither, WitherRenderState state, float f) {
         super.extractRenderState(wither, state, f);
         state.yHeadRots = new float[]{wither.getYHeadRot(), wither.getYHeadRot(), wither.getYHeadRot()};
+        state.isUpsideDown = wither.getPlainTextName().equals("Grumm") || wither.getPlainTextName().equals("Dinnerbone");
     }
 }

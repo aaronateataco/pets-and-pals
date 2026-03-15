@@ -33,4 +33,10 @@ public class ClientGoatRenderer extends MobRenderer<@NotNull ClientGoat, @NotNul
     public GoatRenderState createRenderState() {
         return new GoatRenderState();
     }
+
+    @Override
+    public void extractRenderState(ClientGoat goat, GoatRenderState state, float f) {
+        super.extractRenderState(goat, state, f);
+        state.isUpsideDown = goat.getPlainTextName().equals("Grumm") || goat.getPlainTextName().equals("Dinnerbone");
+    }
 }

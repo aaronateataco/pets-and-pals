@@ -60,5 +60,6 @@ public class RayTracingRenderer extends MobRenderer<@NotNull RayTracing, @NotNul
         super.extractRenderState(rayTracing, state, f);
         state.skin = this.getSkinFromRayTracingTexture();
         state.showCape = false;
+        state.isUpsideDown = rayTracing.getPlainTextName().equals("Drumm") || rayTracing.getPlainTextName().equals("Dinnerbone");
     }
 }

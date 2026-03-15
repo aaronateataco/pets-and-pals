@@ -118,9 +118,8 @@ public class ClientVex extends TamableAnimal {
 
                 this.walkAnimation.setSpeed(0.5F);
 
-                Vec3 targetPos = owner.position();
                 Vec3 dir = vecToOwner.normalize();
-                double speed = 0.2;
+                double speed = owner.getSpeed() * 1.5;
 
                 this.setYRot(Duck.rotlerp(this.getYRot(), (float) targetYaw));
                 this.setYHeadRot(this.getYRot());

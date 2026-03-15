@@ -125,7 +125,7 @@ public class ClientTurtle extends TamableAnimal {
                 this.setYHeadRot(this.getYRot());
                 this.yBodyRot = Mth.rotateIfNecessary(this.yBodyRot, this.yHeadRot, 50.0f);
 
-                double speed = 0.15;
+                double speed = owner.getSpeed() * 2;
                 this.setDeltaMovement(dir.x * speed, this.getDeltaMovement().y, dir.z * speed);
             } else {
                 this.lookAt(owner, 5, 0);

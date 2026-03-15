@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.state.SnifferRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientSnifferRenderer extends MobRenderer<@NotNull ClientSniffer, @NotNull SnifferRenderState, @NotNull SnifferModel> {
     public static final ModelLayerLocation SNIFFER_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientsniffer"), "main");
@@ -28,12 +28,20 @@ public class ClientSnifferRenderer extends MobRenderer<@NotNull ClientSniffer, @
         }
     }
 
+    @Override
     public @NotNull Identifier getTextureLocation(SnifferRenderState snifferRenderState) {
         return snifferTexturePath;
     }
 
+    @Override
     public SnifferRenderState createRenderState() {
         return new SnifferRenderState();
+    }
+
+    @Override
+    public void extractRenderState(ClientSniffer sniffer, SnifferRenderState state, float f) {
+        super.extractRenderState(sniffer, state, f);
+        state.isUpsideDown = sniffer.getPlainTextName().equals("Grumm") || sniffer.getPlainTextName().equals("Dinnerbone");
     }
 
 }

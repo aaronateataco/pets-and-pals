@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 import static com.jeff.pets.PetsInitializer.MOD_ID;
 
 @CanFly
@@ -46,5 +46,10 @@ public class RacoonRenderer extends MobRenderer<@NotNull Racoon, @NotNull Living
     @Override
     public LivingEntityRenderState createRenderState() {
         return new LivingEntityRenderState();
+    }
+    @Override
+    public void extractRenderState(Racoon racoon, LivingEntityRenderState state, float f) {
+        super.extractRenderState(racoon, state, f);
+        state.isUpsideDown = racoon.getPlainTextName().equals("Grumm") || racoon.getPlainTextName().equals("Dinnerbone");
     }
 }

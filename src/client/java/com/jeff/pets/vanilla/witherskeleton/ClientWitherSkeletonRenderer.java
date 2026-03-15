@@ -27,4 +27,10 @@ public class ClientWitherSkeletonRenderer extends MobRenderer<@NotNull ClientWit
     public SkeletonRenderState createRenderState() {
         return new SkeletonRenderState();
     }
+
+    @Override
+    public void extractRenderState(ClientWitherSkeleton witherSkeleton, SkeletonRenderState state, float f) {
+        super.extractRenderState(witherSkeleton, state, f);
+        state.isUpsideDown = witherSkeleton.getPlainTextName().equals("Grumm") || witherSkeleton.getPlainTextName().equals("Dinnerbone");
+    }
 }

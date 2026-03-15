@@ -2,7 +2,6 @@ package com.jeff.pets.vanilla.pig;
 
 import com.jeff.pets.vanilla.passive.ClientPig;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.model.animal.pig.PigModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -16,7 +15,7 @@ import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientPigRenderer extends MobRenderer<@NotNull ClientPig, @NotNull LivingEntityRenderState, @NotNull ClientPigModel> {
     public static final ModelLayerLocation PIG_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientpig"), "main");
@@ -38,10 +37,7 @@ public class ClientPigRenderer extends MobRenderer<@NotNull ClientPig, @NotNull 
         }
     }
 
-    public void submit(LivingEntityRenderState pigRenderState, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, @NotNull CameraRenderState cameraRenderState) {
-        super.submit(pigRenderState, poseStack, submitNodeCollector, cameraRenderState);
-    }
-
+    @Override
     public @NotNull Identifier getTextureLocation(LivingEntityRenderState pigRenderState) {
         switch (CONFIG.pigSkin) {
             case "temperate" -> pigTexturePath = "textures/entity/pig/temperate_pig.png";
@@ -52,7 +48,14 @@ public class ClientPigRenderer extends MobRenderer<@NotNull ClientPig, @NotNull 
         return Identifier.withDefaultNamespace(pigTexturePath);
     }
 
+    @Override
     public LivingEntityRenderState createRenderState() {
         return new LivingEntityRenderState();
+    }
+
+    @Override
+    public void extractRenderState(ClientPig pig, LivingEntityRenderState state, float f) {
+        super.extractRenderState(pig, state, f);
+        state.isUpsideDown = pig.getPlainTextName().equals("Grumm") || pig.getPlainTextName().equals("Dinnerbone");
     }
 }

@@ -14,7 +14,6 @@ public class ClientCaveSpiderRenderer extends MobRenderer<@NotNull ClientCaveSpi
 
     public ClientCaveSpiderRenderer(EntityRendererProvider.Context context) {
         super(context, new ClientCaveSpiderModel(context.bakeLayer(ModelLayers.CAVE_SPIDER)), 0.75f);
-        this.shadowRadius = 0.56f;
     }
 
     @Override
@@ -25,5 +24,11 @@ public class ClientCaveSpiderRenderer extends MobRenderer<@NotNull ClientCaveSpi
     @Override
     public @NotNull Identifier getTextureLocation(LivingEntityRenderState livingEntityRenderState) {
         return Identifier.withDefaultNamespace("textures/entity/spider/cave_spider.png");
+    }
+
+    @Override
+    public void extractRenderState(ClientCaveSpider caveSpider, LivingEntityRenderState state, float f) {
+        super.extractRenderState(caveSpider, state, f);
+        state.isUpsideDown = caveSpider.getPlainTextName().equals("Grumm") || caveSpider.getPlainTextName().equals("Dinnerbone");
     }
 }

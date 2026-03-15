@@ -30,4 +30,10 @@ public class ClientStrayRenderer extends MobRenderer<@NotNull ClientStray, @NotN
     public SkeletonRenderState createRenderState() {
         return new SkeletonRenderState();
     }
+
+    @Override
+    public void extractRenderState(ClientStray stray, SkeletonRenderState state, float f) {
+        super.extractRenderState(stray, state, f);
+        state.isUpsideDown = stray.getPlainTextName().equals("Grumm") || stray.getPlainTextName().equals("Dinnerbone");
+    }
 }

@@ -117,7 +117,6 @@ public class ClientPufferFish extends TamableAnimal {
 
                 this.walkAnimation.setSpeed(0.5F);
 
-                Vec3 targetPos = owner.position();
                 Vec3 dir = vecToOwner.normalize();
                 double speed = 0.2;
 

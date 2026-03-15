@@ -2,7 +2,6 @@ package com.jeff.pets.vanilla.squid;
 
 import com.jeff.pets.vanilla.passive.ClientSquid;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import net.minecraft.client.model.animal.squid.SquidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -14,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientSquidRenderer extends MobRenderer<@NotNull ClientSquid, @NotNull SquidRenderState, @NotNull SquidModel> {
     public static final ModelLayerLocation SQUID_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientsquid"), "main");
@@ -24,6 +23,7 @@ public class ClientSquidRenderer extends MobRenderer<@NotNull ClientSquid, @NotN
         super(context, new SquidModel(context.bakeLayer(ModelLayers.SQUID)), 0.7F);
     }
 
+    @Override
     public @NotNull Identifier getTextureLocation(SquidRenderState squidRenderState) {
         if (Objects.equals(CONFIG.squidSkin, "squid")) {
             squidTexturePath = "textures/entity/squid/squid.png";
@@ -40,7 +40,14 @@ public class ClientSquidRenderer extends MobRenderer<@NotNull ClientSquid, @NotN
         }
     }
 
+    @Override
     public SquidRenderState createRenderState() {
         return new SquidRenderState();
+    }
+
+    @Override
+    public void extractRenderState(ClientSquid squid, SquidRenderState state, float f) {
+        super.extractRenderState(squid, state, f);
+        state.isUpsideDown = squid.getPlainTextName().equals("Grumm") || squid.getPlainTextName().equals("Dinnerbone");
     }
 }

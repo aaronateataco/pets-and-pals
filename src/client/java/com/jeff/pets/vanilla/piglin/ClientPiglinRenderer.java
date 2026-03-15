@@ -14,7 +14,7 @@ import net.minecraft.client.renderer.entity.state.PiglinRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientPiglinRenderer extends MobRenderer<@NotNull ClientPiglin, @NotNull PiglinRenderState, @NotNull ClientPiglinModel> {
 
@@ -25,6 +25,7 @@ public class ClientPiglinRenderer extends MobRenderer<@NotNull ClientPiglin, @No
         super(context, new ClientPiglinModel(context.bakeLayer(ModelLayers.PIGLIN)), 0.75f);
     }
 
+    @Override
     protected void scale(PiglinRenderState state, @NotNull PoseStack poseStack) {
         if (CONFIG.isBaby) {
             poseStack.scale(0.5f, 0.5f, 0.5f);
@@ -56,5 +57,11 @@ public class ClientPiglinRenderer extends MobRenderer<@NotNull ClientPiglin, @No
     @Override
     public PiglinRenderState createRenderState() {
         return new PiglinRenderState();
+    }
+
+    @Override
+    public void extractRenderState(ClientPiglin piglin, PiglinRenderState state, float f) {
+        super.extractRenderState(piglin, state, f);
+        state.isUpsideDown = piglin.getPlainTextName().equals("Grumm") || piglin.getPlainTextName().equals("Dinnerbone");
     }
 }

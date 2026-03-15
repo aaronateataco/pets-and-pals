@@ -5,14 +5,16 @@ import com.jeff.pets.vanilla.boss.ClientEnderDragon;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.renderer.debug.EntityHitboxDebugRenderer;
+import net.minecraft.client.model.monster.dragon.EnderDragonModel;
+import net.minecraft.client.renderer.entity.EnderDragonRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.state.HitboxRenderState;
+import net.minecraft.client.renderer.entity.state.EnderDragonRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
+
 
 public class ClientEnderDragonRenderer extends MobRenderer<@NotNull ClientEnderDragon, @NotNull ClientEnderDragonRenderState, @NotNull ClientEnderDragonModel> {
 
@@ -48,5 +50,6 @@ public class ClientEnderDragonRenderer extends MobRenderer<@NotNull ClientEnderD
     public void extractRenderState(ClientEnderDragon dragon, ClientEnderDragonRenderState state, float f) {
         super.extractRenderState(dragon, state, f);
         state.flapTime = dragon.getId() + state.ageInTicks / 8;
+        state.isUpsideDown = dragon.getPlainTextName().equals("Grumm") || dragon.getPlainTextName().equals("Dinnerbone");
     }
 }

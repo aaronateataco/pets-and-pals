@@ -16,14 +16,14 @@ import org.jetbrains.annotations.NotNull;
 public class ClientSalmonRenderer extends MobRenderer<@NotNull ClientSalmon, @NotNull LivingEntityRenderState, @NotNull ClientSalmonModel> {
 
     public static final ModelLayerLocation SALMON_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientsalmon"), "main");
-    private static final Identifier salmonTexturePath = Identifier.withDefaultNamespace("textures/entity/fish/salmon.png");
 
     public ClientSalmonRenderer(EntityRendererProvider.Context context) {
         super(context, new ClientSalmonModel(context.bakeLayer(ModelLayers.SALMON)), 0.4F);
     }
 
+    @Override
     public @NotNull Identifier getTextureLocation(LivingEntityRenderState salmonRenderState) {
-        return salmonTexturePath;
+        return Identifier.withDefaultNamespace("textures/entity/fish/salmon.png");
     }
 
     public SalmonRenderState createRenderState() {
@@ -37,5 +37,10 @@ public class ClientSalmonRenderer extends MobRenderer<@NotNull ClientSalmon, @No
 
         float j = h * 4.3F * Mth.sin(i * 0.6F * salmonRenderState.ageInTicks);
         poseStack.mulPose(Axis.YP.rotationDegrees(j));
+    }
+    @Override
+    public void extractRenderState(ClientSalmon salmon, LivingEntityRenderState state, float f) {
+        super.extractRenderState(salmon, state, f);
+        state.isUpsideDown = salmon.getPlainTextName().equals("Grumm") || salmon.getPlainTextName().equals("Dinnerbone");
     }
 }

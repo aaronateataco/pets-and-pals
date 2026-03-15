@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.entity.state.FrogRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientFrogRenderer extends MobRenderer<@NotNull ClientFrog, @NotNull FrogRenderState, @NotNull FrogModel> {
 
@@ -35,13 +35,9 @@ public class ClientFrogRenderer extends MobRenderer<@NotNull ClientFrog, @NotNul
         return new FrogRenderState();
     }
 
-    public void extractRenderState(ClientFrog frog, FrogRenderState frogRenderState, float f) {
-        super.extractRenderState(frog, frogRenderState, f);
-        frogRenderState.isSwimming = frog.isInWater();
-        /*frogRenderState.jumpAnimationState.copyFrom(frog.jumpAnimationState);
-        frogRenderState.croakAnimationState.copyFrom(frog.croakAnimationState);
-        frogRenderState.tongueAnimationState.copyFrom(frog.tongueAnimationState);
-        frogRenderState.swimIdleAnimationState.copyFrom(frog.swimIdleAnimationState);
-        frogRenderState.texture = ((FrogVariant)frog.getVariant().value()).assetInfo().texturePath();*/
+    public void extractRenderState(ClientFrog frog, FrogRenderState state, float f) {
+        super.extractRenderState(frog, state, f);
+        state.isSwimming = frog.isInWater();
+        state.isUpsideDown = frog.getPlainTextName().equals("Grumm") || frog.getPlainTextName().equals("Dinnerbone");
     }
 }

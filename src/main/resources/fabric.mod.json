@@ -22,7 +22,7 @@
     ],
     "client": [
       "com.jeff.pets.PetsClientInitializer",
-      "com.jeff.pets.Pet"
+      "com.jeff.pets.Central"
     ],
     "modmenu": [
       "com.jeff.pets.PetsConfigScreen"

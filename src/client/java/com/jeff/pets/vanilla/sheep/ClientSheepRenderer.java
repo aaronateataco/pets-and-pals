@@ -2,19 +2,15 @@ package com.jeff.pets.vanilla.sheep;
 
 import com.jeff.pets.vanilla.passive.ClientSheep;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.model.animal.sheep.SheepModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.RenderLayerParent;
-import net.minecraft.client.renderer.entity.SheepRenderer;
-import net.minecraft.client.renderer.entity.layers.SheepWoolUndercoatLayer;
 import net.minecraft.client.renderer.entity.state.SheepRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientSheepRenderer extends MobRenderer<@NotNull ClientSheep, @NotNull SheepRenderState, @NotNull ClientSheepModel> {
     public static final ModelLayerLocation SHEEP_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientsheep"), "main");
@@ -31,6 +27,7 @@ public class ClientSheepRenderer extends MobRenderer<@NotNull ClientSheep, @NotN
         }
     }
 
+    @Override
     public SheepRenderState createRenderState() {
         return new SheepRenderState();
     }
@@ -38,5 +35,12 @@ public class ClientSheepRenderer extends MobRenderer<@NotNull ClientSheep, @NotN
     @Override
     public @NotNull Identifier getTextureLocation(@NotNull SheepRenderState livingEntityRenderState) {
         return Identifier.withDefaultNamespace("textures/entity/sheep/sheep.png");
+    }
+
+    @Override
+    public void extractRenderState(ClientSheep sheep, SheepRenderState state, float f) {
+        super.extractRenderState(sheep, state, f);
+        state.isSheared = false;
+        state.isUpsideDown = sheep.getPlainTextName().equals("Grumm") || sheep.getPlainTextName().equals("Dinnerbone");
     }
 }

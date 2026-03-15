@@ -27,4 +27,10 @@ public class ClientParchedRenderer extends MobRenderer<@NotNull ClientParched, @
     public SkeletonRenderState createRenderState() {
         return new SkeletonRenderState();
     }
+
+    @Override
+    public void extractRenderState(ClientParched parched, SkeletonRenderState state, float f) {
+        super.extractRenderState(parched, state, f);
+        state.isUpsideDown = parched.getPlainTextName().equals("Grumm") || parched.getPlainTextName().equals("Dinnerbone");
+    }
 }

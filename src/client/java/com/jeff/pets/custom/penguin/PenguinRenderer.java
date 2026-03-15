@@ -9,7 +9,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class PenguinRenderer extends MobRenderer<@NotNull Penguin, @NotNull PenguinRenderState, @NotNull PenguinModel> {
 
@@ -30,11 +30,12 @@ public class PenguinRenderer extends MobRenderer<@NotNull Penguin, @NotNull Peng
     }
 
     @Override
-    public void extractRenderState(final Penguin entity, final PenguinRenderState state, final float partialTicks) {
-        state.isServerEntity = entity.isServerEntity();
-        state.flap = Mth.lerp(partialTicks, entity.oFlap, entity.flap);
-        state.flapSpeed = Mth.lerp(partialTicks, entity.oFlapSpeed, entity.flapSpeed);
-        super.extractRenderState(entity, state, partialTicks);
+    public void extractRenderState(final Penguin penguin, final PenguinRenderState state, final float partialTicks) {
+        state.isServerEntity = penguin.isServerEntity();
+        state.flap = Mth.lerp(partialTicks, penguin.oFlap, penguin.flap);
+        state.flapSpeed = Mth.lerp(partialTicks, penguin.oFlapSpeed, penguin.flapSpeed);
+        super.extractRenderState(penguin, state, partialTicks);
+        state.isUpsideDown = penguin.getPlainTextName().equals("Grumm") || penguin.getPlainTextName().equals("Dinnerbone");
     }
 
     @Override

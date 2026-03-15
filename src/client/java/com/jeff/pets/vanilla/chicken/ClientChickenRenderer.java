@@ -4,7 +4,6 @@ import com.jeff.pets.vanilla.passive.ClientChicken;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.ChickenRenderState;
@@ -13,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientChickenRenderer extends MobRenderer<@NotNull ClientChicken, @NotNull ChickenRenderState, @NotNull ClientChickenModel> {
     public static final ModelLayerLocation CHICKEN_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientchicken"), "main");
@@ -45,5 +44,11 @@ public class ClientChickenRenderer extends MobRenderer<@NotNull ClientChicken, @
         if (CONFIG.isBaby) {
             poseStack.scale(0.5f, 0.5f, 0.5f);
         }
+    }
+
+    @Override
+    public void extractRenderState(ClientChicken chicken, ChickenRenderState state, float f) {
+        super.extractRenderState(chicken, state, f);
+        state.isUpsideDown = chicken.getPlainTextName().equals("Grumm") || chicken.getPlainTextName().equals("Dinnerbone");
     }
 }

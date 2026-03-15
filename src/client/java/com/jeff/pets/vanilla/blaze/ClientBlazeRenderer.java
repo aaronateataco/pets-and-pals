@@ -26,4 +26,10 @@ public class ClientBlazeRenderer extends MobRenderer<@NotNull ClientBlaze, @NotN
     public LivingEntityRenderState createRenderState() {
         return new LivingEntityRenderState();
     }
+
+    @Override
+    public void extractRenderState(ClientBlaze blaze, LivingEntityRenderState state, float f) {
+        super.extractRenderState(blaze, state, f);
+        state.isUpsideDown = blaze.getPlainTextName().equals("Grumm") || blaze.getPlainTextName().equals("Dinnerbone");
+    }
 }

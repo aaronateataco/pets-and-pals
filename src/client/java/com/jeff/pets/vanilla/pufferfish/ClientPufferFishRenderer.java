@@ -27,4 +27,10 @@ public class ClientPufferFishRenderer extends MobRenderer<@NotNull ClientPufferF
     public PufferfishRenderState createRenderState() {
         return new PufferfishRenderState();
     }
+
+    @Override
+    public void extractRenderState(ClientPufferFish pufferFish, PufferfishRenderState state, float f) {
+        super.extractRenderState(pufferFish, state, f);
+        state.isUpsideDown = pufferFish.getPlainTextName().equals("Grumm") || pufferFish.getPlainTextName().equals("Dinnerbone");
+    }
 }

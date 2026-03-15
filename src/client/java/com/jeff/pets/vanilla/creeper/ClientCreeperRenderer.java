@@ -14,6 +14,10 @@ import net.minecraft.client.renderer.entity.state.CreeperRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
+import static com.jeff.pets.Central.CONFIG;
+
 public class ClientCreeperRenderer extends MobRenderer<@NotNull ClientCreeper, @NotNull CreeperRenderState, @NotNull CreeperModel> {
     public static final ModelLayerLocation CREEPER_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientcreeper"), "main");
 
@@ -35,5 +39,13 @@ public class ClientCreeperRenderer extends MobRenderer<@NotNull ClientCreeper, @
     @Override
     public CreeperRenderState createRenderState() {
         return new CreeperRenderState();
+    }
+    @Override
+    public void extractRenderState(ClientCreeper creeper, CreeperRenderState state, float f) {
+        super.extractRenderState(creeper, state, f);
+        if (Objects.equals(CONFIG.creeperSkin, "charged")) {
+            state.isPowered = true;
+        }
+        state.isUpsideDown = creeper.getPlainTextName().equals("Grumm") || creeper.getPlainTextName().equals("Dinnerbone");
     }
 }

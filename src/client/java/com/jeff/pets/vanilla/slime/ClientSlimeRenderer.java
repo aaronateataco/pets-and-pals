@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.entity.state.SlimeRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientSlimeRenderer extends MobRenderer<@NotNull ClientSlime, @NotNull SlimeRenderState, @NotNull SlimeModel> {
 
@@ -25,6 +25,7 @@ public class ClientSlimeRenderer extends MobRenderer<@NotNull ClientSlime, @NotN
         this.scale(new SlimeRenderState(), new PoseStack());
     }
 
+    @Override
     protected void scale(SlimeRenderState slimeRenderState, @NotNull PoseStack poseStack) {
         int slimeScale = switch (CONFIG.slimeSkin) {
             case "small" -> 1;
@@ -45,5 +46,11 @@ public class ClientSlimeRenderer extends MobRenderer<@NotNull ClientSlime, @NotN
     @Override
     public SlimeRenderState createRenderState() {
         return new SlimeRenderState();
+    }
+
+    @Override
+    public void extractRenderState(ClientSlime slime, SlimeRenderState state, float f) {
+        super.extractRenderState(slime, state, f);
+        state.isUpsideDown = slime.getPlainTextName().equals("Grumm") || slime.getPlainTextName().equals("Dinnerbone");
     }
 }

@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class DuckRenderer extends MobRenderer<@NotNull Duck, @NotNull DuckRenderState, @NotNull DuckModel> {
     public String duckTexturePath;
@@ -27,17 +27,19 @@ public class DuckRenderer extends MobRenderer<@NotNull Duck, @NotNull DuckRender
         }
     }
 
+    @Override
     public DuckRenderState createRenderState() {
         return new DuckRenderState();
     }
 
     @Override
-    public void extractRenderState(final Duck entity, final DuckRenderState state, final float partialTicks) {
-        state.isServerEntity = entity.isServerEntity();
-        state.duckSpecies = entity.getEntityData().get(Duck.DUCK_SKIN);
-        state.flap = Mth.lerp(partialTicks, entity.oFlap, entity.flap);
-        state.flapSpeed = Mth.lerp(partialTicks, entity.oFlapSpeed, entity.flapSpeed);
-        super.extractRenderState(entity, state, partialTicks);
+    public void extractRenderState(final Duck duck, final DuckRenderState state, final float partialTicks) {
+        state.isServerEntity = duck.isServerEntity();
+        state.duckSpecies = duck.getEntityData().get(Duck.DUCK_SKIN);
+        state.flap = Mth.lerp(partialTicks, duck.oFlap, duck.flap);
+        state.flapSpeed = Mth.lerp(partialTicks, duck.oFlapSpeed, duck.flapSpeed);
+        super.extractRenderState(duck, state, partialTicks);
+        state.isUpsideDown = duck.getPlainTextName().equals("Grumm") || duck.getPlainTextName().equals("Dinnerbone");
     }
 
     @Override
@@ -62,6 +64,5 @@ public class DuckRenderer extends MobRenderer<@NotNull Duck, @NotNull DuckRender
                 return Identifier.fromNamespaceAndPath(PetsInitializer.MOD_ID, "textures/entity/duck/yeahitdidntwork");
             }
         }
-        //we use textures/entity/mallard_male.png because nothing else worked because this code fucking sucks
     }
 }

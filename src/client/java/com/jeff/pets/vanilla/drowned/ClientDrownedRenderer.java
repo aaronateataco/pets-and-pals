@@ -2,21 +2,19 @@ package com.jeff.pets.vanilla.drowned;
 
 import com.jeff.pets.vanilla.hostile.ClientDrowned;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.model.monster.zombie.DrownedModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.layers.DrownedOuterLayer;
 import net.minecraft.client.renderer.entity.state.ZombieRenderState;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.Pose;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientDrownedRenderer extends MobRenderer<@NotNull ClientDrowned, @NotNull ZombieRenderState, @NotNull ClientDrownedModel> {
 
@@ -52,5 +50,7 @@ public class ClientDrownedRenderer extends MobRenderer<@NotNull ClientDrowned, @
     public void extractRenderState(ClientDrowned drowned, ZombieRenderState state, float f) {
         super.extractRenderState(drowned, state, f);
         state.isBaby = CONFIG.isBaby;
+        state.pose = Pose.SITTING;
+        state.isUpsideDown = drowned.getPlainTextName().equals("Grumm") || drowned.getPlainTextName().equals("Dinnerbone");
     }
 }

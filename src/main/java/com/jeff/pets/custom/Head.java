@@ -6,7 +6,6 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
@@ -221,9 +220,9 @@ public class Head extends TamableAnimal {
             }
         }
 
-        if (this.walkAnimation.isMoving()) {
-            level().playLocalSound(this, SoundEvents.CHICKEN_STEP, SoundSource.NEUTRAL, 1.0f, 1.0f);
-        }
+        /*if (this.walkAnimation.isMoving()) {
+            level().playLocalSound(this, SoundEvents., SoundSource.NEUTRAL, 1.0f, 1.0f);
+        }*/
 
         int ambient = (int) (Math.random() * (60 * 20));
         if (ambient == 1) {

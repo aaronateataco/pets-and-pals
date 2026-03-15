@@ -13,18 +13,24 @@ import org.jetbrains.annotations.NotNull;
 public class ClientTurtleRenderer extends MobRenderer<@NotNull ClientTurtle, @NotNull TurtleRenderState, @NotNull TurtleModel> {
     public static final ModelLayerLocation TURTLE_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientturtle"), "main");
 
-    public String turtleTexturePath = "textures/entity/turtle/big_sea_turtle.png";
-
     public ClientTurtleRenderer(EntityRendererProvider.Context context) {
         super(context, new TurtleModel(context.bakeLayer(ModelLayers.TURTLE)), 0.7F);
     }
 
+    @Override
     public TurtleRenderState createRenderState() {
         return new TurtleRenderState();
     }
 
+    @Override
     public @NotNull Identifier getTextureLocation(TurtleRenderState turtleRenderState) {
-        return Identifier.withDefaultNamespace(turtleTexturePath);
+        return Identifier.withDefaultNamespace("textures/entity/turtle/big_sea_turtle.png");
+    }
+
+    @Override
+    public void extractRenderState(ClientTurtle turtle, TurtleRenderState state, float f) {
+        super.extractRenderState(turtle, state, f);
+        state.isUpsideDown = turtle.getPlainTextName().equals("Grumm") || turtle.getPlainTextName().equals("Dinnerbone");
     }
 }
 

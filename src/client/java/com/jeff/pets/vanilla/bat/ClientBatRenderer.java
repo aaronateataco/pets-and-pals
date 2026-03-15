@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.BatRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.PropertyKey;
 
 public class ClientBatRenderer extends MobRenderer<@NotNull ClientBat, @NotNull BatRenderState, @NotNull BatModel> {
     public static final ModelLayerLocation BAT_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("textures/entity/bat.png"), "main");
@@ -17,16 +18,20 @@ public class ClientBatRenderer extends MobRenderer<@NotNull ClientBat, @NotNull 
         super(context, new BatModel(context.bakeLayer(ModelLayers.BAT)), 0.25F);
     }
 
+    @Override
     public @NotNull Identifier getTextureLocation(BatRenderState batRenderState) {
         return BAT_LOCATION.model();
     }
 
+    @Override
     public BatRenderState createRenderState() {
         return new BatRenderState();
     }
 
-    public void extractRenderState(ClientBat bat, BatRenderState batRenderState, float f) {
-        super.extractRenderState(bat, batRenderState, f);
-        batRenderState.flyAnimationState.start(50);
+    @Override
+    public void extractRenderState(ClientBat bat, BatRenderState state, float f) {
+        super.extractRenderState(bat, state, f);
+        state.flyAnimationState.start(0);
+        state.isUpsideDown = bat.getPlainTextName().equals("Grumm") || bat.getPlainTextName().equals("Dinnerbone");
     }
 }

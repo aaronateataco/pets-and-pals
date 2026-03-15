@@ -27,4 +27,10 @@ public class ClientSkeletonRenderer extends MobRenderer<@NotNull ClientSkeleton,
     public SkeletonRenderState createRenderState() {
         return new SkeletonRenderState();
     }
+
+    @Override
+    public void extractRenderState(ClientSkeleton skeleton, SkeletonRenderState state, float f) {
+        super.extractRenderState(skeleton, state, f);
+        state.isUpsideDown = skeleton.getPlainTextName().equals("Grumm") || skeleton.getPlainTextName().equals("Dinnerbone");
+    }
 }

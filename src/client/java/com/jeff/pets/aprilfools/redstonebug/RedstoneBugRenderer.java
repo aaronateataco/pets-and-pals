@@ -27,4 +27,10 @@ public class RedstoneBugRenderer extends MobRenderer<@NotNull RedstoneBug, @NotN
     public LivingEntityRenderState createRenderState() {
         return new LivingEntityRenderState();
     }
+
+    @Override
+    public void extractRenderState(RedstoneBug bug, LivingEntityRenderState state, float f) {
+        super.extractRenderState(bug, state, f);
+        state.isUpsideDown = bug.getPlainTextName().equals("Grumm") || bug.getPlainTextName().equals("Dinnerbone");
+    }
 }

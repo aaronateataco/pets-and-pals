@@ -3,9 +3,8 @@ package com.jeff.pets.vanilla.pig;
 import net.minecraft.client.model.animal.pig.PigModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.entity.state.PigRenderState;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientPigModel extends PigModel {
 

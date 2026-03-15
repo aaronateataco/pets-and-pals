@@ -20,6 +20,7 @@ import com.jeff.pets.aprilfools.redstonebug.RedstoneBugRenderer;
 import com.jeff.pets.aprilfools.smilingcreeper.SmilingCreeperRenderer;
 import com.jeff.pets.aprilfools.toxifin.ToxifinRenderer;
 import com.jeff.pets.aprilfools.toxifin.ToxifinSlabModel;
+import com.jeff.pets.aprilfools.traitor.TraitorRenderer;
 import com.jeff.pets.custom.duck.DuckModel;
 import com.jeff.pets.custom.duck.DuckRenderer;
 import com.jeff.pets.custom.head.HeadModel;
@@ -52,7 +53,6 @@ import com.jeff.pets.vanilla.dolphin.ClientDolphinRenderer;
 import com.jeff.pets.vanilla.donkey.ClientDonkeyRenderer;
 import com.jeff.pets.vanilla.drowned.ClientDrownedRenderer;
 import com.jeff.pets.vanilla.elderguardian.ClientElderGuardianRenderer;
-import com.jeff.pets.vanilla.enderdragon.ClientEnderDragonModel;
 import com.jeff.pets.vanilla.enderdragon.ClientEnderDragonRenderer;
 import com.jeff.pets.vanilla.enderman.ClientEndermanRenderer;
 import com.jeff.pets.vanilla.endermite.ClientEndermiteRenderer;
@@ -77,7 +77,7 @@ import com.jeff.pets.vanilla.mooshroom.ClientMooshroomRenderer;
 import com.jeff.pets.vanilla.nautilus.ClientNautilusRenderer;
 import com.jeff.pets.vanilla.panda.ClientPandaRenderer;
 import com.jeff.pets.vanilla.parched.ClientParchedRenderer;
-import com.jeff.pets.vanilla.parched.parrot.ClientParrotRenderer;
+import com.jeff.pets.vanilla.parrot.ClientParrotRenderer;
 import com.jeff.pets.vanilla.phantom.ClientPhantomRenderer;
 import com.jeff.pets.vanilla.pig.ClientPigRenderer;
 import com.jeff.pets.vanilla.piglin.ClientPiglinRenderer;
@@ -143,6 +143,7 @@ import net.minecraft.client.model.animal.turtle.TurtleModel;
 import net.minecraft.client.model.monster.blaze.BlazeModel;
 import net.minecraft.client.model.monster.breeze.BreezeModel;
 import net.minecraft.client.model.monster.creaking.CreakingModel;
+import net.minecraft.client.model.monster.dragon.EnderDragonModel;
 import net.minecraft.client.model.monster.enderman.EndermanModel;
 import net.minecraft.client.model.monster.endermite.EndermiteModel;
 import net.minecraft.client.model.monster.ghast.GhastModel;
@@ -261,6 +262,8 @@ public class PetsClientInitializer implements ClientModInitializer {
         EntityRendererRegistry.register(PetsInitializer.REDSTONE_BUG, RedstoneBugRenderer::new);
         EntityRendererRegistry.register(PetsInitializer.SMILING_CREEPER, SmilingCreeperRenderer::new);
         EntityRendererRegistry.register(PetsInitializer.TOXIFIN_SLAB, ToxifinRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.TRAITOR, TraitorRenderer::new);
+
 
         EntityModelLayerRegistry.registerModelLayer(HeadModel.LAYER_LOCATION, HeadModel::getTexturedModelData);
         EntityModelLayerRegistry.registerModelLayer(RacoonRenderer.RACOON_LOCATION, RacoonModel::getTexturedModelData);
@@ -340,7 +343,7 @@ public class PetsClientInitializer implements ClientModInitializer {
         EntityModelLayerRegistry.registerModelLayer(ClientWitherSkeletonRenderer.WITHER_SKELETON_LOCATION, SkeletonModel::createBodyLayer);
         EntityModelLayerRegistry.registerModelLayer(ClientZombieRenderer.ZOMBIE_LOCATION, ClientZombieRenderer::createBaseZombieLayer);
         EntityModelLayerRegistry.registerModelLayer(ClientZombieVillagerRenderer.ZOMBIE_VILLAGER_LOCATION, ClientZombieVillagerModel::createBodyLayer);
-        EntityModelLayerRegistry.registerModelLayer(ClientEnderDragonRenderer.ENDER_DRAGON_LOCATION, ClientEnderDragonModel::createBodyLayer);
+        EntityModelLayerRegistry.registerModelLayer(ClientEnderDragonRenderer.ENDER_DRAGON_LOCATION, EnderDragonModel::createBodyLayer);
         EntityModelLayerRegistry.registerModelLayer(ClientWitherRenderer.WITHER_LOCATION, ClientWitherRenderer::createBaseWitherLayer);
         EntityModelLayerRegistry.registerModelLayer(AngryGhastRenderer.ANGRY_GHAST_LOCATION, GhastModel::createBodyLayer);
         EntityModelLayerRegistry.registerModelLayer(BatatoRenderer.BATATO_LOCAITON, BatatoModel::createBodyLayer);
@@ -358,5 +361,7 @@ public class PetsClientInitializer implements ClientModInitializer {
         EntityModelLayerRegistry.registerModelLayer(RedstoneBugRenderer.REDSTONE_BUG_LOCATION, SilverfishModel::createBodyLayer);
         EntityModelLayerRegistry.registerModelLayer(SmilingCreeperRenderer.SMILING_CREEPER_LOCATION, ClientCreeperRenderer::createBaseCreeperLayer);
         EntityModelLayerRegistry.registerModelLayer(ToxifinRenderer.TOXIFIN_LOCATION, ToxifinSlabModel::createBodyLayer);
+        EntityModelLayerRegistry.registerModelLayer(TraitorRenderer.TRAITOR_LOCATION, ClientEvokerModel::createBodyLayer);
+
     }
 }

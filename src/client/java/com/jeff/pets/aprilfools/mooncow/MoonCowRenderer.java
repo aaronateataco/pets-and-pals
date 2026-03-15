@@ -27,4 +27,10 @@ public class MoonCowRenderer extends MobRenderer<@NotNull MoonCow, @NotNull CowR
     public CowRenderState createRenderState() {
         return new CowRenderState();
     }
+
+    @Override
+    public void extractRenderState(MoonCow cow, CowRenderState state, float f) {
+        super.extractRenderState(cow, state, f);
+        state.isUpsideDown = cow.getPlainTextName().equals("Grumm") || cow.getPlainTextName().equals("Dinnerbone");
+    }
 }

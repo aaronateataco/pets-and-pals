@@ -28,4 +28,10 @@ public class ClientGuardianRenderer extends MobRenderer<@NotNull ClientGuardian,
     public GuardianRenderState createRenderState() {
         return new GuardianRenderState();
     }
+
+    @Override
+    public void extractRenderState(ClientGuardian guardian, GuardianRenderState state, float f) {
+        super.extractRenderState(guardian, state, f);
+        state.isUpsideDown = guardian.getPlainTextName().equals("Grumm") || guardian.getPlainTextName().equals("Dinnerbone");
+    }
 }

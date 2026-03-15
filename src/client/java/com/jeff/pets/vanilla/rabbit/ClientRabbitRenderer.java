@@ -2,7 +2,6 @@ package com.jeff.pets.vanilla.rabbit;
 
 import com.jeff.pets.vanilla.passive.ClientRabbit;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.model.animal.rabbit.RabbitModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
@@ -13,7 +12,7 @@ import net.minecraft.client.renderer.entity.state.RabbitRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientRabbitRenderer extends MobRenderer<@NotNull ClientRabbit, @NotNull RabbitRenderState, @NotNull ClientRabbitModel> {
     public static final ModelLayerLocation RABBIT_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientrabbit"), "main");
@@ -35,6 +34,7 @@ public class ClientRabbitRenderer extends MobRenderer<@NotNull ClientRabbit, @No
         return LayerDefinition.create(new MeshDefinition(), 64, 32);
     }
 
+    @Override
     public @NotNull Identifier getTextureLocation(RabbitRenderState rabbitRenderState) {
         switch (CONFIG.activePet) {
             case "brown" -> rabbitTextureLocation = "textures/entity/rabbit/brown.png";
@@ -51,8 +51,14 @@ public class ClientRabbitRenderer extends MobRenderer<@NotNull ClientRabbit, @No
         return Identifier.withDefaultNamespace(rabbitTextureLocation);
     }
 
+    @Override
     public RabbitRenderState createRenderState() {
         return new RabbitRenderState();
     }
 
+    @Override
+    public void extractRenderState(ClientRabbit rabbit, RabbitRenderState state, float f) {
+        super.extractRenderState(rabbit, state, f);
+        state.isUpsideDown = rabbit.getPlainTextName().equals("Grumm") || rabbit.getPlainTextName().equals("Dinnerbone");
+    }
 }

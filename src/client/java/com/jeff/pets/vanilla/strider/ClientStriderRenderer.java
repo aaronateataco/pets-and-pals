@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientStriderRenderer extends MobRenderer<@NotNull ClientStrider, @NotNull StriderRenderState, @NotNull StriderModel> {
     public static ModelLayerLocation STRIDER_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientstrider"), "main");
@@ -43,6 +43,11 @@ public class ClientStriderRenderer extends MobRenderer<@NotNull ClientStrider, @
             striderTexturePath = "textures/entity/strider/strider_cold.png";
         }
         return Identifier.withDefaultNamespace(striderTexturePath);
+    }
 
+    @Override
+    public void extractRenderState(ClientStrider strider, StriderRenderState state, float f) {
+        super.extractRenderState(strider, state, f);
+        state.isUpsideDown = strider.getPlainTextName().equals("Grumm") || strider.getPlainTextName().equals("Dinnerbone");
     }
 }

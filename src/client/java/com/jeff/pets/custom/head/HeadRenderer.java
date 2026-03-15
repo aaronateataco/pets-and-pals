@@ -21,7 +21,8 @@ public class HeadRenderer extends MobRenderer<@NotNull Head, @NotNull HeadRender
     }
 
     @Override
-    public void extractRenderState(Head entity, HeadRenderState state, float f) {
-        super.extractRenderState(entity, state, f);
+    public void extractRenderState(Head head, HeadRenderState state, float f) {
+        super.extractRenderState(head, state, f);
+        state.isUpsideDown = head.getPlainTextName().equals("Grumm") || head.getPlainTextName().equals("Dinnerbone");
     }
 }

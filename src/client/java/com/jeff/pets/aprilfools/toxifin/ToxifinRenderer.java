@@ -18,13 +18,6 @@ public class ToxifinRenderer extends MobRenderer<@NotNull ToxifinSlab, @NotNull 
 
     public ToxifinRenderer(EntityRendererProvider.Context context) {
         super(context, new ToxifinSlabModel(context.bakeLayer(TOXIFIN_LOCATION)), 0.75f);
-        EntityRenderer entityRenderer = new EntityRenderer(context) {
-            @Override
-            public EntityRenderState createRenderState() {
-                return new GuardianRenderState();
-            }
-        };
-
     }
 
     @Override
@@ -35,5 +28,11 @@ public class ToxifinRenderer extends MobRenderer<@NotNull ToxifinSlab, @NotNull 
     @Override
     public GuardianRenderState createRenderState() {
         return new GuardianRenderState();
+    }
+
+    @Override
+    public void extractRenderState(ToxifinSlab slab, GuardianRenderState state, float f) {
+        super.extractRenderState(slab, state, f);
+        state.isUpsideDown = slab.getPlainTextName().equals("Grumm") || slab.getPlainTextName().equals("Dinnerbone");
     }
 }

@@ -8,9 +8,6 @@ import org.jspecify.annotations.Nullable;
 public class ClientEnderDragonRenderState extends LivingEntityRenderState {
     public final DragonFlightHistory flightHistory = new DragonFlightHistory();
     public float flapTime;
-    public float deathTime;
-    public boolean hasRedOverlay;
-    public @Nullable Vec3 beamOffset;
     public boolean isLandingOrTakingOff;
     public boolean isSitting;
     public double distanceToEgg;

@@ -28,8 +28,9 @@ public class ClientAllayRenderer extends MobRenderer<@NotNull ClientAllay, @NotN
         return new AllayRenderState();
     }
 
-    public void extractRenderState(ClientAllay allay, AllayRenderState allayRenderState, float f) {
-        super.extractRenderState(allay, allayRenderState, f);
-        ArmedEntityRenderState.extractArmedEntityRenderState(allay, allayRenderState, this.itemModelResolver, f);
+    public void extractRenderState(ClientAllay allay, AllayRenderState state, float f) {
+        super.extractRenderState(allay, state, f);
+        ArmedEntityRenderState.extractArmedEntityRenderState(allay, state, this.itemModelResolver, f);
+        state.isUpsideDown = allay.getPlainTextName().equals("Grumm") || allay.getPlainTextName().equals("Dinnerbone");
     }
 }

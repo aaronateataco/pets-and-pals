@@ -34,5 +34,7 @@ public class ClientCreakingRenderer extends MobRenderer<@NotNull ClientCreaking,
 
         state.isFullyFrozen = false;
         state.canMove = true;
+
+        state.isUpsideDown = creaking.getPlainTextName().equals("Grumm") || creaking.getPlainTextName().equals("Dinnerbone");
     }
 }

@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientVillagerProfessionLayer extends RenderLayer<@NotNull VillagerRenderState, @NotNull VillagerModel> {
 

@@ -243,7 +243,6 @@ public class Duck extends ShoulderRidingEntity {
         LivingEntity owner = this.getOwner();
         if (owner != null) {
 
-
             if (owner.hasPassenger(this)) {
                 if (owner.isCrouching() && owner.isJumping()) {
                     this.stopRiding();
@@ -278,7 +277,7 @@ public class Duck extends ShoulderRidingEntity {
                 this.setYHeadRot(this.getYRot());
                 this.yBodyRot = Mth.rotateIfNecessary(this.yBodyRot, this.yHeadRot, 50.0f);
 
-                double speed = 0.15;
+                double speed = owner.getSpeed() * 2.0;
                 this.setDeltaMovement(dir.x * speed, this.getDeltaMovement().y, dir.z * speed);
             } else {
                 this.lookAt(owner, 5, 0);

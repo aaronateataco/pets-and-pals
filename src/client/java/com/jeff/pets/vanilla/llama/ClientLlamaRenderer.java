@@ -2,7 +2,6 @@ package com.jeff.pets.vanilla.llama;
 
 import com.jeff.pets.vanilla.neutral.ClientLlama;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.model.animal.llama.LlamaModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -14,7 +13,7 @@ import net.minecraft.client.renderer.entity.state.LlamaRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientLlamaRenderer extends MobRenderer<@NotNull ClientLlama, @NotNull LlamaRenderState, @NotNull ClientLlamaModel> {
 
@@ -31,6 +30,7 @@ public class ClientLlamaRenderer extends MobRenderer<@NotNull ClientLlama, @NotN
         return LayerDefinition.create(new MeshDefinition(), 128, 64);
     }
 
+    @Override
     protected void scale(LlamaRenderState state, @NotNull PoseStack poseStack) {
         if (CONFIG.isBaby) {
             poseStack.scale(0.5f, 0.5f, 0.5f);
@@ -52,5 +52,11 @@ public class ClientLlamaRenderer extends MobRenderer<@NotNull ClientLlama, @NotN
     @Override
     public LlamaRenderState createRenderState() {
         return new LlamaRenderState();
+    }
+
+    @Override
+    public void extractRenderState(ClientLlama llama, LlamaRenderState state, float f) {
+        super.extractRenderState(llama, state, f);
+        state.isUpsideDown = llama.getPlainTextName().equals("Grumm") || llama.getPlainTextName().equals("Dinnerbone");
     }
 }

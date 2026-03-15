@@ -13,18 +13,24 @@ import org.jetbrains.annotations.NotNull;
 
 public class ClientSnowGolemRenderer extends MobRenderer<@NotNull ClientSnowGolem, @NotNull SnowGolemRenderState, @NotNull SnowGolemModel> {
     public static final ModelLayerLocation SNOW_GOLEM = new ModelLayerLocation(Identifier.withDefaultNamespace("clientsnowgolem"), "main");
-    private static final Identifier snowGolemTexturePath = Identifier.withDefaultNamespace("textures/entity/snow_golem.png");
 
     public ClientSnowGolemRenderer(EntityRendererProvider.Context context) {
         super(context, new SnowGolemModel(context.bakeLayer(ModelLayers.SNOW_GOLEM)), 0.5F);
         this.addLayer(new SnowGolemHeadLayer(this, context.getBlockRenderDispatcher()));
     }
 
+    @Override
     public @NotNull Identifier getTextureLocation(SnowGolemRenderState snowGolemRenderState) {
-        return snowGolemTexturePath;
+        return Identifier.withDefaultNamespace("textures/entity/snow_golem.png");
     }
 
+    @Override
     public SnowGolemRenderState createRenderState() {
         return new SnowGolemRenderState();
+    }
+    @Override
+    public void extractRenderState(ClientSnowGolem snowGolem, SnowGolemRenderState state, float f) {
+        super.extractRenderState(snowGolem, state, f);
+        state.isUpsideDown = snowGolem.getPlainTextName().equals("Grumm") || snowGolem.getPlainTextName().equals("Dinnerbone");
     }
 }

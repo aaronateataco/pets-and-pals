@@ -27,4 +27,10 @@ public class ClientVindicatorRenderer extends MobRenderer<@NotNull ClientVindica
     public EvokerRenderState createRenderState() {
         return new EvokerRenderState();
     }
+
+    @Override
+    public void extractRenderState(ClientVindicator vindicator, EvokerRenderState state, float f) {
+        super.extractRenderState(vindicator, state, f);
+        state.isUpsideDown = vindicator.getPlainTextName().equals("Grumm") || vindicator.getPlainTextName().equals("Dinnerbone");
+    }
 }

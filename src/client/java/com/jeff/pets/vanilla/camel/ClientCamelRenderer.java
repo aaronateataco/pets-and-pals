@@ -9,12 +9,11 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.CamelRenderState;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.EquipmentSlot;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientCamelRenderer extends MobRenderer<@NotNull ClientCamel, @NotNull CamelRenderState, @NotNull CamelModel> {
     public static final ModelLayerLocation CAMEL_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientcamel"), "main");
@@ -24,12 +23,14 @@ public class ClientCamelRenderer extends MobRenderer<@NotNull ClientCamel, @NotN
         super(context, new CamelModel(context.bakeLayer(ModelLayers.CAMEL)), 0.7F);
     }
 
+    @Override
     protected void scale(CamelRenderState state, @NotNull PoseStack poseStack) {
         if (CONFIG.isBaby) {
             poseStack.scale(0.45f, 0.45f, 0.45f);
         }
     }
 
+    @Override
     public @NotNull Identifier getTextureLocation(CamelRenderState camelRenderState) {
         if (Objects.equals(CONFIG.camelSkin, "camel")) {
             camelTexturePath = "textures/entity/camel/camel.png";
@@ -41,8 +42,14 @@ public class ClientCamelRenderer extends MobRenderer<@NotNull ClientCamel, @NotN
         return Identifier.withDefaultNamespace(camelTexturePath);
     }
 
+    @Override
     public CamelRenderState createRenderState() {
         return new CamelRenderState();
     }
 
+    @Override
+    public void extractRenderState(ClientCamel camel, CamelRenderState state, float f) {
+        super.extractRenderState(camel, state, f);
+        state.isUpsideDown = camel.getPlainTextName().equals("Grumm") || camel.getPlainTextName().equals("Dinnerbone");
+    }
 }

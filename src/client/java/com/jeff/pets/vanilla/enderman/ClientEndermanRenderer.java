@@ -32,4 +32,10 @@ public class ClientEndermanRenderer extends MobRenderer<@NotNull ClientEnderman,
     public EndermanRenderState createRenderState() {
         return new EndermanRenderState();
     }
+
+    @Override
+    public void extractRenderState(ClientEnderman enderman, EndermanRenderState state, float f) {
+        super.extractRenderState(enderman, state, f);
+        state.isUpsideDown = enderman.getPlainTextName().equals("Grumm") || enderman.getPlainTextName().equals("Dinnerbone");
+    }
 }

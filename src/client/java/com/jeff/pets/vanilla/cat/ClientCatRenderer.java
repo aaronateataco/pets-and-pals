@@ -3,7 +3,6 @@ package com.jeff.pets.vanilla.cat;
 import com.jeff.pets.PetsInitializer;
 import com.jeff.pets.vanilla.passive.ClientCat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.model.animal.feline.CatModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -15,7 +14,7 @@ import net.minecraft.client.renderer.entity.state.CatRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientCatRenderer extends MobRenderer<@NotNull ClientCat, @NotNull CatRenderState, @NotNull ClientCatModel> {
     public static final ModelLayerLocation CAT_LOCATION = new ModelLayerLocation(
@@ -31,6 +30,7 @@ public class ClientCatRenderer extends MobRenderer<@NotNull ClientCat, @NotNull 
         return LayerDefinition.create(new MeshDefinition(), 64, 32);
     }
 
+    @Override
     protected void scale(CatRenderState state, @NotNull PoseStack poseStack) {
         if (CONFIG.isBaby) {
             poseStack.scale(0.5f, 0.5f, 0.5f);
@@ -59,5 +59,12 @@ public class ClientCatRenderer extends MobRenderer<@NotNull ClientCat, @NotNull 
     @Override
     public CatRenderState createRenderState() {
         return new CatRenderState();
+    }
+
+    @Override
+    public void extractRenderState(ClientCat cat, CatRenderState state, float f) {
+        super.extractRenderState(cat, state, f);
+        state.isSitting = true;
+        state.isUpsideDown = cat.getPlainTextName().equals("Grumm") || cat.getPlainTextName().equals("Dinnerbone");
     }
 }

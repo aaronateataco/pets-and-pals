@@ -33,4 +33,10 @@ public class PlaguewhaleRenderer extends MobRenderer<@NotNull PlaguewhaleSlab, @
     public GuardianRenderState createRenderState() {
         return new GuardianRenderState();
     }
+
+    @Override
+    public void extractRenderState(PlaguewhaleSlab slab, GuardianRenderState state, float f) {
+        super.extractRenderState(slab, state, f);
+        state.isUpsideDown = slab.getPlainTextName().equals("Grumm") || slab.getPlainTextName().equals("Dinnerbone");
+    }
 }

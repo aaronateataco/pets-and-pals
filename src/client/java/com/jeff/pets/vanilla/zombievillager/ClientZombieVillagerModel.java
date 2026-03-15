@@ -2,11 +2,10 @@ package com.jeff.pets.vanilla.zombievillager;
 
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.monster.zombie.ZombieVillagerModel;
-import net.minecraft.client.renderer.entity.state.ZombieRenderState;
 import net.minecraft.client.renderer.entity.state.ZombieVillagerRenderState;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientZombieVillagerModel extends ZombieVillagerModel<@NotNull ZombieVillagerRenderState> {
 

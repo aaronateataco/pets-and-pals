@@ -11,6 +11,8 @@ import net.minecraft.client.renderer.entity.state.ChickenRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
+import static com.jeff.pets.Central.CONFIG;
+
 public class DiamondChickenRenderer extends MobRenderer<@NotNull DiamondChicken, @NotNull ChickenRenderState, @NotNull ClientChickenModel> {
 
     public static final ModelLayerLocation DIAMOND_CHICKEN_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("diamondchicken"), "main");
@@ -20,8 +22,10 @@ public class DiamondChickenRenderer extends MobRenderer<@NotNull DiamondChicken,
     }
 
     @Override
-    protected void scale(@NotNull ChickenRenderState livingEntityRenderState, PoseStack poseStack) {
-        poseStack.scale(0.5f, 0.5f, 0.5f);
+    protected void scale(@NotNull ChickenRenderState livingEntityRenderState, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+        }
     }
 
     @Override
@@ -32,5 +36,11 @@ public class DiamondChickenRenderer extends MobRenderer<@NotNull DiamondChicken,
     @Override
     public ChickenRenderState createRenderState() {
         return new ChickenRenderState();
+    }
+
+    @Override
+    public void extractRenderState(DiamondChicken chicken, ChickenRenderState state, float f) {
+        super.extractRenderState(chicken, state, f);
+        state.isUpsideDown = chicken.getPlainTextName().equals("Grumm") || chicken.getPlainTextName().equals("Dinnerbone");
     }
 }

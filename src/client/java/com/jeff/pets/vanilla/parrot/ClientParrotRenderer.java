@@ -1,4 +1,4 @@
-package com.jeff.pets.vanilla.parched.parrot;
+package com.jeff.pets.vanilla.parrot;
 
 import com.jeff.pets.vanilla.passive.ClientParrot;
 import net.minecraft.client.model.animal.parrot.ParrotModel;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientParrotRenderer extends MobRenderer<@NotNull ClientParrot, @NotNull ParrotRenderState, @NotNull ParrotModel> {
     public static final ModelLayerLocation PARROT_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientparrot"), "main");
@@ -45,10 +45,11 @@ public class ClientParrotRenderer extends MobRenderer<@NotNull ClientParrot, @No
     }
 
     @Override
-    public void extractRenderState(ClientParrot parrot, ParrotRenderState parrotRenderState, float f) {
-        super.extractRenderState(parrot, parrotRenderState, f);
+    public void extractRenderState(ClientParrot parrot, ParrotRenderState state, float f) {
+        super.extractRenderState(parrot, state, f);
         float g = Mth.lerp(f, parrot.oFlap, parrot.flap);
         float h = Mth.lerp(f, parrot.oFlapSpeed, parrot.flapSpeed);
-        parrotRenderState.flapAngle = (Mth.sin(g) + 1.0F) * h;
+        state.flapAngle = (Mth.sin(g) + 1.0F) * h;
+        state.isUpsideDown = parrot.getPlainTextName().equals("Grumm") || parrot.getPlainTextName().equals("Dinnerbone");
     }
 }

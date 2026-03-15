@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.entity.state.PolarBearRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientPolarBearRenderer extends MobRenderer<@NotNull ClientPolarBear, @NotNull PolarBearRenderState, @NotNull PolarBearModel> {
 
@@ -43,5 +43,11 @@ public class ClientPolarBearRenderer extends MobRenderer<@NotNull ClientPolarBea
     @Override
     public PolarBearRenderState createRenderState() {
         return new PolarBearRenderState();
+    }
+
+    @Override
+    public void extractRenderState(ClientPolarBear polarBear, PolarBearRenderState state, float f) {
+        super.extractRenderState(polarBear, state, f);
+        state.isUpsideDown = polarBear.getPlainTextName().equals("Grumm") || polarBear.getPlainTextName().equals("Dinnerbone");
     }
 }

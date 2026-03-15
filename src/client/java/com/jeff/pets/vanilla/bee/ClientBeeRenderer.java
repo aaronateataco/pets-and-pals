@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientBeeRenderer extends MobRenderer<@NotNull ClientBee, @NotNull BeeRenderState, @NotNull BeeModel> {
     public static final ModelLayerLocation BEE_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientbee"), "main");
@@ -23,6 +23,7 @@ public class ClientBeeRenderer extends MobRenderer<@NotNull ClientBee, @NotNull 
         super(context, new BeeModel(context.bakeLayer(ModelLayers.BEE)), 0.4f);
     }
 
+    @Override
     protected void scale(BeeRenderState state, @NotNull PoseStack poseStack) {
         if (CONFIG.isBaby) {
             poseStack.scale(0.5f, 0.5f, 0.5f);
@@ -42,5 +43,11 @@ public class ClientBeeRenderer extends MobRenderer<@NotNull ClientBee, @NotNull 
     @Override
     public BeeRenderState createRenderState() {
         return new BeeRenderState();
+    }
+
+    @Override
+    public void extractRenderState(ClientBee bee, BeeRenderState state, float f) {
+        super.extractRenderState(bee, state, f);
+        state.isUpsideDown = bee.getPlainTextName().equals("Grumm") || bee.getPlainTextName().equals("Dinnerbone");
     }
 }

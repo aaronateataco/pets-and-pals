@@ -31,6 +31,7 @@ public class BatatoRenderer extends MobRenderer<@NotNull Batato, @NotNull BatRen
     @Override
     public void extractRenderState(Batato batato, BatRenderState state, float f) {
         super.extractRenderState(batato, state, f);
-        state.flyAnimationState.start(50);
+        state.flyAnimationState.start(0);
+        state.isUpsideDown = batato.getPlainTextName().equals("Grumm") || batato.getPlainTextName().equals("Dinnerbone");
     }
 }

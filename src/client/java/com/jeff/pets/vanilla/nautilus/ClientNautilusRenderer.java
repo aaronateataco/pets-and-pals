@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.state.NautilusRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientNautilusRenderer extends MobRenderer<@NotNull ClientNautilus, @NotNull NautilusRenderState, @NotNull NautilusModel> {
 
@@ -28,8 +28,7 @@ public class ClientNautilusRenderer extends MobRenderer<@NotNull ClientNautilus,
     }
 
     @Override
-    public @NotNull Identifier getTextureLocation(NautilusRenderState livingEntityRenderState) {
-        NautilusRenderState state = new NautilusRenderState();
+    public @NotNull Identifier getTextureLocation(NautilusRenderState state) {
         state.yRot = 180;
         String nautilusTexturePath = switch (CONFIG.nautilusSkin) {
             case "nautilus" -> "textures/entity/nautilus/nautilus.png";
@@ -43,5 +42,11 @@ public class ClientNautilusRenderer extends MobRenderer<@NotNull ClientNautilus,
     @Override
     public NautilusRenderState createRenderState() {
         return new NautilusRenderState();
+    }
+
+    @Override
+    public void extractRenderState(ClientNautilus nautilus, NautilusRenderState state, float f) {
+        super.extractRenderState(nautilus, state, f);
+        state.isUpsideDown = nautilus.getPlainTextName().equals("Grumm") || nautilus.getPlainTextName().equals("Dinnerbone");
     }
 }

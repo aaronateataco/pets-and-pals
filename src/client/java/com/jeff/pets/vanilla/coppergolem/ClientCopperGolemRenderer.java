@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 import java.util.Optional;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientCopperGolemRenderer extends MobRenderer<@NotNull ClientCopperGolem, @NotNull CopperGolemRenderState, @NotNull CopperGolemModel> {
     public static ModelLayerLocation COPPER_GOLEM_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientcoppergolem"), "main");
@@ -33,9 +33,7 @@ public class ClientCopperGolemRenderer extends MobRenderer<@NotNull ClientCopper
 
     public ClientCopperGolemRenderer(EntityRendererProvider.Context context) {
         super(context, new CopperGolemModel(context.bakeLayer(ModelLayers.COPPER_GOLEM)), 0.5F);
-        this.addLayer(new RenderLayer<CopperGolemRenderState, CopperGolemModel>(() -> {
-            return model;
-        }) {
+        this.addLayer(new RenderLayer<>(() -> model) {
             @Override
             public void submit(@NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int i, CopperGolemRenderState entityRenderState, float f, float g) {
                 renderColoredCutoutModel(this.getParentModel(), Identifier.withDefaultNamespace("textures/entity/copper_golem/copper_golem_eyes.png"), poseStack, submitNodeCollector, entityRenderState.lightCoords, entityRenderState, -1, OverlayTexture.NO_OVERLAY);
@@ -47,6 +45,7 @@ public class ClientCopperGolemRenderer extends MobRenderer<@NotNull ClientCopper
         this.addLayer(new CustomHeadLayer(this, context.getModelSet(), context.getPlayerSkinRenderCache()));
     }
 
+    @Override
     public @NotNull Identifier getTextureLocation(CopperGolemRenderState copperGolemRenderState) {
         if (Objects.equals(CONFIG.copperGolemSkin, "unoxidized")) {
             copperGolemTexturePath = "textures/entity/copper_golem/copper_golem.png";
@@ -60,21 +59,15 @@ public class ClientCopperGolemRenderer extends MobRenderer<@NotNull ClientCopper
         return Identifier.withDefaultNamespace(copperGolemTexturePath);
     }
 
+    @Override
     public CopperGolemRenderState createRenderState() {
         return new CopperGolemRenderState();
     }
 
-    public void extractRenderState(ClientCopperGolem copperGolem, CopperGolemRenderState copperGolemRenderState, float f) {
-        super.extractRenderState(copperGolem, copperGolemRenderState, f);
-       /* ArmedEntityRenderState.extractArmedEntityRenderState(copperGolem, copperGolemRenderState, this.itemModelResolver, f);
-        copperGolemRenderState.weathering = copperGolem.getWeatherState();
-        copperGolemRenderState.copperGolemState = copperGolem.getState();
-        copperGolemRenderState.idleAnimationState.copyFrom(copperGolem.getIdleAnimationState());
-        copperGolemRenderState.interactionGetItem.copyFrom(copperGolem.getInteractionGetItemAnimationState());
-        copperGolemRenderState.interactionGetNoItem.copyFrom(copperGolem.getInteractionGetNoItemAnimationState());
-        copperGolemRenderState.interactionDropItem.copyFrom(copperGolem.getInteractionDropItemAnimationState());
-        copperGolemRenderState.interactionDropNoItem.copyFrom(copperGolem.getInteractionDropNoItemAnimationState());*/
-        copperGolemRenderState.blockOnAntenna = Optional.of(copperGolem.getItemBySlot(CopperGolem.EQUIPMENT_SLOT_ANTENNA)).flatMap((itemStack) -> {
+    @Override
+    public void extractRenderState(ClientCopperGolem copperGolem, CopperGolemRenderState state, float f) {
+        super.extractRenderState(copperGolem, state, f);
+        state.blockOnAntenna = Optional.of(copperGolem.getItemBySlot(CopperGolem.EQUIPMENT_SLOT_ANTENNA)).flatMap((itemStack) -> {
             Item item = itemStack.getItem();
             if (item instanceof BlockItem blockItem) {
                 BlockItemStateProperties blockItemStateProperties = itemStack.getOrDefault(DataComponents.BLOCK_STATE, BlockItemStateProperties.EMPTY);
@@ -83,6 +76,7 @@ public class ClientCopperGolemRenderer extends MobRenderer<@NotNull ClientCopper
                 return Optional.empty();
             }
         });
+        state.isUpsideDown = copperGolem.getPlainTextName().equals("Grumm") || copperGolem.getPlainTextName().equals("Dinnerbone");
     }
 }
 

@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.entity.state.PandaRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientPandaRenderer extends MobRenderer<@NotNull ClientPanda, @NotNull PandaRenderState, @NotNull PandaModel> {
     public static final ModelLayerLocation PANDA_LOCAITON = new ModelLayerLocation(Identifier.withDefaultNamespace("clientpanda"), "main");
@@ -20,6 +20,7 @@ public class ClientPandaRenderer extends MobRenderer<@NotNull ClientPanda, @NotN
         super(context, new PandaModel(context.bakeLayer(ModelLayers.PANDA)), 0.75f);
     }
 
+    @Override
     protected void scale(PandaRenderState state, @NotNull PoseStack poseStack) {
         if (CONFIG.isBaby) {
             poseStack.scale(0.5f, 0.5f, 0.5f);
@@ -45,5 +46,10 @@ public class ClientPandaRenderer extends MobRenderer<@NotNull ClientPanda, @NotN
     @Override
     public PandaRenderState createRenderState() {
         return new PandaRenderState();
+    }
+
+    @Override
+    public void extractRenderState(ClientPanda panda, PandaRenderState state, float f) {
+        super.extractRenderState(panda, state, f);
     }
 }

@@ -11,11 +11,10 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.DonkeyRenderState;
-import net.minecraft.client.renderer.entity.state.EquineRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientDonkeyRenderer extends MobRenderer<@NotNull ClientDonkey, @NotNull DonkeyRenderState, @NotNull DonkeyModel> {
     public static ModelLayerLocation DONKEY_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientdonkey"), "main");

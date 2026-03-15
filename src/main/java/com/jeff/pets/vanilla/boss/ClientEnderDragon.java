@@ -162,7 +162,7 @@ public class ClientEnderDragon extends TamableAnimal {
             }*/
         }
         if (owner != null) {
-            if (distanceTo(owner) >= 10) {
+            if (distanceTo(owner) >= 25) {
                 this.tryToTeleportToOwner();
             }
         }

@@ -26,4 +26,10 @@ public class LoveGolemRenderer extends MobRenderer<@NotNull LoveGolem, @NotNull 
     public IronGolemRenderState createRenderState() {
         return new IronGolemRenderState();
     }
+
+    @Override
+    public void extractRenderState(LoveGolem loveGolem, IronGolemRenderState state, float f) {
+        super.extractRenderState(loveGolem, state, f);
+        state.isUpsideDown = loveGolem.getPlainTextName().equals("Grumm") || loveGolem.getPlainTextName().equals("Dinnerbone");
+    }
 }

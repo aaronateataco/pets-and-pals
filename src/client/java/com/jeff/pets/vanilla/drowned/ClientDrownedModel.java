@@ -5,7 +5,7 @@ import net.minecraft.client.model.monster.zombie.DrownedModel;
 import net.minecraft.client.renderer.entity.state.ZombieRenderState;
 import org.jetbrains.annotations.NotNull;
 
-import static com.jeff.pets.Pet.CONFIG;
+import static com.jeff.pets.Central.CONFIG;
 
 public class ClientDrownedModel extends DrownedModel {
 

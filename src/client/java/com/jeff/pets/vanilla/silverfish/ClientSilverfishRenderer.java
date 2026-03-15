@@ -27,4 +27,10 @@ public class ClientSilverfishRenderer extends MobRenderer<@NotNull ClientSilverf
     public LivingEntityRenderState createRenderState() {
         return new LivingEntityRenderState();
     }
+
+    @Override
+    public void extractRenderState(ClientSilverfish silverfish, LivingEntityRenderState state, float f) {
+        super.extractRenderState(silverfish, state, f);
+        state.isUpsideDown = silverfish.getPlainTextName().equals("Grumm") || silverfish.getPlainTextName().equals("Dinnerbone");
+    }
 }
