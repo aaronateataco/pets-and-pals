@@ -7,4 +7,5 @@ public class DuckRenderState extends LivingEntityRenderState {
     public float flapSpeed;
     public boolean isServerEntity;
     public int duckSpecies;
+    public boolean isPassenger;
 }

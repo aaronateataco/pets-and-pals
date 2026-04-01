@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.ZombieRenderState;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.Pose;
 import org.jetbrains.annotations.NotNull;
 
 import static com.jeff.pets.Central.CONFIG;
@@ -43,14 +42,23 @@ public class ClientDrownedRenderer extends MobRenderer<@NotNull ClientDrowned, @
     }
 
     @Override
+    public void setupRotations(ZombieRenderState state, @NotNull PoseStack poseStack, float f, float g) {
+        super.setupRotations(state, poseStack, f, g);
+        if (state.isPassenger) {
+            poseStack.translate(0, -0.5, 0);
+        }
+    }
+
+    @Override
     public ZombieRenderState createRenderState() {
         return new ZombieRenderState();
     }
+
     @Override
     public void extractRenderState(ClientDrowned drowned, ZombieRenderState state, float f) {
         super.extractRenderState(drowned, state, f);
         state.isBaby = CONFIG.isBaby;
-        state.pose = Pose.SITTING;
+        state.isPassenger = drowned.isPassenger();
         state.isUpsideDown = drowned.getPlainTextName().equals("Grumm") || drowned.getPlainTextName().equals("Dinnerbone");
     }
 }

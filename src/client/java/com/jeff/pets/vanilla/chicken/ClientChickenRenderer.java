@@ -31,14 +31,15 @@ public class ClientChickenRenderer extends MobRenderer<@NotNull ClientChicken, @
     @Override
     public @NotNull Identifier getTextureLocation(ChickenRenderState livingEntityRenderState) {
         if (Objects.equals(CONFIG.chickenSkin, "temperate")) {
-            chickenTexturePath = "textures/entity/chicken/temperate_chicken.png";
+            chickenTexturePath = "textures/entity/chicken/chicken_temperate.png";
         } else if (Objects.equals(CONFIG.chickenSkin, "cold")) {
-            chickenTexturePath = "textures/entity/chicken/cold_chicken.png";
+            chickenTexturePath = "textures/entity/chicken/chicken_cold.png";
         } else if (Objects.equals(CONFIG.chickenSkin, "warm")) {
-            chickenTexturePath = "textures/entity/chicken/warm_chicken.png";
+            chickenTexturePath = "textures/entity/chicken/chicken_warm.png";
         }
         return Identifier.withDefaultNamespace(chickenTexturePath);
     }
+
     @Override
     protected void scale(ChickenRenderState state, @NotNull PoseStack poseStack) {
         if (CONFIG.isBaby) {

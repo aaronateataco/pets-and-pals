@@ -4,7 +4,7 @@
   "version": "${version}",
   "name": "Pets Mod",
   "accessWidener": "pets.accesswidener",
-  "description": "Adds pets into your game. Completely client-sided.",
+  "description": "Adds completely client-sided pets to your game. Supports every vanilla mob and will work on any server, including in singleplayer!",
   "authors": [
     "The Pets Team",
     "downloadableduck"
@@ -13,7 +13,7 @@
     "homepage": "https://modrinth.com/mod/pets-mod",
     "sources": "https://github.com/downloadableduck/petsmod"
   },
-  "license": "CC0-1.0",
+  "license": "MIT",
   "icon": "assets/pets/icon.png",
   "environment": "*",
   "entrypoints": {
@@ -37,8 +37,8 @@
   ],
   "depends": {
     "fabricloader": ">=0.18.4",
-    "minecraft": "~1.21",
-    "java": ">=21",
+    "minecraft": "~26.1",
+    "java": ">=25",
     "cloth-config": "*",
     "fabric-api": "*",
     "yet_another_config_lib_v3": "*",
@@ -47,7 +47,7 @@
   "custom": {
     "modmenu": {
       "name": "Pets Mod",
-      "description": "A mod that adds client-sided pets in your game to follow you around.",
+      "description": "Adds completely client-sided pets to your game. Supports every vanilla mob and will work on any server, including in singleplayer!",
       "icon": "assets/pets/icon.png",
       "environment": "client"
     }

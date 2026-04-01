@@ -12,7 +12,6 @@ import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 import static com.jeff.pets.Central.CONFIG;
-import static com.jeff.pets.Central.poisonousPotatoZombie;
 
 public class PoisonousPotatoZombieRenderer extends MobRenderer<@NotNull PoisonousPotatoZombie, @NotNull ZombieRenderState, @NotNull ClientZombieModel> {
 
@@ -40,8 +39,17 @@ public class PoisonousPotatoZombieRenderer extends MobRenderer<@NotNull Poisonou
     }
 
     @Override
+    public void setupRotations(ZombieRenderState state, @NotNull PoseStack poseStack, float f, float g) {
+        super.setupRotations(state, poseStack, f, g);
+        if (state.isPassenger) {
+            poseStack.translate(0, -0.5, 0);
+        }
+    }
+
+    @Override
     public void extractRenderState(PoisonousPotatoZombie zombie, ZombieRenderState state, float f) {
         super.extractRenderState(zombie, state, f);
+        state.isPassenger = zombie.isOnHead;
         state.isUpsideDown = zombie.getPlainTextName().equals("Grumm") || zombie.getPlainTextName().equals("Dinnerbone");
     }
 }

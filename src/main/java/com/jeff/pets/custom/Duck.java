@@ -28,7 +28,9 @@ import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.animal.fox.Fox;
 import net.minecraft.world.entity.animal.parrot.ShoulderRidingEntity;
+import net.minecraft.world.entity.animal.wolf.Wolf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -39,6 +41,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
+import org.lwjgl.system.ffm.mapping.Mapping;
 
 import static com.jeff.pets.PetsInitializer.DUCK;
 
@@ -53,38 +56,8 @@ public class Duck extends ShoulderRidingEntity {
     public float oFlapSpeed;
     public float oFlap;
     public float flapping = 1.0F;
+    public boolean isOnHead;
 
-    /*public boolean setEntityOnShoulder(CompoundTag compoundTag, ServerPlayer serverPlayer) {
-        if (!this.isPassenger() && this.onGround() && !this.isInWater() && !this.isInPowderSnow) {
-            if (serverPlayer.getShoulderEntityLeft().isEmpty()) {
-                serverPlayer.setShoulderEntityLeft(compoundTag);
-                serverPlayer.timeEntitySatOnShoulder = this.level().getGameTime();
-                return true;
-            } else if (serverPlayer.getShoulderEntityRight().isEmpty()) {
-                serverPlayer.setShoulderEntityRight(compoundTag);
-                serverPlayer.timeEntitySatOnShoulder = this.level().getGameTime();
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
-    }
-
-    /*public boolean sitOnOwnersShoulder(Player player) {
-        try (ProblemReporter.ScopedCollector scopedCollector = new ProblemReporter.ScopedCollector(this.problemPath(), PetsInitializer.LOGGER)) {
-            TagValueOutput tagValueOutput = TagValueOutput.createWithContext(scopedCollector, this.registryAccess());
-            this.saveWithoutId(tagValueOutput);
-            tagValueOutput.putString("id", Objects.requireNonNull(this.getEncodeId()));
-            if (this.setEntityOnShoulder(tagValueOutput.buildResult(), owner)) {
-                this.discard();
-                return true;
-            }
-        }
-
-        return false;
-    }*/
     public ServerPlayer owner = (ServerPlayer) this.getOwner();
     private float nextFlap = 1.0F;
 
@@ -93,7 +66,7 @@ public class Duck extends ShoulderRidingEntity {
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return Animal.createAnimalAttributes().add(Attributes.MAX_HEALTH, 500.0F).add(Attributes.MOVEMENT_SPEED, 0.25F);
+        return Animal.createAnimalAttributes().add(Attributes.MAX_HEALTH, 8.0).add(Attributes.MOVEMENT_SPEED, 0.25F);
     }
 
     public static float rotlerp(float start, float end) {
@@ -158,11 +131,13 @@ public class Duck extends ShoulderRidingEntity {
     }
 
     protected void playStepSound(final @NotNull BlockPos pos, final @NotNull BlockState blockState) {
-        this.playSound(SoundEvents.CHICKEN_STEP, 0.15F, 1.0F);
+        this.playSound(SoundEvents.CHICKEN_STEP.value(), 0.15F, 1.0F);
     }
 
     public @Nullable Duck getBreedOffspring(final @NotNull ServerLevel level, final @NotNull AgeableMob partner) {
-        return DUCK.create(level, EntitySpawnReason.BREEDING);
+        Duck duck = DUCK.create(level, EntitySpawnReason.BREEDING);
+        duck.setServerEntity(true);
+        return duck;
     }
 
     public SpawnGroupData finalizeSpawn(final @NotNull ServerLevelAccessor level, final @NotNull DifficultyInstance difficulty, final @NotNull EntitySpawnReason spawnReason, final @Nullable SpawnGroupData groupData) {
@@ -171,13 +146,15 @@ public class Duck extends ShoulderRidingEntity {
         return super.finalizeSpawn(level, difficulty, spawnReason, groupData);
     }
 
-    public boolean isFood(final ItemStack itemStack) {
-        return itemStack.is(ItemTags.CHICKEN_FOOD);
+    public boolean isFood(final @NotNull ItemStack itemStack) {
+        return itemStack.is(ItemTags.FISHES);
     }
 
     @Override
     public void registerGoals() {
 
+        this.goalSelector.addGoal(0, new FollowOwnerGoal(this, 1, 2, 10));
+        this.goalSelector.addGoal(1, new BreedGoal(this, 1));
         this.goalSelector.addGoal(2, new FloatGoal(this));
         this.goalSelector.addGoal(3, new PanicGoal(this, 1.4d));
         this.goalSelector.addGoal(4, new TemptGoal(this, 1.0f, stack -> stack.is(ItemTags.SKULLS), false));
@@ -195,12 +172,11 @@ public class Duck extends ShoulderRidingEntity {
         CompoundTag pet = new CompoundTag();
         pet.putString("id", PetsInitializer.MOD_ID + "duck");
 
-
         var x = this.getX();
         var y = this.getY();
         var z = this.getZ();
 
-        if (!this.isTame() && this.isFood(itemStack)) {
+        /*if (!this.isTame() && this.isFood(itemStack)) {
             if (this.random.nextInt(3) == 0) {
                 this.tame(player);
                 this.navigation.stop();
@@ -213,9 +189,15 @@ public class Duck extends ShoulderRidingEntity {
                         0, 5, 0
                 );
             }
-        }
+            return InteractionResult.SUCCESS;
+        }*/
 
-        if (this.isTame() && itemStack.isEmpty()) {
+        /**You are going to have some issues trying to make the interaction result work
+         * as the animal will not go onto its head. Make sure to check that the player's
+         * shift key is not down.
+         */
+
+        if (this.isTame() && itemStack.isEmpty() && !player.isShiftKeyDown()) {
             this.level().addParticle(
                     ParticleTypes.HEART,
                     this.getX(),
@@ -223,18 +205,21 @@ public class Duck extends ShoulderRidingEntity {
                     this.getZ(),
                     5, 5, 5
             );
+            return InteractionResult.SUCCESS;
         }
 
         if (this.isTame() && itemStack.isEmpty() && player.isShiftKeyDown()) {
             if (!this.isPassenger()) {
                 this.startRiding(player);
                 this.lookAt(player, 1f, 1f);
-                this.setOrderedToSit(true);
+                this.isOnHead = true;
+                return InteractionResult.SUCCESS;
             } else {
                 this.stopRiding();
             }
+            return InteractionResult.SUCCESS;
         }
-        return InteractionResult.SUCCESS;
+        return super.mobInteract(player, hand);
     }
 
     @Override
@@ -247,6 +232,7 @@ public class Duck extends ShoulderRidingEntity {
                 if (owner.isCrouching() && owner.isJumping()) {
                     this.stopRiding();
                     this.setDeltaMovement(this.getDeltaMovement().add(0, -0.04, 0));
+                    this.isOnHead = false;
                 } else {
                     this.setOrderedToSit(true);
                 }
@@ -286,11 +272,11 @@ public class Duck extends ShoulderRidingEntity {
 
             int yHeightToOwner = (int) (owner.getY() - this.getY());
 
-            if (yHeightToOwner > 1) {
+            if (yHeightToOwner > 1 && !this.isServerEntity()) {
                 this.jumpFromGround();
             }
 
-            if (yHeightToOwner > -1) {
+            if (yHeightToOwner > -1 && !this.isServerEntity()) {
                 this.setDeltaMovement(this.getDeltaMovement().add(0, -0.01, 0));
             }
 
@@ -313,7 +299,7 @@ public class Duck extends ShoulderRidingEntity {
             }
         }
         if (owner != null) {
-            if (distanceTo(owner) >= 10) {
+            if (distanceTo(owner) >= 10 && !this.isServerEntity()) {
                 this.tryToTeleportToOwner();
             }
         }

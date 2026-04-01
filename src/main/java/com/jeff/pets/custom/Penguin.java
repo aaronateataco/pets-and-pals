@@ -44,6 +44,7 @@ public class Penguin extends TamableAnimal {
     public float oFlap;
     public float flapping = 1.0F;
     public ServerPlayer owner = (ServerPlayer) this.getOwner();
+    public boolean isOnHead;
     private float nextFlap = 1.0F;
     private boolean isFlapping = this.flyDist > this.nextFlap;
 
@@ -109,11 +110,13 @@ public class Penguin extends TamableAnimal {
     }
 
     protected void playStepSound(final @NotNull BlockPos pos, final @NotNull BlockState blockState) {
-        this.playSound(SoundEvents.CHICKEN_STEP, 0.15F, 1.0F);
+        this.playSound(SoundEvents.CHICKEN_STEP.value(), 0.15F, 1.0F);
     }
 
     public @Nullable Penguin getBreedOffspring(final @NotNull ServerLevel level, final @NotNull AgeableMob partner) {
-        return PENGUIN.create(level, EntitySpawnReason.BREEDING);
+        Penguin penguin = PENGUIN.create(level, EntitySpawnReason.BREEDING);
+        penguin.setServerEntity(true);
+        return penguin;
     }
 
     public SpawnGroupData finalizeSpawn(final @NotNull ServerLevelAccessor level, final @NotNull DifficultyInstance difficulty, final @NotNull EntitySpawnReason spawnReason, final @Nullable SpawnGroupData groupData) {
@@ -128,9 +131,10 @@ public class Penguin extends TamableAnimal {
     @Override
     public void registerGoals() {
 
+        this.goalSelector.addGoal(1, new BreedGoal(this, 1));
         this.goalSelector.addGoal(2, new FloatGoal(this));
         this.goalSelector.addGoal(3, new PanicGoal(this, 1.4d));
-        this.goalSelector.addGoal(4, new TemptGoal(this, 1.0f, stack -> stack.is(ItemTags.FISHES), false));
+        this.goalSelector.addGoal(4, new TemptGoal(this, 1.0f, stack -> stack.is(ItemTags.SKULLS), false));
 
         this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(6, new RandomStrollGoal(this, 1.0D));
@@ -145,7 +149,7 @@ public class Penguin extends TamableAnimal {
         var y = this.getY();
         var z = this.getZ();
 
-        if (!this.isTame() && this.isFood(itemStack)) {
+        /*if (!this.isTame() && this.isFood(itemStack)) {
             if (this.random.nextInt(3) == 0) {
                 this.tame(player);
                 this.navigation.stop();
@@ -158,9 +162,10 @@ public class Penguin extends TamableAnimal {
                         0, 5, 0
                 );
             }
-        }
+            return InteractionResult.SUCCESS;
+        }*/
 
-        if (this.isTame() && itemStack.isEmpty()) {
+        if (this.isTame() && itemStack.isEmpty() && !player.isShiftKeyDown()) {
             this.level().addParticle(
                     ParticleTypes.HEART,
                     this.getX(),
@@ -168,6 +173,7 @@ public class Penguin extends TamableAnimal {
                     this.getZ(),
                     5, 5, 5
             );
+            return InteractionResult.SUCCESS;
         }
 
         if (this.isTame() && itemStack.isEmpty() && player.isShiftKeyDown()) {
@@ -175,11 +181,13 @@ public class Penguin extends TamableAnimal {
                 this.startRiding(player);
                 this.lookAt(player, 1f, 1f);
                 this.setOrderedToSit(true);
+                this.isOnHead = true;
             } else {
                 this.stopRiding();
             }
+            return InteractionResult.SUCCESS;
         }
-        return InteractionResult.SUCCESS;
+        return super.mobInteract(player, hand);
     }
 
     @Override
@@ -193,6 +201,7 @@ public class Penguin extends TamableAnimal {
                 if (owner.isCrouching() && owner.isJumping()) {
                     this.stopRiding();
                     this.setDeltaMovement(this.getDeltaMovement().add(0, -0.04, 0));
+                    this.isOnHead = false;
                 } else {
                     this.setOrderedToSit(true);
                 }
@@ -267,7 +276,7 @@ public class Penguin extends TamableAnimal {
         }
 
         if (this.walkAnimation.isMoving()) {
-            level().playLocalSound(this, SoundEvents.CHICKEN_STEP, SoundSource.NEUTRAL, 1.0f, 1.0f);
+            level().playLocalSound(this, SoundEvents.CHICKEN_STEP.value(), SoundSource.NEUTRAL, 1.0f, 1.0f);
         }
 
         int ambient = (int) (Math.random() * (60 * 20));

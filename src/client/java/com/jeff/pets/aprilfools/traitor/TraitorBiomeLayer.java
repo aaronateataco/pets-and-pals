@@ -3,17 +3,13 @@ package com.jeff.pets.aprilfools.traitor;
 import com.jeff.pets.vanilla.evoker.ClientEvokerModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.model.npc.VillagerModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.EvokerRenderState;
-import net.minecraft.client.renderer.entity.state.VillagerRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
 
 import static com.jeff.pets.Central.CONFIG;
 

@@ -1,6 +1,10 @@
 package com.jeff.pets.custom.duck;
 
 import com.jeff.pets.PetsInitializer;
+import net.minecraft.client.animation.AnimationChannel;
+import net.minecraft.client.animation.AnimationDefinition;
+import net.minecraft.client.animation.Keyframe;
+import net.minecraft.client.animation.KeyframeAnimations;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
@@ -10,10 +14,36 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
+import static com.jeff.pets.Central.CONFIG;
+
 public class DuckModel extends EntityModel<@NotNull DuckRenderState> {
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(
             Identifier.fromNamespaceAndPath(PetsInitializer.MOD_ID, "duck"), "main"
     );
+    public static final AnimationDefinition sitting = AnimationDefinition.Builder.withLength(500000.0F)
+            .addAnimation("head", new AnimationChannel(AnimationChannel.Targets.POSITION,
+                    new Keyframe(0.0F, KeyframeAnimations.posVec(0.0F, 0.0F, -3.0F), AnimationChannel.Interpolations.LINEAR)
+            ))
+            .addAnimation("body", new AnimationChannel(AnimationChannel.Targets.POSITION,
+                    new Keyframe(0.0F, KeyframeAnimations.posVec(0.0F, 0.0F, -4.0F), AnimationChannel.Interpolations.LINEAR)
+            ))
+            .addAnimation("left_wing", new AnimationChannel(AnimationChannel.Targets.POSITION,
+                    new Keyframe(0.0F, KeyframeAnimations.posVec(0.0F, 0.0F, -4.0F), AnimationChannel.Interpolations.LINEAR)
+            ))
+            .addAnimation("right_wing", new AnimationChannel(AnimationChannel.Targets.POSITION,
+                    new Keyframe(0.0F, KeyframeAnimations.posVec(0.0F, 0.0F, -4.0F), AnimationChannel.Interpolations.LINEAR)
+            ))
+            .addAnimation("left_leg", new AnimationChannel(AnimationChannel.Targets.POSITION,
+                    new Keyframe(0.0F, KeyframeAnimations.posVec(0.0F, 0.0F, -9.0F), AnimationChannel.Interpolations.LINEAR)
+            ))
+            .addAnimation("right_leg", new AnimationChannel(AnimationChannel.Targets.POSITION,
+                    new Keyframe(0.0F, KeyframeAnimations.posVec(0.0F, 0.0F, -9.0F), AnimationChannel.Interpolations.LINEAR)
+            ))
+            .addAnimation("tail", new AnimationChannel(AnimationChannel.Targets.POSITION,
+                    new Keyframe(0.0F, KeyframeAnimations.posVec(0.0F, 0.0F, -4.0F), AnimationChannel.Interpolations.LINEAR)
+            ))
+            .build();
+    private final ModelPart root;
     private final ModelPart head;
     private final ModelPart body;
     private final ModelPart leftWing;
@@ -24,6 +54,7 @@ public class DuckModel extends EntityModel<@NotNull DuckRenderState> {
 
     public DuckModel(ModelPart root) {
         super(root);
+        this.root = root;
         this.head = root.getChild("head");
         this.body = root.getChild("body");
         this.leftWing = root.getChild("left_wing");
@@ -31,6 +62,7 @@ public class DuckModel extends EntityModel<@NotNull DuckRenderState> {
         this.leftLeg = root.getChild("left_leg");
         this.rightLeg = root.getChild("right_leg");
         this.tail = root.getChild("tail");
+        sitting.bake(root);
     }
 
     public static LayerDefinition getTexturedModelData() {
@@ -67,5 +99,19 @@ public class DuckModel extends EntityModel<@NotNull DuckRenderState> {
         this.leftLeg.xRot = Mth.cos(animationPos * 0.6662F + (float) Math.PI) * 1.4F * animationSpeed;
         this.rightWing.zRot = flapAngle;
         this.leftWing.zRot = -flapAngle;
+        if (state.isPassenger) {
+            this.root.x += 0.4F;
+            this.root.y += 2.5f;
+            this.rightLeg.visible = false;
+            this.leftLeg.visible = false;
+        } else {
+            this.rightLeg.visible = true;
+            this.leftLeg.visible = true;
+        }
+        if ((CONFIG.isBaby && !state.isServerEntity) || (state.isBaby && !state.isServerEntity)) {
+            this.head.xScale = 1.5f;
+            this.head.yScale = 1.5f;
+            this.head.zScale = 1.5f;
+        }
     }
 }

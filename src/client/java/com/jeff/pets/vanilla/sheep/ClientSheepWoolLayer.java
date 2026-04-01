@@ -21,7 +21,7 @@ import static com.jeff.pets.Central.CONFIG;
 public class ClientSheepWoolLayer extends RenderLayer<@NotNull SheepRenderState, @NotNull ClientSheepModel> {
     public static final ModelLayerLocation SHEEP_WOOL_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("textures/entity/sheep/sheep_wool.png"), "main");
     private final EntityModel<@NotNull SheepRenderState> adultModel;
-    private final EntityModel<@NotNull SheepRenderState> babyModel;;
+    private final EntityModel<@NotNull SheepRenderState> babyModel;
     int woolColor;
 
     public ClientSheepWoolLayer(RenderLayerParent<@NotNull SheepRenderState, @NotNull ClientSheepModel> renderLayerParent, EntityModelSet entityModelSet) {
@@ -71,7 +71,7 @@ public class ClientSheepWoolLayer extends RenderLayer<@NotNull SheepRenderState,
                 adultModel,
                 sheepRenderState,
                 poseStack,
-                RenderTypes.entityCutoutNoCull(SHEEP_WOOL_LOCATION.model()),
+                RenderTypes.entityCutout(SHEEP_WOOL_LOCATION.model()),
                 i,
                 LivingEntityRenderer.getOverlayCoords(sheepRenderState, 0.0F),
                 woolColor,

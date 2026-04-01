@@ -1,13 +1,13 @@
 package com.jeff.pets.vanilla.chicken;
 
-import net.minecraft.client.model.animal.chicken.ChickenModel;
+import net.minecraft.client.model.animal.chicken.AdultChickenModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.state.ChickenRenderState;
 import org.jetbrains.annotations.NotNull;
 
 import static com.jeff.pets.Central.CONFIG;
 
-public class ClientChickenModel extends ChickenModel {
+public class ClientChickenModel extends AdultChickenModel {
 
     private final ModelPart head;
 
@@ -15,6 +15,7 @@ public class ClientChickenModel extends ChickenModel {
         super(modelPart);
         head = modelPart.getChild("head");
     }
+
     @Override
     public void setupAnim(@NotNull ChickenRenderState state) {
         super.setupAnim(state);

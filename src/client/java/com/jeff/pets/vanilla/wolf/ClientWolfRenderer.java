@@ -23,16 +23,16 @@ public class ClientWolfRenderer extends MobRenderer<@NotNull ClientWolf, @NotNul
         super(context, new ClientWolfModel(context.bakeLayer(ModelLayers.WOLF)), 0.75f);
     }
 
+    public static LayerDefinition createBodyLayer() {
+        ClientWolfModel.createBodyLayer(CubeDeformation.NONE);
+        return LayerDefinition.create(new MeshDefinition(), 64, 32);
+    }
+
     @Override
     protected void scale(@NotNull WolfRenderState livingEntityRenderState, @NotNull PoseStack poseStack) {
         if (CONFIG.isBaby) {
             poseStack.scale(0.5f, 0.5f, 0.5f);
         }
-    }
-
-    public static LayerDefinition createBodyLayer() {
-        ClientWolfModel.createMeshDefinition(CubeDeformation.NONE);
-        return LayerDefinition.create(new MeshDefinition(), 64, 32);
     }
 
     @Override
@@ -63,5 +63,6 @@ public class ClientWolfRenderer extends MobRenderer<@NotNull ClientWolf, @NotNul
     @Override
     public void extractRenderState(ClientWolf wolf, WolfRenderState state, float f) {
         super.extractRenderState(wolf, state, f);
+        state.isSitting = wolf.isPassenger();
     }
 }

@@ -2,10 +2,8 @@ package com.jeff.pets.aprilfools.toxifin;
 
 import com.jeff.pets.aprilfools.ToxifinSlab;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.state.GuardianRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;

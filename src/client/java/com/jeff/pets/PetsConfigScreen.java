@@ -68,9 +68,9 @@ public class PetsConfigScreen implements ModMenuApi {
                                                         } catch (IllegalArgumentException e) {
                                                             assert Minecraft.getInstance().player != null;
                                                             if (!hasPrintedMessage) {
-                                                                Minecraft.getInstance().player.displayClientMessage(Component.literal("§b[PetsMod] §cWe ran into an error and couldn't generate your config screen. Please report this stacktrace on my GitHub§r: " + e.getMessage() + ". §cThis is usually caused by tampering with the config JSON or a logic error in the code. §aIn the" +
-                                                                        " meantime, try using the /pet commands."), false);
-                                                                Minecraft.getInstance().player.displayClientMessage(Component.literal("§aRecommended course of action: run /petspecies and choose a valid option from the suggestions."), false);
+                                                                Minecraft.getInstance().player.sendSystemMessage(Component.literal("§b[PetsMod] §cWe ran into an error and couldn't generate your config screen. Please report this stacktrace on my GitHub§r: " + e.getMessage() + ". §cThis is usually caused by tampering with the config JSON or a logic error in the code. §aIn the" +
+                                                                        " meantime, try using the /pet commands."));
+                                                                Minecraft.getInstance().player.sendSystemMessage(Component.literal("§aRecommended course of action: run /petspecies and choose a valid option from the suggestions."));
                                                                 hasPrintedMessage = true;
                                                             }
                                                             e.printStackTrace();
@@ -294,7 +294,8 @@ public class PetsConfigScreen implements ModMenuApi {
                                                         case "axolotl" -> AxolotlSkins.valueOf(CONFIG.axolotlSkin);
                                                         case "camel" -> CamelSkins.valueOf(CONFIG.camelSkin);
                                                         case "chicken" -> ChickenSkins.valueOf(CONFIG.chickenSkin);
-                                                        case "creeper", "nerd_creeper", "smiling_creeper" -> CreeperSkins.valueOf(CONFIG.creeperSkin);
+                                                        case "creeper", "nerd_creeper", "smiling_creeper" ->
+                                                                CreeperSkins.valueOf(CONFIG.creeperSkin);
                                                         case "copper_golem" ->
                                                                 CopperGolemSkins.valueOf(CONFIG.copperGolemSkin);
                                                         case "cow" -> CowSkins.valueOf(CONFIG.cowSkin);
@@ -331,9 +332,9 @@ public class PetsConfigScreen implements ModMenuApi {
                                                 } catch (IllegalArgumentException e) {
                                                     assert Minecraft.getInstance().player != null;
                                                     if (!hasPrintedMessage) {
-                                                        Minecraft.getInstance().player.displayClientMessage(Component.literal("§b[PetsMod] §cWe ran into an error and couldn't generate your config screen. Please report this stacktrace on my GitHub§r: " + e.getMessage() + ". §cThis is usually caused by tampering with the config JSON or a logic error in the code. §aIn the" +
-                                                                " meantime, try using the /pet commands."), false);
-                                                        Minecraft.getInstance().player.displayClientMessage(Component.literal("§aRecommended course of action: run /petskin and choose a valid option from the suggestions."), false);
+                                                        Minecraft.getInstance().player.sendSystemMessage(Component.literal("§b[PetsMod] §cWe ran into an error and couldn't generate your config screen. Please report this stacktrace on my GitHub§r: " + e.getMessage() + ". §cThis is usually caused by tampering with the config JSON or a logic error in the code. §aIn the" +
+                                                                " meantime, try using the /pet commands."));
+                                                        Minecraft.getInstance().player.sendSystemMessage(Component.literal("§aRecommended course of action: run /petskin and choose a valid option from the suggestions."));
                                                         hasPrintedMessage = true;
                                                     }
                                                     e.printStackTrace();
@@ -813,7 +814,8 @@ public class PetsConfigScreen implements ModMenuApi {
                                                     case "axolotl" -> enumClass = AxolotlSkins.class;
                                                     case "camel" -> enumClass = CamelSkins.class;
                                                     case "chicken" -> enumClass = ChickenSkins.class;
-                                                    case "creeper", "nerd_creeper", "smiling_creeper" -> enumClass = CreeperSkins.class;
+                                                    case "creeper", "nerd_creeper", "smiling_creeper" ->
+                                                            enumClass = CreeperSkins.class;
                                                     case "copper_golem" -> enumClass = CopperGolemSkins.class;
                                                     case "cow" -> enumClass = CowSkins.class;
                                                     case "frog" -> enumClass = FrogSkins.class;

@@ -42,8 +42,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientallay"),
             EntityType.Builder.of(ClientAllay::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.35f, 0.6f)
+                    .eyeHeight(0.6f)
                     .build(ALLAY_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> ARMADILLO_KEY =
@@ -53,8 +53,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientarmadillo"),
             EntityType.Builder.of(ClientArmadillo::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.7f, 0.65f)
+                    .eyeHeight(0.65f)
                     .build(ARMADILLO_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> AXOLOTL_KEY =
@@ -75,8 +75,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientbat"),
             EntityType.Builder.of(ClientBat::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.5f, 0.9f)
+                    .eyeHeight(0.9f)
                     .build(BAT_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> CAMEL_KEY =
@@ -86,8 +86,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientcamel"),
             EntityType.Builder.of(ClientCamel::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(3f, 2f)
-                    .eyeHeight(2f)
+                    .sized(1.7f, 2.375f)
+                    .eyeHeight(2.375f)
                     .build(CAMEL_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> DUCK_KEY =
@@ -96,7 +96,7 @@ public class PetsInitializer implements ModInitializer {
             BuiltInRegistries.ENTITY_TYPE,
             Identifier.fromNamespaceAndPath(MOD_ID, "duck"),
             EntityType.Builder.of(Duck::new, MobCategory.CREATURE)
-                    .sized(1f, 1f)
+                    .sized(0.4f, 0.7f)
                     .eyeHeight(1)
                     .build(DUCK_KEY));
     public static final ResourceKey<@NotNull EntityType<?>> PENGUIN_KEY =
@@ -116,8 +116,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientsheep"),
             EntityType.Builder.of(ClientSheep::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.9f, 1.3f)
+                    .eyeHeight(1.3f)
                     .build(SHEEP_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> CAT_KEY =
@@ -127,7 +127,7 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientcat"),
             EntityType.Builder.of(ClientCat::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
+                    .sized(0.6f, 0.7f)
                     .eyeHeight(1f)
                     .build(CAT_KEY)
     );
@@ -138,8 +138,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientchicken"),
             EntityType.Builder.of(ClientChicken::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.4f, 0.7f)
+                    .eyeHeight(0.7f)
                     .build(CHICKEN_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> COD_KEY =
@@ -149,8 +149,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientcod"),
             EntityType.Builder.of(ClientCod::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.5f, 0.3f)
+                    .eyeHeight(0.3f)
                     .build(COD_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> COPPER_GOLEM_KEY =
@@ -160,8 +160,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientcoppergolem"),
             EntityType.Builder.of(ClientCopperGolem::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.49f, 0.98f)
+                    .eyeHeight(0.98f)
                     .build(COPPER_GOLEM_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> COW_KEY =
@@ -171,8 +171,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientcow"),
             EntityType.Builder.of(ClientCow::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(2f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.9f, 1.4f)
+                    .eyeHeight(1.4f)
                     .build(COW_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> DONKEY_KEY =
@@ -182,8 +182,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientdonkey"),
             EntityType.Builder.of(ClientDonkey::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(2f, 2f)
-                    .eyeHeight(2f)
+                    .sized(1.3965f, 1.5f)
+                    .eyeHeight(1.5f)
                     .build(DONKEY_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> FROG_KEY =
@@ -193,8 +193,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientfrog"),
             EntityType.Builder.of(ClientFrog::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.5f, 0.5f)
+                    .eyeHeight(0.5f)
                     .build(FROG_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> HORSE_KEY =
@@ -204,8 +204,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clienthorse"),
             EntityType.Builder.of(ClientHorse::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(2f, 2f)
-                    .eyeHeight(2f)
+                    .sized(1.3965f, 1.6f)
+                    .eyeHeight(1.6f)
                     .build(HORSE_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> MOOSHROOM_KEY =
@@ -215,8 +215,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientmooshroom"),
             EntityType.Builder.of(ClientMooshroom::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(2f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.9f, 1.4f)
+                    .eyeHeight(1.4f)
                     .build(MOOSHROOM_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> PARROT_KEY =
@@ -226,8 +226,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientparrot"),
             EntityType.Builder.of(ClientParrot::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.5f, 0.9f)
+                    .eyeHeight(0.9f)
                     .build(PARROT_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> PIG_KEY =
@@ -237,8 +237,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientpig"),
             EntityType.Builder.of(ClientPig::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.9f, 0.9f)
+                    .eyeHeight(0.9f)
                     .build(PIG_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> RABBIT_KEY =
@@ -248,8 +248,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientrabbit"),
             EntityType.Builder.of(ClientRabbit::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.4f, 0.5f)
+                    .eyeHeight(0.5f)
                     .build(RABBIT_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> SALMON_KEY =
@@ -259,8 +259,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientsalmon"),
             EntityType.Builder.of(ClientSalmon::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.35f, 0.2f)
+                    .eyeHeight(0.2f)
                     .build(SALMON_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> SNIFFER_KEY =
@@ -270,8 +270,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientsniffer"),
             EntityType.Builder.of(ClientSniffer::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(3f, 2f)
-                    .eyeHeight(2f)
+                    .sized(1.9f, 1.75f)
+                    .eyeHeight(1.75f)
                     .build(SNIFFER_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> SNOW_GOLEM_KEY =
@@ -281,8 +281,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientsnowgolem"),
             EntityType.Builder.of(ClientSnowGolem::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 2f)
-                    .eyeHeight(2f)
+                    .sized(0.7f, 1.9f)
+                    .eyeHeight(1.9f)
                     .build(SNOW_GOLEM_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> SQUID_KEY =
@@ -292,8 +292,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientsquid"),
             EntityType.Builder.of(ClientSquid::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(2f, -1f)
-                    .eyeHeight(1f)
+                    .sized(0.8f, -0.8f)
+                    .eyeHeight(0.8f)
                     .build(SQUID_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> STRIDER_KEY =
@@ -303,8 +303,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientstrider"),
             EntityType.Builder.of(ClientStrider::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.9f, 1.7f)
+                    .eyeHeight(1.7f)
                     .build(STRIDER_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> TADPOLE_KEY =
@@ -314,8 +314,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clienttadpole"),
             EntityType.Builder.of(ClientTadpole::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.4f, 0.3f)
+                    .eyeHeight(0.3f)
                     .build(TADPOLE_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> TROPICAL_FISH_KEY =
@@ -336,8 +336,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientturtle"),
             EntityType.Builder.of(ClientTurtle::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(1.2f, 0.4f)
+                    .eyeHeight(0.4f)
                     .build(TURTLE_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> VILLAGER_KEY =
@@ -347,8 +347,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientvillager"),
             EntityType.Builder.of(ClientVillager::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 2f)
-                    .eyeHeight(2f)
+                    .sized(0.6f, 1.95f)
+                    .eyeHeight(1.95f)
                     .build(VILLAGER_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> WANDERING_TRADER_KEY =
@@ -358,8 +358,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientwandeinrgtrader"),
             EntityType.Builder.of(ClientWanderingTrader::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 2f)
-                    .eyeHeight(2f)
+                    .sized(0.6f, 1.95f)
+                    .eyeHeight(1.95f)
                     .build(WANDERING_TRADER_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> BEE_KEY =
@@ -369,8 +369,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientbee"),
             EntityType.Builder.of(ClientBee::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.7f, 0.6f)
+                    .eyeHeight(0.6f)
                     .build(BEE_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> CAVE_SPIDER_KEY =
@@ -380,8 +380,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientcavespider"),
             EntityType.Builder.of(ClientCaveSpider::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.7f, 0.5f)
+                    .eyeHeight(0.5f)
                     .build(CAVE_SPIDER_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> DOLPHIN_KEY =
@@ -391,8 +391,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientdolphin"),
             EntityType.Builder.of(ClientDolphin::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.9f, 0.6f)
+                    .eyeHeight(0.6f)
                     .build(DOLPHIN_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> ENDERMAN_KEY =
@@ -402,8 +402,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientenderman"),
             EntityType.Builder.of(ClientEnderman::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 3f)
-                    .eyeHeight(3f)
+                    .sized(0.6f, 2.9f)
+                    .eyeHeight(2.9f)
                     .build(ENDERMAN_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> FOX_KEY =
@@ -413,8 +413,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientfox"),
             EntityType.Builder.of(ClientFox::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.6f, 0.7f)
+                    .eyeHeight(0.7f)
                     .build(FOX_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> GOAT_KEY =
@@ -424,8 +424,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientgoat"),
             EntityType.Builder.of(ClientGoat::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.9f, 1.3f)
+                    .eyeHeight(1.3f)
                     .build(GOAT_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> IRON_GOLEM_KEY =
@@ -435,8 +435,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientirongolem"),
             EntityType.Builder.of(ClientIronGolem::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(2f, 3f)
-                    .eyeHeight(3f)
+                    .sized(1.4f, 2.7f)
+                    .eyeHeight(2.7f)
                     .build(IRON_GOLEM_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> LLAMA_KEY =
@@ -446,8 +446,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientllama"),
             EntityType.Builder.of(ClientLlama::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 2f)
-                    .eyeHeight(2f)
+                    .sized(0.9f, 1.87f)
+                    .eyeHeight(1.87f)
                     .build(LLAMA_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> NAUTILUS_KEY =
@@ -457,8 +457,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientnautilus"),
             EntityType.Builder.of(ClientNautilus::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(2f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.875f, 0.95f)
+                    .eyeHeight(0.95f)
                     .build(NAUTILUS_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> PANDA_KEY =
@@ -468,8 +468,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientpanda"),
             EntityType.Builder.of(ClientPanda::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(2f, 2f)
-                    .eyeHeight(2f)
+                    .sized(1.3f, 1.25f)
+                    .eyeHeight(1.25f)
                     .build(PANDA_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> PIGLIN_KEY =
@@ -479,8 +479,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientpiglin"),
             EntityType.Builder.of(ClientPiglin::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 2f)
-                    .eyeHeight(2f)
+                    .sized(0.6f, 1.95f)
+                    .eyeHeight(1.95f)
                     .build(PIGLIN_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> POLAR_BEAR_KEY =
@@ -490,8 +490,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientpolarbear"),
             EntityType.Builder.of(ClientPolarBear::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(2f, 1f)
-                    .eyeHeight(1f)
+                    .sized(1.4f, 1.4f)
+                    .eyeHeight(1.4f)
                     .build(POLAR_BEAR_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> PUFFERFISH_KEY =
@@ -501,8 +501,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientpufferfish"),
             EntityType.Builder.of(ClientPufferFish::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.7f, 0.7f)
+                    .eyeHeight(0.7f)
                     .build(PUFFERFISH_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> SPIDER_KEY =
@@ -512,8 +512,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientspider"),
             EntityType.Builder.of(ClientSpider::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(1.4f, 0.9f)
+                    .eyeHeight(0.9f)
                     .build(SPIDER_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> WOLF_KEY =
@@ -523,8 +523,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientwolf"),
             EntityType.Builder.of(ClientWolf::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.6f, 0.85f)
+                    .eyeHeight(0.85f)
                     .build(WOLF_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> BLAZE_KEY =
@@ -534,8 +534,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientblaze"),
             EntityType.Builder.of(ClientBlaze::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 2f)
-                    .eyeHeight(2f)
+                    .sized(0.6f, 1.8f)
+                    .eyeHeight(1.8f)
                     .build(BLAZE_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> BREEZE_KEY =
@@ -545,8 +545,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientbreeze"),
             EntityType.Builder.of(ClientBreeze::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 2f)
-                    .eyeHeight(2f)
+                    .sized(0.6f, 1.77f)
+                    .eyeHeight(1.77f)
                     .build(BREEZE_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> CREAKING_KEY =
@@ -556,8 +556,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientcreaking"),
             EntityType.Builder.of(ClientCreaking::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 3f)
-                    .eyeHeight(3f)
+                    .sized(0.9f, 2.7f)
+                    .eyeHeight(2.7f)
                     .build(CREAKING_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> CREEPER_KEY =
@@ -567,8 +567,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientcreeper"),
             EntityType.Builder.of(ClientCreeper::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 2f)
-                    .eyeHeight(2f)
+                    .sized(0.6f, 1.7f)
+                    .eyeHeight(1.7f)
                     .build(CREEPER_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> ELDER_GUARDIAN_KEY =
@@ -578,8 +578,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientelderguardian"),
             EntityType.Builder.of(ClientElderGuardian::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(3f, 3f)
-                    .eyeHeight(3f)
+                    .sized(1.9975f, 1.9975f)
+                    .eyeHeight(1.9975f)
                     .build(ELDER_GUARDIAN_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> ENDERMITE_KEY =
@@ -589,8 +589,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientendermite"),
             EntityType.Builder.of(ClientEndermite::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.4f, 0.3f)
+                    .eyeHeight(0.3f)
                     .build(ENDERMITE_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> EVOKER_KEY =
@@ -600,8 +600,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientevoker"),
             EntityType.Builder.of(ClientEvoker::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 2f)
-                    .eyeHeight(2f)
+                    .sized(0.6f, 1.95f)
+                    .eyeHeight(1.95f)
                     .build(EVOKER_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> GHAST_KEY =
@@ -633,8 +633,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientguardian"),
             EntityType.Builder.of(ClientGuardian::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.85f, 0.85f)
+                    .eyeHeight(0.85f)
                     .build(GUARDIAN_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> HOGLIN_KEY =
@@ -644,8 +644,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clienthoglin"),
             EntityType.Builder.of(ClientHoglin::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(2f, 2f)
-                    .eyeHeight(2f)
+                    .sized(1.3965f, 1.4f)
+                    .eyeHeight(1.4f)
                     .build(HOGLIN_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> MAGMA_CUBE_KEY =
@@ -657,6 +657,7 @@ public class PetsInitializer implements ModInitializer {
                     .noSummon()
                     .sized(2f, 2f)
                     .eyeHeight(2f)
+                    .eyeHeight(2f)
                     .build(MAGMA_CUBE_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> PHANTOM_KEY =
@@ -666,8 +667,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientphantom"),
             EntityType.Builder.of(ClientPhantom::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(2f, 2f)
-                    .eyeHeight(2f)
+                    .sized(0.9f, 0.5f)
+                    .eyeHeight(0.5f)
                     .build(PHANTOM_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> PILLAGER_KEY =
@@ -677,8 +678,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientpillager"),
             EntityType.Builder.of(ClientPillager::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 2f)
-                    .eyeHeight(2f)
+                    .sized(0.6f, 1.95f)
+                    .eyeHeight(1.95f)
                     .build(PILLAGER_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> RAVAGER_KEY =
@@ -688,8 +689,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientravager"),
             EntityType.Builder.of(ClientRavager::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(3f, 2f)
-                    .eyeHeight(2f)
+                    .sized(1.95f, 2.2f)
+                    .eyeHeight(2.2f)
                     .build(RAVAGER_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> SHULKER_KEY =
@@ -710,8 +711,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientsilverfish"),
             EntityType.Builder.of(ClientSilverfish::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.4f, 0.3f)
+                    .eyeHeight(0.3f)
                     .build(SILVERFISH_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> SKELETON_KEY =
@@ -721,8 +722,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientskeleton"),
             EntityType.Builder.of(ClientSkeleton::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 2f)
-                    .eyeHeight(2f)
+                    .sized(0.6f, 1.95f)
+                    .eyeHeight(1.95f)
                     .build(SKELETON_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> SLIME_KEY =
@@ -743,7 +744,7 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientvex"),
             EntityType.Builder.of(ClientVex::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
+                    .sized(0.4f, 0.8f)
                     .eyeHeight(1f)
                     .build(VEX_KEY)
     );
@@ -754,8 +755,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientvindicator"),
             EntityType.Builder.of(ClientVindicator::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 2f)
-                    .eyeHeight(2f)
+                    .sized(0.6f, 1.95f)
+                    .eyeHeight(1.95f)
                     .build(VINDICATOR_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> WARDEN_KEY =
@@ -765,8 +766,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientwarden"),
             EntityType.Builder.of(ClientWarden::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 3f)
-                    .eyeHeight(3f)
+                    .sized(0.9f, 2.9f)
+                    .eyeHeight(2.9f)
                     .build(WARDEN_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> WITCH_KEY =
@@ -776,8 +777,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientwitch"),
             EntityType.Builder.of(ClientWitch::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 2f)
-                    .eyeHeight(2f)
+                    .sized(0.6f, 1.95f)
+                    .eyeHeight(1.95f)
                     .build(WITCH_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> ZOMBIE_KEY =
@@ -787,8 +788,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientzombie"),
             EntityType.Builder.of(ClientZombie::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 2f)
-                    .eyeHeight(2f)
+                    .sized(0.6f, 1.95f)
+                    .eyeHeight(1.95f)
                     .build(ZOMBIE_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> ZOMBIE_VILLAGER_KEY =
@@ -798,7 +799,7 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientzombievillager"),
             EntityType.Builder.of(ClientZombieVillager::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 2f)
+                    .sized(0.6f, 1.95f)
                     .eyeHeight(2f)
                     .build(ZOMBIE_VILLAGER_KEY)
     );
@@ -809,7 +810,7 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clienthusk"),
             EntityType.Builder.of(ClientHusk::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 2f)
+                    .sized(0.6f, 1.95f)
                     .eyeHeight(2f)
                     .build(HUSK_KEY)
     );
@@ -820,7 +821,7 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientdrowned"),
             EntityType.Builder.of(ClientDrowned::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 2f)
+                    .sized(0.6f, 1.95f)
                     .eyeHeight(2f)
                     .build(DROWNED_KEY)
     );
@@ -831,7 +832,7 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientbogged"),
             EntityType.Builder.of(ClientBogged::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 2f)
+                    .sized(0.6f, 1.95f)
                     .eyeHeight(2f)
                     .build(BOGGED_KEY)
     );
@@ -842,8 +843,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientparched"),
             EntityType.Builder.of(ClientParched::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 2f)
-                    .eyeHeight(2f)
+                    .sized(0.6f, 1.95f)
+                    .eyeHeight(1.95f)
                     .build(PARCHED_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> STRAY_KEY =
@@ -853,8 +854,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientstray"),
             EntityType.Builder.of(ClientStray::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 2f)
-                    .eyeHeight(2f)
+                    .sized(0.6f, 1.95f)
+                    .eyeHeight(1.95f)
                     .build(STRAY_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> WITHER_SKELETON_KEY =
@@ -864,12 +865,21 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "clientwitherskeleton"),
             EntityType.Builder.of(ClientWitherSkeleton::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 2f)
-                    .eyeHeight(2f)
+                    .sized(0.6f, 1.95f)
+                    .eyeHeight(1.95f)
                     .build(WITHER_SKELETON_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> ENDER_DRAGON_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientenderdragon"));
+    public static final EntityType<@NotNull ClientEnderDragon> ENDER_DRAGON = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "clientenderdragon"),
+            EntityType.Builder.of(ClientEnderDragon::new, MobCategory.AMBIENT)
+                    .noSummon()
+                    .sized(16f, 8f)
+                    .eyeHeight(1f)
+                    .build(ENDER_DRAGON_KEY)
+    );
     public static final ResourceKey<@NotNull EntityType<?>> WITHER_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientwither"));
     public static final EntityType<@NotNull ClientWither> WITHER = Registry.register(
@@ -899,8 +909,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.withDefaultNamespace("batato"),
             EntityType.Builder.of(Batato::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.5f, 0.9f)
+                    .eyeHeight(0.9f)
                     .build(BATATO_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> DIAMOND_CHICKEN_KEY =
@@ -910,8 +920,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.withDefaultNamespace("diamond_chicken"),
             EntityType.Builder.of(DiamondChicken::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.4f, 0.7f)
+                    .eyeHeight(0.7f)
                     .build(DIAMOND_CHICKEN_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> LOVE_GOLEM_KEY =
@@ -921,7 +931,7 @@ public class PetsInitializer implements ModInitializer {
             Identifier.withDefaultNamespace("love_golem"),
             EntityType.Builder.of(LoveGolem::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(2f, 3f)
+                    .sized(1.4f, 2.7f)
                     .eyeHeight(3f)
                     .build(LOVE_GOLEM_KEY)
     );
@@ -943,8 +953,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.withDefaultNamespace("moon_cow"),
             EntityType.Builder.of(MoonCow::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.9f, 1.4f)
+                    .eyeHeight(1.4f)
                     .build(MOON_COW_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> NERD_CREEPER_KEY =
@@ -954,8 +964,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.withDefaultNamespace("nerd_creeper"),
             EntityType.Builder.of(NerdCreeper::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1.5f)
-                    .eyeHeight(1.5f)
+                    .sized(0.6f, 1.7f)
+                    .eyeHeight(1.7f)
                     .build(NERD_CREEPER_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> PINK_WITHER_KEY =
@@ -976,7 +986,7 @@ public class PetsInitializer implements ModInitializer {
             Identifier.fromNamespaceAndPath(MOD_ID, "plaguewhale_slab"),
             EntityType.Builder.of(PlaguewhaleSlab::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(2f, 2f)
+                    .sized(1.9975f, 1.9975f)
                     .eyeHeight(2f)
                     .build(PLAGUEWHALE_SLAB_KEY)
     );
@@ -987,8 +997,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.withDefaultNamespace("poisonous_potato_zombie"),
             EntityType.Builder.of(PoisonousPotatoZombie::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 2f)
-                    .eyeHeight(2f)
+                    .sized(0.6f, 1.95f)
+                    .eyeHeight(1.95f)
                     .build(POISONOUS_POTATO_ZOMBIE_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> RAY_TRACING_KEY =
@@ -998,8 +1008,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.withDefaultNamespace("ray_tracing"),
             EntityType.Builder.of(RayTracing::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 2f)
-                    .eyeHeight(2f)
+                    .sized(0.6f, 1.95f)
+                    .eyeHeight(1.95f)
                     .build(RAY_TRACING_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> REDSTONE_BUG_KEY =
@@ -1009,8 +1019,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.withDefaultNamespace("redstone_bug"),
             EntityType.Builder.of(RedstoneBug::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(0.1f)
+                    .sized(0.4f, 0.3f)
+                    .eyeHeight(0.3f)
                     .build(REDSTONE_BUG_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> SMILING_CREEPER_KEY =
@@ -1020,8 +1030,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.withDefaultNamespace("smiling_creeper"),
             EntityType.Builder.of(SmilingCreeper::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1.5f)
-                    .eyeHeight(1.5f)
+                    .sized(0.6f, 1.7f)
+                    .eyeHeight(1.7f)
                     .build(SMILING_CREEPER_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> TOXIFIN_SLAB_KEY =
@@ -1031,8 +1041,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.withDefaultNamespace("toxifin_slab"),
             EntityType.Builder.of(ToxifinSlab::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 1f)
-                    .eyeHeight(1f)
+                    .sized(0.85f, 0.85f)
+                    .eyeHeight(0.85f)
                     .build(TOXIFIN_SLAB_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> POTATO_HUSK_KEY =
@@ -1042,8 +1052,8 @@ public class PetsInitializer implements ModInitializer {
             Identifier.withDefaultNamespace("potato_husk"),
             EntityType.Builder.of(PotatoHusk::new, MobCategory.AMBIENT)
                     .noSummon()
-                    .sized(1f, 2f)
-                    .eyeHeight(2f)
+                    .sized(0.6f, 1.95f)
+                    .eyeHeight(1.95f)
                     .build(POTATO_HUSK_KEY)
     );
     public static final ResourceKey<@NotNull EntityType<?>> HEAD_KEY =
@@ -1052,8 +1062,8 @@ public class PetsInitializer implements ModInitializer {
             BuiltInRegistries.ENTITY_TYPE,
             Identifier.fromNamespaceAndPath(MOD_ID, "head"),
             EntityType.Builder.of(Head::new, MobCategory.CREATURE)
-                    .sized(1f, 1f)
-                    .eyeHeight(1)
+                    .sized(0.5f, 0.5f)
+                    .eyeHeight(0.5f)
                     .build(HEAD_KEY));
     public static final ResourceKey<@NotNull EntityType<?>> TRAITOR_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "traitor"));
@@ -1061,20 +1071,9 @@ public class PetsInitializer implements ModInitializer {
             BuiltInRegistries.ENTITY_TYPE,
             Identifier.fromNamespaceAndPath(MOD_ID, "traitor"),
             EntityType.Builder.of(Traitor::new, MobCategory.CREATURE)
-                    .sized(1f, 2f)
-                    .eyeHeight(2)
+                    .sized(0.6f, 1.95f)
+                    .eyeHeight(1.95f)
                     .build(TRAITOR_KEY));
-    public static int enderDragonHitboxWidth = 16;
-    public static int enderDragonHitboxHeight = 8;
-    public static final EntityType<@NotNull ClientEnderDragon> ENDER_DRAGON = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.fromNamespaceAndPath(MOD_ID, "clientenderdragon"),
-            EntityType.Builder.of(ClientEnderDragon::new, MobCategory.AMBIENT)
-                    .noSummon()
-                    .sized(enderDragonHitboxWidth, enderDragonHitboxHeight)
-                    .eyeHeight(1f)
-                    .build(ENDER_DRAGON_KEY)
-    );
 
     @Override
     public void onInitialize() {

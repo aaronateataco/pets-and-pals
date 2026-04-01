@@ -10,6 +10,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
+import static com.jeff.pets.Central.CONFIG;
+
 public class PenguinModel extends EntityModel<@NotNull PenguinRenderState> {
 
     public static final ModelLayerLocation PENGUIN_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(PetsInitializer.MOD_ID, "penguin"), "main");
@@ -75,5 +77,19 @@ public class PenguinModel extends EntityModel<@NotNull PenguinRenderState> {
         this.left_wing.xRot = -flapAngle * 0.75f;
         this.body.zRot = Mth.cos(animationPos * 0.6662F) * 0.1F * animationSpeed;
         this.head.zRot = Mth.cos(animationPos * 0.6662F) * 0.1F * animationSpeed;
+        if (state.isPassenger) {
+            this.root.y += 3;
+            this.right_foot.z -= 3;
+            this.right_foot.y -= 4;
+            this.right_foot.xRot = -1.6f;
+            this.left_foot.z -= 3;
+            this.left_foot.y -= 4;
+            this.left_foot.xRot = -1.6f;
+        }
+        if ((CONFIG.isBaby && !state.isServerEntity) || (state.isBaby && state.isServerEntity)) {
+            this.head.xScale = 1.5f;
+            this.head.yScale = 1.5f;
+            this.head.zScale = 1.5f;
+        }
     }
 }

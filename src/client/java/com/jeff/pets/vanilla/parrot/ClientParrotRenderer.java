@@ -47,9 +47,9 @@ public class ClientParrotRenderer extends MobRenderer<@NotNull ClientParrot, @No
     @Override
     public void extractRenderState(ClientParrot parrot, ParrotRenderState state, float f) {
         super.extractRenderState(parrot, state, f);
-        float g = Mth.lerp(f, parrot.oFlap, parrot.flap);
-        float h = Mth.lerp(f, parrot.oFlapSpeed, parrot.flapSpeed);
-        state.flapAngle = (Mth.sin(g) + 1.0F) * h;
+        float flap = Mth.lerp(f, parrot.oFlap, parrot.flap);
+        float flapSpeed = Mth.lerp(f, parrot.oFlapSpeed, parrot.flapSpeed);
+        state.flapAngle = (Mth.sin(flap) + 1.0F) * flapSpeed;
         state.isUpsideDown = parrot.getPlainTextName().equals("Grumm") || parrot.getPlainTextName().equals("Dinnerbone");
     }
 }

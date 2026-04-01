@@ -23,16 +23,16 @@ public class ClientPolarBearRenderer extends MobRenderer<@NotNull ClientPolarBea
         super(context, new PolarBearModel(context.bakeLayer(ModelLayers.POLAR_BEAR)), 0.75f);
     }
 
+    public static LayerDefinition createBodyLayer() {
+        PolarBearModel.createBodyLayer();
+        return LayerDefinition.create(new MeshDefinition(), 128, 64);
+    }
+
     @Override
     protected void scale(@NotNull PolarBearRenderState livingEntityRenderState, @NotNull PoseStack poseStack) {
         if (CONFIG.isBaby) {
             poseStack.scale(0.5f, 0.5f, 0.5f);
         }
-    }
-
-    public static LayerDefinition createBodyLayer() {
-        PolarBearModel.createBodyLayer(false);
-        return LayerDefinition.create(new MeshDefinition(), 128, 64);
     }
 
     @Override

@@ -22,8 +22,14 @@ public class DuckRenderer extends MobRenderer<@NotNull Duck, @NotNull DuckRender
 
     @Override
     protected void scale(@NotNull DuckRenderState livingEntityRenderState, @NotNull PoseStack poseStack) {
-        if (CONFIG.isBaby) {
-            poseStack.scale(0.6f, 0.6f, 0.6f);
+        if (!livingEntityRenderState.isServerEntity) {
+            if (CONFIG.isBaby) {
+                poseStack.scale(0.6f, 0.6f, 0.6f);
+            }
+        } else {
+            if (livingEntityRenderState.isBaby) {
+                poseStack.scale(0.6f, 0.6f, 0.6f);
+            }
         }
     }
 
@@ -39,6 +45,7 @@ public class DuckRenderer extends MobRenderer<@NotNull Duck, @NotNull DuckRender
         state.flap = Mth.lerp(partialTicks, duck.oFlap, duck.flap);
         state.flapSpeed = Mth.lerp(partialTicks, duck.oFlapSpeed, duck.flapSpeed);
         super.extractRenderState(duck, state, partialTicks);
+        state.isPassenger = duck.isPassenger();
         state.isUpsideDown = duck.getPlainTextName().equals("Grumm") || duck.getPlainTextName().equals("Dinnerbone");
     }
 
@@ -58,9 +65,8 @@ public class DuckRenderer extends MobRenderer<@NotNull Duck, @NotNull DuckRender
                 return Identifier.fromNamespaceAndPath(PetsInitializer.MOD_ID, "textures/entity/duck/mallard_male.png");
             } else if (state.duckSpecies == 1) {
                 return Identifier.fromNamespaceAndPath(PetsInitializer.MOD_ID, "textures/entity/duck/pekin.png");
-            } else if (state.duckSpecies == 2) {
-                return Identifier.fromNamespaceAndPath(PetsInitializer.MOD_ID, "textures/entity/duck/rubber.png");
-            } else {
+            }
+            else {
                 return Identifier.fromNamespaceAndPath(PetsInitializer.MOD_ID, "textures/entity/duck/yeahitdidntwork");
             }
         }

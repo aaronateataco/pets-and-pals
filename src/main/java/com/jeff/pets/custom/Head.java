@@ -224,10 +224,10 @@ public class Head extends TamableAnimal {
             level().playLocalSound(this, SoundEvents., SoundSource.NEUTRAL, 1.0f, 1.0f);
         }*/
 
-        int ambient = (int) (Math.random() * (60 * 20));
+        /*int ambient = (int) (Math.random() * (60 * 20));
         if (ambient == 1) {
             level().playLocalSound(this, PetsSounds.PENGUIN_AMBIENT, SoundSource.NEUTRAL, 1.0f, 1.0f);
-        }
+        }*/
     }
 
     @Override

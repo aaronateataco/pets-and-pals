@@ -2,7 +2,7 @@ package com.jeff.pets.vanilla.camel;
 
 import com.jeff.pets.vanilla.passive.ClientCamel;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.model.animal.camel.CamelModel;
+import net.minecraft.client.model.animal.camel.AdultCamelModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -15,12 +15,12 @@ import java.util.Objects;
 
 import static com.jeff.pets.Central.CONFIG;
 
-public class ClientCamelRenderer extends MobRenderer<@NotNull ClientCamel, @NotNull CamelRenderState, @NotNull CamelModel> {
+public class ClientCamelRenderer extends MobRenderer<@NotNull ClientCamel, @NotNull CamelRenderState, @NotNull AdultCamelModel> {
     public static final ModelLayerLocation CAMEL_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientcamel"), "main");
     public String camelTexturePath;
 
     public ClientCamelRenderer(EntityRendererProvider.Context context) {
-        super(context, new CamelModel(context.bakeLayer(ModelLayers.CAMEL)), 0.7F);
+        super(context, new AdultCamelModel(context.bakeLayer(ModelLayers.CAMEL)), 0.7F);
     }
 
     @Override
@@ -50,6 +50,11 @@ public class ClientCamelRenderer extends MobRenderer<@NotNull ClientCamel, @NotN
     @Override
     public void extractRenderState(ClientCamel camel, CamelRenderState state, float f) {
         super.extractRenderState(camel, state, f);
+        if (camel.isOnHead) {
+            state.sitAnimationState.start(0);
+        } else {
+            state.sitAnimationState.stop();
+        }
         state.isUpsideDown = camel.getPlainTextName().equals("Grumm") || camel.getPlainTextName().equals("Dinnerbone");
     }
 }

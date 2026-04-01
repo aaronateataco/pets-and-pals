@@ -2,8 +2,6 @@ package com.jeff.pets.vanilla.enderdragon;
 
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.world.entity.boss.enderdragon.DragonFlightHistory;
-import net.minecraft.world.phys.Vec3;
-import org.jspecify.annotations.Nullable;
 
 public class ClientEnderDragonRenderState extends LivingEntityRenderState {
     public final DragonFlightHistory flightHistory = new DragonFlightHistory();

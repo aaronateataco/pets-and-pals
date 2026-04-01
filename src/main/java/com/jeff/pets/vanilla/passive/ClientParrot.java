@@ -34,6 +34,8 @@ public class ClientParrot extends TamableAnimal {
     public float oFlap;
     public float flapping = 1.0F;
 
+    public boolean isOnHead;
+
     public ClientParrot(EntityType<? extends @NotNull TamableAnimal> entityType, Level level) {
         super(entityType, level);
     }
@@ -96,6 +98,7 @@ public class ClientParrot extends TamableAnimal {
                 this.startRiding(player);
                 this.lookAt(player, 1f, 1f);
                 this.setOrderedToSit(true);
+                this.isOnHead = true;
             } else {
                 this.stopRiding();
             }
@@ -109,11 +112,11 @@ public class ClientParrot extends TamableAnimal {
         LivingEntity owner = this.getOwner();
         if (owner != null) {
 
-
             if (owner.hasPassenger(this)) {
                 if (owner.isCrouching() && owner.isJumping()) {
                     this.stopRiding();
                     this.setDeltaMovement(this.getDeltaMovement().add(0, 0.1, 0));
+                    this.isOnHead = false;
                 } else {
                     this.setOrderedToSit(true);
                 }
@@ -138,7 +141,6 @@ public class ClientParrot extends TamableAnimal {
 
                 this.walkAnimation.setSpeed(0.5F);
 
-                Vec3 targetPos = owner.position();
                 Vec3 dir = vecToOwner.normalize();
                 double speed = 0.2;
 

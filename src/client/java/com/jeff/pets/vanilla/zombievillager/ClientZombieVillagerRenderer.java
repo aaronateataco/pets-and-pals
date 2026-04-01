@@ -7,7 +7,6 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.monster.zombie.ZombieVillagerModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.state.ZombieRenderState;
 import net.minecraft.client.renderer.entity.state.ZombieVillagerRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +25,7 @@ public class ClientZombieVillagerRenderer extends MobRenderer<@NotNull ClientZom
     @Override
     protected void scale(@NotNull ZombieVillagerRenderState livingEntityRenderState, @NotNull PoseStack poseStack) {
         if (CONFIG.isBaby) {
-           poseStack.scale(0.5f, 0.5f, 0.5f);
+            poseStack.scale(0.5f, 0.5f, 0.5f);
         }
     }
 
@@ -41,8 +40,17 @@ public class ClientZombieVillagerRenderer extends MobRenderer<@NotNull ClientZom
     }
 
     @Override
+    public void setupRotations(ZombieVillagerRenderState state, @NotNull PoseStack poseStack, float f, float g) {
+        super.setupRotations(state, poseStack, f, g);
+        if (state.isPassenger) {
+            poseStack.translate(0, -0.5, 0);
+        }
+    }
+
+    @Override
     public void extractRenderState(ClientZombieVillager zombieVillager, ZombieVillagerRenderState state, float f) {
         super.extractRenderState(zombieVillager, state, f);
+        state.isPassenger = zombieVillager.isPassenger();
         state.isUpsideDown = zombieVillager.getPlainTextName().equals("Grumm") || zombieVillager.getPlainTextName().equals("Dinnerbone");
     }
 }

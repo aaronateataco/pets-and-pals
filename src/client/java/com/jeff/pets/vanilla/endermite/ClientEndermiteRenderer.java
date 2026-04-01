@@ -20,7 +20,7 @@ public class ClientEndermiteRenderer extends MobRenderer<@NotNull ClientEndermit
 
     @Override
     public @NotNull Identifier getTextureLocation(LivingEntityRenderState livingEntityRenderState) {
-        return Identifier.withDefaultNamespace("textures/entity/endermite.png");
+        return Identifier.withDefaultNamespace("textures/entity/endermite/endermite.png");
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.jeff.pets.vanilla.goat;
 
 import com.jeff.pets.vanilla.neutral.ClientGoat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.model.animal.goat.GoatModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;

@@ -38,6 +38,7 @@ public class ClientSalmonRenderer extends MobRenderer<@NotNull ClientSalmon, @No
         float j = h * 4.3F * Mth.sin(i * 0.6F * salmonRenderState.ageInTicks);
         poseStack.mulPose(Axis.YP.rotationDegrees(j));
     }
+
     @Override
     public void extractRenderState(ClientSalmon salmon, LivingEntityRenderState state, float f) {
         super.extractRenderState(salmon, state, f);

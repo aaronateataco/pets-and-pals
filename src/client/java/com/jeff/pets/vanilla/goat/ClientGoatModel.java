@@ -19,6 +19,7 @@ public class ClientGoatModel extends GoatModel {
         this.leftHorn = head.getChild("left_horn");
         this.rightHorn = head.getChild("right_horn");
     }
+
     @Override
     public void setupAnim(@NotNull GoatRenderState state) {
         super.setupAnim(state);

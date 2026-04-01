@@ -25,6 +25,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 
 public class PoisonousPotatoZombie extends TamableAnimal {
+
+    public boolean isOnHead;
+
     public PoisonousPotatoZombie(EntityType<? extends @NotNull TamableAnimal> entityType, Level level) {
         super(entityType, level);
     }
@@ -72,13 +75,7 @@ public class PoisonousPotatoZombie extends TamableAnimal {
         }
 
         if (this.isTame() && itemStack.isEmpty() && player.isShiftKeyDown()) {
-            if (!this.isPassenger()) {
                 this.startRiding(player);
-                this.lookAt(player, 1f, 1f);
-                this.setOrderedToSit(true);
-            } else {
-                this.stopRiding();
-            }
         }
         return InteractionResult.SUCCESS;
     }
@@ -89,12 +86,15 @@ public class PoisonousPotatoZombie extends TamableAnimal {
         LivingEntity owner = this.getOwner();
         if (owner != null) {
 
+            if (this.isPassenger()) {
+                this.isOnHead = true;
+            }
+
             if (owner.hasPassenger(this)) {
                 if (owner.isCrouching() && owner.isJumping()) {
                     this.stopRiding();
+                    this.isOnHead = false;
                     this.setDeltaMovement(this.getDeltaMovement().add(0, -0.04, 0));
-                } else {
-                    this.setOrderedToSit(true);
                 }
             }
 

@@ -26,6 +26,8 @@ import org.jspecify.annotations.Nullable;
 
 public class ClientSniffer extends TamableAnimal {
 
+    public boolean isOnHead;
+
     public ClientSniffer(EntityType<? extends @NotNull TamableAnimal> entityType, Level level) {
         super(entityType, level);
     }
@@ -77,6 +79,7 @@ public class ClientSniffer extends TamableAnimal {
                 this.startRiding(player);
                 this.lookAt(player, 1f, 1f);
                 this.setOrderedToSit(true);
+                this.isOnHead = true;
             } else {
                 this.stopRiding();
             }
@@ -90,11 +93,11 @@ public class ClientSniffer extends TamableAnimal {
         LivingEntity owner = this.getOwner();
         if (owner != null) {
 
-
             if (owner.hasPassenger(this)) {
                 if (owner.isCrouching() && owner.isJumping()) {
                     this.stopRiding();
                     this.setDeltaMovement(this.getDeltaMovement().add(0, -0.04, 0));
+                    this.isOnHead = false;
                 } else {
                     this.setOrderedToSit(true);
                 }

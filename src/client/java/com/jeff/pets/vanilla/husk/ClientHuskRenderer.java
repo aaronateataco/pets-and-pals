@@ -5,13 +5,10 @@ import com.jeff.pets.vanilla.zombie.ClientZombieModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.model.monster.zombie.ZombieModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.client.renderer.entity.ZombieRenderer;
 import net.minecraft.client.renderer.entity.state.ZombieRenderState;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.Pose;
 import org.jetbrains.annotations.NotNull;
 
 import static com.jeff.pets.Central.CONFIG;
@@ -42,9 +39,17 @@ public class ClientHuskRenderer extends MobRenderer<@NotNull ClientHusk, @NotNul
     }
 
     @Override
+    public void setupRotations(ZombieRenderState state, @NotNull PoseStack poseStack, float f, float g) {
+        super.setupRotations(state, poseStack, f, g);
+        if (state.isPassenger) {
+            poseStack.translate(0, -0.5, 0);
+        }
+    }
+
+    @Override
     public void extractRenderState(ClientHusk husk, ZombieRenderState state, float f) {
         super.extractRenderState(husk, state, f);
         state.isUpsideDown = husk.getPlainTextName().equals("Grumm") || husk.getPlainTextName().equals("Dinnerbone");
-        state.pose = Pose.SITTING;
+        state.isPassenger = husk.isPassenger();
     }
 }

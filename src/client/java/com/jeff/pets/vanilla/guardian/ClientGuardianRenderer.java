@@ -21,7 +21,7 @@ public class ClientGuardianRenderer extends MobRenderer<@NotNull ClientGuardian,
     @Override
     public @NotNull Identifier getTextureLocation(GuardianRenderState livingEntityRenderState) {
         livingEntityRenderState.spikesAnimation = 1;
-        return Identifier.withDefaultNamespace("textures/entity/guardian.png");
+        return Identifier.withDefaultNamespace("textures/entity/guardian/guardian.png");
     }
 
     @Override

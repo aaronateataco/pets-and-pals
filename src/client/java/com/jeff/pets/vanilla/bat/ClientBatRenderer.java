@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.BatRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.PropertyKey;
 
 public class ClientBatRenderer extends MobRenderer<@NotNull ClientBat, @NotNull BatRenderState, @NotNull BatModel> {
     public static final ModelLayerLocation BAT_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("textures/entity/bat.png"), "main");
@@ -20,7 +19,7 @@ public class ClientBatRenderer extends MobRenderer<@NotNull ClientBat, @NotNull 
 
     @Override
     public @NotNull Identifier getTextureLocation(BatRenderState batRenderState) {
-        return BAT_LOCATION.model();
+        return Identifier.withDefaultNamespace("textures/entity/bat/bat.png");
     }
 
     @Override

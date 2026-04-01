@@ -29,16 +29,16 @@ public class ClientVillagerRenderer extends MobRenderer<@NotNull ClientVillager,
         this.addLayer(new ClientVillagerProfessionLayer(this));
     }
 
+    public static LayerDefinition createBaseVillagerLayer() {
+        VillagerModel.createBodyModel();
+        return LayerDefinition.create(new MeshDefinition(), 64, 64);
+    }
+
     @Override
     protected void scale(VillagerRenderState state, @NotNull PoseStack poseStack) {
         if (CONFIG.isBaby) {
             poseStack.scale(0.5f, 0.5f, 0.5f);
         }
-    }
-
-    public static LayerDefinition createBaseVillagerLayer() {
-        VillagerModel.createBodyModel();
-        return LayerDefinition.create(new MeshDefinition(), 64, 64);
     }
 
     @Override

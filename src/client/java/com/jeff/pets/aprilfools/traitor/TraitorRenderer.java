@@ -7,8 +7,6 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.EvokerRenderState;
-import net.minecraft.client.renderer.entity.state.IllagerRenderState;
-import net.minecraft.client.renderer.entity.state.IllusionerRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
@@ -30,6 +28,7 @@ public class TraitorRenderer extends MobRenderer<@NotNull Traitor, @NotNull Evok
     public EvokerRenderState createRenderState() {
         return new EvokerRenderState();
     }
+
     @Override
     public void extractRenderState(Traitor traitor, EvokerRenderState state, float f) {
         super.extractRenderState(traitor, state, f);

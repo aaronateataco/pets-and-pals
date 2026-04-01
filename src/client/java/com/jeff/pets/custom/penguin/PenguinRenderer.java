@@ -24,7 +24,7 @@ public class PenguinRenderer extends MobRenderer<@NotNull Penguin, @NotNull Peng
 
     @Override
     protected void scale(@NotNull PenguinRenderState livingEntityRenderState, @NotNull PoseStack poseStack) {
-        if (CONFIG.isBaby) {
+        if ((CONFIG.isBaby && !livingEntityRenderState.isServerEntity) || (livingEntityRenderState.isBaby && livingEntityRenderState.isServerEntity)) {
             poseStack.scale(0.5f, 0.5f, 0.5f);
         }
     }
@@ -35,6 +35,7 @@ public class PenguinRenderer extends MobRenderer<@NotNull Penguin, @NotNull Peng
         state.flap = Mth.lerp(partialTicks, penguin.oFlap, penguin.flap);
         state.flapSpeed = Mth.lerp(partialTicks, penguin.oFlapSpeed, penguin.flapSpeed);
         super.extractRenderState(penguin, state, partialTicks);
+        state.isPassenger = penguin.isPassenger();
         state.isUpsideDown = penguin.getPlainTextName().equals("Grumm") || penguin.getPlainTextName().equals("Dinnerbone");
     }
 

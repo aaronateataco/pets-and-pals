@@ -7,6 +7,7 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.monster.piglin.AdultPiglinModel;
 import net.minecraft.client.model.monster.piglin.PiglinModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
@@ -25,17 +26,17 @@ public class ClientPiglinRenderer extends MobRenderer<@NotNull ClientPiglin, @No
         super(context, new ClientPiglinModel(context.bakeLayer(ModelLayers.PIGLIN)), 0.75f);
     }
 
+    public static LayerDefinition createBodyLayer() {
+        AdultPiglinModel.createMesh(CubeDeformation.NONE, 0f);
+        PiglinModel.addHead(CubeDeformation.NONE, new MeshDefinition());
+        return LayerDefinition.create(new MeshDefinition(), 64, 64);
+    }
+
     @Override
     protected void scale(PiglinRenderState state, @NotNull PoseStack poseStack) {
         if (CONFIG.isBaby) {
             poseStack.scale(0.5f, 0.5f, 0.5f);
         }
-    }
-
-    public static LayerDefinition createBodyLayer() {
-        PiglinModel.createMesh(CubeDeformation.NONE);
-        PiglinModel.addHead(CubeDeformation.NONE, new MeshDefinition());
-        return LayerDefinition.create(new MeshDefinition(), 64, 64);
     }
 
     @Override

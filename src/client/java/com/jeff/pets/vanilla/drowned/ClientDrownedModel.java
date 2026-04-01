@@ -17,6 +17,7 @@ public class ClientDrownedModel extends DrownedModel {
         super(modelPart);
         this.head = modelPart.getChild("head");
     }
+
     @Override
     public void setupAnim(@NotNull ZombieRenderState state) {
         super.setupAnim(state);

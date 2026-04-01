@@ -40,19 +40,19 @@ public class ClientCatRenderer extends MobRenderer<@NotNull ClientCat, @NotNull 
     @Override
     public @NotNull Identifier getTextureLocation(CatRenderState livingEntityRenderState) {
         return switch (CONFIG.catSkin) {
-            case "black" -> Identifier.withDefaultNamespace("textures/entity/cat/all_black.png");
-            case "tuxedo" -> Identifier.withDefaultNamespace("textures/entity/cat/black.png");
-            case "british_shorthair" -> Identifier.withDefaultNamespace("textures/entity/cat/british_shorthair.png");
-            case "calico" -> Identifier.withDefaultNamespace("textures/entity/cat/calico.png");
-            case "jellie" -> Identifier.withDefaultNamespace("textures/entity/cat/jellie.png");
-            case "ocelot" -> Identifier.withDefaultNamespace("textures/entity/cat/ocelot.png");
-            case "persian" -> Identifier.withDefaultNamespace("textures/entity/cat/persian.png");
-            case "ragdoll" -> Identifier.withDefaultNamespace("textures/entity/cat/ragdoll.png");
-            case "red" -> Identifier.withDefaultNamespace("textures/entity/cat/red.png");
-            case "siamese" -> Identifier.withDefaultNamespace("textures/entity/cat/siamese.png");
-            case "tabby" -> Identifier.withDefaultNamespace("textures/entity/cat/tabby.png");
-            case "white" -> Identifier.withDefaultNamespace("textures/entity/cat/white.png");
-            case null, default -> Identifier.withDefaultNamespace("textures/entity/cat/black.png");
+            case "black" -> Identifier.withDefaultNamespace("textures/entity/cat/cat_all_black.png");
+            case "tuxedo" -> Identifier.withDefaultNamespace("textures/entity/cat/cat_black.png");
+            case "british_shorthair" -> Identifier.withDefaultNamespace("textures/entity/cat/cat_british_shorthair.png");
+            case "calico" -> Identifier.withDefaultNamespace("textures/entity/cat/cat_calico.png");
+            case "jellie" -> Identifier.withDefaultNamespace("textures/entity/cat/cat_jellie.png");
+            case "ocelot" -> Identifier.withDefaultNamespace("textures/entity/cat/cat_ocelot.png");
+            case "persian" -> Identifier.withDefaultNamespace("textures/entity/cat/cat_persian.png");
+            case "ragdoll" -> Identifier.withDefaultNamespace("textures/entity/cat/cat_ragdoll.png");
+            case "red" -> Identifier.withDefaultNamespace("textures/entity/cat/cat_red.png");
+            case "siamese" -> Identifier.withDefaultNamespace("textures/entity/cat/cat_siamese.png");
+            case "tabby" -> Identifier.withDefaultNamespace("textures/entity/cat/cat_tabby.png");
+            case "white" -> Identifier.withDefaultNamespace("textures/entity/cat/cat_white.png");
+            case null, default -> Identifier.withDefaultNamespace("textures/entity/cat/cat_black.png");
         };
     }
 
@@ -64,7 +64,7 @@ public class ClientCatRenderer extends MobRenderer<@NotNull ClientCat, @NotNull 
     @Override
     public void extractRenderState(ClientCat cat, CatRenderState state, float f) {
         super.extractRenderState(cat, state, f);
-        state.isSitting = true;
+        state.isSitting = cat.isPassenger();
         state.isUpsideDown = cat.getPlainTextName().equals("Grumm") || cat.getPlainTextName().equals("Dinnerbone");
     }
 }

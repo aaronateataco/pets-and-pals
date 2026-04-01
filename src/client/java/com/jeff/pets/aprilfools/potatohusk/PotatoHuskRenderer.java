@@ -40,6 +40,7 @@ public class PotatoHuskRenderer extends MobRenderer<@NotNull PotatoHusk, @NotNul
     @Override
     public void extractRenderState(PotatoHusk husk, ZombieRenderState state, float f) {
         super.extractRenderState(husk, state, f);
+        state.isPassenger = husk.isPassenger();
         state.isUpsideDown = husk.getPlainTextName().equals("Grumm") || husk.getPlainTextName().equals("Dinnerbone");
     }
 }

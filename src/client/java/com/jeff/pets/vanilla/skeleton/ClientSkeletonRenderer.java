@@ -1,6 +1,7 @@
 package com.jeff.pets.vanilla.skeleton;
 
 import com.jeff.pets.vanilla.hostile.ClientSkeleton;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.monster.skeleton.SkeletonModel;
@@ -29,8 +30,17 @@ public class ClientSkeletonRenderer extends MobRenderer<@NotNull ClientSkeleton,
     }
 
     @Override
+    public void setupRotations(SkeletonRenderState state, @NotNull PoseStack poseStack, float f, float g) {
+        super.setupRotations(state, poseStack, f, g);
+        if (state.isPassenger) {
+            poseStack.translate(0, -0.5, 0);
+        }
+    }
+
+    @Override
     public void extractRenderState(ClientSkeleton skeleton, SkeletonRenderState state, float f) {
         super.extractRenderState(skeleton, state, f);
+        state.isPassenger = skeleton.isPassenger();
         state.isUpsideDown = skeleton.getPlainTextName().equals("Grumm") || skeleton.getPlainTextName().equals("Dinnerbone");
     }
 }

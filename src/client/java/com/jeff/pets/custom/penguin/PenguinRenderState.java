@@ -6,4 +6,5 @@ public class PenguinRenderState extends LivingEntityRenderState {
     public float flap;
     public float flapSpeed;
     public boolean isServerEntity;
+    public boolean isPassenger;
 }

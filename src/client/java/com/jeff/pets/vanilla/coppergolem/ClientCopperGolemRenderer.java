@@ -13,16 +13,10 @@ import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.CopperGolemRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.entity.animal.golem.CopperGolem;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.component.BlockItemStateProperties;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
-import java.util.Optional;
 
 import static com.jeff.pets.Central.CONFIG;
 
@@ -50,11 +44,11 @@ public class ClientCopperGolemRenderer extends MobRenderer<@NotNull ClientCopper
         if (Objects.equals(CONFIG.copperGolemSkin, "unoxidized")) {
             copperGolemTexturePath = "textures/entity/copper_golem/copper_golem.png";
         } else if (Objects.equals(CONFIG.copperGolemSkin, "exposed")) {
-            copperGolemTexturePath = "textures/entity/copper_golem/exposed_copper_golem.png";
+            copperGolemTexturePath = "textures/entity/copper_golem/copper_golem_exposed.png";
         } else if (Objects.equals(CONFIG.copperGolemSkin, "oxidized")) {
-            copperGolemTexturePath = "textures/entity/copper_golem/oxidized_copper_golem.png";
+            copperGolemTexturePath = "textures/entity/copper_golem/copper_golem_oxidized.png";
         } else if (Objects.equals(CONFIG.copperGolemSkin, "weathered")) {
-            copperGolemTexturePath = "textures/entity/copper_golem/weathered_copper_golem.png";
+            copperGolemTexturePath = "textures/entity/copper_golem/copper_golem_weathered.png";
         }
         return Identifier.withDefaultNamespace(copperGolemTexturePath);
     }
@@ -67,15 +61,6 @@ public class ClientCopperGolemRenderer extends MobRenderer<@NotNull ClientCopper
     @Override
     public void extractRenderState(ClientCopperGolem copperGolem, CopperGolemRenderState state, float f) {
         super.extractRenderState(copperGolem, state, f);
-        state.blockOnAntenna = Optional.of(copperGolem.getItemBySlot(CopperGolem.EQUIPMENT_SLOT_ANTENNA)).flatMap((itemStack) -> {
-            Item item = itemStack.getItem();
-            if (item instanceof BlockItem blockItem) {
-                BlockItemStateProperties blockItemStateProperties = itemStack.getOrDefault(DataComponents.BLOCK_STATE, BlockItemStateProperties.EMPTY);
-                return Optional.of(blockItemStateProperties.apply(blockItem.getBlock().defaultBlockState()));
-            } else {
-                return Optional.empty();
-            }
-        });
         state.isUpsideDown = copperGolem.getPlainTextName().equals("Grumm") || copperGolem.getPlainTextName().equals("Dinnerbone");
     }
 }

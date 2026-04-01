@@ -40,6 +40,7 @@ public class ClientCreeperRenderer extends MobRenderer<@NotNull ClientCreeper, @
     public CreeperRenderState createRenderState() {
         return new CreeperRenderState();
     }
+
     @Override
     public void extractRenderState(ClientCreeper creeper, CreeperRenderState state, float f) {
         super.extractRenderState(creeper, state, f);

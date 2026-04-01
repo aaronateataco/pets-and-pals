@@ -22,6 +22,11 @@ public class ClientRabbitRenderer extends MobRenderer<@NotNull ClientRabbit, @No
         super(context, new ClientRabbitModel(context.bakeLayer(ModelLayers.RABBIT)), 0.3F);
     }
 
+    public static LayerDefinition createBaseRabbitLayer() {
+        ClientRabbitModel.createBodyLayer();
+        return LayerDefinition.create(new MeshDefinition(), 64, 32);
+    }
+
     @Override
     protected void scale(@NotNull RabbitRenderState livingEntityRenderState, @NotNull PoseStack poseStack) {
         if (CONFIG.isBaby) {
@@ -29,23 +34,18 @@ public class ClientRabbitRenderer extends MobRenderer<@NotNull ClientRabbit, @No
         }
     }
 
-    public static LayerDefinition createBaseRabbitLayer() {
-        ClientRabbitModel.createBodyLayer(false);
-        return LayerDefinition.create(new MeshDefinition(), 64, 32);
-    }
-
     @Override
     public @NotNull Identifier getTextureLocation(RabbitRenderState rabbitRenderState) {
         switch (CONFIG.activePet) {
             case "brown" -> rabbitTextureLocation = "textures/entity/rabbit/brown.png";
-            case "white" -> rabbitTextureLocation = "textures/entity/rabbit/white.png";
-            case "black" -> rabbitTextureLocation = "textures/entity/rabbit/black.png";
-            case "gold" -> rabbitTextureLocation = "textures/entity/rabbit/gold.png";
-            case "salt" -> rabbitTextureLocation = "textures/entity/rabbit/salt.png";
-            case "splotched" -> rabbitTextureLocation = "textures/entity/rabbit/white_splotched.png";
-            case "killer" -> rabbitTextureLocation = "textures/entity/rabbit/caerbannog.png";
-            case "toast" -> rabbitTextureLocation = "textures/entity/rabbit/toast.png";
-            case null, default -> rabbitTextureLocation = "textures/entity/rabbit/brown.png";
+            case "white" -> rabbitTextureLocation = "textures/entity/rabbit/rabbit_white.png";
+            case "black" -> rabbitTextureLocation = "textures/entity/rabbit/rabbit_black.png";
+            case "gold" -> rabbitTextureLocation = "textures/entity/rabbit/rabbit_gold.png";
+            case "salt" -> rabbitTextureLocation = "textures/entity/rabbit/rabbit_salt.png";
+            case "splotched" -> rabbitTextureLocation = "textures/entity/rabbit/rabbit_white_splotched.png";
+            case "killer" -> rabbitTextureLocation = "textures/entity/rabbit/rabbit_caerbannog.png";
+            case "toast" -> rabbitTextureLocation = "textures/entity/rabbit/rabbit_toast.png";
+            case null, default -> rabbitTextureLocation = "textures/entity/rabbit/rabbit_brown.png";
         }
 
         return Identifier.withDefaultNamespace(rabbitTextureLocation);
@@ -59,6 +59,7 @@ public class ClientRabbitRenderer extends MobRenderer<@NotNull ClientRabbit, @No
     @Override
     public void extractRenderState(ClientRabbit rabbit, RabbitRenderState state, float f) {
         super.extractRenderState(rabbit, state, f);
+        state.hopAnimationState.start(0);
         state.isUpsideDown = rabbit.getPlainTextName().equals("Grumm") || rabbit.getPlainTextName().equals("Dinnerbone");
     }
 }

@@ -24,8 +24,8 @@ import com.mojang.brigadier.tree.RootCommandNode;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.GsonConfigSerializer;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommands;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -479,7 +479,8 @@ public class Central implements ClientModInitializer {
         }
         if (head != null) {
             head.discard();
-        } if (traitor != null) {
+        }
+        if (traitor != null) {
             traitor.discard();
         }
     }
@@ -1690,7 +1691,7 @@ public class Central implements ClientModInitializer {
             client.getResourcePackRepository().addPack("file/headpack");
             options.save();
             client.reloadResourcePacks();
-            client.player.displayClientMessage(Component.literal("§b[PetsMod] §aSorry for the interruption, the head pet requires a custom resource pack to work correctly and we loaded a pack for you. This will not affect anything except the head texture."), false);
+            client.player.sendSystemMessage(Component.literal("§b[PetsMod] §aSorry for the interruption, the head pet requires a custom resource pack to work correctly and we loaded a pack for you. This will not affect anything except the head texture."));
         }
     }
 
@@ -1712,7 +1713,7 @@ public class Central implements ClientModInitializer {
         }
         this.createSkinCommand();
         this.checkForNullObjects();
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("pet").then(ClientCommandManager.argument("preference", StringArgumentType.string()).suggests(SuggestionProviders.cast(ON_OFF)).executes((context) -> {
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommands.literal("pet").then(ClientCommands.argument("preference", StringArgumentType.string()).suggests(SuggestionProviders.cast(ON_OFF)).executes((context) -> {
             String preference = StringArgumentType.getString(context, "preference");
             if (Objects.equals(preference, "off")) {
                 CONFIG.petOn = false;
@@ -1728,7 +1729,7 @@ public class Central implements ClientModInitializer {
 
             return 1;
         }))));
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("petname").then(ClientCommandManager.argument("name", StringArgumentType.greedyString()).executes((context) -> {
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommands.literal("petname").then(ClientCommands.argument("name", StringArgumentType.greedyString()).executes((context) -> {
             String name = StringArgumentType.getString(context, "name");
             if (!summonedEntity.isEmpty()) {
                 switch (CONFIG.activePet) {
@@ -1835,8 +1836,8 @@ public class Central implements ClientModInitializer {
             return 1;
         }))));
 
-        ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("pethelp").executes(context -> {
-            context.getSource().getPlayer().displayClientMessage(Component.literal("""
+        ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(ClientCommands.literal("pethelp").executes(context -> {
+            context.getSource().getPlayer().sendSystemMessage(Component.literal("""
                     §b[PetsMod] §aPossible commands:\
                     
                     §a/pethelp: §rdisplays a list of commands\
@@ -1851,11 +1852,11 @@ public class Central implements ClientModInitializer {
                     
                     §a/petname: §rchanges the name of your currently selected pet\
                     
-                    """), false);
+                    """));
             return 1;
         }))));
 
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("teleportpet").executes((context) -> {
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommands.literal("teleportpet").executes((context) -> {
             if (duck != null && Objects.equals(CONFIG.activePet, "duck")) {
                 duck.tryToTeleportToOwner();
             } else if (racoon != null && Objects.equals(CONFIG.activePet, "racoon")) {
@@ -2050,7 +2051,7 @@ public class Central implements ClientModInitializer {
 
             return 1;
         })));
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryaccess) -> dispatcher.register(ClientCommandManager.literal("petspecies").then(ClientCommandManager.argument("species", StringArgumentType.greedyString()).suggests(PETS).executes((context) -> {
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryaccess) -> dispatcher.register(ClientCommands.literal("petspecies").then(ClientCommands.argument("species", StringArgumentType.greedyString()).suggests(PETS).executes((context) -> {
             boolean isValid = true;
             String species = StringArgumentType.getString(context, "species");
 
@@ -2436,14 +2437,12 @@ public class Central implements ClientModInitializer {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                //Minecraft.getInstance().reloadResourcePacks();
+                Minecraft.getInstance().reloadResourcePacks();
             } else if (Objects.equals(species, "traitor")) {
                 summonedEntity.clear();
                 summonedEntity.add(traitor);
                 CONFIG.activePet = "traitor";
-            }
-
-            else {
+            } else {
                 isValid = false;
             }
 
@@ -2494,7 +2493,7 @@ public class Central implements ClientModInitializer {
             commandRoot.getExamples().clear();
         }
 
-        ClientCommandRegistrationCallback.EVENT.register((dispatcher2, registryAccess) -> dispatcher2.register(ClientCommandManager.literal("petskin").then(ClientCommandManager.argument("skin", StringArgumentType.greedyString())
+        ClientCommandRegistrationCallback.EVENT.register((dispatcher2, registryAccess) -> dispatcher2.register(ClientCommands.literal("petskin").then(ClientCommands.argument("skin", StringArgumentType.greedyString())
                 .suggests(this.SKINS)
                 .executes((context) -> {
                     boolean isValid = true;
@@ -3569,7 +3568,8 @@ public class Central implements ClientModInitializer {
         }
         if (CONFIG.traitorSkin == null) {
             CONFIG.traitorSkin = "plains";
-        } if (CONFIG.traitorName == null) {
+        }
+        if (CONFIG.traitorName == null) {
             CONFIG.traitorName = "";
         }
     }

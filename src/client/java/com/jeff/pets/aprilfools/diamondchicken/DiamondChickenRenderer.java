@@ -3,7 +3,6 @@ package com.jeff.pets.aprilfools.diamondchicken;
 import com.jeff.pets.aprilfools.DiamondChicken;
 import com.jeff.pets.vanilla.chicken.ClientChickenModel;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.model.animal.chicken.ChickenModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;

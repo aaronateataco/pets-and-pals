@@ -1,6 +1,8 @@
 package com.jeff.pets.vanilla.bogged;
 
 import com.jeff.pets.vanilla.hostile.ClientBogged;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.monster.skeleton.BoggedModel;
@@ -17,7 +19,7 @@ public class ClientBoggedRenderer extends MobRenderer<@NotNull ClientBogged, @No
 
     public ClientBoggedRenderer(EntityRendererProvider.Context context) {
         super(context, new BoggedModel(context.bakeLayer(ModelLayers.BOGGED)), 0.75f);
-        this.addLayer(new SkeletonClothingLayer<>(this, context.getModelSet(), ModelLayers.BOGGED_OUTER_LAYER, Identifier.withDefaultNamespace("textures/entity/skeleton/bogged_overlay.png")));
+        this.addLayer(new SkeletonClothingLayer<>(this, EntityModelSet.vanilla(), ModelLayers.BOGGED_OUTER_LAYER, Identifier.withDefaultNamespace("textures/entity/skeleton/bogged_overlay.png")));
     }
 
     @Override
@@ -31,8 +33,17 @@ public class ClientBoggedRenderer extends MobRenderer<@NotNull ClientBogged, @No
     }
 
     @Override
+    public void setupRotations(BoggedRenderState state, @NotNull PoseStack poseStack, float f, float g) {
+        super.setupRotations(state, poseStack, f, g);
+        if (state.isPassenger) {
+            poseStack.translate(0, -0.5, 0);
+        }
+    }
+
+    @Override
     public void extractRenderState(ClientBogged bogged, BoggedRenderState state, float f) {
         super.extractRenderState(bogged, state, f);
+        state.isPassenger = bogged.isPassenger();
         state.isUpsideDown = bogged.getPlainTextName().equals("Grumm") || bogged.getPlainTextName().equals("Dinnerbone");
     }
 }

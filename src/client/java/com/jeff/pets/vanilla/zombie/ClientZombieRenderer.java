@@ -23,16 +23,16 @@ public class ClientZombieRenderer extends MobRenderer<@NotNull ClientZombie, @No
         super(context, new ClientZombieModel(context.bakeLayer(ModelLayers.ZOMBIE)), 0.75f);
     }
 
+    public static LayerDefinition createBaseZombieLayer() {
+        ClientZombieModel.createMesh(CubeDeformation.NONE, 0);
+        return LayerDefinition.create(new MeshDefinition(), 64, 64);
+    }
+
     @Override
     protected void scale(@NotNull ZombieRenderState livingEntityRenderState, @NotNull PoseStack poseStack) {
         if (CONFIG.isBaby) {
             poseStack.scale(0.5f, 0.5f, 0.5f);
         }
-    }
-
-    public static LayerDefinition createBaseZombieLayer() {
-        ClientZombieModel.createMesh(CubeDeformation.NONE, 0);
-        return LayerDefinition.create(new MeshDefinition(), 64, 64);
     }
 
     @Override
@@ -48,6 +48,7 @@ public class ClientZombieRenderer extends MobRenderer<@NotNull ClientZombie, @No
     @Override
     public void extractRenderState(ClientZombie zombie, ZombieRenderState state, float f) {
         super.extractRenderState(zombie, state, f);
+        state.isPassenger = zombie.isPassenger();
         state.isUpsideDown = zombie.getPlainTextName().equals("Grumm") || zombie.getPlainTextName().equals("Dinnerbone");
     }
 }

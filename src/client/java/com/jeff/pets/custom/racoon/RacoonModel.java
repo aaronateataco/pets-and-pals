@@ -4,11 +4,13 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
-public class RacoonModel extends EntityModel<@NotNull LivingEntityRenderState> {
+import static com.jeff.pets.Central.CONFIG;
+
+public class RacoonModel extends EntityModel<@NotNull RacoonRenderState> {
     private final ModelPart head;
     private final ModelPart body;
     private final ModelPart leftHindLeg;
@@ -54,17 +56,47 @@ public class RacoonModel extends EntityModel<@NotNull LivingEntityRenderState> {
         return LayerDefinition.create(meshdefinition, 64, 64);
     }
 
-    public void setupAnim(LivingEntityRenderState racoonRenderState) {
-        super.setupAnim(racoonRenderState);
-        float f = racoonRenderState.walkAnimationSpeed;
-        float g = racoonRenderState.walkAnimationPos;
-        this.rightFrontLeg.xRot = Mth.cos(g * 0.6662F + (float) Math.PI) * 1.4F * f;
-        this.leftFrontLeg.xRot = Mth.cos(g * 0.6662F) * 1.4F * f;
-        this.rightHindLeg.xRot = Mth.cos(g * 0.6662F + (float) Math.PI) * 1.4F * f;
-        this.leftHindLeg.xRot = Mth.cos(g * 0.6662F) * 1.4F * f;
+    public void setupAnim(RacoonRenderState state) {
+        super.setupAnim(state);
+        float animSpeed = state.walkAnimationSpeed;
+        float animPos = state.walkAnimationPos;
+        this.rightFrontLeg.xRot = Mth.cos(animPos * 0.6662F + (float) Math.PI) * 1.4F * animSpeed;
+        this.leftFrontLeg.xRot = Mth.cos(animPos * 0.6662F) * 1.4F * animSpeed;
+        this.rightHindLeg.xRot = Mth.cos(animPos * 0.6662F + (float) Math.PI) * 1.4F * animSpeed;
+        this.leftHindLeg.xRot = Mth.cos(animPos * 0.6662F) * 1.4F * animSpeed;
         this.rightHindLeg.visible = true;
         this.leftHindLeg.visible = true;
         this.rightFrontLeg.visible = true;
         this.leftFrontLeg.visible = true;
+        if (state.isPassenger) {
+            this.root.z -= 2f;
+            this.body.xRot = ((float) Math.PI / 2.4F);
+            ModelPart modelPart = this.body;
+            modelPart.y -= 7.0F * animPos;
+            modelPart.z += 3.0F * animPos;
+            this.tail.xRot = ((float) Math.PI / 4F);
+            modelPart = this.tail;
+            modelPart.z -= animPos + 1;
+            modelPart.y += 3;
+            modelPart.xRot -= -45;
+            this.head.xRot = 0.0F;
+            this.head.yRot = 0.0F;
+
+            this.rightHindLeg.xRot -= 1.3089969F;
+            modelPart = this.rightHindLeg;
+            modelPart.y += 4.0F;
+            modelPart.z -= 0.25F * animPos;
+            this.leftHindLeg.xRot -= 1.3089969F;
+            modelPart = this.leftHindLeg;
+            modelPart.y += 4.0F;
+            modelPart.z -= 0.25F * animPos;
+            this.rightFrontLeg.xRot = -0.2617994F;
+            this.leftFrontLeg.xRot = -0.2617994F;
+        }
+        if ((CONFIG.isBaby && !state.isServerEntity) || (state.isBaby && state.isServerEntity)) {
+            this.head.xScale = 1.5f;
+            this.head.yScale = 1.5f;
+            this.head.zScale = 1.5f;
+        }
     }
 }

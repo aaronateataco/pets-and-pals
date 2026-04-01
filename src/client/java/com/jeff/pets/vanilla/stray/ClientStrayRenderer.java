@@ -1,6 +1,7 @@
 package com.jeff.pets.vanilla.stray;
 
 import com.jeff.pets.vanilla.hostile.ClientStray;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
@@ -32,8 +33,17 @@ public class ClientStrayRenderer extends MobRenderer<@NotNull ClientStray, @NotN
     }
 
     @Override
+    public void setupRotations(SkeletonRenderState state, @NotNull PoseStack poseStack, float f, float g) {
+        super.setupRotations(state, poseStack, f, g);
+        if (state.isPassenger) {
+            poseStack.translate(0, -0.5, 0);
+        }
+    }
+
+    @Override
     public void extractRenderState(ClientStray stray, SkeletonRenderState state, float f) {
         super.extractRenderState(stray, state, f);
+        state.isPassenger = stray.isPassenger();
         state.isUpsideDown = stray.getPlainTextName().equals("Grumm") || stray.getPlainTextName().equals("Dinnerbone");
     }
 }

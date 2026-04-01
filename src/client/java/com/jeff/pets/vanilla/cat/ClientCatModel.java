@@ -1,15 +1,16 @@
 package com.jeff.pets.vanilla.cat;
 
-import net.minecraft.client.model.animal.feline.CatModel;
+import net.minecraft.client.model.animal.feline.AdultCatModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.entity.state.CatRenderState;
 
 import static com.jeff.pets.Central.CONFIG;
 
-public class ClientCatModel extends CatModel {
+public class ClientCatModel extends AdultCatModel {
     public ClientCatModel(ModelPart modelPart) {
         super(modelPart);
     }
+
     @Override
     public void setupAnim(CatRenderState state) {
         super.setupAnim(state);

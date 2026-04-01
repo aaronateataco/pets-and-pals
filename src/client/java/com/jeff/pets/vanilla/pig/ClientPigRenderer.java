@@ -7,11 +7,9 @@ import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
-import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
@@ -40,10 +38,10 @@ public class ClientPigRenderer extends MobRenderer<@NotNull ClientPig, @NotNull 
     @Override
     public @NotNull Identifier getTextureLocation(LivingEntityRenderState pigRenderState) {
         switch (CONFIG.pigSkin) {
-            case "temperate" -> pigTexturePath = "textures/entity/pig/temperate_pig.png";
-            case "warm" -> pigTexturePath = "textures/entity/pig/warm_pig.png";
-            case "cold" -> pigTexturePath = "textures/entity/pig/cold_pig.png";
-            case null, default -> pigTexturePath = "textures/entity/pig/temperate_pig.png";
+            case "temperate" -> pigTexturePath = "textures/entity/pig/pig_temperate.png";
+            case "warm" -> pigTexturePath = "textures/entity/pig/pig_warm.png";
+            case "cold" -> pigTexturePath = "textures/entity/pig/pig_cold.png";
+            case null, default -> pigTexturePath = "textures/entity/pig/pig_temperate.png";
         }
         return Identifier.withDefaultNamespace(pigTexturePath);
     }

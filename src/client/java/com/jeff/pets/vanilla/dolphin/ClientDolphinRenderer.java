@@ -20,7 +20,7 @@ public class ClientDolphinRenderer extends MobRenderer<@NotNull ClientDolphin, @
 
     @Override
     public @NotNull Identifier getTextureLocation(DolphinRenderState dolphinRenderState) {
-        return Identifier.withDefaultNamespace("textures/entity/dolphin.png");
+        return Identifier.withDefaultNamespace("textures/entity/dolphin/dolphin.png");
     }
 
     @Override

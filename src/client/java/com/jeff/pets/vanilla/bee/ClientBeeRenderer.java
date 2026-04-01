@@ -2,7 +2,7 @@ package com.jeff.pets.vanilla.bee;
 
 import com.jeff.pets.vanilla.neutral.ClientBee;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.model.animal.bee.BeeModel;
+import net.minecraft.client.model.animal.bee.AdultBeeModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -15,12 +15,12 @@ import java.util.Objects;
 
 import static com.jeff.pets.Central.CONFIG;
 
-public class ClientBeeRenderer extends MobRenderer<@NotNull ClientBee, @NotNull BeeRenderState, @NotNull BeeModel> {
+public class ClientBeeRenderer extends MobRenderer<@NotNull ClientBee, @NotNull BeeRenderState, @NotNull AdultBeeModel> {
     public static final ModelLayerLocation BEE_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clientbee"), "main");
     public String beeTexturePath;
 
     public ClientBeeRenderer(EntityRendererProvider.Context context) {
-        super(context, new BeeModel(context.bakeLayer(ModelLayers.BEE)), 0.4f);
+        super(context, new AdultBeeModel(context.bakeLayer(ModelLayers.BEE)), 0.4f);
     }
 
     @Override

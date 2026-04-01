@@ -34,7 +34,7 @@ public class ClientFoxRenderer extends MobRenderer<@NotNull ClientFox, @NotNull 
         if (Objects.equals(CONFIG.foxSkin, "red")) {
             foxTexturePath = "textures/entity/fox/fox.png";
         } else if (Objects.equals(CONFIG.foxSkin, "snow")) {
-            foxTexturePath = "textures/entity/fox/snow_fox.png";
+            foxTexturePath = "textures/entity/fox/fox_snow.png";
         } else {
             foxTexturePath = "textures/entity/fox/fox.png";
         }
@@ -50,5 +50,6 @@ public class ClientFoxRenderer extends MobRenderer<@NotNull ClientFox, @NotNull 
     public void extractRenderState(ClientFox fox, FoxRenderState state, float f) {
         super.extractRenderState(fox, state, f);
         state.isUpsideDown = fox.getPlainTextName().equals("Grumm") || fox.getPlainTextName().equals("Dinnerbone");
+        state.isSleeping = fox.isPassenger();
     }
 }
