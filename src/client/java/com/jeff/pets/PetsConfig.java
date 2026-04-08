@@ -6,6 +6,7 @@ import me.shedaniel.autoconfig.annotation.Config;
 @Config(name = "petsconfig")
 public class PetsConfig implements ConfigData {
     public Boolean petOn;
+    public Boolean customTitleEnabled;
     public String penguinName;
     public String duckName;
     public String racoonName;
@@ -142,9 +143,15 @@ public class PetsConfig implements ConfigData {
     public String toxfinSlabName;
     public String traitorSkin;
     public String traitorName;
+    public String dumboOctopusName;
+    public String dumboOctopusSkin;
+    public String koiName;
+    public String stingrayName;
 
     public String headSkin;
     public String headName;
 
     public boolean isBaby;
+
+
 }

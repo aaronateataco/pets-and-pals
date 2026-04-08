@@ -6,18 +6,22 @@
 
 package com.jeff.pets;
 
-import com.jeff.pets.aprilfools.*;
-import com.jeff.pets.custom.Duck;
-import com.jeff.pets.custom.Head;
-import com.jeff.pets.custom.Penguin;
-import com.jeff.pets.custom.Racoon;
-import com.jeff.pets.custom.head.HeadSkin;
+import com.jeff.pets.mob.custom.first.Duck;
+import com.jeff.pets.mob.custom.aprilfools.Head;
+import com.jeff.pets.mob.custom.first.Penguin;
+import com.jeff.pets.mob.custom.first.Racoon;
+import com.jeff.pets.mob.aprilfools.*;
+import com.jeff.pets.mob.custom.aquatic.DumboOctopus;
+import com.jeff.pets.mob.custom.aquatic.Koi;
+import com.jeff.pets.mob.custom.aquatic.Stingray;
+import com.jeff.pets.mob.vanilla.hostile.*;
+import com.jeff.pets.mob.vanilla.neutral.*;
+import com.jeff.pets.mob.vanilla.passive.*;
+import com.jeff.pets.rendering.custom.aprilfools.head.HeadSkin;
 import com.jeff.pets.mixin.client.ChatAccessor;
-import com.jeff.pets.vanilla.boss.ClientEnderDragon;
-import com.jeff.pets.vanilla.boss.ClientWither;
-import com.jeff.pets.vanilla.hostile.*;
-import com.jeff.pets.vanilla.neutral.*;
-import com.jeff.pets.vanilla.passive.*;
+import com.jeff.pets.mob.vanilla.boss.ClientEnderDragon;
+import com.jeff.pets.mob.vanilla.boss.ClientWither;
+import com.microsoft.aad.msal4j.ManagedIdentityErrorResponse;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.tree.RootCommandNode;
@@ -31,14 +35,17 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
+import net.minecraft.client.gui.components.LogoRenderer;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.ClientSuggestionProvider;
+import net.minecraft.client.resources.SplashManager;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.synchronization.SuggestionProviders;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
@@ -49,7 +56,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static com.jeff.pets.PetsInitializer.MOD_ID;
+
 public class Central implements ClientModInitializer {
+
     public static final List<Entity> summonedEntity = new ArrayList();
     public static final CopyOnWriteArrayList<String> currentSuggestions = new CopyOnWriteArrayList();
     public static final List<String> BEE_SKINS = List.of("happy", "angry");
@@ -62,7 +72,26 @@ public class Central implements ClientModInitializer {
     private static final SuggestionProvider<SharedSuggestionProvider> ON_OFF = (context, builder) -> SharedSuggestionProvider.suggest(new String[]{"off", "on"}, builder);
     private static final SuggestionProvider<FabricClientCommandSource> PETS = (context, builder) ->
             SharedSuggestionProvider.suggest(new String[]{
-                    "allay", "traitor", "angry ghast", "armadillo", "axolotl", "bat", "batato", "bee", "blaze", "bogged", "breeze", "camel", "cat", "cave spider", "chicken", "cod", "copper golem", "cow", "creaking", "creeper", "diamond chicken", "dolphin", "donkey", "drowned", "drowned", "duck", "elder guardian", "ender dragon", "enderman", "endermite", "evoker", "fox", "frog", "ghast", "goat", "guardian", "happy ghast", "head", "hoglin", "horse", "husk", "iron golem", "llama", "love golem", "magma cube", "mega spud", "moon cow", "mooshroom", "nautilus", "nerd creeper", "panda", "parched", "parrot", "penguin", "phantom", "pig", "piglin", "pillager", "pink wither", "plaguewhale slab", "plaguewhale slab", "poisonous potato zombie", "polar bear", "potato husk", "pufferfish", "rabbit", "racoon", "ravager", "ray tracing", "redstone bug", "salmon", "sheep", "shulker", "silverfish", "skeleton", "slime", "smiling creeper", "sniffer", "snow golem", "spider", "squid", "stray", "strider", "tadpole", "toxifin slab", "turtle", "vex", "villager", "vindicator", "wandering trader", "warden", "witch", "wither", "wither skeleton", "wolf", "zombie", "zombie villager"}, builder);
+                    "allay", "angry ghast", "armadillo", "axolotl", "bat", "batato",
+                    "bee", "blaze", "bogged", "breeze", "camel", "cat", "cave spider",
+                    "chicken", "cod", "copper golem", "cow", "creaking", "creeper",
+                    "diamond chicken", "dolphin", "donkey", "drowned", "drowned",
+                    "duck", "dumbo octopus", "elder guardian", "ender dragon", "enderman",
+                    "endermite", "evoker", "fox", "frog", "ghast", "goat", "guardian",
+                    "happy ghast", "head", "hoglin", "horse", "husk", "iron golem",
+                    "koi", "llama", "love golem", "magma cube", "mega spud",
+                    "moon cow", "mooshroom", "nautilus", "nerd creeper", "panda",
+                    "parched", "parrot", "penguin", "phantom", "pig", "piglin",
+                    "pillager", "pink wither", "plaguewhale slab",
+                    "plaguewhale slab", "poisonous potato zombie", "polar bear",
+                    "potato husk", "pufferfish", "rabbit", "racoon", "ravager",
+                    "ray tracing", "redstone bug", "salmon", "sheep", "shulker",
+                    "silverfish", "skeleton", "slime", "smiling creeper", "sniffer",
+                    "snow golem", "spider", "squid", "stingray", "stray", "strider",
+                    "tadpole", "toxifin slab", "traitor", "turtle", "vex",
+                    "villager", "vindicator", "wandering trader", "warden", "witch", "wither",
+                    "wither skeleton", "wolf", "zombie",
+                    "zombie villager"}, builder);
     private static final List<String> DUCK_SKINS = List.of("mallard", "pekin", "rubber");
     private static final List<String> CAT_SKINS = List.of("black", "tuxedo", "british shorthair", "calico", "jellie", "ocelot", "persian", "ragdoll", "red", "siamese", "tabby", "white");
     private static final List<String> AXOLOTL_SKINS = List.of("pink", "brown", "gold", "cyan", "blue");
@@ -85,6 +114,7 @@ public class Central implements ClientModInitializer {
     private static final List<String> WITHER_SKINS = List.of("normal", "invulnerable");
     private static final List<String> HEAD_SKINS = List.of("Use any player's name here.");
     private static final List<String> TRAITOR_SKINS = List.of("desert", "jungle", "plains", "savanna", "snowy", "swamp", "taiga");
+    private static final List<String> DUMBO_OCTOPUS_SKINS = List.of("yellow", "red", "blue", "green", "orange", "pink");
     private static final List<String> EMPTY_LIST = List.of();
     public static PetsConfig CONFIG;
     public static int petSkin;
@@ -183,6 +213,9 @@ public class Central implements ClientModInitializer {
     public static PotatoHusk potatoHusk;
     public static Head head;
     public static Traitor traitor;
+    public static DumboOctopus dumboOctopus;
+    public static Koi koi;
+    public static Stingray stingray;
 
     private final SuggestionProvider<FabricClientCommandSource> SKINS = (context, builder) -> {
         String remaining = builder.getRemainingLowerCase();
@@ -483,6 +516,13 @@ public class Central implements ClientModInitializer {
         if (traitor != null) {
             traitor.discard();
         }
+        if (dumboOctopus != null) {
+            dumboOctopus.discard();
+        } if (koi != null) {
+            koi.discard();
+        } if (stingray != null) {
+            stingray.discard();
+        }
     }
 
     public static void summonPet() {
@@ -584,6 +624,9 @@ public class Central implements ClientModInitializer {
         potatoHusk = new PotatoHusk(PetsInitializer.POTATO_HUSK, world);
         head = new Head(PetsInitializer.HEAD, world);
         traitor = new Traitor(PetsInitializer.TRAITOR, world);
+        dumboOctopus = new DumboOctopus(PetsInitializer.DUMBO_OCTOPUS, world);
+        koi = new Koi(PetsInitializer.KOI, world);
+        stingray = new Stingray(PetsInitializer.STINGRAY, world);
 
         assert player != null;
 
@@ -1133,7 +1176,7 @@ public class Central implements ClientModInitializer {
                 }
 
                 if (CONFIG.wolfSkin == null) {
-                    CONFIG.foxSkin = "pale";
+                    CONFIG.wolfSkin = "pale";
                 }
 
                 wolf.setCustomName(Component.literal(CONFIG.wolfName));
@@ -1442,9 +1485,26 @@ public class Central implements ClientModInitializer {
                 world.addEntity(traitor);
                 traitor.tame(player);
                 summonedEntity.add(traitor);
+            } else if (Objects.equals(CONFIG.activePet, "dumbo_octopus")) {
+                dumboOctopus.setPos(x, y, z);
+                dumboOctopus.setCustomName(Component.literal(CONFIG.dumboOctopusName));
+                world.addEntity(dumboOctopus);
+                dumboOctopus.tame(player);
+                summonedEntity.add(dumboOctopus);
+            } else if (Objects.equals(CONFIG.activePet, "koi")) {
+                koi.setPos(x, y, z);
+                koi.setCustomName(Component.literal(CONFIG.koiName));
+                world.addEntity(koi);
+                koi.tame(player);
+                summonedEntity.add(koi);
+            } else if (Objects.equals(CONFIG.activePet, "stingray")) {
+                stingray.setPos(x, y, z);
+                stingray.setCustomName(Component.literal(CONFIG.stingrayName));
+                world.addEntity(stingray);
+                stingray.tame(player);
+                summonedEntity.add(stingray);
             }
         }
-
     }
 
     public static void refreshPetNames() {
@@ -1630,6 +1690,12 @@ public class Central implements ClientModInitializer {
             head.setCustomName(Component.literal(CONFIG.headName));
         } else if (Objects.equals(CONFIG.activePet, "traitor") && traitor != null && !traitor.getPlainTextName().equals(CONFIG.traitorName)) {
             traitor.setCustomName(Component.literal(CONFIG.traitorName));
+        } else if (Objects.equals(CONFIG.activePet, "dumbo_octopus") && dumboOctopus != null && !dumboOctopus.getPlainTextName().equals(CONFIG.dumboOctopusName)) {
+            dumboOctopus.setCustomName(Component.literal(CONFIG.dumboOctopusName));
+        } else if (Objects.equals(CONFIG.activePet, "koi") && koi != null && !koi.getPlainTextName().equals(CONFIG.koiName)) {
+            koi.setCustomName(Component.literal(CONFIG.koiName));
+        } else if (Objects.equals(CONFIG.activePet, "stingray") && stingray != null && !stingray.getCustomName().equals(CONFIG.stingrayName)) {
+            stingray.setCustomName(Component.literal(CONFIG.stingrayName));
         }
     }
 
@@ -1665,6 +1731,7 @@ public class Central implements ClientModInitializer {
             case "wither" -> WITHER_SKINS;
             case "head" -> HEAD_SKINS;
             case "traitor" -> TRAITOR_SKINS;
+            case "dumbo_octopus" -> DUMBO_OCTOPUS_SKINS;
             case null, default -> EMPTY_LIST;
         };
 
@@ -1678,7 +1745,6 @@ public class Central implements ClientModInitializer {
         if ((screen instanceof ChatScreen chatScreen)) {
             ((ChatAccessor) chatScreen).getChatInputSuggestor().updateCommandInfo();
         }
-
     }
 
     public static void checkForHeadResourcePack() {
@@ -1691,7 +1757,7 @@ public class Central implements ClientModInitializer {
             client.getResourcePackRepository().addPack("file/headpack");
             options.save();
             client.reloadResourcePacks();
-            client.player.sendSystemMessage(Component.literal("§b[PetsMod] §aSorry for the interruption, the head pet requires a custom resource pack to work correctly and we loaded a pack for you. This will not affect anything except the head texture."));
+            //client.player.sendSystemMessage(Component.literal("§b[PetsMod] §aSorry for the interruption, the head pet requires a custom resource pack to work correctly and we loaded a pack for you. This will not affect anything except the head texture."));
         }
     }
 
@@ -1829,6 +1895,9 @@ public class Central implements ClientModInitializer {
                     case "potato_husk" -> CONFIG.potatoHuskName = name;
                     case "head" -> CONFIG.headName = name;
                     case "traitor" -> CONFIG.traitorName = name;
+                    case "dumbo_octopus" -> CONFIG.dumboOctopusName = name;
+                    case "koi" -> CONFIG.koiName = name;
+                    case "stingray" -> CONFIG.stingrayName = name;
                 }
                 AutoConfig.getConfigHolder(PetsConfig.class).save();
             }
@@ -2047,6 +2116,12 @@ public class Central implements ClientModInitializer {
                 head.tryToTeleportToOwner();
             } else if (traitor != null && Objects.equals(CONFIG.activePet, "traitor")) {
                 traitor.tryToTeleportToOwner();
+            } else if (dumboOctopus != null && Objects.equals(CONFIG.activePet, "dumbo_octopus")) {
+                dumboOctopus.tryToTeleportToOwner();
+            } else if (koi != null && Objects.equals(CONFIG.activePet, "koi")) {
+                koi.tryToTeleportToOwner();
+            } else if (stingray != null && Objects.equals(CONFIG.activePet, "stingray")) {
+                stingray.tryToTeleportToOwner();
             }
 
             return 1;
@@ -2442,6 +2517,18 @@ public class Central implements ClientModInitializer {
                 summonedEntity.clear();
                 summonedEntity.add(traitor);
                 CONFIG.activePet = "traitor";
+            } else if (Objects.equals(species, "dumbo_octopus") || Objects.equals(species, "dumbo octopus")) {
+                summonedEntity.clear();
+                summonedEntity.add(dumboOctopus);
+                CONFIG.activePet = "dumbo_octopus";
+            } else if (Objects.equals(species, "koi")) {
+                summonedEntity.clear();
+                summonedEntity.add(koi);
+                CONFIG.activePet = "koi";
+            } else if (Objects.equals(species, "stingray")) {
+                summonedEntity.clear();
+                summonedEntity.add(stingray);
+                CONFIG.activePet = "stingray";
             } else {
                 isValid = false;
             }
@@ -2450,10 +2537,10 @@ public class Central implements ClientModInitializer {
                 context.getSource().sendFeedback(Component.literal("§b[PetsMod] §cThat's not a pet that's currently supported. Try something else. (Unknown input \"" + species + "\")"));
             } else if (isValid && CONFIG.petOn) {
                 despawnPet();
-                context.getSource().sendFeedback(Component.literal("§b[PetsMod] §aYour active pet has been switched to " + CONFIG.activePet + "."));
+                context.getSource().sendFeedback(Component.literal("§b[PetsMod] §aYour active pet has been switched to " + CONFIG.activePet.replace("_", " ") + "."));
                 summonPet();
             } else if (isValid && !CONFIG.petOn) {
-                context.getSource().sendFeedback(Component.literal("§b[PetsMod] §cYour pet has been switched to " + CONFIG.activePet + ", but you currently do not have your pet enabled. Run §l/pet on§r§c to change this."));
+                context.getSource().sendFeedback(Component.literal("§b[PetsMod] §cYour pet has been switched to " + CONFIG.activePet.replace("_", " ") + ", but you currently do not have your pet enabled. Run §l/pet on§r§c to change this."));
             }
 
             AutoConfig.getConfigHolder(PetsConfig.class).save();
@@ -3156,6 +3243,17 @@ public class Central implements ClientModInitializer {
                                 case "snow", "snowy" -> CONFIG.traitorSkin = "snow";
                                 case "swamp" -> CONFIG.traitorSkin = "swamp";
                                 case "taiga" -> CONFIG.traitorSkin = "taiga";
+                                case null, default -> isValid = false;
+                            }
+                        } else if (Objects.equals(CONFIG.activePet, "dumbo_octopus")) {
+                            switch (skin) {
+                                case "yellow" -> CONFIG.dumboOctopusSkin = "yellow";
+                                case "red" -> CONFIG.dumboOctopusSkin = "red";
+                                case "blue" -> CONFIG.dumboOctopusSkin = "blue";
+                                case "green" -> CONFIG.dumboOctopusSkin = "green";
+                                case "orange" -> CONFIG.dumboOctopusSkin = "orange";
+                                case "pink" -> CONFIG.dumboOctopusSkin = "pink";
+                                case null, default -> isValid = false;
                             }
                         }
                     }
@@ -3571,6 +3669,29 @@ public class Central implements ClientModInitializer {
         }
         if (CONFIG.traitorName == null) {
             CONFIG.traitorName = "";
+        } if (CONFIG.dumboOctopusSkin == null) {
+            CONFIG.dumboOctopusSkin = "yellow";
+        } if (CONFIG.dumboOctopusName == null) {
+            CONFIG.dumboOctopusName = "";
+        } if (CONFIG.koiName == null) {
+            CONFIG.koiName = "";
+        } if (CONFIG.stingrayName == null) {
+            CONFIG.stingrayName = "";
+        } if (CONFIG.customTitleEnabled == null) {
+            CONFIG.customTitleEnabled = true;
+        }
+    }
+    public static void reassignLogo(Boolean bl) {
+        if (bl) {
+            LogoRenderer.MINECRAFT_LOGO = Identifier.fromNamespaceAndPath(MOD_ID, "textures/title/petsmod.png");
+            LogoRenderer.EASTER_EGG_LOGO = Identifier.fromNamespaceAndPath(MOD_ID, "textures/title/modpets.png");
+            LogoRenderer.MINECRAFT_EDITION = Identifier.fromNamespaceAndPath(MOD_ID, "textures/title/version.png");
+            SplashManager.SPLASHES_LOCATION = Identifier.fromNamespaceAndPath(MOD_ID, "texts/splashes.txt");
+        } else {
+            LogoRenderer.MINECRAFT_LOGO = Identifier.withDefaultNamespace("textures/gui/title/minecraft.png");
+            LogoRenderer.EASTER_EGG_LOGO = Identifier.withDefaultNamespace("textures/gui/title/minceraft.png");
+            LogoRenderer.MINECRAFT_EDITION = Identifier.withDefaultNamespace("textures/gui/title/edition.png");
+            SplashManager.SPLASHES_LOCATION = Identifier.withDefaultNamespace("texts/splashes.txt");
         }
     }
 }

@@ -8,6 +8,6 @@ public enum BlankEnum implements NameableEnum {
 
     @Override
     public Component getDisplayName() {
-        return Component.literal("");
+        return Component.literal(String.valueOf(this).replace("_", " "));
     }
 }

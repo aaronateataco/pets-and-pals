@@ -1,15 +1,18 @@
 package com.jeff.pets;
 
-import com.jeff.pets.aprilfools.*;
-import com.jeff.pets.custom.Duck;
-import com.jeff.pets.custom.Head;
-import com.jeff.pets.custom.Penguin;
-import com.jeff.pets.custom.Racoon;
-import com.jeff.pets.vanilla.boss.ClientEnderDragon;
-import com.jeff.pets.vanilla.boss.ClientWither;
-import com.jeff.pets.vanilla.hostile.*;
-import com.jeff.pets.vanilla.neutral.*;
-import com.jeff.pets.vanilla.passive.*;
+import com.jeff.pets.mob.aprilfools.*;
+import com.jeff.pets.mob.custom.first.Duck;
+import com.jeff.pets.mob.custom.aprilfools.Head;
+import com.jeff.pets.mob.custom.first.Penguin;
+import com.jeff.pets.mob.custom.first.Racoon;
+import com.jeff.pets.mob.custom.aquatic.DumboOctopus;
+import com.jeff.pets.mob.custom.aquatic.Koi;
+import com.jeff.pets.mob.custom.aquatic.Stingray;
+import com.jeff.pets.mob.vanilla.boss.ClientEnderDragon;
+import com.jeff.pets.mob.vanilla.boss.ClientWither;
+import com.jeff.pets.mob.vanilla.hostile.*;
+import com.jeff.pets.mob.vanilla.neutral.*;
+import com.jeff.pets.mob.vanilla.passive.*;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
 import net.minecraft.core.Registry;
@@ -26,7 +29,7 @@ import org.slf4j.LoggerFactory;
 public class PetsInitializer implements ModInitializer {
     public static final String MOD_ID = "pets";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-    public static final ResourceKey<@NotNull EntityType<?>> RACOON_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> RACOON_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "racoon"));
     public static final EntityType<@NotNull Racoon> RACOON = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -35,7 +38,7 @@ public class PetsInitializer implements ModInitializer {
                     .sized(1f, 1f)
                     .eyeHeight(1)
                     .build(RACOON_KEY));
-    public static final ResourceKey<@NotNull EntityType<?>> ALLAY_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> ALLAY_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientallay"));
     public static final EntityType<@NotNull ClientAllay> ALLAY = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -46,7 +49,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.6f)
                     .build(ALLAY_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> ARMADILLO_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> ARMADILLO_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientarmadillo"));
     public static final EntityType<@NotNull ClientArmadillo> ARMADILLO = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -57,7 +60,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.65f)
                     .build(ARMADILLO_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> AXOLOTL_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> AXOLOTL_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientaxolotl"));
     public static final EntityType<@NotNull ClientAxolotl> AXOLOTL = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -68,7 +71,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1f)
                     .build(AXOLOTL_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> BAT_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> BAT_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientbat"));
     public static final EntityType<@NotNull ClientBat> BAT = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -79,7 +82,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.9f)
                     .build(BAT_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> CAMEL_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> CAMEL_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientcamel"));
     public static final EntityType<@NotNull ClientCamel> CAMEL = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -90,7 +93,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(2.375f)
                     .build(CAMEL_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> DUCK_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> DUCK_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "duck"));
     public static final EntityType<@NotNull Duck> DUCK = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -99,7 +102,7 @@ public class PetsInitializer implements ModInitializer {
                     .sized(0.4f, 0.7f)
                     .eyeHeight(1)
                     .build(DUCK_KEY));
-    public static final ResourceKey<@NotNull EntityType<?>> PENGUIN_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> PENGUIN_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "penguin"));
     public static final EntityType<@NotNull Penguin> PENGUIN = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -109,7 +112,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1f)
                     .build(PENGUIN_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> SHEEP_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> SHEEP_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientsheep"));
     public static final EntityType<@NotNull ClientSheep> SHEEP = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -120,7 +123,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.3f)
                     .build(SHEEP_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> CAT_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> CAT_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientcat"));
     public static final EntityType<@NotNull ClientCat> CAT = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -131,7 +134,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1f)
                     .build(CAT_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> CHICKEN_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> CHICKEN_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientchicken"));
     public static final EntityType<@NotNull ClientChicken> CHICKEN = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -142,7 +145,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.7f)
                     .build(CHICKEN_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> COD_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> COD_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientcod"));
     public static final EntityType<@NotNull ClientCod> COD = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -153,7 +156,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.3f)
                     .build(COD_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> COPPER_GOLEM_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> COPPER_GOLEM_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientcoppergolem"));
     public static final EntityType<@NotNull ClientCopperGolem> COPPER_GOLEM = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -164,7 +167,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.98f)
                     .build(COPPER_GOLEM_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> COW_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> COW_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientcow"));
     public static final EntityType<@NotNull ClientCow> COW = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -175,7 +178,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.4f)
                     .build(COW_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> DONKEY_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> DONKEY_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientdonkey"));
     public static final EntityType<@NotNull ClientDonkey> DONKEY = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -186,7 +189,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.5f)
                     .build(DONKEY_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> FROG_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> FROG_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientfrog"));
     public static final EntityType<@NotNull ClientFrog> FROG = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -197,7 +200,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.5f)
                     .build(FROG_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> HORSE_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> HORSE_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clienthorse"));
     public static final EntityType<@NotNull ClientHorse> HORSE = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -208,7 +211,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.6f)
                     .build(HORSE_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> MOOSHROOM_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> MOOSHROOM_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientmooshroom"));
     public static final EntityType<@NotNull ClientMooshroom> MOOSHROOM = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -219,7 +222,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.4f)
                     .build(MOOSHROOM_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> PARROT_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> PARROT_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientparrot"));
     public static final EntityType<@NotNull ClientParrot> PARROT = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -230,7 +233,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.9f)
                     .build(PARROT_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> PIG_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> PIG_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientpig"));
     public static final EntityType<@NotNull ClientPig> PIG = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -241,7 +244,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.9f)
                     .build(PIG_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> RABBIT_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> RABBIT_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientrabbit"));
     public static final EntityType<@NotNull ClientRabbit> RABBIT = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -252,7 +255,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.5f)
                     .build(RABBIT_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> SALMON_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> SALMON_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientsalmon"));
     public static final EntityType<@NotNull ClientSalmon> SALMON = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -263,7 +266,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.2f)
                     .build(SALMON_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> SNIFFER_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> SNIFFER_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientsniffer"));
     public static final EntityType<@NotNull ClientSniffer> SNIFFER = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -274,7 +277,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.75f)
                     .build(SNIFFER_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> SNOW_GOLEM_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> SNOW_GOLEM_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientsnowgolem"));
     public static final EntityType<@NotNull ClientSnowGolem> SNOW_GOLEM = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -285,7 +288,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.9f)
                     .build(SNOW_GOLEM_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> SQUID_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> SQUID_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientsquid"));
     public static final EntityType<@NotNull ClientSquid> SQUID = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -296,7 +299,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.8f)
                     .build(SQUID_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> STRIDER_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> STRIDER_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientstrider"));
     public static final EntityType<@NotNull ClientStrider> STRIDER = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -307,7 +310,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.7f)
                     .build(STRIDER_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> TADPOLE_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> TADPOLE_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clienttadpole"));
     public static final EntityType<@NotNull ClientTadpole> TADPOLE = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -318,7 +321,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.3f)
                     .build(TADPOLE_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> TROPICAL_FISH_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> TROPICAL_FISH_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clienttropicalfish"));
     public static final EntityType<@NotNull ClientTropicalFish> TROPICAL_FISH = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -329,7 +332,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1f)
                     .build(TROPICAL_FISH_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> TURTLE_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> TURTLE_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientturtle"));
     public static final EntityType<@NotNull ClientTurtle> TURTLE = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -340,7 +343,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.4f)
                     .build(TURTLE_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> VILLAGER_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> VILLAGER_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientvillager"));
     public static final EntityType<@NotNull ClientVillager> VILLAGER = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -351,7 +354,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.95f)
                     .build(VILLAGER_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> WANDERING_TRADER_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> WANDERING_TRADER_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientwanderingtrader"));
     public static final EntityType<@NotNull ClientWanderingTrader> WANDERING_TRADER = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -362,7 +365,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.95f)
                     .build(WANDERING_TRADER_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> BEE_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> BEE_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientbee"));
     public static final EntityType<@NotNull ClientBee> BEE = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -373,7 +376,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.6f)
                     .build(BEE_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> CAVE_SPIDER_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> CAVE_SPIDER_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientcavespider"));
     public static final EntityType<@NotNull ClientCaveSpider> CAVE_SPIDER = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -384,7 +387,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.5f)
                     .build(CAVE_SPIDER_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> DOLPHIN_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> DOLPHIN_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientdolphin"));
     public static final EntityType<@NotNull ClientDolphin> DOLPHIN = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -395,7 +398,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.6f)
                     .build(DOLPHIN_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> ENDERMAN_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> ENDERMAN_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientenderman"));
     public static final EntityType<@NotNull ClientEnderman> ENDERMAN = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -406,7 +409,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(2.9f)
                     .build(ENDERMAN_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> FOX_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> FOX_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientfox"));
     public static final EntityType<@NotNull ClientFox> FOX = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -417,7 +420,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.7f)
                     .build(FOX_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> GOAT_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> GOAT_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientgoat"));
     public static final EntityType<@NotNull ClientGoat> GOAT = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -428,7 +431,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.3f)
                     .build(GOAT_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> IRON_GOLEM_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> IRON_GOLEM_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientirongolem"));
     public static final EntityType<@NotNull ClientIronGolem> IRON_GOLEM = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -439,7 +442,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(2.7f)
                     .build(IRON_GOLEM_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> LLAMA_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> LLAMA_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientllama"));
     public static final EntityType<@NotNull ClientLlama> LLAMA = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -450,7 +453,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.87f)
                     .build(LLAMA_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> NAUTILUS_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> NAUTILUS_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientnautilus"));
     public static final EntityType<@NotNull ClientNautilus> NAUTILUS = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -461,7 +464,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.95f)
                     .build(NAUTILUS_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> PANDA_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> PANDA_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientpanda"));
     public static final EntityType<@NotNull ClientPanda> PANDA = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -472,7 +475,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.25f)
                     .build(PANDA_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> PIGLIN_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> PIGLIN_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientpiglin"));
     public static final EntityType<@NotNull ClientPiglin> PIGLIN = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -483,7 +486,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.95f)
                     .build(PIGLIN_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> POLAR_BEAR_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> POLAR_BEAR_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientpolarbear"));
     public static final EntityType<@NotNull ClientPolarBear> POLAR_BEAR = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -494,7 +497,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.4f)
                     .build(POLAR_BEAR_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> PUFFERFISH_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> PUFFERFISH_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientpufferfish"));
     public static final EntityType<@NotNull ClientPufferFish> PUFFERFISH = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -505,7 +508,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.7f)
                     .build(PUFFERFISH_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> SPIDER_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> SPIDER_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientspider"));
     public static final EntityType<@NotNull ClientSpider> SPIDER = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -516,7 +519,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.9f)
                     .build(SPIDER_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> WOLF_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> WOLF_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientwolf"));
     public static final EntityType<@NotNull ClientWolf> WOLF = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -527,7 +530,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.85f)
                     .build(WOLF_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> BLAZE_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> BLAZE_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientblaze"));
     public static final EntityType<@NotNull ClientBlaze> BLAZE = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -538,7 +541,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.8f)
                     .build(BLAZE_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> BREEZE_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> BREEZE_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientbreeze"));
     public static final EntityType<@NotNull ClientBreeze> BREEZE = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -549,7 +552,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.77f)
                     .build(BREEZE_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> CREAKING_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> CREAKING_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientcreaking"));
     public static final EntityType<@NotNull ClientCreaking> CREAKING = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -560,7 +563,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(2.7f)
                     .build(CREAKING_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> CREEPER_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> CREEPER_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientcreeper"));
     public static final EntityType<@NotNull ClientCreeper> CREEPER = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -571,7 +574,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.7f)
                     .build(CREEPER_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> ELDER_GUARDIAN_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> ELDER_GUARDIAN_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientelderguardian"));
     public static final EntityType<@NotNull ClientElderGuardian> ELDER_GUARDIAN_COOKIE = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -582,7 +585,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.9975f)
                     .build(ELDER_GUARDIAN_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> ENDERMITE_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> ENDERMITE_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientendermite"));
     public static final EntityType<@NotNull ClientEndermite> ENDERMITE = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -593,7 +596,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.3f)
                     .build(ENDERMITE_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> EVOKER_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> EVOKER_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientwolf"));
     public static final EntityType<@NotNull ClientEvoker> EVOKER = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -604,7 +607,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.95f)
                     .build(EVOKER_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> GHAST_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> GHAST_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientghast"));
     public static final EntityType<@NotNull ClientGhast> GHAST = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -615,7 +618,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(4f)
                     .build(GHAST_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> HAPPY_GHAST_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> HAPPY_GHAST_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clienthappyghast"));
     public static final EntityType<@NotNull ClientHappyGhast> HAPPY_GHAST = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -626,7 +629,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(4f)
                     .build(HAPPY_GHAST_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> GUARDIAN_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> GUARDIAN_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientguardian"));
     public static final EntityType<@NotNull ClientGuardian> GUARDIAN = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -637,7 +640,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.85f)
                     .build(GUARDIAN_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> HOGLIN_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> HOGLIN_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clienthoglin"));
     public static final EntityType<@NotNull ClientHoglin> HOGLIN = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -648,7 +651,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.4f)
                     .build(HOGLIN_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> MAGMA_CUBE_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> MAGMA_CUBE_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientmagmacube"));
     public static final EntityType<@NotNull ClientMagmaCube> MAGMA_CUBE = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -660,7 +663,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(2f)
                     .build(MAGMA_CUBE_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> PHANTOM_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> PHANTOM_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientphantom"));
     public static final EntityType<@NotNull ClientPhantom> PHANTOM = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -671,7 +674,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.5f)
                     .build(PHANTOM_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> PILLAGER_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> PILLAGER_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientpillager"));
     public static final EntityType<@NotNull ClientPillager> PILLAGER = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -682,7 +685,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.95f)
                     .build(PILLAGER_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> RAVAGER_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> RAVAGER_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientravager"));
     public static final EntityType<@NotNull ClientRavager> RAVAGER = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -693,7 +696,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(2.2f)
                     .build(RAVAGER_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> SHULKER_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> SHULKER_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientshulker"));
     public static final EntityType<@NotNull ClientShulker> SHULKER = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -704,7 +707,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(2f)
                     .build(SHULKER_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> SILVERFISH_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> SILVERFISH_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientsilverfish"));
     public static final EntityType<@NotNull ClientSilverfish> SILVERFISH = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -715,7 +718,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.3f)
                     .build(SILVERFISH_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> SKELETON_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> SKELETON_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientskeleton"));
     public static final EntityType<@NotNull ClientSkeleton> SKELETON = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -726,7 +729,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.95f)
                     .build(SKELETON_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> SLIME_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> SLIME_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientslime"));
     public static final EntityType<@NotNull ClientSlime> SLIME = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -737,7 +740,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(2f)
                     .build(SLIME_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> VEX_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> VEX_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientvex"));
     public static final EntityType<@NotNull ClientVex> VEX = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -748,7 +751,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1f)
                     .build(VEX_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> VINDICATOR_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> VINDICATOR_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientvindicator"));
     public static final EntityType<@NotNull ClientVindicator> VINDICATOR = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -759,7 +762,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.95f)
                     .build(VINDICATOR_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> WARDEN_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> WARDEN_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientwarden"));
     public static final EntityType<@NotNull ClientWarden> WARDEN = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -770,7 +773,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(2.9f)
                     .build(WARDEN_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> WITCH_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> WITCH_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientwitch"));
     public static final EntityType<@NotNull ClientWitch> WITCH = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -781,7 +784,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.95f)
                     .build(WITCH_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> ZOMBIE_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> ZOMBIE_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientzombie"));
     public static final EntityType<@NotNull ClientZombie> ZOMBIE = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -792,7 +795,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.95f)
                     .build(ZOMBIE_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> ZOMBIE_VILLAGER_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> ZOMBIE_VILLAGER_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientzombievillager"));
     public static final EntityType<@NotNull ClientZombieVillager> ZOMBIE_VILLAGER = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -803,7 +806,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(2f)
                     .build(ZOMBIE_VILLAGER_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> HUSK_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> HUSK_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clienthusk"));
     public static final EntityType<@NotNull ClientHusk> HUSK = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -814,7 +817,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(2f)
                     .build(HUSK_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> DROWNED_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> DROWNED_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientdrowned"));
     public static final EntityType<@NotNull ClientDrowned> DROWNED = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -825,7 +828,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(2f)
                     .build(DROWNED_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> BOGGED_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> BOGGED_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientbogged"));
     public static final EntityType<@NotNull ClientBogged> BOGGED = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -836,7 +839,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(2f)
                     .build(BOGGED_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> PARCHED_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> PARCHED_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientparched"));
     public static final EntityType<@NotNull ClientParched> PARCHED = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -847,7 +850,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.95f)
                     .build(PARCHED_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> STRAY_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> STRAY_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientstray"));
     public static final EntityType<@NotNull ClientStray> STRAY = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -858,7 +861,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.95f)
                     .build(STRAY_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> WITHER_SKELETON_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> WITHER_SKELETON_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientwitherskeleton"));
     public static final EntityType<@NotNull ClientWitherSkeleton> WITHER_SKELETON = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -869,7 +872,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.95f)
                     .build(WITHER_SKELETON_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> ENDER_DRAGON_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> ENDER_DRAGON_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientenderdragon"));
     public static final EntityType<@NotNull ClientEnderDragon> ENDER_DRAGON = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -880,7 +883,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1f)
                     .build(ENDER_DRAGON_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> WITHER_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> WITHER_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientwither"));
     public static final EntityType<@NotNull ClientWither> WITHER = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -891,7 +894,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(3f)
                     .build(WITHER_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> ANGRY_GHAST_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> ANGRY_GHAST_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientwither"));
     public static final EntityType<@NotNull AngryGhast> ANGRY_GHAST = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -902,7 +905,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(4f)
                     .build(ANGRY_GHAST_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> BATATO_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> BATATO_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "batato"));
     public static final EntityType<@NotNull Batato> BATATO = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -913,7 +916,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.9f)
                     .build(BATATO_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> DIAMOND_CHICKEN_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> DIAMOND_CHICKEN_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "diamond_chicken"));
     public static final EntityType<@NotNull DiamondChicken> DIAMOND_CHICKEN = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -924,7 +927,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.7f)
                     .build(DIAMOND_CHICKEN_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> LOVE_GOLEM_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> LOVE_GOLEM_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "love_golem"));
     public static final EntityType<@NotNull LoveGolem> LOVE_GOLEM = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -935,7 +938,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(3f)
                     .build(LOVE_GOLEM_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> MEGA_SPUD_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> MEGA_SPUD_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "mega_spud"));
     public static final EntityType<@NotNull MegaSpud> MEGA_SPUD = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -946,7 +949,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(12f)
                     .build(MEGA_SPUD_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> MOON_COW_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> MOON_COW_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "moon_cow"));
     public static final EntityType<@NotNull MoonCow> MOON_COW = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -957,7 +960,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.4f)
                     .build(MOON_COW_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> NERD_CREEPER_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> NERD_CREEPER_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "nerd_creeper"));
     public static final EntityType<@NotNull NerdCreeper> NERD_CREEPER = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -968,7 +971,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.7f)
                     .build(NERD_CREEPER_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> PINK_WITHER_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> PINK_WITHER_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "pink_wither"));
     public static final EntityType<@NotNull PinkWither> PINK_WITHER = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -979,7 +982,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(3f)
                     .build(PINK_WITHER_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> PLAGUEWHALE_SLAB_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> PLAGUEWHALE_SLAB_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "plaguewhale_slab"));
     public static final EntityType<@NotNull PlaguewhaleSlab> PLAGUEWHALE_SLAB = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -990,7 +993,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(2f)
                     .build(PLAGUEWHALE_SLAB_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> POISONOUS_POTATO_ZOMBIE_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> POISONOUS_POTATO_ZOMBIE_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "poisonous_potato_zombie"));
     public static final EntityType<@NotNull PoisonousPotatoZombie> POISONOUS_POTATO_ZOMBIE = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -1001,7 +1004,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.95f)
                     .build(POISONOUS_POTATO_ZOMBIE_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> RAY_TRACING_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> RAY_TRACING_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "ray_tracing"));
     public static final EntityType<@NotNull RayTracing> RAY_TRACING = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -1012,7 +1015,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.95f)
                     .build(RAY_TRACING_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> REDSTONE_BUG_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> REDSTONE_BUG_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "redstone_bug"));
     public static final EntityType<@NotNull RedstoneBug> REDSTONE_BUG = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -1023,7 +1026,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.3f)
                     .build(REDSTONE_BUG_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> SMILING_CREEPER_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> SMILING_CREEPER_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "smiling_creeper"));
     public static final EntityType<@NotNull SmilingCreeper> SMILING_CREEPER = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -1034,7 +1037,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.7f)
                     .build(SMILING_CREEPER_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> TOXIFIN_SLAB_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> TOXIFIN_SLAB_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "toxifin_slab"));
     public static final EntityType<@NotNull ToxifinSlab> TOXIFIN_SLAB = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -1045,7 +1048,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(0.85f)
                     .build(TOXIFIN_SLAB_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> POTATO_HUSK_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> POTATO_HUSK_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "potatohusk"));
     public static final EntityType<@NotNull PotatoHusk> POTATO_HUSK = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -1056,7 +1059,7 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.95f)
                     .build(POTATO_HUSK_KEY)
     );
-    public static final ResourceKey<@NotNull EntityType<?>> HEAD_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> HEAD_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "head"));
     public static final EntityType<@NotNull Head> HEAD = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -1065,7 +1068,7 @@ public class PetsInitializer implements ModInitializer {
                     .sized(0.5f, 0.5f)
                     .eyeHeight(0.5f)
                     .build(HEAD_KEY));
-    public static final ResourceKey<@NotNull EntityType<?>> TRAITOR_KEY =
+    private static final ResourceKey<@NotNull EntityType<?>> TRAITOR_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "traitor"));
     public static final EntityType<@NotNull Traitor> TRAITOR = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
@@ -1074,6 +1077,39 @@ public class PetsInitializer implements ModInitializer {
                     .sized(0.6f, 1.95f)
                     .eyeHeight(1.95f)
                     .build(TRAITOR_KEY));
+    
+    private static final ResourceKey<@NotNull EntityType<?>> DUMBO_OCTOPUS_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "dumbo_octopus"));
+    public static final EntityType<@NotNull DumboOctopus> DUMBO_OCTOPUS = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "dumbo_octopus"),
+            EntityType.Builder.of(DumboOctopus::new, MobCategory.WATER_AMBIENT)
+                    .sized(0.5f, 0.5f)
+                    .eyeHeight(0.5f)
+                    .build(DUMBO_OCTOPUS_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> KOI_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "koi"));
+    public static final EntityType<@NotNull Koi> KOI = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "koi"),
+            EntityType.Builder.of(Koi::new, MobCategory.WATER_AMBIENT)
+                    .sized(0.6f, 0.6f)
+                    .eyeHeight(0.6f)
+                    .build(KOI_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> STINGRAY_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "stingray"));
+    public static final EntityType<@NotNull Stingray> STINGRAY = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "stringray"),
+            EntityType.Builder.of(Stingray::new, MobCategory.WATER_AMBIENT)
+                    .sized(1.0f, 0.4f)
+                    .eyeHeight(0.4f)
+                    .build(STINGRAY_KEY)
+    );
 
     @Override
     public void onInitialize() {
@@ -1173,7 +1209,10 @@ public class PetsInitializer implements ModInitializer {
         FabricDefaultAttributeRegistry.register(TOXIFIN_SLAB, ToxifinSlab.createAttributes().build());
         FabricDefaultAttributeRegistry.register(POTATO_HUSK, PotatoHusk.createAttributes().build());
         FabricDefaultAttributeRegistry.register(HEAD, Head.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(TRAITOR, Head.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(TRAITOR, Traitor.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(DUMBO_OCTOPUS, DumboOctopus.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(KOI, Koi.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(STINGRAY, Stingray.createAttributes().build());
 
         PetsSounds.initialize();
 

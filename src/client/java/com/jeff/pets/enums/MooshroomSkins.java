@@ -9,6 +9,6 @@ public enum MooshroomSkins implements NameableEnum {
 
     @Override
     public Component getDisplayName() {
-        return Component.literal(this.toString());
+        return Component.literal(String.valueOf(this).replace("_", " "));
     }
 }

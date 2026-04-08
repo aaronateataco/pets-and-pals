@@ -15,6 +15,6 @@ public enum RabbitSkins implements NameableEnum {
 
     @Override
     public Component getDisplayName() {
-        return Component.literal(String.valueOf(this));
+        return Component.literal(String.valueOf(this).replace("_", " "));
     }
 }
