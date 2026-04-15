@@ -8,6 +8,7 @@ import com.jeff.pets.mob.custom.first.Racoon;
 import com.jeff.pets.mob.custom.aquatic.DumboOctopus;
 import com.jeff.pets.mob.custom.aquatic.Koi;
 import com.jeff.pets.mob.custom.aquatic.Stingray;
+import com.jeff.pets.mob.custom.minecraft_earth.sheep.*;
 import com.jeff.pets.mob.vanilla.boss.ClientEnderDragon;
 import com.jeff.pets.mob.vanilla.boss.ClientWither;
 import com.jeff.pets.mob.vanilla.hostile.*;
@@ -27,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class PetsInitializer implements ModInitializer {
-    public static final String MOD_ID = "pets";
+    public static final String MOD_ID = "pets-mod";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     private static final ResourceKey<@NotNull EntityType<?>> RACOON_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "racoon"));
@@ -1111,6 +1112,94 @@ public class PetsInitializer implements ModInitializer {
                     .build(STINGRAY_KEY)
     );
 
+    private static final ResourceKey<@NotNull EntityType<?>> RAINBOW_SHEEP_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "rainbow_sheep"));
+    public static final EntityType<@NotNull RainbowSheep> RAINBOW_SHEEP = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "rainbow_sheep"),
+            EntityType.Builder.of(RainbowSheep::new, MobCategory.AMBIENT)
+                    .sized(0.9f, 1.3f)
+                    .eyeHeight(1.3f)
+                    .build(RAINBOW_SHEEP_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> FLECKED_SHEEP_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "flecked_sheep"));
+    public static final EntityType<@NotNull FleckedSheep> FLECKED_SHEEP = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "flecked_sheep"),
+            EntityType.Builder.of(FleckedSheep::new, MobCategory.AMBIENT)
+                    .sized(0.9f, 1.3f)
+                    .eyeHeight(1.3f)
+                    .build(FLECKED_SHEEP_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> FUZZY_SHEEP_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "fuzzy_sheep"));
+    public static final EntityType<@NotNull FuzzySheep> FUZZY_SHEEP = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "fuzzy_sheep"),
+            EntityType.Builder.of(FuzzySheep::new, MobCategory.AMBIENT)
+                    .sized(0.9f, 1.3f)
+                    .eyeHeight(1.3f)
+                    .build(FUZZY_SHEEP_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> INKY_SHEEP_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "inky_sheep"));
+    public static final EntityType<@NotNull InkySheep> INKY_SHEEP = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "inky_sheep"),
+            EntityType.Builder.of(InkySheep::new, MobCategory.AMBIENT)
+                    .sized(0.9f, 1.3f)
+                    .eyeHeight(1.3f)
+                    .build(INKY_SHEEP_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> LONG_NOSED_SHEEP_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "long_nosed_sheep"));
+    public static final EntityType<@NotNull LongNosedSheep> LONG_NOSED_SHEEP = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "long_nosed_sheep"),
+            EntityType.Builder.of(LongNosedSheep::new, MobCategory.AMBIENT)
+                    .sized(0.9f, 1.3f)
+                    .eyeHeight(1.3f)
+                    .build(LONG_NOSED_SHEEP_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> PATCHED_SHEEP_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "patched_sheep"));
+    public static final EntityType<@NotNull PatchedSheep> PATCHED_SHEEP = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "patched_sheep"),
+            EntityType.Builder.of(PatchedSheep::new, MobCategory.AMBIENT)
+                    .sized(0.9f, 1.3f)
+                    .eyeHeight(1.3f)
+                    .build(PATCHED_SHEEP_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> ROCKY_SHEEP_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "rocky_sheep"));
+    public static final EntityType<@NotNull RockySheep> ROCKY_SHEEP = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "rocky_sheep"),
+            EntityType.Builder.of(RockySheep::new, MobCategory.AMBIENT)
+                    .sized(0.9f, 1.3f)
+                    .eyeHeight(1.3f)
+                    .build(ROCKY_SHEEP_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> HORNED_SHEEP_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "horned_sheep"));
+    public static final EntityType<@NotNull HornedSheep> HORNED_SHEEP = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "horned_sheep"),
+            EntityType.Builder.of(HornedSheep::new, MobCategory.AMBIENT)
+                    .sized(0.9f, 1.3f)
+                    .eyeHeight(1.3f)
+                    .build(HORNED_SHEEP_KEY)
+    );
+
     @Override
     public void onInitialize() {
 
@@ -1213,6 +1302,14 @@ public class PetsInitializer implements ModInitializer {
         FabricDefaultAttributeRegistry.register(DUMBO_OCTOPUS, DumboOctopus.createAttributes().build());
         FabricDefaultAttributeRegistry.register(KOI, Koi.createAttributes().build());
         FabricDefaultAttributeRegistry.register(STINGRAY, Stingray.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(RAINBOW_SHEEP, RainbowSheep.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(FLECKED_SHEEP, FleckedSheep.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(FUZZY_SHEEP, FuzzySheep.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(INKY_SHEEP, InkySheep.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(LONG_NOSED_SHEEP, LongNosedSheep.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(PATCHED_SHEEP, PatchedSheep.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(ROCKY_SHEEP, RockySheep.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(HORNED_SHEEP, HornedSheep.createAttributes().build());
 
         PetsSounds.initialize();
 

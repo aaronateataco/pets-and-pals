@@ -9,7 +9,7 @@ import static com.jeff.pets.Central.CONFIG;
 
 public class ClientSheepModel extends SheepModel {
 
-    private final ModelPart head;
+    protected final ModelPart head;
 
     public ClientSheepModel(ModelPart modelPart) {
         super(modelPart);

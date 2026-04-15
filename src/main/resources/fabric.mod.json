@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "pets",
+  "id": "pets-mod",
   "version": "${version}",
   "name": "Pets Mod",
   "accessWidener": "pets.accesswidener",
@@ -14,7 +14,7 @@
     "sources": "https://github.com/downloadableduck/petsmod"
   },
   "license": "MIT",
-  "icon": "assets/pets/icon.png",
+  "icon": "assets/pets-mod/icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
@@ -48,7 +48,7 @@
     "modmenu": {
       "name": "Pets Mod",
       "description": "Adds completely client-sided pets to your game. Supports every vanilla mob and will work on any server, including in singleplayer!",
-      "icon": "assets/pets/icon.png",
+      "icon": "assets/pets-mod/icon.png",
       "environment": "client"
     }
   }

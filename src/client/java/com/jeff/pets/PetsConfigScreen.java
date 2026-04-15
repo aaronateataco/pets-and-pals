@@ -29,7 +29,6 @@ public class PetsConfigScreen implements ModMenuApi {
             return YetAnotherConfigLib.createBuilder()
                     .title(Component.literal("Pets Config"))
                     .save(() -> {
-                        //todo: refresh the screen when this thing is saved
                         Screen currentScreen = null;
                         AutoConfig.getConfigHolder(PetsConfig.class).save();
                         Minecraft.getInstance().setScreen(this.getModConfigScreenFactory().create(currentScreen));
@@ -183,6 +182,14 @@ public class PetsConfigScreen implements ModMenuApi {
                                                                 case "dumbo_octopus" -> CONFIG.dumboOctopusName;
                                                                 case "koi" -> CONFIG.koiName;
                                                                 case "stingray" -> CONFIG.stingrayName;
+                                                                case "flecked_sheep" -> CONFIG.fleckedSheepName;
+                                                                case "fuzzy_sheep" -> CONFIG.fuzzySheepName;
+                                                                case "horned_sheep" -> CONFIG.hornedSheepName ;
+                                                                case "inky_sheep" -> CONFIG.inkySheepName;
+                                                                case "long_nosed_sheep" -> CONFIG.longNosedSheepName;
+                                                                case "patched_sheep" -> CONFIG.patchedSheepName;
+                                                                case "rainbow_sheep" -> CONFIG.rainbowSheepName;
+                                                                case "rocky_sheep" -> CONFIG.rockySheepName ;
                                                                 default -> "";
                                                             },
                                                     name -> {
@@ -280,6 +287,14 @@ public class PetsConfigScreen implements ModMenuApi {
                                                             case "dumbo_octopus" -> CONFIG.dumboOctopusName = name;
                                                             case "koi" -> CONFIG.koiName = name;
                                                             case "stingray" -> CONFIG.stingrayName = name;
+                                                            case "flecked_sheep" -> CONFIG.fleckedSheepName = name;
+                                                            case "fuzzy_sheep" -> CONFIG.fuzzySheepName = name;
+                                                            case "horned_sheep" -> CONFIG.hornedSheepName = name;
+                                                            case "inky_sheep" -> CONFIG.inkySheepName = name;
+                                                            case "long_nosed_sheep" -> CONFIG.longNosedSheepName = name;
+                                                            case "patched_sheep" -> CONFIG.patchedSheepName = name;
+                                                            case "rainbow_sheep" -> CONFIG.rainbowSheepName = name;
+                                                            case "rocky_sheep" -> CONFIG.rockySheepName = name;
                                                         }
                                                         Central.refreshPetNames();
                                                     }
@@ -906,7 +921,7 @@ public class PetsConfigScreen implements ModMenuApi {
                                             .name(Component.literal("Custom Title Enabled"))
                                             .description(OptionDescription.of(Component.literal("Toggle whether the custom title and splashes are enabled. Due to the way that splashes are loaded they will reload the next time you load the game, but the title screen will reload instantly.")))
                                             .binding(
-                                                    false,
+                                                    true,
                                                     () -> CONFIG.customTitleEnabled,
                                                     newVal -> CONFIG.customTitleEnabled = newVal
                                             ).controller(TickBoxControllerBuilder::create)

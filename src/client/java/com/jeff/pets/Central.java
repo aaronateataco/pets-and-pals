@@ -14,6 +14,7 @@ import com.jeff.pets.mob.aprilfools.*;
 import com.jeff.pets.mob.custom.aquatic.DumboOctopus;
 import com.jeff.pets.mob.custom.aquatic.Koi;
 import com.jeff.pets.mob.custom.aquatic.Stingray;
+import com.jeff.pets.mob.custom.minecraft_earth.sheep.*;
 import com.jeff.pets.mob.vanilla.hostile.*;
 import com.jeff.pets.mob.vanilla.neutral.*;
 import com.jeff.pets.mob.vanilla.passive.*;
@@ -77,20 +78,28 @@ public class Central implements ClientModInitializer {
                     "chicken", "cod", "copper golem", "cow", "creaking", "creeper",
                     "diamond chicken", "dolphin", "donkey", "drowned", "drowned",
                     "duck", "dumbo octopus", "elder guardian", "ender dragon", "enderman",
-                    "endermite", "evoker", "fox", "frog", "ghast", "goat", "guardian",
-                    "happy ghast", "head", "hoglin", "horse", "husk", "iron golem",
-                    "koi", "llama", "love golem", "magma cube", "mega spud",
-                    "moon cow", "mooshroom", "nautilus", "nerd creeper", "panda",
-                    "parched", "parrot", "penguin", "phantom", "pig", "piglin",
-                    "pillager", "pink wither", "plaguewhale slab",
-                    "plaguewhale slab", "poisonous potato zombie", "polar bear",
-                    "potato husk", "pufferfish", "rabbit", "racoon", "ravager",
-                    "ray tracing", "redstone bug", "salmon", "sheep", "shulker",
-                    "silverfish", "skeleton", "slime", "smiling creeper", "sniffer",
-                    "snow golem", "spider", "squid", "stingray", "stray", "strider",
-                    "tadpole", "toxifin slab", "traitor", "turtle", "vex",
-                    "villager", "vindicator", "wandering trader", "warden", "witch", "wither",
-                    "wither skeleton", "wolf", "zombie",
+                    "endermite", "evoker", "flecked sheep", "fox", "frog", "fuzzy sheep", "ghast",
+                    "goat", "guardian", "happy ghast", "head", "hoglin", "horned sheep",
+                    "horse", "husk", "inky sheep", "iron golem", "koi",
+                    "llama", "long nosed sheep", "love golem", "magma cube", "mega spud",
+                    "moon cow", "mooshroom", "nautilus", "nerd creeper", "panda", "parched",
+                    "parrot", "patched sheep", "penguin",
+                    "phantom", "pig", "piglin",
+                    "pillager", "pink wither", "plaguewhale slab", "plaguewhale slab", "poisonous potato zombie",
+                    "polar bear", "potato husk", "pufferfish", "rabbit", "racoon",
+                    "rainbow sheep", "ravager", "ray tracing", "redstone bug", "rocky sheep",
+                    "salmon", "sheep", "shulker", "silverfish", "skeleton", "slime",
+                    "smiling creeper", "sniffer", "snow golem", "spider", "squid",
+                    "stingray", "stray", "strider", "tadpole", "toxifin slab", "traitor",
+                    "turtle", "vex", "villager",
+                    "vindicator",
+                    "wandering trader",
+                    "warden",
+                    "witch",
+                    "wither",
+                    "wither skeleton",
+                    "wolf",
+                    "zombie",
                     "zombie villager"}, builder);
     private static final List<String> DUCK_SKINS = List.of("mallard", "pekin", "rubber");
     private static final List<String> CAT_SKINS = List.of("black", "tuxedo", "british shorthair", "calico", "jellie", "ocelot", "persian", "ragdoll", "red", "siamese", "tabby", "white");
@@ -216,6 +225,14 @@ public class Central implements ClientModInitializer {
     public static DumboOctopus dumboOctopus;
     public static Koi koi;
     public static Stingray stingray;
+    public static FleckedSheep fleckedSheep;
+    public static FuzzySheep fuzzySheep;
+    public static InkySheep inkySheep;
+    public static LongNosedSheep longNosedSheep;
+    public static PatchedSheep patchedSheep;
+    public static RainbowSheep rainbowSheep;
+    public static RockySheep rockySheep;
+    public static HornedSheep hornedSheep;
 
     private final SuggestionProvider<FabricClientCommandSource> SKINS = (context, builder) -> {
         String remaining = builder.getRemainingLowerCase();
@@ -522,6 +539,22 @@ public class Central implements ClientModInitializer {
             koi.discard();
         } if (stingray != null) {
             stingray.discard();
+        } if (fleckedSheep != null) {
+            fleckedSheep.discard();
+        } if (fuzzySheep != null) {
+            fuzzySheep.discard();
+        } if (hornedSheep != null) {
+            hornedSheep.discard();
+        } if (inkySheep != null) {
+            inkySheep.discard();
+        } if (longNosedSheep != null) {
+            longNosedSheep.discard();
+        } if (patchedSheep != null) {
+            patchedSheep.discard();
+        } if (rainbowSheep != null) {
+            rainbowSheep.discard();
+        } if (rockySheep != null) {
+            rockySheep.discard();
         }
     }
 
@@ -627,6 +660,14 @@ public class Central implements ClientModInitializer {
         dumboOctopus = new DumboOctopus(PetsInitializer.DUMBO_OCTOPUS, world);
         koi = new Koi(PetsInitializer.KOI, world);
         stingray = new Stingray(PetsInitializer.STINGRAY, world);
+        fleckedSheep = new FleckedSheep(PetsInitializer.FLECKED_SHEEP, world);
+        fuzzySheep = new FuzzySheep(PetsInitializer.FUZZY_SHEEP, world);
+        hornedSheep = new HornedSheep(PetsInitializer.HORNED_SHEEP, world);
+        inkySheep = new InkySheep(PetsInitializer.INKY_SHEEP, world);
+        longNosedSheep = new LongNosedSheep(PetsInitializer.LONG_NOSED_SHEEP, world);
+        patchedSheep = new PatchedSheep(PetsInitializer.PATCHED_SHEEP, world);
+        rainbowSheep = new RainbowSheep(PetsInitializer.RAINBOW_SHEEP, world);
+        rockySheep = new RockySheep(PetsInitializer.ROCKY_SHEEP, world);
 
         assert player != null;
 
@@ -1503,6 +1544,54 @@ public class Central implements ClientModInitializer {
                 world.addEntity(stingray);
                 stingray.tame(player);
                 summonedEntity.add(stingray);
+            } else if (Objects.equals(CONFIG.activePet, "flecked_sheep")) {
+                fleckedSheep.setPos(x, y, z);
+                fleckedSheep.setCustomName(Component.literal(CONFIG.fleckedSheepName));
+                world.addEntity(fleckedSheep);
+                fleckedSheep.tame(player);
+                summonedEntity.add(fleckedSheep);
+            } else if (Objects.equals(CONFIG.activePet, "fuzzy_sheep")) {
+                fuzzySheep.setPos(x, y, z);
+                fuzzySheep.setCustomName(Component.literal(CONFIG.fuzzySheepName));
+                world.addEntity(fuzzySheep);
+                fuzzySheep.tame(player);
+                summonedEntity.add(fuzzySheep);
+            } else if (Objects.equals(CONFIG.activePet, "horned_sheep")) {
+                hornedSheep.setPos(x, y, z);
+                hornedSheep.setCustomName(Component.literal(CONFIG.hornedSheepName));
+                world.addEntity(hornedSheep);
+                hornedSheep.tame(player);
+                summonedEntity.add(hornedSheep);
+            } else if (Objects.equals(CONFIG.activePet, "inky_sheep")) {
+                inkySheep.setPos(x, y, z);
+                inkySheep.setCustomName(Component.literal(CONFIG.inkySheepName));
+                world.addEntity(inkySheep);
+                inkySheep.tame(player);
+                summonedEntity.add(inkySheep);
+            } else if (Objects.equals(CONFIG.activePet, "long_nosed_sheep")) {
+                longNosedSheep.setPos(x, y, z);
+                longNosedSheep.setCustomName(Component.literal(CONFIG.longNosedSheepName));
+                world.addEntity(longNosedSheep);
+                longNosedSheep.tame(player);
+                summonedEntity.add(longNosedSheep);
+            } else if (Objects.equals(CONFIG.activePet, "patched_sheep")) {
+                patchedSheep.setPos(x, y, z);
+                patchedSheep.setCustomName(Component.literal(CONFIG.patchedSheepName));
+                world.addEntity(patchedSheep);
+                patchedSheep.tame(player);
+                summonedEntity.add(patchedSheep);
+            } else if (Objects.equals(CONFIG.activePet, "rainbow_sheep")) {
+                rainbowSheep.setPos(x, y, z);
+                rainbowSheep.setCustomName(Component.literal(CONFIG.rainbowSheepName));
+                world.addEntity(rainbowSheep);
+                rainbowSheep.tame(player);
+                summonedEntity.add(rainbowSheep);
+            } else if (Objects.equals(CONFIG.activePet, "rocky_sheep")) {
+                rockySheep.setPos(x, y, z);
+                rockySheep.setCustomName(Component.literal(CONFIG.rockySheepName));
+                world.addEntity(rockySheep);
+                rockySheep.tame(player);
+                summonedEntity.add(rockySheep);
             }
         }
     }
@@ -1694,8 +1783,24 @@ public class Central implements ClientModInitializer {
             dumboOctopus.setCustomName(Component.literal(CONFIG.dumboOctopusName));
         } else if (Objects.equals(CONFIG.activePet, "koi") && koi != null && !koi.getPlainTextName().equals(CONFIG.koiName)) {
             koi.setCustomName(Component.literal(CONFIG.koiName));
-        } else if (Objects.equals(CONFIG.activePet, "stingray") && stingray != null && !stingray.getCustomName().equals(CONFIG.stingrayName)) {
+        } else if (Objects.equals(CONFIG.activePet, "stingray") && stingray != null && !stingray.getPlainTextName().equals(CONFIG.stingrayName)) {
             stingray.setCustomName(Component.literal(CONFIG.stingrayName));
+        } else if (Objects.equals(CONFIG.activePet, "flecked_sheep") && fleckedSheep != null && !fleckedSheep.getPlainTextName().equals(CONFIG.fleckedSheepName)) {
+            fleckedSheep.setCustomName(Component.literal(CONFIG.fleckedSheepName));
+        } else if (Objects.equals(CONFIG.activePet, "fuzzy_sheep") && fuzzySheep != null && !fuzzySheep.getPlainTextName().equals(CONFIG.fuzzySheepName))  {
+            fuzzySheep.setCustomName(Component.literal(CONFIG.fuzzySheepName));
+        } else if (Objects.equals(CONFIG.activePet, "horned_sheep") && hornedSheep != null && !hornedSheep.getPlainTextName().equals(CONFIG.hornedSheepName)) {
+            hornedSheep.setCustomName(Component.literal(CONFIG.hornedSheepName));
+        } else if (Objects.equals(CONFIG.activePet, "inky_sheep") && inkySheep != null && inkySheep.getPlainTextName().equals(CONFIG.inkySheepName)) {
+            inkySheep.setCustomName(Component.literal(CONFIG.inkySheepName));
+        } else if (Objects.equals(CONFIG.activePet, "long_nosed_sheep") && longNosedSheep != null && longNosedSheep.getPlainTextName().equals(CONFIG.longNosedSheepName)) {
+            longNosedSheep.setCustomName(Component.literal(CONFIG.longNosedSheepName));
+        } else if (Objects.equals(CONFIG.activePet, "patched_sheep") && patchedSheep != null && !patchedSheep.getPlainTextName().equals(CONFIG.patchedSheepName)) {
+            patchedSheep.setCustomName(Component.literal(CONFIG.patchedSheepName));
+        } else if (Objects.equals(CONFIG.activePet, "rainbow_sheep") && rainbowSheep != null && !rainbowSheep.getPlainTextName().equals(CONFIG.rainbowSheepName)) {
+            rainbowSheep.setCustomName(Component.literal(CONFIG.rainbowSheepName));
+        } else if (Objects.equals(CONFIG.activePet, "rocky_sheep") && rockySheep != null && !rockySheep.getPlainTextName().equals(CONFIG.rockySheepName)) {
+            rockySheep.setCustomName(Component.literal(CONFIG.rockySheepName));
         }
     }
 
@@ -1898,6 +2003,14 @@ public class Central implements ClientModInitializer {
                     case "dumbo_octopus" -> CONFIG.dumboOctopusName = name;
                     case "koi" -> CONFIG.koiName = name;
                     case "stingray" -> CONFIG.stingrayName = name;
+                    case "flecked_sheep" -> CONFIG.fleckedSheepName = name;
+                    case "fuzzy_sheep" -> CONFIG.fuzzySheepName = name;
+                    case "horned_sheep" -> CONFIG.hornedSheepName = name;
+                    case "inky_sheep" -> CONFIG.inkySheepName = name;
+                    case "long_nosed_sheep" -> CONFIG.longNosedSheepName = name;
+                    case "patched_sheep" -> CONFIG.patchedSheepName = name;
+                    case "rainbow_sheep" -> CONFIG.rainbowSheepName = name;
+                    case "rocky_sheep" -> CONFIG.rockySheepName = name;
                 }
                 AutoConfig.getConfigHolder(PetsConfig.class).save();
             }
@@ -2122,6 +2235,22 @@ public class Central implements ClientModInitializer {
                 koi.tryToTeleportToOwner();
             } else if (stingray != null && Objects.equals(CONFIG.activePet, "stingray")) {
                 stingray.tryToTeleportToOwner();
+            } else if (fleckedSheep != null && Objects.equals(CONFIG.activePet, "flecked_sheep")) {
+                fleckedSheep.tryToTeleportToOwner();
+            } else if (fuzzySheep != null && Objects.equals(CONFIG.activePet, "fuzzy_sheep")) {
+                fuzzySheep.tryToTeleportToOwner();
+            } else if (hornedSheep != null && Objects.equals(CONFIG.activePet, "horned_sheep")) {
+                hornedSheep.tryToTeleportToOwner();
+            } else if (inkySheep != null && Objects.equals(CONFIG.activePet, "inky_sheep")) {
+                inkySheep.tryToTeleportToOwner();
+            } else if (longNosedSheep != null && Objects.equals(CONFIG.activePet, "long_nosed_sheep")) {
+                longNosedSheep.tryToTeleportToOwner();
+            } else if (patchedSheep != null && Objects.equals(CONFIG.activePet, "patched_sheep")) {
+                patchedSheep.tryToTeleportToOwner();
+            } else if (rainbowSheep != null && Objects.equals(CONFIG.activePet, "rainbow_sheep")) {
+                rainbowSheep.tryToTeleportToOwner();
+            } else if (rockySheep != null && Objects.equals(CONFIG.activePet, "rocky_sheep")) {
+                rockySheep.tryToTeleportToOwner();
             }
 
             return 1;
@@ -2529,6 +2658,38 @@ public class Central implements ClientModInitializer {
                 summonedEntity.clear();
                 summonedEntity.add(stingray);
                 CONFIG.activePet = "stingray";
+            } else if (Objects.equals(species, "flecked sheep") || Objects.equals(species, "flecked_sheep")) {
+                summonedEntity.clear();
+                summonedEntity.add(fleckedSheep);
+                CONFIG.activePet = "flecked_sheep";
+            } else if (Objects.equals(species, "fuzzy sheep") || Objects.equals(species, "fuzzy_sheep")) {
+                summonedEntity.clear();
+                summonedEntity.add(fuzzySheep);
+                CONFIG.activePet = "fuzzy_sheep";
+            } else if (Objects.equals(species, "horned sheep") || Objects.equals(species, "horned_sheep")) {
+                summonedEntity.clear();
+                summonedEntity.add(hornedSheep);
+                CONFIG.activePet = "horned_sheep";
+            } else if (Objects.equals(species, "inky sheep") || Objects.equals(species, "inky_sheep")) {
+                summonedEntity.clear();
+                summonedEntity.add(inkySheep);
+                CONFIG.activePet = "inky_sheep";
+            } else if (Objects.equals(species, "long nosed sheep") || Objects.equals(species, "long_nosed_sheep")) {
+                summonedEntity.clear();
+                summonedEntity.add(longNosedSheep);
+                CONFIG.activePet = "long_nosed_sheep";
+            } else if (Objects.equals(species, "patched sheep") || Objects.equals(species, "patched_sheep")) {
+                summonedEntity.clear();
+                summonedEntity.add(patchedSheep);
+                CONFIG.activePet = "patched_sheep";
+            } else if (Objects.equals(species, "rainbow sheep") || Objects.equals(species, "rainbow_sheep")) {
+                summonedEntity.clear();
+                summonedEntity.add(rainbowSheep);
+                CONFIG.activePet = "rainbow_sheep";
+            } else if (Objects.equals(species, "rocky sheep") || Objects.equals(species, "rocky_sheep")) {
+                summonedEntity.clear();
+                summonedEntity.add(rockySheep);
+                CONFIG.activePet = "rocky_sheep";
             } else {
                 isValid = false;
             }
@@ -2584,7 +2745,6 @@ public class Central implements ClientModInitializer {
                 .suggests(this.SKINS)
                 .executes((context) -> {
                     boolean isValid = true;
-                    AutoConfig.getConfigHolder(PetsConfig.class).save();
                     String skin = StringArgumentType.getString(context, "skin");
 
                     if (Objects.equals(skin, "baby")) {
@@ -3263,6 +3423,7 @@ public class Central implements ClientModInitializer {
                     } else {
                         context.getSource().sendFeedback(Component.literal("§b[PetsMod] §cEither your currently selected pet doesn't support multiple skins, or that is not a valid skin. Try something else."));
                     }
+                    AutoConfig.getConfigHolder(PetsConfig.class).save();
 
                     return 1;
                 }))));
@@ -3679,6 +3840,22 @@ public class Central implements ClientModInitializer {
             CONFIG.stingrayName = "";
         } if (CONFIG.customTitleEnabled == null) {
             CONFIG.customTitleEnabled = true;
+        } if (CONFIG.fleckedSheepName == null) {
+            CONFIG.fleckedSheepName = "";
+        } if (CONFIG.fuzzySheepName == null) {
+            CONFIG.fuzzySheepName = "";
+        } if (CONFIG.hornedSheepName == null) {
+            CONFIG.hornedSheepName = "";
+        } if (CONFIG.inkySheepName == null) {
+            CONFIG.inkySheepName = "";
+        } if (CONFIG.longNosedSheepName == null) {
+            CONFIG.longNosedSheepName = "";
+        } if (CONFIG.patchedSheepName == null) {
+            CONFIG.patchedSheepName = "";
+        } if (CONFIG.rainbowSheepName == null) {
+            CONFIG.rainbowSheepName = "";
+        } if (CONFIG.rockySheepName == null) {
+            CONFIG.rockySheepName = "";
         }
     }
     public static void reassignLogo(Boolean bl) {

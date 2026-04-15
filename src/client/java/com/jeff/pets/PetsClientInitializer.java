@@ -1,5 +1,6 @@
 package com.jeff.pets;
 
+import com.jeff.pets.mob.custom.minecraft_earth.sheep.InkySheep;
 import com.jeff.pets.rendering.aprilfools.angryghast.AngryGhastRenderer;
 import com.jeff.pets.rendering.aprilfools.batato.BatatoModel;
 import com.jeff.pets.rendering.aprilfools.batato.BatatoRenderer;
@@ -35,6 +36,16 @@ import com.jeff.pets.rendering.custom.aprilfools.head.HeadModel;
 import com.jeff.pets.rendering.custom.aprilfools.head.HeadRenderer;
 import com.jeff.pets.rendering.custom.first.racoon.RacoonModel;
 import com.jeff.pets.rendering.custom.first.racoon.RacoonRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.sheep.EarthSheepModel;
+import com.jeff.pets.rendering.custom.minecraft_earth.sheep.flecked_sheep.FleckedSheepRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.sheep.fuzzysheep.FuzzySheepRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.sheep.horned_sheep.HornedSheepModel;
+import com.jeff.pets.rendering.custom.minecraft_earth.sheep.horned_sheep.HornedSheepRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.sheep.inky_sheep.InkySheepRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.sheep.long_nosed_sheep.LongNosedSheepRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.sheep.patched_sheep.PatchedSheepRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.sheep.rainbow_sheep.RainbowSheepRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.sheep.rocky_sheep.RockySheepRenderer;
 import com.jeff.pets.rendering.vanilla.allay.ClientAllayRenderer;
 import com.jeff.pets.rendering.vanilla.armadillo.ClientArmadilloRenderer;
 import com.jeff.pets.rendering.vanilla.axolotl.ClientAxolotlRenderer;
@@ -127,6 +138,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
+import net.fabricmc.fabric.impl.client.rendering.EntityRendererRegistryImpl;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.model.ambient.BatModel;
 import net.minecraft.client.model.animal.allay.AllayModel;
@@ -172,6 +184,7 @@ import net.minecraft.client.model.monster.witch.WitchModel;
 import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 
+@SuppressWarnings("deprecation")
 public class PetsClientInitializer implements ClientModInitializer {
 
     @Override
@@ -278,7 +291,14 @@ public class PetsClientInitializer implements ClientModInitializer {
         EntityRendererRegistry.register(PetsInitializer.DUMBO_OCTOPUS, DumboOctopusRenderer::new);
         EntityRendererRegistry.register(PetsInitializer.KOI, KoiRenderer::new);
         EntityRendererRegistry.register(PetsInitializer.STINGRAY, StingrayRenderer::new);
-
+        EntityRendererRegistry.register(PetsInitializer.RAINBOW_SHEEP, RainbowSheepRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.FLECKED_SHEEP, FleckedSheepRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.FUZZY_SHEEP, FuzzySheepRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.HORNED_SHEEP, HornedSheepRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.INKY_SHEEP, InkySheepRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.LONG_NOSED_SHEEP, LongNosedSheepRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.PATCHED_SHEEP, PatchedSheepRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.ROCKY_SHEEP, RockySheepRenderer::new);
 
         ModelLayerRegistry.registerModelLayer(HeadModel.LAYER_LOCATION, HeadModel::getTexturedModelData);
         ModelLayerRegistry.registerModelLayer(RacoonRenderer.RACOON_LOCATION, RacoonModel::getTexturedModelData);
@@ -380,6 +400,14 @@ public class PetsClientInitializer implements ClientModInitializer {
         ModelLayerRegistry.registerModelLayer(DumboOctopusRenderer.DUMBO_OCTOPUS_LOCATION, DumboOctopusModel::createBodyLayer);
         ModelLayerRegistry.registerModelLayer(KoiRenderer.KOI_LOCATION, KoiModel::createBodyLayer);
         ModelLayerRegistry.registerModelLayer(StingrayRenderer.STINGRAY_LOCATION, StingrayModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(RainbowSheepRenderer.RAINBOW_SHEEP_LOCATION, EarthSheepModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(FleckedSheepRenderer.FLECKED_SHEEP_LOCATION, EarthSheepModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(FuzzySheepRenderer.FUZZY_SHEEP_LOCATION, EarthSheepModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(HornedSheepRenderer.HORNED_SHEEP_LOCATION, HornedSheepModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(InkySheepRenderer.INKY_SHEEP_LOCATION, EarthSheepModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(LongNosedSheepRenderer.LONG_NOSED_SHEEP_LOCATION, EarthSheepModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(PatchedSheepRenderer.PATCHED_SHEEP_LOCATION, EarthSheepModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(RockySheepRenderer.ROCKY_SHEEP_LOCATION, EarthSheepModel::createBodyLayer);
     }
 
     void createKeyBinding() {

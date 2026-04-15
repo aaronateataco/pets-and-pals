@@ -97,8 +97,15 @@ public enum PetList implements NameableEnum {
     wither,
     wolf,
     zombie,
-    zombie_villager;
-
+    zombie_villager,
+    flecked_sheep,
+    fuzzy_sheep,
+    horned_sheep,
+    inky_sheep,
+    long_nosed_sheep,
+    patched_sheep,
+    rainbow_sheep,
+    rocky_sheep;
 
     @Override
     public Component getDisplayName() {

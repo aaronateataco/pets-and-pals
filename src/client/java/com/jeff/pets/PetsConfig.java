@@ -153,5 +153,12 @@ public class PetsConfig implements ConfigData {
 
     public boolean isBaby;
 
-
+    public String fleckedSheepName;
+    public String fuzzySheepName;
+    public String inkySheepName;
+    public String longNosedSheepName;
+    public String patchedSheepName;
+    public String rainbowSheepName;
+    public String rockySheepName;
+    public String hornedSheepName;
 }
