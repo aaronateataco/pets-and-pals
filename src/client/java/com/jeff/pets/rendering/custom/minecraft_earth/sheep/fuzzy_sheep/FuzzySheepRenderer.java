@@ -1,6 +1,6 @@
-package com.jeff.pets.rendering.custom.minecraft_earth.sheep.fuzzysheep;
+package com.jeff.pets.rendering.custom.minecraft_earth.sheep.fuzzy_sheep;
 
-import com.jeff.pets.mob.custom.minecraft_earth.sheep.FuzzySheep;
+import com.jeff.pets.mob.custom.minecraft_earth.sheep.MinecraftEarthSheep;
 import com.jeff.pets.rendering.custom.minecraft_earth.sheep.AbstractEarthSheepRenderer;
 import com.jeff.pets.rendering.custom.minecraft_earth.sheep.CustomSheepWoolLayer;
 import com.jeff.pets.rendering.custom.minecraft_earth.sheep.EarthSheepModel;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.jeff.pets.PetsInitializer.MOD_ID;
 
-public class FuzzySheepRenderer extends AbstractEarthSheepRenderer<FuzzySheep, EarthSheepModel> {
+public class FuzzySheepRenderer extends AbstractEarthSheepRenderer<MinecraftEarthSheep, EarthSheepModel> {
 
     public static final ModelLayerLocation FUZZY_SHEEP_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(MOD_ID, "fuzzy_sheep"), "main");
     static final Identifier FUZZY_SHEEP_WOOL_LOCATION = Identifier.fromNamespaceAndPath(MOD_ID, "textures/entity/minecraft_earth/sheep/wool_layer/fuzzy_sheep_wool.png");

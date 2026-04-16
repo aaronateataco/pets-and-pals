@@ -1,12 +1,15 @@
 package com.jeff.pets.mob.custom.aprilfools;
 
 import com.jeff.pets.PetsSounds;
+import com.jeff.pets.mob.AbstractPet;
 import com.jeff.pets.mob.custom.first.Duck;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
@@ -30,7 +33,7 @@ import org.jspecify.annotations.Nullable;
 
 import static com.jeff.pets.PetsInitializer.HEAD;
 
-public class Head extends TamableAnimal {
+public class Head extends AbstractPet {
     public static final EntityDataAccessor<@NotNull Boolean> IS_SERVER_ENTITY =
             SynchedEntityData.defineId(Head.class, EntityDataSerializers.BOOLEAN);
 
@@ -91,6 +94,21 @@ public class Head extends TamableAnimal {
         this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(6, new RandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(8, new FollowOwnerGoal(this, 1, 2, 10));
+    }
+
+    @Override
+    protected int stopDistance() {
+        return 0;
+    }
+
+    @Override
+    protected float heartHeight() {
+        return 0;
+    }
+
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return SoundEvents.CHICKEN_STEP.value();
     }
 
     @Override

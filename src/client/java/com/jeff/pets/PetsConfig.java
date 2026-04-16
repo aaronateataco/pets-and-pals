@@ -161,4 +161,12 @@ public class PetsConfig implements ConfigData {
     public String rainbowSheepName;
     public String rockySheepName;
     public String hornedSheepName;
+
+    public String mottledPigName;
+    public String muddyPigName;
+    public String palePigName;
+    public String piebaldPigName;
+    public String pinkFootedPigName;
+    public String sootyPigName;
+    public String spottedPigName;
 }

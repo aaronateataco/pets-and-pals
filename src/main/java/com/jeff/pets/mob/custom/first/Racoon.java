@@ -1,5 +1,6 @@
 package com.jeff.pets.mob.custom.first;
 
+import com.jeff.pets.mob.AbstractPet;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
@@ -9,6 +10,8 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
@@ -30,7 +33,7 @@ import org.lwjgl.system.ffm.mapping.Mapping;
 
 import static com.jeff.pets.PetsInitializer.RACOON;
 
-public class Racoon extends TamableAnimal {
+public class Racoon extends AbstractPet {
 
     public static final EntityDataAccessor<@NotNull Boolean> IS_SERVER_ENTITY =
             SynchedEntityData.defineId(Racoon.class, EntityDataSerializers.BOOLEAN);
@@ -38,6 +41,21 @@ public class Racoon extends TamableAnimal {
 
     public Racoon(EntityType<? extends @NotNull TamableAnimal> entityType, Level level) {
         super(entityType, level);
+    }
+
+    @Override
+    protected int stopDistance() {
+        return 2;
+    }
+
+    @Override
+    protected float heartHeight() {
+        return 0.8f;
+    }
+
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return SoundEvents.CHICKEN_STEP.value();
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -80,54 +98,6 @@ public class Racoon extends TamableAnimal {
     @Override
     public boolean isFood(@NotNull ItemStack itemStack) {
         return itemStack.is(ItemTags.CHICKEN_FOOD) || itemStack.is(ItemTags.FOX_FOOD);
-    }
-
-    @Override
-    public @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
-        ItemStack itemStack = player.getItemInHand(hand);
-
-        var x = this.getX();
-        var y = this.getY();
-        var z = this.getZ();
-
-        /*if (!this.isTame() && this.isFood(itemStack)) {
-            if (this.random.nextInt(3) == 0) {
-                this.tame(player);
-                this.navigation.stop();
-                this.level().addParticle(
-                        ParticleTypes.HEART,
-
-                        x + (player.getRandom().nextFloat() * 0.4 - 0.25),
-                        y + (player.getRandom().nextFloat() * 0.4 - 0.25),
-                        z + (player.getRandom().nextFloat() * 0.4 - 0.25),
-                        0, 5, 0
-                );
-            }
-        }*/
-
-        if (this.isTame() && itemStack.isEmpty() && !player.isShiftKeyDown()) {
-            this.level().addParticle(
-                    ParticleTypes.HEART,
-                    this.getX(),
-                    this.getY() + 2,
-                    this.getZ(),
-                    5, 5, 5
-            );
-            return InteractionResult.SUCCESS;
-        }
-
-        if (this.isTame() && itemStack.isEmpty() && player.isShiftKeyDown()) {
-            if (!this.isPassenger()) {
-                this.startRiding(player);
-                this.lookAt(player, 1f, 1f);
-                this.setOrderedToSit(true);
-                this.isOnHead = true;
-            } else {
-                this.stopRiding();
-            }
-            return InteractionResult.SUCCESS;
-        }
-        return super.mobInteract(player, hand);
     }
 
     @Override

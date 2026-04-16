@@ -1,5 +1,6 @@
 package com.jeff.pets.mob.aprilfools;
 
+import com.jeff.pets.mob.AbstractPet;
 import com.jeff.pets.mob.custom.first.Duck;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.protocol.Packet;
@@ -8,6 +9,7 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -25,63 +27,28 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 
-public class MoonCow extends TamableAnimal {
+public class MoonCow extends AbstractPet {
     public MoonCow(EntityType<? extends @NotNull TamableAnimal> entityType, Level level) {
         super(entityType, level);
     }
 
+    @Override
+    protected int stopDistance() {
+        return 2;
+    }
+
+    @Override
+    protected float heartHeight() {
+        return 1.5f;
+    }
+
+    @Override
+    protected SoundEvent getAmbientSound() {
+        return SoundEvents.COW_SOUNDS.get(CowSoundVariants.SoundSet.CLASSIC).ambientSound().value();
+    }
+
     public static AttributeSupplier.Builder createAttributes() {
         return Animal.createAnimalAttributes().add(Attributes.MAX_HEALTH, 8.0F).add(Attributes.MOVEMENT_SPEED, 0.23F);
-    }
-
-    @Override
-    public boolean isFood(@NotNull ItemStack itemStack) {
-        return false;
-    }
-
-    @Override
-    public @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
-        ItemStack itemStack = player.getItemInHand(hand);
-
-        var x = this.getX();
-        var y = this.getY();
-        var z = this.getZ();
-
-        if (!this.isTame() && this.isFood(itemStack)) {
-            if (this.random.nextInt(3) == 0) {
-                this.tame(player);
-                this.navigation.stop();
-                this.level().addParticle(
-                        ParticleTypes.HEART,
-
-                        x + (player.getRandom().nextFloat() * 0.4 - 0.25),
-                        y + (player.getRandom().nextFloat() * 0.4 - 0.25),
-                        z + (player.getRandom().nextFloat() * 0.4 - 0.25),
-                        0, 5, 0
-                );
-            }
-        }
-
-        if (this.isTame() && itemStack.isEmpty()) {
-            this.level().addParticle(
-                    ParticleTypes.HEART,
-                    this.getX(),
-                    this.getY() + 1.5,
-                    this.getZ(),
-                    5, 5, 5
-            );
-        }
-
-        if (this.isTame() && itemStack.isEmpty() && player.isShiftKeyDown()) {
-            if (!this.isPassenger()) {
-                this.startRiding(player);
-                this.lookAt(player, 1f, 1f);
-                this.setOrderedToSit(true);
-            } else {
-                this.stopRiding();
-            }
-        }
-        return InteractionResult.SUCCESS;
     }
 
     @Override
@@ -172,27 +139,6 @@ public class MoonCow extends TamableAnimal {
         int ambient = (int) (Math.random() * (60 * 20));
         if (ambient == 1) {
             level().playLocalSound(this, SoundEvents.COW_SOUNDS.get(CowSoundVariants.SoundSet.CLASSIC).ambientSound().value(), SoundSource.AMBIENT, 1.0f, 1.0f);
-        }
-    }
-
-    @Override
-    public @Nullable AgeableMob getBreedOffspring(@NotNull ServerLevel serverLevel, @NotNull AgeableMob ageableMob) {
-        return null;
-    }
-
-    @Override
-    public void onSyncedDataUpdated(@NotNull EntityDataAccessor<?> key) {
-        if (!this.level().isClientSide()) {
-            super.onSyncedDataUpdated(key);
-        }
-    }
-
-    @Override
-    public @NotNull Packet<@NotNull ClientGamePacketListener> getAddEntityPacket(@NotNull ServerEntity serverEntity) {
-        if (this.level().isClientSide()) {
-            return new ClientboundAddEntityPacket(this, serverEntity);
-        } else {
-            return super.getAddEntityPacket(serverEntity);
         }
     }
 }

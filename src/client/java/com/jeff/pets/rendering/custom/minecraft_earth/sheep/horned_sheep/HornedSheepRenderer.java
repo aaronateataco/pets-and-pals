@@ -1,6 +1,6 @@
 package com.jeff.pets.rendering.custom.minecraft_earth.sheep.horned_sheep;
 
-import com.jeff.pets.mob.custom.minecraft_earth.sheep.HornedSheep;
+import com.jeff.pets.mob.custom.minecraft_earth.sheep.MinecraftEarthSheep;
 import com.jeff.pets.rendering.custom.minecraft_earth.sheep.AbstractEarthSheepRenderer;
 import com.jeff.pets.rendering.custom.minecraft_earth.sheep.CustomSheepWoolLayer;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.jeff.pets.PetsInitializer.MOD_ID;
 
-public class HornedSheepRenderer extends AbstractEarthSheepRenderer<HornedSheep, HornedSheepModel> {
+public class HornedSheepRenderer extends AbstractEarthSheepRenderer<MinecraftEarthSheep, HornedSheepModel> {
 
     public static final ModelLayerLocation HORNED_SHEEP_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(MOD_ID, "horned_sheep"), "main");
     static final Identifier HORNED_SHEEP_WOOL_LOCATION = Identifier.withDefaultNamespace("textures/entity/sheep/sheep_wool.png");

@@ -1,6 +1,7 @@
 package com.jeff.pets.mob.custom.first;
 
 import com.jeff.pets.PetsSounds;
+import com.jeff.pets.mob.AbstractPet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -35,7 +36,7 @@ import org.jspecify.annotations.Nullable;
 
 import static com.jeff.pets.PetsInitializer.PENGUIN;
 
-public class Penguin extends TamableAnimal {
+public class Penguin extends AbstractPet {
     public static final EntityDataAccessor<@NotNull Boolean> IS_SERVER_ENTITY =
             SynchedEntityData.defineId(Penguin.class, EntityDataSerializers.BOOLEAN);
     public float flap;
@@ -50,6 +51,16 @@ public class Penguin extends TamableAnimal {
 
     public Penguin(EntityType<? extends @NotNull TamableAnimal> entityType, Level level) {
         super(entityType, level);
+    }
+
+    @Override
+    protected int stopDistance() {
+        return 0;
+    }
+
+    @Override
+    protected float heartHeight() {
+        return 1.3f;
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -139,55 +150,6 @@ public class Penguin extends TamableAnimal {
         this.goalSelector.addGoal(5, new RandomLookAroundGoal(this));
         this.goalSelector.addGoal(6, new RandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(8, new FollowOwnerGoal(this, 1, 2, 10));
-    }
-
-    @Override
-    public @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
-        ItemStack itemStack = player.getItemInHand(hand);
-
-        var x = this.getX();
-        var y = this.getY();
-        var z = this.getZ();
-
-        /*if (!this.isTame() && this.isFood(itemStack)) {
-            if (this.random.nextInt(3) == 0) {
-                this.tame(player);
-                this.navigation.stop();
-                this.level().addParticle(
-                        ParticleTypes.HEART,
-
-                        x + (player.getRandom().nextFloat() * 0.4 - 0.25),
-                        y + (player.getRandom().nextFloat() * 0.4 - 0.25),
-                        z + (player.getRandom().nextFloat() * 0.4 - 0.25),
-                        0, 5, 0
-                );
-            }
-            return InteractionResult.SUCCESS;
-        }*/
-
-        if (this.isTame() && itemStack.isEmpty() && !player.isShiftKeyDown()) {
-            this.level().addParticle(
-                    ParticleTypes.HEART,
-                    this.getX(),
-                    this.getY() + 1,
-                    this.getZ(),
-                    5, 5, 5
-            );
-            return InteractionResult.SUCCESS;
-        }
-
-        if (this.isTame() && itemStack.isEmpty() && player.isShiftKeyDown()) {
-            if (!this.isPassenger()) {
-                this.startRiding(player);
-                this.lookAt(player, 1f, 1f);
-                this.setOrderedToSit(true);
-                this.isOnHead = true;
-            } else {
-                this.stopRiding();
-            }
-            return InteractionResult.SUCCESS;
-        }
-        return super.mobInteract(player, hand);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.jeff.pets.mob.custom.first;
 
 import com.jeff.pets.PetsInitializer;
 import com.jeff.pets.PetsSounds;
+import com.jeff.pets.mob.AbstractPet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -45,7 +46,7 @@ import org.lwjgl.system.ffm.mapping.Mapping;
 
 import static com.jeff.pets.PetsInitializer.DUCK;
 
-public class Duck extends ShoulderRidingEntity {
+public class Duck extends AbstractPet {
 
     public static final EntityDataAccessor<@NotNull Boolean> IS_SERVER_ENTITY =
             SynchedEntityData.defineId(Duck.class, EntityDataSerializers.BOOLEAN);
@@ -118,6 +119,16 @@ public class Duck extends ShoulderRidingEntity {
         this.nextFlap = this.flyDist + this.flapSpeed / 2.0F;
     }
 
+    @Override
+    protected int stopDistance() {
+        return 2;
+    }
+
+    @Override
+    protected float heartHeight() {
+        return 0.5f;
+    }
+
     protected SoundEvent getAmbientSound() {
         return PetsSounds.DUCK_AMBIENT;
     }
@@ -165,63 +176,6 @@ public class Duck extends ShoulderRidingEntity {
         this.goalSelector.addGoal(6, new RandomStrollGoal(this, 1.0D));
         this.goalSelector.addGoal(7, new EatBlockGoal(this));
         this.goalSelector.addGoal(8, new FollowOwnerGoal(this, 1, 2, 10));
-    }
-
-    @Override
-    public @NotNull InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
-        ItemStack itemStack = player.getItemInHand(hand);
-
-        CompoundTag pet = new CompoundTag();
-        pet.putString("id", PetsInitializer.MOD_ID + "duck");
-
-        var x = this.getX();
-        var y = this.getY();
-        var z = this.getZ();
-
-        /*if (!this.isTame() && this.isFood(itemStack)) {
-            if (this.random.nextInt(3) == 0) {
-                this.tame(player);
-                this.navigation.stop();
-                this.level().addParticle(
-                        ParticleTypes.HEART,
-
-                        x + (player.getRandom().nextFloat() * 0.4 - 0.25),
-                        y + (player.getRandom().nextFloat() * 0.4 - 0.25),
-                        z + (player.getRandom().nextFloat() * 0.4 - 0.25),
-                        0, 5, 0
-                );
-            }
-            return InteractionResult.SUCCESS;
-        }*/
-
-        /**You are going to have some issues trying to make the interaction result work
-         * as the animal will not go onto its head. Make sure to check that the player's
-         * shift key is not down.
-         */
-
-        if (this.isTame() && itemStack.isEmpty() && !player.isShiftKeyDown()) {
-            this.level().addParticle(
-                    ParticleTypes.HEART,
-                    this.getX(),
-                    this.getY() + 1,
-                    this.getZ(),
-                    5, 5, 5
-            );
-            return InteractionResult.SUCCESS;
-        }
-
-        if (this.isTame() && itemStack.isEmpty() && player.isShiftKeyDown()) {
-            if (!this.isPassenger()) {
-                this.startRiding(player);
-                this.lookAt(player, 1f, 1f);
-                this.isOnHead = true;
-                return InteractionResult.SUCCESS;
-            } else {
-                this.stopRiding();
-            }
-            return InteractionResult.SUCCESS;
-        }
-        return super.mobInteract(player, hand);
     }
 
     @Override

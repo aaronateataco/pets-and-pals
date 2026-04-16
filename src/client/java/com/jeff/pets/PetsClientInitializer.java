@@ -1,6 +1,5 @@
 package com.jeff.pets;
 
-import com.jeff.pets.mob.custom.minecraft_earth.sheep.InkySheep;
 import com.jeff.pets.rendering.aprilfools.angryghast.AngryGhastRenderer;
 import com.jeff.pets.rendering.aprilfools.batato.BatatoModel;
 import com.jeff.pets.rendering.aprilfools.batato.BatatoRenderer;
@@ -36,9 +35,18 @@ import com.jeff.pets.rendering.custom.aprilfools.head.HeadModel;
 import com.jeff.pets.rendering.custom.aprilfools.head.HeadRenderer;
 import com.jeff.pets.rendering.custom.first.racoon.RacoonModel;
 import com.jeff.pets.rendering.custom.first.racoon.RacoonRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.pig.EarthPigModel;
+import com.jeff.pets.rendering.custom.minecraft_earth.pig.mottled_pig.MottledPigRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.pig.muddy_pig.MuddyPigModel;
+import com.jeff.pets.rendering.custom.minecraft_earth.pig.muddy_pig.MuddyPigRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.pig.pale_pig.PalePigRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.pig.piebald_pig.PiebaldPigRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.pig.pink_footed_pig.PinkFootedPigRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.pig.sooty_pig.SootyPigRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.pig.spotted_pig.SpottedPigRenderer;
 import com.jeff.pets.rendering.custom.minecraft_earth.sheep.EarthSheepModel;
 import com.jeff.pets.rendering.custom.minecraft_earth.sheep.flecked_sheep.FleckedSheepRenderer;
-import com.jeff.pets.rendering.custom.minecraft_earth.sheep.fuzzysheep.FuzzySheepRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.sheep.fuzzy_sheep.FuzzySheepRenderer;
 import com.jeff.pets.rendering.custom.minecraft_earth.sheep.horned_sheep.HornedSheepModel;
 import com.jeff.pets.rendering.custom.minecraft_earth.sheep.horned_sheep.HornedSheepRenderer;
 import com.jeff.pets.rendering.custom.minecraft_earth.sheep.inky_sheep.InkySheepRenderer;
@@ -181,6 +189,7 @@ import net.minecraft.client.model.monster.strider.AdultStriderModel;
 import net.minecraft.client.model.monster.vex.VexModel;
 import net.minecraft.client.model.monster.warden.WardenModel;
 import net.minecraft.client.model.monster.witch.WitchModel;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 
@@ -299,6 +308,13 @@ public class PetsClientInitializer implements ClientModInitializer {
         EntityRendererRegistry.register(PetsInitializer.LONG_NOSED_SHEEP, LongNosedSheepRenderer::new);
         EntityRendererRegistry.register(PetsInitializer.PATCHED_SHEEP, PatchedSheepRenderer::new);
         EntityRendererRegistry.register(PetsInitializer.ROCKY_SHEEP, RockySheepRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.MOTTLED_PIG, MottledPigRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.MUDDY_PIG, MuddyPigRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.PALE_PIG, PalePigRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.PIEBALD_PIG, PiebaldPigRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.PINK_FOOTED_PIG, PinkFootedPigRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.SOOTY_PIG, SootyPigRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.SPOTTED_PIG, SpottedPigRenderer::new);
 
         ModelLayerRegistry.registerModelLayer(HeadModel.LAYER_LOCATION, HeadModel::getTexturedModelData);
         ModelLayerRegistry.registerModelLayer(RacoonRenderer.RACOON_LOCATION, RacoonModel::getTexturedModelData);
@@ -408,6 +424,13 @@ public class PetsClientInitializer implements ClientModInitializer {
         ModelLayerRegistry.registerModelLayer(LongNosedSheepRenderer.LONG_NOSED_SHEEP_LOCATION, EarthSheepModel::createBodyLayer);
         ModelLayerRegistry.registerModelLayer(PatchedSheepRenderer.PATCHED_SHEEP_LOCATION, EarthSheepModel::createBodyLayer);
         ModelLayerRegistry.registerModelLayer(RockySheepRenderer.ROCKY_SHEEP_LOCATION, EarthSheepModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(MottledPigRenderer.MOTTLED_PIG_LOCATION, EarthPigModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(MuddyPigRenderer.MUDDY_PIG_LOCATION, MuddyPigModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(PalePigRenderer.PALE_PIG_LOCATION, EarthPigModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(PiebaldPigRenderer.PIEBALD_PIG_LOCATION, EarthPigModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(PinkFootedPigRenderer.PINK_FOOTED_PIG_LOCATION, EarthPigModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(SootyPigRenderer.SOOTY_PIG_LOCATION, EarthPigModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(SpottedPigRenderer.SPOTTED_PIG_LOCATION, EarthPigModel::createBodyLayer);
     }
 
     void createKeyBinding() {

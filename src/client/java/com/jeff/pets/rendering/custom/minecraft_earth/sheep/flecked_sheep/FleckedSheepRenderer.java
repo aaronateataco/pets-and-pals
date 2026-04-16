@@ -1,6 +1,6 @@
 package com.jeff.pets.rendering.custom.minecraft_earth.sheep.flecked_sheep;
 
-import com.jeff.pets.mob.custom.minecraft_earth.sheep.FleckedSheep;
+import com.jeff.pets.mob.custom.minecraft_earth.sheep.MinecraftEarthSheep;
 import com.jeff.pets.rendering.custom.minecraft_earth.sheep.AbstractEarthSheepRenderer;
 import com.jeff.pets.rendering.custom.minecraft_earth.sheep.CustomSheepWoolLayer;
 import com.jeff.pets.rendering.custom.minecraft_earth.sheep.EarthSheepModel;
@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import static com.jeff.pets.PetsInitializer.FLECKED_SHEEP;
 import static com.jeff.pets.PetsInitializer.MOD_ID;
 
-public class FleckedSheepRenderer extends AbstractEarthSheepRenderer<FleckedSheep, EarthSheepModel> {
+public class FleckedSheepRenderer extends AbstractEarthSheepRenderer<MinecraftEarthSheep, EarthSheepModel> {
 
     public static final ModelLayerLocation FLECKED_SHEEP_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(MOD_ID, "flecked_sheep"), "main");
     static final Identifier FLECKED_SHEEP_WOOL_LOCATION = Identifier.fromNamespaceAndPath(MOD_ID, "textures/entity/minecraft_earth/sheep/wool_layer/flecked_sheep_wool.png");

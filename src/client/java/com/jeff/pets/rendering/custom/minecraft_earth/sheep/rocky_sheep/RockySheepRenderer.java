@@ -1,6 +1,6 @@
 package com.jeff.pets.rendering.custom.minecraft_earth.sheep.rocky_sheep;
 
-import com.jeff.pets.mob.custom.minecraft_earth.sheep.RockySheep;
+import com.jeff.pets.mob.custom.minecraft_earth.sheep.MinecraftEarthSheep;
 import com.jeff.pets.rendering.custom.minecraft_earth.sheep.AbstractEarthSheepRenderer;
 import com.jeff.pets.rendering.custom.minecraft_earth.sheep.CustomSheepWoolLayer;
 import com.jeff.pets.rendering.custom.minecraft_earth.sheep.EarthSheepModel;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
 
 import static com.jeff.pets.PetsInitializer.MOD_ID;
 
-public class RockySheepRenderer extends AbstractEarthSheepRenderer<RockySheep, EarthSheepModel> {
+public class RockySheepRenderer extends AbstractEarthSheepRenderer<MinecraftEarthSheep, EarthSheepModel> {
 
     public static final ModelLayerLocation ROCKY_SHEEP_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(MOD_ID, "rocky_sheep"), "main");
     static final Identifier ROCKY_SHEEP_WOOL_LOCATION = Identifier.fromNamespaceAndPath(MOD_ID, "textures/entity/minecraft_earth/sheep/wool_layer/rocky_sheep_wool.png");

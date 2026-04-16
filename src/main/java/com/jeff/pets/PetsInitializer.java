@@ -8,6 +8,8 @@ import com.jeff.pets.mob.custom.first.Racoon;
 import com.jeff.pets.mob.custom.aquatic.DumboOctopus;
 import com.jeff.pets.mob.custom.aquatic.Koi;
 import com.jeff.pets.mob.custom.aquatic.Stingray;
+import com.jeff.pets.mob.custom.minecraft_earth.pig.MinecraftEarthPig;
+
 import com.jeff.pets.mob.custom.minecraft_earth.sheep.*;
 import com.jeff.pets.mob.vanilla.boss.ClientEnderDragon;
 import com.jeff.pets.mob.vanilla.boss.ClientWither;
@@ -1075,6 +1077,7 @@ public class PetsInitializer implements ModInitializer {
             BuiltInRegistries.ENTITY_TYPE,
             Identifier.fromNamespaceAndPath(MOD_ID, "traitor"),
             EntityType.Builder.of(Traitor::new, MobCategory.CREATURE)
+                    .noSummon()
                     .sized(0.6f, 1.95f)
                     .eyeHeight(1.95f)
                     .build(TRAITOR_KEY));
@@ -1114,10 +1117,11 @@ public class PetsInitializer implements ModInitializer {
 
     private static final ResourceKey<@NotNull EntityType<?>> RAINBOW_SHEEP_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "rainbow_sheep"));
-    public static final EntityType<@NotNull RainbowSheep> RAINBOW_SHEEP = Registry.register(
+    public static final EntityType<@NotNull MinecraftEarthSheep> RAINBOW_SHEEP = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
             Identifier.fromNamespaceAndPath(MOD_ID, "rainbow_sheep"),
-            EntityType.Builder.of(RainbowSheep::new, MobCategory.AMBIENT)
+            EntityType.Builder.of(MinecraftEarthSheep::new, MobCategory.AMBIENT)
+                    .noSummon()
                     .sized(0.9f, 1.3f)
                     .eyeHeight(1.3f)
                     .build(RAINBOW_SHEEP_KEY)
@@ -1125,10 +1129,11 @@ public class PetsInitializer implements ModInitializer {
 
     private static final ResourceKey<@NotNull EntityType<?>> FLECKED_SHEEP_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "flecked_sheep"));
-    public static final EntityType<@NotNull FleckedSheep> FLECKED_SHEEP = Registry.register(
+    public static final EntityType<@NotNull MinecraftEarthSheep> FLECKED_SHEEP = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
             Identifier.fromNamespaceAndPath(MOD_ID, "flecked_sheep"),
-            EntityType.Builder.of(FleckedSheep::new, MobCategory.AMBIENT)
+            EntityType.Builder.of(MinecraftEarthSheep::new, MobCategory.AMBIENT)
+                    .noSummon()
                     .sized(0.9f, 1.3f)
                     .eyeHeight(1.3f)
                     .build(FLECKED_SHEEP_KEY)
@@ -1136,10 +1141,11 @@ public class PetsInitializer implements ModInitializer {
 
     private static final ResourceKey<@NotNull EntityType<?>> FUZZY_SHEEP_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "fuzzy_sheep"));
-    public static final EntityType<@NotNull FuzzySheep> FUZZY_SHEEP = Registry.register(
+    public static final EntityType<@NotNull MinecraftEarthSheep> FUZZY_SHEEP = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
             Identifier.fromNamespaceAndPath(MOD_ID, "fuzzy_sheep"),
-            EntityType.Builder.of(FuzzySheep::new, MobCategory.AMBIENT)
+            EntityType.Builder.of(MinecraftEarthSheep::new, MobCategory.AMBIENT)
+                    .noSummon()
                     .sized(0.9f, 1.3f)
                     .eyeHeight(1.3f)
                     .build(FUZZY_SHEEP_KEY)
@@ -1147,10 +1153,11 @@ public class PetsInitializer implements ModInitializer {
 
     private static final ResourceKey<@NotNull EntityType<?>> INKY_SHEEP_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "inky_sheep"));
-    public static final EntityType<@NotNull InkySheep> INKY_SHEEP = Registry.register(
+    public static final EntityType<@NotNull MinecraftEarthSheep> INKY_SHEEP = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
             Identifier.fromNamespaceAndPath(MOD_ID, "inky_sheep"),
-            EntityType.Builder.of(InkySheep::new, MobCategory.AMBIENT)
+            EntityType.Builder.of(MinecraftEarthSheep::new, MobCategory.AMBIENT)
+                    .noSummon()
                     .sized(0.9f, 1.3f)
                     .eyeHeight(1.3f)
                     .build(INKY_SHEEP_KEY)
@@ -1158,10 +1165,11 @@ public class PetsInitializer implements ModInitializer {
 
     private static final ResourceKey<@NotNull EntityType<?>> LONG_NOSED_SHEEP_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "long_nosed_sheep"));
-    public static final EntityType<@NotNull LongNosedSheep> LONG_NOSED_SHEEP = Registry.register(
+    public static final EntityType<@NotNull MinecraftEarthSheep> LONG_NOSED_SHEEP = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
             Identifier.fromNamespaceAndPath(MOD_ID, "long_nosed_sheep"),
-            EntityType.Builder.of(LongNosedSheep::new, MobCategory.AMBIENT)
+            EntityType.Builder.of(MinecraftEarthSheep::new, MobCategory.AMBIENT)
+                    .noSummon()
                     .sized(0.9f, 1.3f)
                     .eyeHeight(1.3f)
                     .build(LONG_NOSED_SHEEP_KEY)
@@ -1169,10 +1177,11 @@ public class PetsInitializer implements ModInitializer {
 
     private static final ResourceKey<@NotNull EntityType<?>> PATCHED_SHEEP_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "patched_sheep"));
-    public static final EntityType<@NotNull PatchedSheep> PATCHED_SHEEP = Registry.register(
+    public static final EntityType<@NotNull MinecraftEarthSheep> PATCHED_SHEEP = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
             Identifier.fromNamespaceAndPath(MOD_ID, "patched_sheep"),
-            EntityType.Builder.of(PatchedSheep::new, MobCategory.AMBIENT)
+            EntityType.Builder.of(MinecraftEarthSheep::new, MobCategory.AMBIENT)
+                    .noSummon()
                     .sized(0.9f, 1.3f)
                     .eyeHeight(1.3f)
                     .build(PATCHED_SHEEP_KEY)
@@ -1180,10 +1189,11 @@ public class PetsInitializer implements ModInitializer {
 
     private static final ResourceKey<@NotNull EntityType<?>> ROCKY_SHEEP_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "rocky_sheep"));
-    public static final EntityType<@NotNull RockySheep> ROCKY_SHEEP = Registry.register(
+    public static final EntityType<@NotNull MinecraftEarthSheep> ROCKY_SHEEP = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
             Identifier.fromNamespaceAndPath(MOD_ID, "rocky_sheep"),
-            EntityType.Builder.of(RockySheep::new, MobCategory.AMBIENT)
+            EntityType.Builder.of(MinecraftEarthSheep::new, MobCategory.AMBIENT)
+                    .noSummon()
                     .sized(0.9f, 1.3f)
                     .eyeHeight(1.3f)
                     .build(ROCKY_SHEEP_KEY)
@@ -1191,14 +1201,100 @@ public class PetsInitializer implements ModInitializer {
 
     private static final ResourceKey<@NotNull EntityType<?>> HORNED_SHEEP_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "horned_sheep"));
-    public static final EntityType<@NotNull HornedSheep> HORNED_SHEEP = Registry.register(
+    public static final EntityType<@NotNull MinecraftEarthSheep> HORNED_SHEEP = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
             Identifier.fromNamespaceAndPath(MOD_ID, "horned_sheep"),
-            EntityType.Builder.of(HornedSheep::new, MobCategory.AMBIENT)
+            EntityType.Builder.of(MinecraftEarthSheep::new, MobCategory.AMBIENT)
+                    .noSummon()
                     .sized(0.9f, 1.3f)
                     .eyeHeight(1.3f)
                     .build(HORNED_SHEEP_KEY)
     );
+
+    private static final ResourceKey<@NotNull EntityType<?>> MOTTLED_PIG_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "mottled_pig"));
+    public static final EntityType<@NotNull MinecraftEarthPig> MOTTLED_PIG = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "mottled_pig"),
+            EntityType.Builder.of(MinecraftEarthPig::new, MobCategory.AMBIENT)
+                    .noSummon()
+                    .sized(0.9f, 0.9f)
+                    .eyeHeight(0.9f)
+                    .build(MOTTLED_PIG_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> MUDDY_PIG_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "muddy_pig"));
+    public static final EntityType<@NotNull MinecraftEarthPig> MUDDY_PIG = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "muddy_pig"),
+            EntityType.Builder.of(MinecraftEarthPig::new, MobCategory.AMBIENT)
+                    .noSummon()
+                    .sized(0.9f, 1.3f)
+                    .eyeHeight(0.9f)
+                    .build(MUDDY_PIG_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> PALE_PIG_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "pale_pig"));
+    public static final EntityType<@NotNull MinecraftEarthPig> PALE_PIG = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "pale_pig"),
+            EntityType.Builder.of(MinecraftEarthPig::new, MobCategory.AMBIENT)
+                    .noSummon()
+                    .sized(0.9f, 0.9f)
+                    .eyeHeight(0.9f)
+                    .build(PALE_PIG_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> PIEBALD_PIG_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "piebald_pig"));
+    public static final EntityType<@NotNull MinecraftEarthPig> PIEBALD_PIG = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "piebald_pig"),
+            EntityType.Builder.of(MinecraftEarthPig::new, MobCategory.AMBIENT)
+                    .noSummon()
+                    .sized(0.9f, 0.9f)
+                    .eyeHeight(0.9f)
+                    .build(PIEBALD_PIG_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> PINK_FOOTED_PIG_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "pink_footed_pig"));
+    public static final EntityType<@NotNull MinecraftEarthPig> PINK_FOOTED_PIG = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "pink_footed_pig"),
+            EntityType.Builder.of(MinecraftEarthPig::new, MobCategory.AMBIENT)
+                    .noSummon()
+                    .sized(0.9f, 0.9f)
+                    .eyeHeight(0.9f)
+                    .build(PINK_FOOTED_PIG_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> SOOTY_PIG_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "sooty_pig"));
+    public static final EntityType<@NotNull MinecraftEarthPig> SOOTY_PIG = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "sooty_pig"),
+            EntityType.Builder.of(MinecraftEarthPig::new, MobCategory.AMBIENT)
+                    .noSummon()
+                    .sized(0.9f, 0.9f)
+                    .eyeHeight(0.9f)
+                    .build(SOOTY_PIG_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> SPOTTED_PIG_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "spotted_pig"));
+    public static final EntityType<@NotNull MinecraftEarthPig> SPOTTED_PIG = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "spotted_pig"),
+            EntityType.Builder.of(MinecraftEarthPig::new, MobCategory.AMBIENT)
+                    .noSummon()
+                    .sized(0.9f, 0.9f)
+                    .eyeHeight(0.9f)
+                    .build(SPOTTED_PIG_KEY)
+    );
+
 
     @Override
     public void onInitialize() {
@@ -1302,14 +1398,21 @@ public class PetsInitializer implements ModInitializer {
         FabricDefaultAttributeRegistry.register(DUMBO_OCTOPUS, DumboOctopus.createAttributes().build());
         FabricDefaultAttributeRegistry.register(KOI, Koi.createAttributes().build());
         FabricDefaultAttributeRegistry.register(STINGRAY, Stingray.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(RAINBOW_SHEEP, RainbowSheep.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(FLECKED_SHEEP, FleckedSheep.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(FUZZY_SHEEP, FuzzySheep.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(INKY_SHEEP, InkySheep.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(LONG_NOSED_SHEEP, LongNosedSheep.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(PATCHED_SHEEP, PatchedSheep.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(ROCKY_SHEEP, RockySheep.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(HORNED_SHEEP, HornedSheep.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(RAINBOW_SHEEP, MinecraftEarthSheep.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(FLECKED_SHEEP, MinecraftEarthSheep.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(FUZZY_SHEEP, MinecraftEarthSheep.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(INKY_SHEEP, MinecraftEarthSheep.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(LONG_NOSED_SHEEP, MinecraftEarthSheep.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(PATCHED_SHEEP, MinecraftEarthSheep.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(ROCKY_SHEEP, MinecraftEarthSheep.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(HORNED_SHEEP, MinecraftEarthSheep.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(MOTTLED_PIG, MinecraftEarthPig.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(MUDDY_PIG, MinecraftEarthPig.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(PALE_PIG, MinecraftEarthPig.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(PIEBALD_PIG, MinecraftEarthPig.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(PINK_FOOTED_PIG, MinecraftEarthPig.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(SOOTY_PIG, MinecraftEarthPig.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(SPOTTED_PIG, MinecraftEarthPig.createAttributes().build());
 
         PetsSounds.initialize();
 
