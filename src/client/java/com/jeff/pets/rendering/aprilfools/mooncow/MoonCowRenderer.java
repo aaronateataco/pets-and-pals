@@ -2,15 +2,10 @@ package com.jeff.pets.rendering.aprilfools.mooncow;
 
 import com.jeff.pets.mob.aprilfools.MoonCow;
 import com.jeff.pets.rendering.PetRenderer;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.animal.cow.CowModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.block.BlockModelResolver;
 import net.minecraft.client.renderer.block.model.BlockDisplayContext;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +21,7 @@ public class MoonCowRenderer extends PetRenderer<@NotNull MoonCow, @NotNull Moon
     public MoonCowRenderer(EntityRendererProvider.Context context) {
         super(context, new LegacyCowModel(context.bakeLayer(MOON_COW_LOCATION)), 0.75f);
         this.resolver = context.getBlockModelResolver();
-        this.addLayer(new MoonCowHelmetLayer(this, context));
+        this.addLayer(new MoonCowHelmetLayer(this));
     }
 
     @Override

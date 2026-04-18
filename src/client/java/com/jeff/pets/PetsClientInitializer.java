@@ -35,6 +35,22 @@ import com.jeff.pets.rendering.custom.aprilfools.head.HeadModel;
 import com.jeff.pets.rendering.custom.aprilfools.head.HeadRenderer;
 import com.jeff.pets.rendering.custom.first.racoon.RacoonModel;
 import com.jeff.pets.rendering.custom.first.racoon.RacoonRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.cow.CustomCowModel;
+import com.jeff.pets.rendering.custom.minecraft_earth.cow.albino_cow.AlbinoCowRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.cow.ashen_cow.AshenCowRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.cow.cookie_cow.CookieCowRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.cow.cream_cow.CreamCowRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.cow.dairy_cow.DairyCowRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.cow.moobloom.MoobloomRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.cow.moolip.MoolipRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.cow.pinto_cow.PintoCowRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.cow.sunset_cow.SunsetCowRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.cow.umbra_cow.UmbraCowRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.cow.wooly_cow.WoolyCowRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.dyed_cat.DyedCatRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.furnace_golem.FurnaceGolemRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.jolly_llama.JollyLlamaModel;
+import com.jeff.pets.rendering.custom.minecraft_earth.jolly_llama.JollyLlamaRenderer;
 import com.jeff.pets.rendering.custom.minecraft_earth.pig.EarthPigModel;
 import com.jeff.pets.rendering.custom.minecraft_earth.pig.mottled_pig.MottledPigRenderer;
 import com.jeff.pets.rendering.custom.minecraft_earth.pig.muddy_pig.MuddyPigModel;
@@ -54,6 +70,8 @@ import com.jeff.pets.rendering.custom.minecraft_earth.sheep.long_nosed_sheep.Lon
 import com.jeff.pets.rendering.custom.minecraft_earth.sheep.patched_sheep.PatchedSheepRenderer;
 import com.jeff.pets.rendering.custom.minecraft_earth.sheep.rainbow_sheep.RainbowSheepRenderer;
 import com.jeff.pets.rendering.custom.minecraft_earth.sheep.rocky_sheep.RockySheepRenderer;
+import com.jeff.pets.rendering.custom.minecraft_earth.tropical_slime.TropicalSlimeOuterLayer;
+import com.jeff.pets.rendering.custom.minecraft_earth.tropical_slime.TropicalSlimeRenderer;
 import com.jeff.pets.rendering.vanilla.allay.ClientAllayRenderer;
 import com.jeff.pets.rendering.vanilla.armadillo.ClientArmadilloRenderer;
 import com.jeff.pets.rendering.vanilla.axolotl.ClientAxolotlRenderer;
@@ -63,6 +81,7 @@ import com.jeff.pets.rendering.vanilla.blaze.ClientBlazeRenderer;
 import com.jeff.pets.rendering.vanilla.bogged.ClientBoggedRenderer;
 import com.jeff.pets.rendering.vanilla.breeze.ClientBreezeRenderer;
 import com.jeff.pets.rendering.vanilla.camel.ClientCamelRenderer;
+import com.jeff.pets.rendering.vanilla.cat.ClientCatModel;
 import com.jeff.pets.rendering.vanilla.cat.ClientCatRenderer;
 import com.jeff.pets.rendering.vanilla.cavespider.ClientCaveSpiderModel;
 import com.jeff.pets.rendering.vanilla.cavespider.ClientCaveSpiderRenderer;
@@ -189,15 +208,36 @@ import net.minecraft.client.model.monster.strider.AdultStriderModel;
 import net.minecraft.client.model.monster.vex.VexModel;
 import net.minecraft.client.model.monster.warden.WardenModel;
 import net.minecraft.client.model.monster.witch.WitchModel;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.IronGolemRenderer;
 import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import static com.jeff.pets.PetsInitializer.LOGGER;
+
+/**Another {@code initializer} class. This class does a couple of things:
+ * <p> - Assigns renderers to the entities defined in {@link PetsInitializer}
+ * <p> - Bakes models into the layers
+ * <p> - Creates the keybind to open the config screen, by default {@code p}
+ * <p> Suppresses: Deprecation warnings, as {@link EntityRendererRegistry} is marked as
+ * {@code deprecated}. I will likely have to find a suitable replacement sometime, but for now,
+ * suppressing the warnings will work.
+ * @see PetsInitializer
+ * @see Central*/
 @SuppressWarnings("deprecation")
 public class PetsClientInitializer implements ClientModInitializer {
 
+    public static List<String> ADDONS = new ArrayList<>();
+
+    /**Misc rendering stuff*/
     @Override
     public void onInitializeClient() {
+
+        LOGGER.info("PetsMod addons loaded:{}", ADDONS);
 
         this.createKeyBinding();
 
@@ -315,6 +355,21 @@ public class PetsClientInitializer implements ClientModInitializer {
         EntityRendererRegistry.register(PetsInitializer.PINK_FOOTED_PIG, PinkFootedPigRenderer::new);
         EntityRendererRegistry.register(PetsInitializer.SOOTY_PIG, SootyPigRenderer::new);
         EntityRendererRegistry.register(PetsInitializer.SPOTTED_PIG, SpottedPigRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.MOOBLOOM, MoobloomRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.ALBINO_COW, AlbinoCowRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.ASHEN_COW, AshenCowRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.COOKIE_COW, CookieCowRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.CREAM_COW, CreamCowRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.DAIRY_COW, DairyCowRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.MOOLIP, MoolipRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.PINTO_COW, PintoCowRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.SUNSET_COW, SunsetCowRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.UMBRA_COW, UmbraCowRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.WOOLY_COW, WoolyCowRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.TROPICAL_SLIME, TropicalSlimeRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.JOLLY_LLAMA, JollyLlamaRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.DYED_CAT, DyedCatRenderer::new);
+        EntityRendererRegistry.register(PetsInitializer.FURNACE_GOLEM, FurnaceGolemRenderer::new);
 
         ModelLayerRegistry.registerModelLayer(HeadModel.LAYER_LOCATION, HeadModel::getTexturedModelData);
         ModelLayerRegistry.registerModelLayer(RacoonRenderer.RACOON_LOCATION, RacoonModel::getTexturedModelData);
@@ -402,7 +457,7 @@ public class PetsClientInitializer implements ClientModInitializer {
         ModelLayerRegistry.registerModelLayer(LoveGolemRenderer.LOVE_GOLEM_LOCATION, IronGolemModel::createBodyLayer);
         ModelLayerRegistry.registerModelLayer(MegaSpudRenderer.MEGA_SPUD_LOCATION, MegaSpudModel::createInnerBodyLayer);
         ModelLayerRegistry.registerModelLayer(MegaSpudOuterLayer.MEGA_SPUD_OUTER_LOCATION, MegaSpudModel::createOuterBodyLayer);
-        ModelLayerRegistry.registerModelLayer(MoonCowRenderer.MOON_COW_LOCATION, LegacyCowModel::createMoonCowBodyLayer);
+        ModelLayerRegistry.registerModelLayer(MoonCowRenderer.MOON_COW_LOCATION, LegacyCowModel::createLegacyCowModel);
         ModelLayerRegistry.registerModelLayer(NerdCreeperRenderer.NERD_CREEPER_LOCATION, ClientCreeperRenderer::createBaseCreeperLayer);
         ModelLayerRegistry.registerModelLayer(PinkWitherRenderer.PINK_WITHER_LOCATION, ClientWitherRenderer::createBaseWitherLayer);
         ModelLayerRegistry.registerModelLayer(PlaguewhaleRenderer.PLAGUEWHALE_LOCATION, ToxifinSlabModel::createBodyLayer);
@@ -431,8 +486,26 @@ public class PetsClientInitializer implements ClientModInitializer {
         ModelLayerRegistry.registerModelLayer(PinkFootedPigRenderer.PINK_FOOTED_PIG_LOCATION, EarthPigModel::createBodyLayer);
         ModelLayerRegistry.registerModelLayer(SootyPigRenderer.SOOTY_PIG_LOCATION, EarthPigModel::createBodyLayer);
         ModelLayerRegistry.registerModelLayer(SpottedPigRenderer.SPOTTED_PIG_LOCATION, EarthPigModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(AlbinoCowRenderer.ALBINO_COW_LOCATION, CustomCowModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(AshenCowRenderer.ASHEN_COW_LOCATION, CustomCowModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(CookieCowRenderer.COOKIE_COW_LOCATION, CustomCowModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(CreamCowRenderer.CREAM_COW_LOCATION, LegacyCowModel::createLegacyCowModel);
+        ModelLayerRegistry.registerModelLayer(DairyCowRenderer.DAIRY_COW_LOCATION, LegacyCowModel::createLegacyCowModel);
+        ModelLayerRegistry.registerModelLayer(MoobloomRenderer.MOOBLOOM_LOCATION, LegacyCowModel::createLegacyCowModel);
+        ModelLayerRegistry.registerModelLayer(MoolipRenderer.MOOLIP_LOCATION, LegacyCowModel::createLegacyCowModel);
+        ModelLayerRegistry.registerModelLayer(PintoCowRenderer.PINTO_COW_LOCATION, CustomCowModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(SunsetCowRenderer.SUNSET_COW_LOCATION, CustomCowModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(UmbraCowRenderer.UMBRA_COW_LOCATION, LegacyCowModel::createLegacyCowModel);
+        ModelLayerRegistry.registerModelLayer(WoolyCowRenderer.WOOLY_COW_LOCATION, LegacyCowModel::createLegacyCowModel);
+        ModelLayerRegistry.registerModelLayer(TropicalSlimeRenderer.TROPICAL_SLIME_LOCATION, SlimeModel::createInnerBodyLayer);
+        ModelLayerRegistry.registerModelLayer(TropicalSlimeOuterLayer.OUTER_LAYER_LOCATION, SlimeModel::createOuterBodyLayer);
+        ModelLayerRegistry.registerModelLayer(JollyLlamaRenderer.JOLLY_LLAMA_LOCATION, JollyLlamaModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(DyedCatRenderer.DYED_CAT_LOCATION, ClientCatRenderer::createCatBodyLayer);
+        ModelLayerRegistry.registerModelLayer(FurnaceGolemRenderer.FURNACE_GOLEM_LOCATION, IronGolemModel::createBodyLayer);
     }
 
+    /**Registers the key binding and an {@code END_CLIENT_TICK} event to check if the key
+     * is pressed*/
     void createKeyBinding() {
         KeyMapping keyMapping = KeyMappingHelper.registerKeyMapping(new KeyMapping("Open Pets Menu", GLFW.GLFW_KEY_P, new KeyMapping.Category(Identifier.fromNamespaceAndPath(PetsInitializer.MOD_ID, "petsmod.keymapping"))));
 

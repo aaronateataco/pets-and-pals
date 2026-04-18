@@ -1,6 +1,8 @@
 package com.jeff.pets;
 
 import com.jeff.pets.enums.*;
+import com.jeff.pets.mixin.client.SplashManagerMixin;
+import com.jeff.pets.mixin.client.TitleScreenRenderingMixin;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 import dev.isxander.yacl3.api.*;
@@ -14,13 +16,48 @@ import net.minecraft.network.chat.Component;
 
 import java.util.Objects;
 
+/**Uses both the <a href="https://modrinth.com/mod/yacl">YACL</a> and <a href="https://modrinth.com/mod/modmenu">Mod Menu</a> APIs to create a screen and hook it into the Mod Menu.
+ * Uses the config options available in {@link PetsConfig}.
+ * @see Central*/
 public class PetsConfigScreen implements ModMenuApi {
 
+    private static final PetsConfigScreen INSTANCE = new PetsConfigScreen();
+
+    /**This is one of the most important values in this class. It allows the easy swapping out
+     * of the enums that store the petskins, in turn allowing the PetSkins option below to
+     * carry and assign different values based on what the user's currently active pet is.*/
     public Class<? extends Enum<?>> enumClass = DuckSkins.class;
+
+    /**Returns this class for easy access to the non-static methods*/
     public static PetsConfigScreen getInstance() {
-        return new PetsConfigScreen();
+        return INSTANCE;
     }
 
+    /**Creates the config screen.
+     * Options: <p> {@code Pet Toggle} : Uses a {@code TickBoxControllerBuilder} to allow the
+     * user to toggle the pet on or off from inside the config screen.
+     * <p> {@code Pet Species}: Uses a {@code EnumDropDownControllerBuilder} to allow the user to
+     * 'search' for pets, but keep them restricted from entering an invalid pet and crashing the game.
+     * Uses the PetList enum to store its values.
+     * <p> {@code Pet Name}: Uses a {@code StringControllerBuilder} to let the user choose any name they like.
+     * Uses nearly the exact same logic as {@link Central#createNameCommand()}, and you can
+     * simply copy-paste any name logic for new mobs over to this option.
+     * <p> {@code PetSkins}: The most complex option to code and manage.
+     * Uses a {@code EnumControllerBuilder} to let the user cycle through skins - this is important
+     * because the user may not know what they are beforehand. Changes the {@link #enumClass} variable stored above
+     * in accordance with the current active pet to display the correct skins. A mismatch can cause an {@code IllegalArgumentException},
+     * so be very careful when editing and make sure to assign the correct values to each other.
+     * The casting {@code Option} to {@code Option<T>} is extremely important, and the compiler
+     * will generate an error without it. However, since {@code Option<T>} is always an instance of
+     * {@code Option}, this will not generate a {@code ClassCastException}.
+     * <p> {@code Baby?}: Uses a {@code TickBoxControllerBuilder} to let the user decide
+     * whether their pet is a baby or not.
+     * <p> {@code Custom Title Enabled}: Controls whether the game will use the custom PetsMod title, edition, and splash text.
+     * Please note that the splash text is only initialized once, during the game launch, so
+     * it will require a restart to change, but everything else will adjust instantly. (Note: a restart
+     * is not forced upon the user, as it is only splash text and won't impact gameplay severely.)
+     * @see SplashManagerMixin
+     * @see TitleScreenRenderingMixin */
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
         return parentScreen -> {
@@ -29,9 +66,8 @@ public class PetsConfigScreen implements ModMenuApi {
             return YetAnotherConfigLib.createBuilder()
                     .title(Component.literal("Pets Config"))
                     .save(() -> {
-                        Screen currentScreen = null;
                         AutoConfig.getConfigHolder(PetsConfig.class).save();
-                        Minecraft.getInstance().setScreen(this.getModConfigScreenFactory().create(currentScreen));
+                        Minecraft.getInstance().setScreen(this.getModConfigScreenFactory().create(null));
                     })
                     .category(ConfigCategory.createBuilder()
                             .name(Component.literal("Pets Config"))
@@ -56,7 +92,7 @@ public class PetsConfigScreen implements ModMenuApi {
                             .group(OptionGroup.createBuilder()
                                     .name(Component.literal("Active Pet"))
                                     .description(OptionDescription.of(Component.literal("Your currently selected pet is: " + CONFIG.activePet)))
-                                    .option(Option.<PetList>createBuilder()
+                                    .option(Option.<Enum>createBuilder()
                                             .name(Component.literal("Pet Species"))
                                             .description(OptionDescription.of(Component.literal("The species of your pet. MAKE SURE to save this after it has changed before you change any other values, as they will edit the previous pet.")))
                                             .binding(
@@ -190,6 +226,28 @@ public class PetsConfigScreen implements ModMenuApi {
                                                                 case "patched_sheep" -> CONFIG.patchedSheepName;
                                                                 case "rainbow_sheep" -> CONFIG.rainbowSheepName;
                                                                 case "rocky_sheep" -> CONFIG.rockySheepName ;
+                                                                case "mottled_pig" -> CONFIG.mottledPigName;
+                                                                case "muddy_pig" -> CONFIG.muddyPigName;
+                                                                case "pale_pig" -> CONFIG.palePigName;
+                                                                case "piebald_pig" -> CONFIG.piebaldPigName;
+                                                                case "pink_footed_pig" -> CONFIG.pinkFootedPigName;
+                                                                case "sooty_pig" -> CONFIG.sootyPigName;
+                                                                case "spotted_pig" -> CONFIG.spottedPigName;
+                                                                case "albino_cow" -> CONFIG.albinoCowName;
+                                                                case "ashen_cow" -> CONFIG.ashenCowName;
+                                                                case "cookie_cow" -> CONFIG.cookieCowName;
+                                                                case "cream_cow" -> CONFIG.creamCowName;
+                                                                case "dairy_cow" -> CONFIG.dairyCowName;
+                                                                case "moobloom" -> CONFIG.moobloomName;
+                                                                case "moolip" -> CONFIG.moolipName;
+                                                                case "pinto_cow" -> CONFIG.pintoCowName;
+                                                                case "sunset_cow" -> CONFIG.sunsetCowName;
+                                                                case "umbra_cow" -> CONFIG.umbraCowName;
+                                                                case "wooly_cow" -> CONFIG.woolyCowName;
+                                                                case "tropical_slime" -> CONFIG.tropicalSlimeName;
+                                                                case "jolly_llama" -> CONFIG.jollyLlamaName;
+                                                                case "dyed_cat" -> CONFIG.dyedCatName;
+                                                                case "furnace_golem" -> CONFIG.furnaceGolemName;
                                                                 default -> "";
                                                             },
                                                     name -> {
@@ -295,6 +353,28 @@ public class PetsConfigScreen implements ModMenuApi {
                                                             case "patched_sheep" -> CONFIG.patchedSheepName = name;
                                                             case "rainbow_sheep" -> CONFIG.rainbowSheepName = name;
                                                             case "rocky_sheep" -> CONFIG.rockySheepName = name;
+                                                            case "mottled_pig" -> CONFIG.mottledPigName = name;
+                                                            case "muddy_pig" -> CONFIG.muddyPigName = name;
+                                                            case "pale_pig" -> CONFIG.palePigName = name;
+                                                            case "piebald_pig" -> CONFIG.piebaldPigName = name;
+                                                            case "pink_footed_pig" -> CONFIG.pinkFootedPigName = name;
+                                                            case "sooty_pig" -> CONFIG.sootyPigName = name;
+                                                            case "spotted_pig" -> CONFIG.spottedPigName = name;
+                                                            case "albino_cow" -> CONFIG.albinoCowName = name;
+                                                            case "ashen_cow" -> CONFIG.ashenCowName = name;
+                                                            case "cookie_cow" -> CONFIG.cookieCowName = name;
+                                                            case "cream_cow" -> CONFIG.creamCowName = name;
+                                                            case "dairy_cow" -> CONFIG.dairyCowName = name;
+                                                            case "moobloom" -> CONFIG.moobloomName = name;
+                                                            case "moolip" -> CONFIG.moolipName = name;
+                                                            case "pinto_cow" -> CONFIG.pintoCowName = name;
+                                                            case "sunset_cow" -> CONFIG.sunsetCowName = name;
+                                                            case "umbra_cow" -> CONFIG.umbraCowName = name;
+                                                            case "wooly_cow" -> CONFIG.woolyCowName = name;
+                                                            case "tropical_slime" -> CONFIG.tropicalSlimeName = name;
+                                                            case "jolly_llama" -> CONFIG.jollyLlamaName = name;
+                                                            case "dyed_cat" -> CONFIG.dyedCatName = name;
+                                                            case "furnace_golem" -> CONFIG.furnaceGolemName = name;
                                                         }
                                                         Central.refreshPetNames();
                                                     }
@@ -345,7 +425,7 @@ public class PetsConfigScreen implements ModMenuApi {
                                                         case "hoglin" -> HoglinSkins.valueOf(CONFIG.hoglinSkin.replaceAll(" ", "_"));
                                                         case "magma_cube" ->
                                                                 SlimeLikeSkins.valueOf(CONFIG.magmaCubeSkin.replaceAll(" ", "_"));
-                                                        case "slime" -> SlimeLikeSkins.valueOf(CONFIG.slimeSkin.replaceAll(" ", "_"));
+                                                        case "slime", "tropical_slime" -> SlimeLikeSkins.valueOf(CONFIG.slimeSkin.replaceAll(" ", "_"));
                                                         case "zombie_villager" ->
                                                                 ZombieVillagerSkins.valueOf(CONFIG.zombieVillagerSkin.replaceAll(" ", "_"));
                                                         case "wither" -> WitherSkins.valueOf(CONFIG.witherSkin.replaceAll(" ", "_"));
@@ -741,7 +821,7 @@ public class PetsConfigScreen implements ModMenuApi {
                                                             CONFIG.magmaCubeSkin = "large";
                                                         }
                                                     }
-                                                    case "slime" -> {
+                                                    case "slime", "tropical_slime" -> {
                                                         if (Objects.equals(val, "small")) {
                                                             CONFIG.slimeSkin = "small";
                                                         } else if (Objects.equals(val, "medium")) {

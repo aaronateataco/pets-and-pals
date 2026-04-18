@@ -2,43 +2,29 @@ package com.jeff.pets.rendering.aprilfools.mooncow;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import net.minecraft.client.model.animal.cow.CowModel;
+import net.minecraft.client.model.animal.golem.SnowGolemModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.BlockModelRenderState;
-import net.minecraft.client.renderer.block.BlockModelResolver;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.renderer.block.model.BlockDisplayContext;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.renderer.entity.state.SnowGolemRenderState;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
-
 public class MoonCowHelmetLayer extends RenderLayer<@NotNull MoonCowRenderState, @NotNull LegacyCowModel> {
-
-    private final BlockModelResolver resolver;
-    BlockModelRenderState state = new BlockModelRenderState();
-    public MoonCowHelmetLayer(RenderLayerParent<MoonCowRenderState, LegacyCowModel> renderLayerParent, EntityRendererProvider.Context context) {
-        super(renderLayerParent);
-        this.resolver = context.getBlockModelResolver();
+    public MoonCowHelmetLayer(final RenderLayerParent<@NotNull MoonCowRenderState, @NotNull LegacyCowModel> renderer) {
+        super(renderer);
     }
 
     @Override
-    public void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int i, MoonCowRenderState entityRenderState, float f, float g) {
+    public void submit(final PoseStack poseStack, final @NotNull SubmitNodeCollector submitNodeCollector, final int lightCoords, final MoonCowRenderState state, final float yRot, final float xRot) {
         poseStack.pushPose();
-        poseStack.translate(0.0F, 0F, -0.25F);
+        this.getParentModel().getChildPart("head").translateAndRotate(poseStack);
+        poseStack.translate(0.0F, -0.035F, -0.2F);
         poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
         poseStack.scale(0.625F, -0.625F, -0.625F);
-        BlockState blockState = Blocks.GLASS.defaultBlockState();
-        int j = LivingEntityRenderer.getOverlayCoords(entityRenderState, 0.0F);
+        int overlayCoords = LivingEntityRenderer.getOverlayCoords(state, 0.0F);
         poseStack.translate(-0.5F, -0.5F, -0.5F);
-        submitNodeCollector.submitBlockModel(poseStack, RenderTypes.solidMovingBlock(), List.of(), state.tintLayers().toIntArray(), entityRenderState.lightCoords, LivingEntityRenderer.getOverlayCoords(entityRenderState, f), entityRenderState.outlineColor);
-        resolver.update(state, Blocks.GLASS.defaultBlockState(), BlockDisplayContext.create());
+        state.blockOnHead.submit(poseStack, submitNodeCollector, lightCoords, overlayCoords, state.outlineColor);
         poseStack.popPose();
     }
 }

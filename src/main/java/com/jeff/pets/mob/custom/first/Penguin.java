@@ -135,7 +135,7 @@ public class Penguin extends AbstractPet {
         return super.finalizeSpawn(level, difficulty, spawnReason, groupData);
     }
 
-    public boolean isFood(final ItemStack itemStack) {
+    public boolean isFood(final @NotNull ItemStack itemStack) {
         return itemStack.is(ItemTags.FISHES);
     }
 

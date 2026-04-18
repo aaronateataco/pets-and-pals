@@ -1,6 +1,10 @@
+import com.vanniktech.maven.publish.SonatypeHost
+
 plugins {
     id 'net.fabricmc.fabric-loom' version "${loom_version}"
     id 'maven-publish'
+    id "com.vanniktech.maven.publish" version "0.28.0"
+    id 'signing'
 }
 
 version = project.mod_version
@@ -71,26 +75,41 @@ java {
 
 jar {
     inputs.property "archivesName", project.base.archivesName
+    from sourceSets.main.allSource
 
     from("LICENSE") {
         rename { "${it}_${inputs.properties.archivesName}"}
     }
+    tasks.withType(AbstractCopyTask).configureEach {
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    }
 }
 
 // configure the maven publication
-publishing {
-    publications {
-        create("mavenJava", MavenPublication) {
-            artifactId = project.archives_base_name
-            from components.java
+mavenPublishing {
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
+    signAllPublications()
+    coordinates("io.github.downloadableduck", "petsmod", "0.8.1")
+    pom {
+        name = "Pets Mod"
+        description = "Adds client-sided pets into your game"
+        url = "https://github.com/downloadableduck/petsmod"
+        licenses {
+            license {
+                name = "MIT"
+                url = "https://opensource.org/licenses/MIT"
+            }
         }
-    }
-
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-        // Notice: This block does NOT have the same function as the block in the top level.
-        // The repositories here will be used for publishing your artifact, not for
-        // retrieving dependencies.
+        developers {
+            developer {
+                id = "jeff"
+                name = "Jeff"
+            }
+        }
+        scm {
+            connection = "scm:git:git://github.com/downloadableduck/petsmod.git"
+            developerConnection = "scm:git:ssh://github.com:downloadableduck/petsmod.git"
+            url = "https://github.com/downloadableduck/petsmod"
+        }
     }
 }

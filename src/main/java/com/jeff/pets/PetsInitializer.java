@@ -8,6 +8,7 @@ import com.jeff.pets.mob.custom.first.Racoon;
 import com.jeff.pets.mob.custom.aquatic.DumboOctopus;
 import com.jeff.pets.mob.custom.aquatic.Koi;
 import com.jeff.pets.mob.custom.aquatic.Stingray;
+import com.jeff.pets.mob.custom.minecraft_earth.cow.MinecraftEarthCow;
 import com.jeff.pets.mob.custom.minecraft_earth.pig.MinecraftEarthPig;
 
 import com.jeff.pets.mob.custom.minecraft_earth.sheep.*;
@@ -25,12 +26,22 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.function.Function;
+
+/**Registers all of the blocks and entities used in this mod, as well as providing the {@link #MOD_ID}.*/
 public class PetsInitializer implements ModInitializer {
     public static final String MOD_ID = "pets-mod";
+    public static final Block PINK_DAISY = register("pink_daisy", Block::new, BlockBehaviour.Properties.of().instabreak());
+    public static final Block BUTTERCUP = register("buttercup", Block::new, BlockBehaviour.Properties.of().instabreak());
+
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     private static final ResourceKey<@NotNull EntityType<?>> RACOON_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "racoon"));
@@ -1295,7 +1306,196 @@ public class PetsInitializer implements ModInitializer {
                     .build(SPOTTED_PIG_KEY)
     );
 
+    private static final ResourceKey<@NotNull EntityType<?>> ALBINO_COW_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "albino_cow"));
+    public static final EntityType<@NotNull MinecraftEarthCow> ALBINO_COW = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "albino_cow"),
+            EntityType.Builder.of(MinecraftEarthCow::new, MobCategory.AMBIENT)
+                    .noSummon()
+                    .sized(0.9f, 1.4f)
+                    .eyeHeight(1.4f)
+                    .build(ALBINO_COW_KEY)
+    );
 
+    private static final ResourceKey<@NotNull EntityType<?>> ASHEN_COW_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "ashen_cow"));
+    public static final EntityType<@NotNull MinecraftEarthCow> ASHEN_COW = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "ashen_cow"),
+            EntityType.Builder.of(MinecraftEarthCow::new, MobCategory.AMBIENT)
+                    .noSummon()
+                    .sized(0.9f, 1.4f)
+                    .eyeHeight(1.4f)
+                    .build(ASHEN_COW_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> COOKIE_COW_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "cookie_cow"));
+    public static final EntityType<@NotNull MinecraftEarthCow> COOKIE_COW = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "cookie_cow"),
+            EntityType.Builder.of(MinecraftEarthCow::new, MobCategory.AMBIENT)
+                    .noSummon()
+                    .sized(0.9f, 1.4f)
+                    .eyeHeight(1.4f)
+                    .build(COOKIE_COW_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> CREAM_COW_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE,
+                    Identifier.fromNamespaceAndPath(MOD_ID, "cream_cow"));
+    public static final EntityType<@NotNull MinecraftEarthCow> CREAM_COW = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "cream_cow"),
+            EntityType.Builder.of(MinecraftEarthCow::new, MobCategory.AMBIENT)
+                    .noSummon()
+                    .sized(0.9f, 1.4f)
+                    .eyeHeight(1.4f)
+                    .build(CREAM_COW_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> DAIRY_COW_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE,
+                    Identifier.fromNamespaceAndPath(MOD_ID, "dairy_cow"));
+    public static final EntityType<@NotNull MinecraftEarthCow> DAIRY_COW = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "dairy_cow"),
+            EntityType.Builder.of(MinecraftEarthCow::new, MobCategory.AMBIENT)
+                    .noSummon()
+                    .sized(0.9f, 1.4f)
+                    .eyeHeight(1.4f)
+                    .build(DAIRY_COW_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> MOOBLOOM_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE,
+                    Identifier.fromNamespaceAndPath(MOD_ID, "moobloom"));
+    public static final EntityType<@NotNull MinecraftEarthCow> MOOBLOOM = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "moobloom"),
+            EntityType.Builder.of(MinecraftEarthCow::new, MobCategory.AMBIENT)
+                    .noSummon()
+                    .sized(0.9f, 1.4f)
+                    .eyeHeight(1.4f)
+                    .build(MOOBLOOM_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> MOOLIP_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE,
+                    Identifier.fromNamespaceAndPath(MOD_ID, "moolip"));
+    public static final EntityType<@NotNull MinecraftEarthCow> MOOLIP = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "moolip"),
+            EntityType.Builder.of(MinecraftEarthCow::new, MobCategory.AMBIENT)
+                    .noSummon()
+                    .sized(0.9f, 1.4f)
+                    .eyeHeight(1.4f)
+                    .build(MOOLIP_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> PINTO_COW_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE,
+                    Identifier.fromNamespaceAndPath(MOD_ID, "pinto_cow"));
+    public static final EntityType<@NotNull MinecraftEarthCow> PINTO_COW = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "pinto_cow"),
+            EntityType.Builder.of(MinecraftEarthCow::new, MobCategory.AMBIENT)
+                    .noSummon()
+                    .sized(0.9f, 1.4f)
+                    .eyeHeight(1.4f)
+                    .build(PINTO_COW_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> SUNSET_COW_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE,
+                    Identifier.fromNamespaceAndPath(MOD_ID, "sunset_cow"));
+    public static final EntityType<@NotNull MinecraftEarthCow> SUNSET_COW = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "sunset_cow"),
+            EntityType.Builder.of(MinecraftEarthCow::new, MobCategory.AMBIENT)
+                    .noSummon()
+                    .sized(0.9f, 1.4f)
+                    .eyeHeight(1.4f)
+                    .build(SUNSET_COW_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> UMBRA_COW_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE,
+                    Identifier.fromNamespaceAndPath(MOD_ID, "umbra_cow"));
+    public static final EntityType<@NotNull MinecraftEarthCow> UMBRA_COW = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "umbra_cow"),
+            EntityType.Builder.of(MinecraftEarthCow::new, MobCategory.AMBIENT)
+                    .noSummon()
+                    .sized(0.9f, 1.4f)
+                    .eyeHeight(1.4f)
+                    .build(UMBRA_COW_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> WOOLY_COW_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE,
+                    Identifier.fromNamespaceAndPath(MOD_ID, "wooly_cow"));
+    public static final EntityType<@NotNull MinecraftEarthCow> WOOLY_COW = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "wooly_cow"),
+            EntityType.Builder.of(MinecraftEarthCow::new, MobCategory.AMBIENT)
+                    .noSummon()
+                    .sized(0.9f, 1.4f)
+                    .eyeHeight(1.4f)
+                    .build(WOOLY_COW_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> TROPICAL_SLIME_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE,
+                    Identifier.fromNamespaceAndPath(MOD_ID, "tropical_slime"));
+    public static final EntityType<@NotNull ClientSlime> TROPICAL_SLIME = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "tropical_slime"),
+            EntityType.Builder.of(ClientSlime::new, MobCategory.AMBIENT)
+                    .sized(0.9f, 1.4f)
+                    .eyeHeight(1.4f)
+                    .build(TROPICAL_SLIME_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> JOLLY_LLAMA_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE,
+                    Identifier.fromNamespaceAndPath(MOD_ID, "jolly_llama"));
+    public static final EntityType<@NotNull ClientLlama> JOLLY_LLAMA = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "jolly_llama"),
+            EntityType.Builder.of(ClientLlama::new, MobCategory.AMBIENT)
+                    .sized(0.9f, 1.87f)
+                    .eyeHeight(1.87f)
+                    .build(JOLLY_LLAMA_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> DYED_CAT_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE,
+                    Identifier.fromNamespaceAndPath(MOD_ID, "dyed_cat"));
+    public static final EntityType<@NotNull ClientCat> DYED_CAT = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "dyed_cat"),
+            EntityType.Builder.of(ClientCat::new, MobCategory.AMBIENT)
+                    .sized(0.6f, 0.7f)
+                    .eyeHeight(0.7f)
+                    .build(DYED_CAT_KEY)
+    );
+
+    private static final ResourceKey<@NotNull EntityType<?>> FURNACE_GOLEM_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE,
+                    Identifier.fromNamespaceAndPath(MOD_ID, "furnace_golem"));
+    public static final EntityType<@NotNull ClientIronGolem> FURNACE_GOLEM = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "furnace_golem"),
+            EntityType.Builder.of(ClientIronGolem::new, MobCategory.AMBIENT)
+                    .sized(0.6f, 0.7f)
+                    .eyeHeight(0.7f)
+                    .build(FURNACE_GOLEM_KEY)
+    );
+
+    /**Registers the entities' attributes. Warns about the call to register not working, but it
+     * ends up working fine in-game - likely a mixup in either the Fabric API or IntelliJ.*/
     @Override
     public void onInitialize() {
 
@@ -1413,11 +1613,45 @@ public class PetsInitializer implements ModInitializer {
         FabricDefaultAttributeRegistry.register(PINK_FOOTED_PIG, MinecraftEarthPig.createAttributes().build());
         FabricDefaultAttributeRegistry.register(SOOTY_PIG, MinecraftEarthPig.createAttributes().build());
         FabricDefaultAttributeRegistry.register(SPOTTED_PIG, MinecraftEarthPig.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(ALBINO_COW, MinecraftEarthCow.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(ASHEN_COW, MinecraftEarthCow.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(COOKIE_COW, MinecraftEarthCow.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(CREAM_COW, MinecraftEarthCow.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(DAIRY_COW, MinecraftEarthCow.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(MOOBLOOM, MinecraftEarthCow.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(MOOLIP, MinecraftEarthCow.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(PINTO_COW, MinecraftEarthCow.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(SUNSET_COW, MinecraftEarthCow.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(UMBRA_COW, MinecraftEarthCow.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(WOOLY_COW, MinecraftEarthCow.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(TROPICAL_SLIME, ClientSlime.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(JOLLY_LLAMA, ClientLlama.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(DYED_CAT, ClientCat.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(FURNACE_GOLEM, ClientIronGolem.createAttributes().build());
 
         PetsSounds.initialize();
 
         //DuckSpawns.addDuckSpawn();
 
         LOGGER.info("quack");
+    }
+
+    /**Helper method to register blocks. Used for the mooshroom and moolip's back flowers and nothing
+     * else.*/
+    private static Block register(String name, Function<BlockBehaviour.Properties, Block> blockFactory, BlockBehaviour.Properties settings) {
+        ResourceKey<@NotNull Block> blockKey = keyOfBlock(name);
+        Block block = blockFactory.apply(settings.setId(blockKey));
+        ResourceKey<@NotNull Item> itemKey = keyOfItem(name);
+        BlockItem blockItem = new BlockItem(block, new Item.Properties().setId(itemKey).useBlockDescriptionPrefix());
+        Registry.register(BuiltInRegistries.ITEM, itemKey, blockItem);
+        return Registry.register(BuiltInRegistries.BLOCK, blockKey, block);
+    }
+
+    private static ResourceKey<@NotNull Block> keyOfBlock(String name) {
+        return ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MOD_ID, name));
+    }
+
+    private static ResourceKey<@NotNull Item> keyOfItem(String name) {
+        return ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MOD_ID, name));
     }
 }

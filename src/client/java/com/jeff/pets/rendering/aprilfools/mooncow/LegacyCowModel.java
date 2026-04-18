@@ -1,12 +1,11 @@
 package com.jeff.pets.rendering.aprilfools.mooncow;
 
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.animal.cow.CowModel;
+import com.jeff.pets.rendering.vanilla.cow.ClientCowModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 
-public class LegacyCowModel extends EntityModel<MoonCowRenderState> {
+public class LegacyCowModel extends ClientCowModel {
     private final ModelPart body;
     private final ModelPart head;
     private final ModelPart left_hind_leg;
@@ -24,7 +23,7 @@ public class LegacyCowModel extends EntityModel<MoonCowRenderState> {
         this.right_front_leg = root.getChild("right_front_leg");
     }
 
-    public static LayerDefinition createMoonCowBodyLayer() {
+    public static LayerDefinition createLegacyCowModel() {
         MeshDefinition meshdefinition = new MeshDefinition();
         PartDefinition partdefinition = meshdefinition.getRoot();
 

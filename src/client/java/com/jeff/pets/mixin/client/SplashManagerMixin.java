@@ -1,5 +1,6 @@
 package com.jeff.pets.mixin.client;
 
+import com.jeff.pets.PetsConfig;
 import net.minecraft.client.resources.SplashManager;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
@@ -11,6 +12,11 @@ import org.spongepowered.asm.mixin.injection.Redirect;
 import static com.jeff.pets.Central.CONFIG;
 import static com.jeff.pets.PetsInitializer.MOD_ID;
 
+/**Edits the {@link SplashManager#SPLASHES_LOCATION} at launch to assign it to a
+ * custom value, if {@link PetsConfig#customTitleEnabled} is {@code true}. Please note that
+ * the splashes are initialized once, at launch, and won't reset until the game is closed
+ * and re-opened.
+ * @see TitleScreenRenderingMixin*/
 @Mixin(SplashManager.class)
 public class SplashManagerMixin {
 

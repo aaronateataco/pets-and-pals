@@ -11,10 +11,19 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
+/**Abstract class representing any pet tht can fly (ghasts, vexes, etc). Contains custom movement
+ * logic that allow the pets to move on the client side.
+ * @see AbstractPet
+ * @see GroundPet*/
 public abstract class FlyingPet extends AbstractPet {
     protected FlyingPet(EntityType<? extends @NotNull TamableAnimal> type, Level level) {
         super(type, level);
     }
+
+    /**Custom ticking logic.
+     * @see GroundPet#tick()*/
     @Override
     public void tick() {
         super.tick();
@@ -94,7 +103,7 @@ public abstract class FlyingPet extends AbstractPet {
 
         int ambient = (int) (Math.random() * (60 * 20));
         if (ambient == 1) {
-            level().playLocalSound(this, this.getAmbientSound(), SoundSource.AMBIENT, 1.0f, 1.0f);
+            level().playLocalSound(this, Objects.requireNonNull(this.getAmbientSound()), SoundSource.AMBIENT, 1.0f, 1.0f);
         }
     }
 }

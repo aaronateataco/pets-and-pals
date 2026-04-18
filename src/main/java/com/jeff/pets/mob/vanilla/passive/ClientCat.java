@@ -23,7 +23,7 @@ public class ClientCat extends GroundPet {
 
     @Override
     protected float heartHeight() {
-        return 1.5f;
+        return 0.5f;
     }
 
     @Override

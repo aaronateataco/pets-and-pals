@@ -34,18 +34,4 @@ public class ClientEnderDragon extends FlyingPet {
     protected SoundEvent getAmbientSound() {
         return SoundEvents.ENDER_DRAGON_AMBIENT;
     }
-
-    public static AttributeSupplier.Builder createAttributes() {
-        return Animal.createAnimalAttributes().add(Attributes.MAX_HEALTH, 8.0F).add(Attributes.MOVEMENT_SPEED, 0.23F);
-    }
-
-    @Override
-    public boolean isFood(@NotNull ItemStack itemStack) {
-        return false;
-    }
-
-    @Override
-    public @Nullable AgeableMob getBreedOffspring(@NotNull ServerLevel serverLevel, @NotNull AgeableMob ageableMob) {
-        return null;
-    }
 }

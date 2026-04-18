@@ -12,11 +12,24 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
+/**Abstract representing any pet that cannot fly (ducks, chickens, etc).
+ * @see AbstractPet
+ * @see FlyingPet*/
 public abstract class GroundPet extends AbstractPet {
-    protected GroundPet(EntityType<? extends @NotNull TamableAnimal> type, Level level) {
+    public GroundPet(EntityType<? extends @NotNull TamableAnimal> type, Level level) {
         super(type, level);
     }
 
+    /**Custom ticking logic. Note this code: <pre>
+     * {@code  if (yHeightToOwner > -1) {
+     *       this.setDeltaMovement(this.getDeltaMovement().add(0, -0.01, 0));
+     *  }
+     * } </pre>
+     * This ensures that the pet will fall down if it jumps up, meaning that it will not
+     * be abele to fly.
+     * @see FlyingPet#tick()*/
     @Override
     public void tick() {
         super.tick();
@@ -105,9 +118,7 @@ public abstract class GroundPet extends AbstractPet {
 
             int ambient = (int) (Math.random() * (60 * 20));
             if (ambient == 1) {
-                if (this.getAmbientSound() == null)
-                    throw new NullPointerException("SoundEvent was null in " + this.getAmbientSound().getClass() + ". This is an issue with PetsMod by downloadableduck. Please update to the latest version of PetsMod and report this on my GitHub.");
-                level().playLocalSound(this, this.getAmbientSound(), SoundSource.NEUTRAL, 1.0f, 1.0f);
+                level().playLocalSound(this, Objects.requireNonNull(this.getAmbientSound()), SoundSource.NEUTRAL, 1.0f, 1.0f);
             }
     }
 }
