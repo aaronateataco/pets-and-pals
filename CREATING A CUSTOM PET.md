@@ -14,21 +14,30 @@ PetsMod is a Minecraft mod developed by downloadableduck and the pets team. This
 Your project will need to have PetsMod and all of it's dependencies installed. Add these lines to your build.gradle:
 
 ```groovy
-implementation "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}"
-implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-implementation("com.terraformersmc:modmenu:${project.modmenu_version}")
-implementation "dev.isxander:yet-another-config-lib:${project.yacl_version}"
-implementation files(files("libs/petsmod-${project.petsmod_version}.jar"))
+repositories {
+    maven { url "https://maven.shedaniel.me/" }
+    maven { url "https://maven.terraformersmc.com/" }
+    maven { url "https://maven.isxander.dev/releases" }
+    maven { url "https://api.modrinth.com/maven"}
+}
 ```
 
-Create a new folder in your project root called **libs**. Download the appropriate version of [PetsMod](https://modrinth.com/mod/pets-mod) and place it in your libs folder.
+```groovy
+dependencies {
+    implementation "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+    implementation("com.terraformersmc:modmenu:${project.modmenu_version}")
+    implementation "dev.isxander:yet-another-config-lib:${project.yacl_version}"
+    implementation "maven.modrinth:pets-mod:${project.petsmod_version}"
+}
+```
 
 Now you will have to add the versions to your gradle.properties. The latest mod versions as of Minecraft 26.1.2 are available below:
 ```properties
 fabric_api_version=0.144.3+26.1
 modmenu_version=18.0.0-alpha.8
 yacl_version=3.9.1+26.1-fabric
-petsmod_version=0.7.4-26.1.1-alpha
+petsmod_version=0.7.4-26.1.x
 cloth_config_version=26.1.154
 ```
 Here are some quick links to each mod's version page:
@@ -289,7 +298,7 @@ After this, we can start injecting. Let's start with, as previously stated, the 
 
 `src/client/java/com/jeff/pets/exampleaddon/client/mixin/CentralMixin.java`
 ```java
-@Inject(at = @At("HEAD"), method = "lambda$createPetNameCommand$1", cancellable = true)
+@Inject(at = @At("HEAD"), method = "lambda$createPetSpeciesCommand$1", cancellable = true)
 private static void createSummonCommand(CommandContext<FabricClientCommandSource> context, CallbackInfoReturnable<Integer> cir) {
     String species = StringArgumentType.getString(context, "species");
     if (Objects.equals(species, CUSTOM_ENTITY_VALUE_NO_SPACES) || Objects.equals(species, CUSTOM_ENTITY_VALUE)) {
@@ -415,7 +424,7 @@ Now, add your custom entity value to the **top** of your enum.
 
 ```java
 public enum CustomEntityValues {
-    custom_entiy,
+    custom_entity,
     [the values from PetList should be here.]
 }
 ```
