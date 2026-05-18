@@ -3,22 +3,25 @@ package com.jeff.pets;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 
-/**Stores all the values that are serialized into a JSON config located at {@code ./minecraft/config/petsconfig.json}
+/**
+ * Stores all the values that are serialized into a JSON config located at {@code ./minecraft/config/petsconfig.json}
  * These values include whether the pet is on, whether the pet is a baby,
  * whether the custom title is enabled, and the names
  * and skins for each pet. For the actual rendering of the config screen, see {@link PetsConfigScreen}.
+ *
  * @see com.jeff.pets.Central
  * @see com.jeff.pets.Central#CONFIG
- * @see me.shedaniel.autoconfig.ConfigData*/
+ * @see me.shedaniel.autoconfig.ConfigData
+ */
 @Config(name = "petsconfig")
 public class PetsConfig implements ConfigData {
     public Boolean petOn;
     public Boolean customTitleEnabled;
+    public String activePet;
     public String penguinName;
     public String duckName;
     public String racoonName;
     public String racoonSkin;
-    public String activePet;
     public String duckSkin;
     public String sheepName;
     public String catSkin;
@@ -159,38 +162,4 @@ public class PetsConfig implements ConfigData {
     public String headName;
 
     public boolean isBaby;
-
-    public String fleckedSheepName;
-    public String fuzzySheepName;
-    public String inkySheepName;
-    public String longNosedSheepName;
-    public String patchedSheepName;
-    public String rainbowSheepName;
-    public String rockySheepName;
-    public String hornedSheepName;
-
-    public String mottledPigName;
-    public String muddyPigName;
-    public String palePigName;
-    public String piebaldPigName;
-    public String pinkFootedPigName;
-    public String sootyPigName;
-    public String spottedPigName;
-
-    public String albinoCowName;
-    public String ashenCowName;
-    public String cookieCowName;
-    public String creamCowName;
-    public String dairyCowName;
-    public String moobloomName;
-    public String moolipName;
-    public String pintoCowName;
-    public String sunsetCowName;
-    public String umbraCowName;
-    public String woolyCowName;
-
-    public String tropicalSlimeName;
-    public String jollyLlamaName;
-    public String dyedCatName;
-    public String furnaceGolemName;
 }

@@ -2,10 +2,8 @@ package com.jeff.pets.rendering.custom.aquatic.stingray;
 
 import com.jeff.pets.mob.custom.aquatic.Stingray;
 import com.jeff.pets.rendering.PetRenderer;
-import com.jeff.pets.rendering.custom.PetRenderState;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.PhantomRenderer;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,6 +26,7 @@ public class StingrayRenderer extends PetRenderer<Stingray, StingrayRenderState,
     public @NotNull StingrayRenderState createRenderState() {
         return new StingrayRenderState();
     }
+
     @Override
     public void extractRenderState(Stingray stingray, StingrayRenderState state, float f) {
         super.extractRenderState(stingray, state, f);

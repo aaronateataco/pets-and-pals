@@ -3,27 +3,37 @@ package com.jeff.pets.mob;
 import com.jeff.pets.mob.custom.first.Duck;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.entity.monster.Slime;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-/**Abstract class representing slimes or any animal that bounces up and down repeatedly,
- * including rabbits.*/
+/**
+ * Abstract class representing slimes or any animal that bounces up and down repeatedly,
+ * including rabbits.
+ */
 public abstract class SlimeLikePet extends AbstractPet {
     public SlimeLikePet(EntityType<? extends @NotNull TamableAnimal> entityType, Level level) {
         super(entityType, level);
     }
 
-    /**Custom ticking logic. Note this logic: <pre>
+    public static AttributeSupplier.Builder createAttributes() {
+        return AbstractPet.createAttributes().add(Attributes.JUMP_STRENGTH, 0.25f);
+    }
+
+    /**
+     * Custom ticking logic. Note this logic: <pre>
      * {@code if (this.walkAnimation.isMoving() && this.onGround()) {
      *     this.jumpFromGround();
-     * }}</pre>*/
+     * }}</pre>
+     */
     @Override
     public void tick() {
         super.tick();
@@ -112,8 +122,5 @@ public abstract class SlimeLikePet extends AbstractPet {
         if (ambient == 1) {
             level().playLocalSound(this, Objects.requireNonNull(this.getAmbientSound()), SoundSource.AMBIENT, 1.0f, 1.0f);
         }
-    }
-    public static AttributeSupplier.Builder createAttributes() {
-        return AbstractPet.createAttributes().add(Attributes.JUMP_STRENGTH, 0.25f);
     }
 }

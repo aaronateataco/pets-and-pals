@@ -1,13 +1,9 @@
 package com.jeff.pets.rendering.custom.aquatic.stingray;
 
-import com.jeff.pets.rendering.PetRenderer;
-import com.jeff.pets.rendering.custom.PetRenderState;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.animal.squid.SquidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.model.monster.phantom.PhantomModel;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,8 +40,8 @@ public class StingrayModel extends EntityModel<@NotNull StingrayRenderState> {
     public void setupAnim(StingrayRenderState state) {
         super.setupAnim(state);
         if (state.walkAnimationSpeed > 0) {
-            float anim = state.flapTime * 7.448451F * ((float)Math.PI / 180F);
-            this.left_fin.zRot = Mth.cos(anim) * 16.0F * ((float)Math.PI / 180F);
+            float anim = state.flapTime * 7.448451F * ((float) Math.PI / 180F);
+            this.left_fin.zRot = Mth.cos(anim) * 16.0F * ((float) Math.PI / 180F);
             this.right_fin.zRot = -this.left_fin.zRot;
             this.tail.yRot = this.left_fin.zRot;
         }

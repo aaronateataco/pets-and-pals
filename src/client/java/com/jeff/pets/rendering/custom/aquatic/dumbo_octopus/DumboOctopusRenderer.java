@@ -2,13 +2,9 @@ package com.jeff.pets.rendering.custom.aquatic.dumbo_octopus;
 
 import com.jeff.pets.mob.custom.aquatic.DumboOctopus;
 import com.jeff.pets.rendering.PetRenderer;
-import com.jeff.pets.rendering.custom.PetRenderState;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.SquidRenderer;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 import static com.jeff.pets.Central.CONFIG;
@@ -16,11 +12,10 @@ import static com.jeff.pets.PetsInitializer.MOD_ID;
 
 public class DumboOctopusRenderer extends PetRenderer<DumboOctopus, DumboOctopusRenderState, DumboOctopusModel> {
 
+    public static final ModelLayerLocation DUMBO_OCTOPUS_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(MOD_ID, "dumbo_octopus"), "main");
     double i = 45;
     float direction = 1;
     float speed = 0.5f;
-
-    public static final ModelLayerLocation DUMBO_OCTOPUS_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(MOD_ID, "dumbo_octopus"), "main");
 
     public DumboOctopusRenderer(EntityRendererProvider.Context context) {
         super(context, new DumboOctopusModel(context.bakeLayer(DUMBO_OCTOPUS_LOCATION)), 0.5f);
@@ -46,7 +41,7 @@ public class DumboOctopusRenderer extends PetRenderer<DumboOctopus, DumboOctopus
                 case null, default -> path = yellow;
             }
         } else {
-            switch(state.dumboOctopusSkin) {
+            switch (state.dumboOctopusSkin) {
                 case 1 -> path = yellow;
                 case 2 -> path = red;
                 case 3 -> path = blue;
@@ -63,6 +58,7 @@ public class DumboOctopusRenderer extends PetRenderer<DumboOctopus, DumboOctopus
     public @NotNull DumboOctopusRenderState createRenderState() {
         return new DumboOctopusRenderState();
     }
+
     @Override
     public void extractRenderState(DumboOctopus octopus, DumboOctopusRenderState state, float f) {
         super.extractRenderState(octopus, state, f);

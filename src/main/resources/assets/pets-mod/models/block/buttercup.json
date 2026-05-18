@@ -1,7 +1,0 @@
-{
-  "parent": "minecraft:block/cross",
-  "textures": {
-    "cross": "pets-mod:block/buttercup",
-    "particle": "pets-mod:block/buttercup"
-  }
-}

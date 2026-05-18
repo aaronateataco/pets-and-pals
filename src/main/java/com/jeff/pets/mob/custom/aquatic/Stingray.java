@@ -1,6 +1,5 @@
 package com.jeff.pets.mob.custom.aquatic;
 
-import com.jeff.pets.PetsSounds;
 import com.jeff.pets.mob.FlyingPet;
 import com.jeff.pets.mob.custom.first.Duck;
 import net.minecraft.core.BlockPos;
@@ -37,11 +36,9 @@ import static com.jeff.pets.PetsInitializer.STINGRAY;
 public class Stingray extends FlyingPet {
     public static final EntityDataAccessor<@NotNull Boolean> IS_SERVER_ENTITY =
             SynchedEntityData.defineId(Stingray.class, EntityDataSerializers.BOOLEAN);
-
+    private final float nextFlap = 1.0F;
     public float flap;
     public float flapping = 1.0F;
-
-    private float nextFlap = 1.0F;
 
     public Stingray(EntityType<? extends @NotNull TamableAnimal> type, Level level) {
         super(type, level);
@@ -156,6 +153,7 @@ public class Stingray extends FlyingPet {
     public boolean canBreatheUnderwater() {
         return true;
     }
+
     @Override
     public void tick() {
         super.tick();

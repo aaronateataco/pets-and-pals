@@ -13,17 +13,23 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-/**Abstract class representing any pet tht can fly (ghasts, vexes, etc). Contains custom movement
+/**
+ * Abstract class representing any pet tht can fly (ghasts, vexes, etc). Contains custom movement
  * logic that allow the pets to move on the client side.
+ *
  * @see AbstractPet
- * @see GroundPet*/
+ * @see GroundPet
+ */
 public abstract class FlyingPet extends AbstractPet {
     protected FlyingPet(EntityType<? extends @NotNull TamableAnimal> type, Level level) {
         super(type, level);
     }
 
-    /**Custom ticking logic.
-     * @see GroundPet#tick()*/
+    /**
+     * Custom ticking logic.
+     *
+     * @see GroundPet#tick()
+     */
     @Override
     public void tick() {
         super.tick();
@@ -92,7 +98,7 @@ public abstract class FlyingPet extends AbstractPet {
             this.move(MoverType.SELF, this.getDeltaMovement());
 
             //if (!this.onGround()) {
-              //  this.setDeltaMovement(this.getDeltaMovement().add(0, -0.04, 0));
+            //  this.setDeltaMovement(this.getDeltaMovement().add(0, -0.04, 0));
             //}
         }
         if (owner != null) {

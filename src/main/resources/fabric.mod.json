@@ -15,7 +15,7 @@
   },
   "license": "MIT",
   "icon": "assets/pets-mod/icon.png",
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
     "main": [
       "com.jeff.pets.PetsInitializer"

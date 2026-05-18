@@ -1,14 +1,13 @@
 package com.jeff.pets.rendering.vanilla.mooshroom;
 
+import com.jeff.pets.mob.vanilla.passive.ClientMooshroom;
 import com.jeff.pets.rendering.PetRenderer;
 import com.jeff.pets.rendering.vanilla.cow.ClientCowModel;
-import com.jeff.pets.mob.vanilla.passive.ClientMooshroom;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.animal.cow.CowModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.MushroomCowMushroomLayer;
 import net.minecraft.client.renderer.entity.state.MushroomCowRenderState;
 import net.minecraft.resources.Identifier;

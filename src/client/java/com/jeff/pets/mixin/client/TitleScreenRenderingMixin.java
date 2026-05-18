@@ -2,9 +2,7 @@ package com.jeff.pets.mixin.client;
 
 import com.jeff.pets.Central;
 import com.jeff.pets.PetsConfig;
-import com.terraformersmc.modmenu.mixin.MixinTitleScreen;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.components.SplashRenderer;
 import net.minecraft.client.gui.screens.TitleScreen;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,7 +11,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import static com.jeff.pets.Central.CONFIG;
 
-/**Re-assign the title screen and edition locations to custom ones, if {@link PetsConfig#customTitleEnabled} is {@code true}.*/
+/**
+ * Re-assign the title screen and edition locations to custom ones, if {@link PetsConfig#customTitleEnabled} is {@code true}.
+ */
 @Mixin(TitleScreen.class)
 public class TitleScreenRenderingMixin {
     @Inject(at = @At("HEAD"), method = "extractRenderState")

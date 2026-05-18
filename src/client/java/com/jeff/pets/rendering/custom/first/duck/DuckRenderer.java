@@ -64,8 +64,7 @@ public class DuckRenderer extends PetRenderer<@NotNull Duck, @NotNull DuckRender
                 return Identifier.fromNamespaceAndPath(PetsInitializer.MOD_ID, "textures/entity/duck/mallard_male.png");
             } else if (state.duckSpecies == 1) {
                 return Identifier.fromNamespaceAndPath(PetsInitializer.MOD_ID, "textures/entity/duck/pekin.png");
-            }
-            else {
+            } else {
                 return Identifier.fromNamespaceAndPath(PetsInitializer.MOD_ID, "textures/entity/duck/yeahitdidntwork");
             }
         }

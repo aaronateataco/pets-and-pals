@@ -6,12 +6,10 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.monster.enderman.EndermanModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.layers.CarriedBlockLayer;
 import net.minecraft.client.renderer.entity.layers.EnderEyesLayer;
 import net.minecraft.client.renderer.entity.state.EndermanRenderState;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
 public class ClientEndermanRenderer extends PetRenderer<@NotNull ClientEnderman, @NotNull EndermanRenderState, @NotNull EndermanModel<EndermanRenderState>> {

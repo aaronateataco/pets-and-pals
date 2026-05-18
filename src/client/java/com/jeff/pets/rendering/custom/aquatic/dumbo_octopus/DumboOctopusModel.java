@@ -1,8 +1,6 @@
 package com.jeff.pets.rendering.custom.aquatic.dumbo_octopus;
 
-import com.jeff.pets.rendering.custom.PetRenderState;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.animal.squid.SquidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
@@ -68,7 +66,6 @@ public class DumboOctopusModel extends EntityModel<@NotNull DumboOctopusRenderSt
 
         return LayerDefinition.create(meshdefinition, 32, 32);
     }
-
 
 
     @Override

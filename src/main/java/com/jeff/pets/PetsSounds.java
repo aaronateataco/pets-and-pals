@@ -4,10 +4,11 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.sounds.SoundSource;
 
-/**Registers the custom sounds for the duck and the penguin. More are likely coming as more
- * Mob Packs get introduced.*/
+/**
+ * Registers the custom sounds for the duck and the penguin. More are likely coming as more
+ * Mob Packs get introduced.
+ */
 public class PetsSounds {
     public static final SoundEvent DUCK_AMBIENT = registerSound();
     public static final SoundEvent PENGUIN_AMBIENT = registerPenguinSound();
@@ -22,7 +23,9 @@ public class PetsSounds {
         return Registry.register(BuiltInRegistries.SOUND_EVENT, identifier, SoundEvent.createVariableRangeEvent(identifier));
     }
 
-    /**Static initializer*/
+    /**
+     * Static initializer
+     */
     public static void initialize() {
     }
 }

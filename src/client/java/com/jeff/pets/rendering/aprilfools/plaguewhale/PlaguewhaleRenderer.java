@@ -6,7 +6,6 @@ import com.jeff.pets.rendering.aprilfools.toxifin.ToxifinSlabModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.GuardianRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;

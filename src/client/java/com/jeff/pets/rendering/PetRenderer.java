@@ -7,12 +7,15 @@ import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.world.entity.Mob;
 import org.jetbrains.annotations.NotNull;
 
-/**Used as a shared piece of code across all of the renderers. The main point of this class
- * is to provide a {@code state.isUpsideDown} check for all mobs.*/
+/**
+ * Used as a shared piece of code across all of the renderers. The main point of this class
+ * is to provide a {@code state.isUpsideDown} check for all mobs.
+ */
 public abstract class PetRenderer<D extends Mob, U extends LivingEntityRenderState, K extends EntityModel<? super U>> extends MobRenderer<@NotNull D, @NotNull U, @NotNull K> {
     public PetRenderer(EntityRendererProvider.Context context, K model, float shadow) {
         super(context, model, shadow);
     }
+
     @Override
     public void extractRenderState(D entity, U state, float f) {
         super.extractRenderState(entity, state, f);

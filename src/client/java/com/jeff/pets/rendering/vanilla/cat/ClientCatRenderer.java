@@ -10,7 +10,6 @@ import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.CatRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +42,8 @@ public class ClientCatRenderer extends PetRenderer<@NotNull ClientCat, @NotNull 
         return switch (CONFIG.catSkin) {
             case "black" -> Identifier.withDefaultNamespace("textures/entity/cat/cat_all_black.png");
             case "tuxedo" -> Identifier.withDefaultNamespace("textures/entity/cat/cat_black.png");
-            case "british_shorthair" -> Identifier.withDefaultNamespace("textures/entity/cat/cat_british_shorthair.png");
+            case "british_shorthair" ->
+                    Identifier.withDefaultNamespace("textures/entity/cat/cat_british_shorthair.png");
             case "calico" -> Identifier.withDefaultNamespace("textures/entity/cat/cat_calico.png");
             case "jellie" -> Identifier.withDefaultNamespace("textures/entity/cat/cat_jellie.png");
             case "ocelot" -> Identifier.withDefaultNamespace("textures/entity/cat/cat_ocelot.png");

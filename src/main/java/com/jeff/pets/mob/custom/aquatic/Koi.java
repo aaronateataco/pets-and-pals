@@ -1,6 +1,5 @@
 package com.jeff.pets.mob.custom.aquatic;
 
-import com.jeff.pets.PetsSounds;
 import com.jeff.pets.mob.FlyingPet;
 import com.jeff.pets.mob.custom.first.Duck;
 import net.minecraft.core.BlockPos;
@@ -21,7 +20,6 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.control.SmoothSwimmingMoveControl;
 import net.minecraft.world.entity.ai.goal.*;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.squid.Squid;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -65,6 +63,7 @@ public class Koi extends FlyingPet {
     public void aiStep() {
         super.aiStep();
     }
+
     protected SoundEvent getAmbientSound() {
         return SoundEvents.TROPICAL_FISH_AMBIENT;
     }
@@ -140,6 +139,7 @@ public class Koi extends FlyingPet {
     public boolean canBreatheUnderwater() {
         return true;
     }
+
     @Override
     public void tick() {
         super.tick();

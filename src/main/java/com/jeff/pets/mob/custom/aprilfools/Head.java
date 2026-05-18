@@ -1,6 +1,5 @@
 package com.jeff.pets.mob.custom.aprilfools;
 
-import com.jeff.pets.PetsSounds;
 import com.jeff.pets.mob.AbstractPet;
 import com.jeff.pets.mob.custom.first.Duck;
 import net.minecraft.core.particles.ParticleTypes;
@@ -10,7 +9,6 @@ import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;

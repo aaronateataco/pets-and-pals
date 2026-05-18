@@ -9,38 +9,43 @@ import dev.isxander.yacl3.api.*;
 import dev.isxander.yacl3.api.controller.*;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.TitleScreen;
-import net.minecraft.client.gui.screens.WinScreen;
 import net.minecraft.network.chat.Component;
 
 import java.util.Objects;
 
-/**Uses both the <a href="https://modrinth.com/mod/yacl">YACL</a> and <a href="https://modrinth.com/mod/modmenu">Mod Menu</a> APIs to create a screen and hook it into the Mod Menu.
+/**
+ * Uses both the <a href="https://modrinth.com/mod/yacl">YACL</a> and <a href="https://modrinth.com/mod/modmenu">Mod Menu</a> APIs to create a screen and hook it into the Mod Menu.
  * Uses the config options available in {@link PetsConfig}.
- * @see Central*/
+ *
+ * @see Central
+ */
 public class PetsConfigScreen implements ModMenuApi {
 
     private static final PetsConfigScreen INSTANCE = new PetsConfigScreen();
 
-    /**This is one of the most important values in this class. It allows the easy swapping out
+    /**
+     * This is one of the most important values in this class. It allows the easy swapping out
      * of the enums that store the petskins, in turn allowing the PetSkins option below to
-     * carry and assign different values based on what the user's currently active pet is.*/
+     * carry and assign different values based on what the user's currently active pet is.
+     */
     public Class<? extends Enum<?>> enumClass = DuckSkins.class;
 
-    /**Returns this class for easy access to the non-static methods*/
+    /**
+     * Returns this class for easy access to the non-static methods
+     */
     public static PetsConfigScreen getInstance() {
         return INSTANCE;
     }
 
-    /**Creates the config screen.
+    /**
+     * Creates the config screen.
      * Options: <p> {@code Pet Toggle} : Uses a {@code TickBoxControllerBuilder} to allow the
      * user to toggle the pet on or off from inside the config screen.
      * <p> {@code Pet Species}: Uses a {@code EnumDropDownControllerBuilder} to allow the user to
      * 'search' for pets, but keep them restricted from entering an invalid pet and crashing the game.
      * Uses the PetList enum to store its values.
      * <p> {@code Pet Name}: Uses a {@code StringControllerBuilder} to let the user choose any name they like.
-     * Uses nearly the exact same logic as {@link Central#createNameCommand()}, and you can
+     * Uses nearly the exact same logic as {@link Central#createPetNameCommand()}, and you can
      * simply copy-paste any name logic for new mobs over to this option.
      * <p> {@code PetSkins}: The most complex option to code and manage.
      * Uses a {@code EnumControllerBuilder} to let the user cycle through skins - this is important
@@ -56,8 +61,10 @@ public class PetsConfigScreen implements ModMenuApi {
      * Please note that the splash text is only initialized once, during the game launch, so
      * it will require a restart to change, but everything else will adjust instantly. (Note: a restart
      * is not forced upon the user, as it is only splash text and won't impact gameplay severely.)
+     *
      * @see SplashManagerMixin
-     * @see TitleScreenRenderingMixin */
+     * @see TitleScreenRenderingMixin
+     */
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
         return parentScreen -> {
@@ -218,36 +225,6 @@ public class PetsConfigScreen implements ModMenuApi {
                                                                 case "dumbo_octopus" -> CONFIG.dumboOctopusName;
                                                                 case "koi" -> CONFIG.koiName;
                                                                 case "stingray" -> CONFIG.stingrayName;
-                                                                case "flecked_sheep" -> CONFIG.fleckedSheepName;
-                                                                case "fuzzy_sheep" -> CONFIG.fuzzySheepName;
-                                                                case "horned_sheep" -> CONFIG.hornedSheepName ;
-                                                                case "inky_sheep" -> CONFIG.inkySheepName;
-                                                                case "long_nosed_sheep" -> CONFIG.longNosedSheepName;
-                                                                case "patched_sheep" -> CONFIG.patchedSheepName;
-                                                                case "rainbow_sheep" -> CONFIG.rainbowSheepName;
-                                                                case "rocky_sheep" -> CONFIG.rockySheepName ;
-                                                                case "mottled_pig" -> CONFIG.mottledPigName;
-                                                                case "muddy_pig" -> CONFIG.muddyPigName;
-                                                                case "pale_pig" -> CONFIG.palePigName;
-                                                                case "piebald_pig" -> CONFIG.piebaldPigName;
-                                                                case "pink_footed_pig" -> CONFIG.pinkFootedPigName;
-                                                                case "sooty_pig" -> CONFIG.sootyPigName;
-                                                                case "spotted_pig" -> CONFIG.spottedPigName;
-                                                                case "albino_cow" -> CONFIG.albinoCowName;
-                                                                case "ashen_cow" -> CONFIG.ashenCowName;
-                                                                case "cookie_cow" -> CONFIG.cookieCowName;
-                                                                case "cream_cow" -> CONFIG.creamCowName;
-                                                                case "dairy_cow" -> CONFIG.dairyCowName;
-                                                                case "moobloom" -> CONFIG.moobloomName;
-                                                                case "moolip" -> CONFIG.moolipName;
-                                                                case "pinto_cow" -> CONFIG.pintoCowName;
-                                                                case "sunset_cow" -> CONFIG.sunsetCowName;
-                                                                case "umbra_cow" -> CONFIG.umbraCowName;
-                                                                case "wooly_cow" -> CONFIG.woolyCowName;
-                                                                case "tropical_slime" -> CONFIG.tropicalSlimeName;
-                                                                case "jolly_llama" -> CONFIG.jollyLlamaName;
-                                                                case "dyed_cat" -> CONFIG.dyedCatName;
-                                                                case "furnace_golem" -> CONFIG.furnaceGolemName;
                                                                 default -> "";
                                                             },
                                                     name -> {
@@ -345,38 +322,9 @@ public class PetsConfigScreen implements ModMenuApi {
                                                             case "dumbo_octopus" -> CONFIG.dumboOctopusName = name;
                                                             case "koi" -> CONFIG.koiName = name;
                                                             case "stingray" -> CONFIG.stingrayName = name;
-                                                            case "flecked_sheep" -> CONFIG.fleckedSheepName = name;
-                                                            case "fuzzy_sheep" -> CONFIG.fuzzySheepName = name;
-                                                            case "horned_sheep" -> CONFIG.hornedSheepName = name;
-                                                            case "inky_sheep" -> CONFIG.inkySheepName = name;
-                                                            case "long_nosed_sheep" -> CONFIG.longNosedSheepName = name;
-                                                            case "patched_sheep" -> CONFIG.patchedSheepName = name;
-                                                            case "rainbow_sheep" -> CONFIG.rainbowSheepName = name;
-                                                            case "rocky_sheep" -> CONFIG.rockySheepName = name;
-                                                            case "mottled_pig" -> CONFIG.mottledPigName = name;
-                                                            case "muddy_pig" -> CONFIG.muddyPigName = name;
-                                                            case "pale_pig" -> CONFIG.palePigName = name;
-                                                            case "piebald_pig" -> CONFIG.piebaldPigName = name;
-                                                            case "pink_footed_pig" -> CONFIG.pinkFootedPigName = name;
-                                                            case "sooty_pig" -> CONFIG.sootyPigName = name;
-                                                            case "spotted_pig" -> CONFIG.spottedPigName = name;
-                                                            case "albino_cow" -> CONFIG.albinoCowName = name;
-                                                            case "ashen_cow" -> CONFIG.ashenCowName = name;
-                                                            case "cookie_cow" -> CONFIG.cookieCowName = name;
-                                                            case "cream_cow" -> CONFIG.creamCowName = name;
-                                                            case "dairy_cow" -> CONFIG.dairyCowName = name;
-                                                            case "moobloom" -> CONFIG.moobloomName = name;
-                                                            case "moolip" -> CONFIG.moolipName = name;
-                                                            case "pinto_cow" -> CONFIG.pintoCowName = name;
-                                                            case "sunset_cow" -> CONFIG.sunsetCowName = name;
-                                                            case "umbra_cow" -> CONFIG.umbraCowName = name;
-                                                            case "wooly_cow" -> CONFIG.woolyCowName = name;
-                                                            case "tropical_slime" -> CONFIG.tropicalSlimeName = name;
-                                                            case "jolly_llama" -> CONFIG.jollyLlamaName = name;
-                                                            case "dyed_cat" -> CONFIG.dyedCatName = name;
-                                                            case "furnace_golem" -> CONFIG.furnaceGolemName = name;
                                                         }
                                                         Central.refreshPetNames();
+                                                        //throw new IllegalArgumentException();
                                                     }
                                             )
 
@@ -389,48 +337,76 @@ public class PetsConfigScreen implements ModMenuApi {
                                                 boolean hasPrintedMessage = false;
                                                 try {
                                                     return switch (CONFIG.activePet) {
-                                                        case "duck" -> DuckSkins.valueOf(CONFIG.duckSkin.replaceAll(" ", "_"));
-                                                        case "cat" -> CatSkins.valueOf(CONFIG.catSkin.replaceAll(" ", "_"));
-                                                        case "racoon" -> RacoonSkins.valueOf(CONFIG.racoonSkin.replaceAll(" ", "_"));
-                                                        case "sheep" -> SheepSkins.valueOf(CONFIG.sheepSkin.replaceAll(" ", "_"));
-                                                        case "axolotl" -> AxolotlSkins.valueOf(CONFIG.axolotlSkin.replaceAll(" ", "_"));
-                                                        case "camel" -> CamelSkins.valueOf(CONFIG.camelSkin.replaceAll(" ", "_"));
-                                                        case "chicken" -> ChickenSkins.valueOf(CONFIG.chickenSkin.replaceAll(" ", "_"));
+                                                        case "duck" ->
+                                                                DuckSkins.valueOf(CONFIG.duckSkin.replaceAll(" ", "_"));
+                                                        case "cat" ->
+                                                                CatSkins.valueOf(CONFIG.catSkin.replaceAll(" ", "_"));
+                                                        case "racoon" ->
+                                                                RacoonSkins.valueOf(CONFIG.racoonSkin.replaceAll(" ", "_"));
+                                                        case "sheep" ->
+                                                                SheepSkins.valueOf(CONFIG.sheepSkin.replaceAll(" ", "_"));
+                                                        case "axolotl" ->
+                                                                AxolotlSkins.valueOf(CONFIG.axolotlSkin.replaceAll(" ", "_"));
+                                                        case "camel" ->
+                                                                CamelSkins.valueOf(CONFIG.camelSkin.replaceAll(" ", "_"));
+                                                        case "chicken" ->
+                                                                ChickenSkins.valueOf(CONFIG.chickenSkin.replaceAll(" ", "_"));
                                                         case "creeper", "nerd_creeper", "smiling_creeper" ->
                                                                 CreeperSkins.valueOf(CONFIG.creeperSkin.replaceAll(" ", "_"));
                                                         case "copper_golem" ->
                                                                 CopperGolemSkins.valueOf(CONFIG.copperGolemSkin.replaceAll(" ", "_"));
-                                                        case "cow" -> CowSkins.valueOf(CONFIG.cowSkin.replaceAll(" ", "_"));
-                                                        case "frog" -> FrogSkins.valueOf(CONFIG.frogSkin.replaceAll(" ", "_"));
-                                                        case "horse" -> HorseSkins.valueOf(CONFIG.horseSkin.replaceAll(" ", "_"));
-                                                        case "parrot" -> ParrotSkins.valueOf(CONFIG.parrotSkin.replaceAll(" ", "_"));
-                                                        case "pig" -> PigSkins.valueOf(CONFIG.pigSkin.replaceAll(" ", "_"));
-                                                        case "rabbit" -> RabbitSkins.valueOf(CONFIG.rabbitSkin.replaceAll(" ", "_"));
+                                                        case "cow" ->
+                                                                CowSkins.valueOf(CONFIG.cowSkin.replaceAll(" ", "_"));
+                                                        case "frog" ->
+                                                                FrogSkins.valueOf(CONFIG.frogSkin.replaceAll(" ", "_"));
+                                                        case "horse" ->
+                                                                HorseSkins.valueOf(CONFIG.horseSkin.replaceAll(" ", "_"));
+                                                        case "parrot" ->
+                                                                ParrotSkins.valueOf(CONFIG.parrotSkin.replaceAll(" ", "_"));
+                                                        case "pig" ->
+                                                                PigSkins.valueOf(CONFIG.pigSkin.replaceAll(" ", "_"));
+                                                        case "rabbit" ->
+                                                                RabbitSkins.valueOf(CONFIG.rabbitSkin.replaceAll(" ", "_"));
                                                         case "snow_golem" ->
                                                                 SnowGolemSkins.valueOf(CONFIG.snowGolemSkin.replaceAll(" ", "_"));
-                                                        case "squid" -> SquidSkins.valueOf(CONFIG.squidSkin.replaceAll(" ", "_"));
-                                                        case "strider" -> StriderSkins.valueOf(CONFIG.striderSkin.replaceAll(" ", "_"));
+                                                        case "squid" ->
+                                                                SquidSkins.valueOf(CONFIG.squidSkin.replaceAll(" ", "_"));
+                                                        case "strider" ->
+                                                                StriderSkins.valueOf(CONFIG.striderSkin.replaceAll(" ", "_"));
                                                         case "tropical_fish" ->
                                                                 TropicalFishSkins.valueOf(CONFIG.tropicalFishSkin.replaceAll(" ", "_"));
-                                                        case "villager" -> VillagerSkins.valueOf(CONFIG.villagerSkin.replaceAll(" ", "_"));
+                                                        case "villager" ->
+                                                                VillagerSkins.valueOf(CONFIG.villagerSkin.replaceAll(" ", "_"));
                                                         case "mooshroom" ->
                                                                 MooshroomSkins.valueOf(CONFIG.mooshroomSkin.replaceAll(" ", "_"));
-                                                        case "bee" -> BeeSkins.valueOf(CONFIG.beeSkin.replaceAll(" ", "_"));
-                                                        case "fox" -> FoxSkins.valueOf(CONFIG.foxSkin.replaceAll(" ", "_"));
-                                                        case "llama" -> LlamaSkins.valueOf(CONFIG.llamaSkin.replaceAll(" ", "_"));
-                                                        case "nautilus" -> NautilusSkins.valueOf(CONFIG.nautilusSkin.replaceAll(" ", "_"));
-                                                        case "panda" -> PandaSkins.valueOf(CONFIG.pandaSkin.replaceAll(" ", "_"));
-                                                        case "piglin" -> PiglinSkins.valueOf(CONFIG.piglinSkin.replaceAll(" ", "_"));
-                                                        case "wolf" -> WolfSkins.valueOf(CONFIG.wolfSkin.replaceAll(" ", "_"));
-                                                        case "hoglin" -> HoglinSkins.valueOf(CONFIG.hoglinSkin.replaceAll(" ", "_"));
+                                                        case "bee" ->
+                                                                BeeSkins.valueOf(CONFIG.beeSkin.replaceAll(" ", "_"));
+                                                        case "fox" ->
+                                                                FoxSkins.valueOf(CONFIG.foxSkin.replaceAll(" ", "_"));
+                                                        case "llama" ->
+                                                                LlamaSkins.valueOf(CONFIG.llamaSkin.replaceAll(" ", "_"));
+                                                        case "nautilus" ->
+                                                                NautilusSkins.valueOf(CONFIG.nautilusSkin.replaceAll(" ", "_"));
+                                                        case "panda" ->
+                                                                PandaSkins.valueOf(CONFIG.pandaSkin.replaceAll(" ", "_"));
+                                                        case "piglin" ->
+                                                                PiglinSkins.valueOf(CONFIG.piglinSkin.replaceAll(" ", "_"));
+                                                        case "wolf" ->
+                                                                WolfSkins.valueOf(CONFIG.wolfSkin.replaceAll(" ", "_"));
+                                                        case "hoglin" ->
+                                                                HoglinSkins.valueOf(CONFIG.hoglinSkin.replaceAll(" ", "_"));
                                                         case "magma_cube" ->
                                                                 SlimeLikeSkins.valueOf(CONFIG.magmaCubeSkin.replaceAll(" ", "_"));
-                                                        case "slime", "tropical_slime" -> SlimeLikeSkins.valueOf(CONFIG.slimeSkin.replaceAll(" ", "_"));
+                                                        case "slime", "tropical_slime" ->
+                                                                SlimeLikeSkins.valueOf(CONFIG.slimeSkin.replaceAll(" ", "_"));
                                                         case "zombie_villager" ->
                                                                 ZombieVillagerSkins.valueOf(CONFIG.zombieVillagerSkin.replaceAll(" ", "_"));
-                                                        case "wither" -> WitherSkins.valueOf(CONFIG.witherSkin.replaceAll(" ", "_"));
-                                                        case "dumbo_octopus" -> DumboOctopusSkins.valueOf(CONFIG.dumboOctopusSkin.replaceAll(" ", "_"));
-                                                        case null, default -> PetList.valueOf(CONFIG.activePet.replaceAll(" ", "_"));
+                                                        case "wither" ->
+                                                                WitherSkins.valueOf(CONFIG.witherSkin.replaceAll(" ", "_"));
+                                                        case "dumbo_octopus" ->
+                                                                DumboOctopusSkins.valueOf(CONFIG.dumboOctopusSkin.replaceAll(" ", "_"));
+                                                        case null, default ->
+                                                                PetList.valueOf(CONFIG.activePet.replaceAll(" ", "_"));
                                                     };
                                                 } catch (IllegalArgumentException e) {
                                                     assert Minecraft.getInstance().player != null;
