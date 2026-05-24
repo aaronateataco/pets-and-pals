@@ -57,6 +57,8 @@ public class DuckRenderer extends PetRenderer<@NotNull Duck, @NotNull DuckRender
                 duckTexturePath = "textures/entity/duck/mallard_male.png";
             } else if (Objects.equals(CONFIG.duckSkin, "rubber")) {
                 duckTexturePath = "textures/entity/duck/rubber.png";
+            } else if (CONFIG.duckSkin.equals("bronze")) {
+                duckTexturePath = "textures/entity/duck/bronze.png";
             }
             return Identifier.fromNamespaceAndPath(PetsInitializer.MOD_ID, duckTexturePath);
         } else {

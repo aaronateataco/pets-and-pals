@@ -432,6 +432,8 @@ public class PetsConfigScreen implements ModMenuApi {
                                                             CONFIG.duckSkin = "pekin";
                                                         } else if (Objects.equals(val, "rubber")) {
                                                             CONFIG.duckSkin = "rubber";
+                                                        } else if (Objects.equals(val, "bronze")) {
+                                                            CONFIG.duckSkin = "bronze";
                                                         }
                                                     }
                                                     case "racoon" -> {

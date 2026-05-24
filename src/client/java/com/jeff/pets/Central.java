@@ -83,7 +83,7 @@ public class Central implements ClientModInitializer {
     public static final SuggestionProvider<FabricClientCommandSource> PETS = (context, builder) ->
             SharedSuggestionProvider.suggest(PETS_LIST, builder);
     private static final SuggestionProvider<SharedSuggestionProvider> ON_OFF = (context, builder) -> SharedSuggestionProvider.suggest(new String[]{"off", "on"}, builder);
-    private static final List<String> DUCK_SKINS = List.of("mallard", "pekin", "rubber");
+    private static final List<String> DUCK_SKINS = List.of("mallard", "pekin", "rubber", "bronze");
     private static final List<String> CAT_SKINS = List.of("black", "tuxedo", "british shorthair", "calico", "jellie", "ocelot", "persian", "ragdoll", "red", "siamese", "tabby", "white");
     private static final List<String> AXOLOTL_SKINS = List.of("pink", "brown", "gold", "cyan", "blue");
     private static final List<String> CAMEL_SKINS = List.of("camel", "husk");
@@ -905,6 +905,8 @@ public class Central implements ClientModInitializer {
                                 case "rubber":
                                     CONFIG.duckSkin = "rubber";
                                     break;
+                                case "bronze": CONFIG.duckSkin = "bronze";
+                                break;
                                 case null:
                                 default:
                                     isValid = false;

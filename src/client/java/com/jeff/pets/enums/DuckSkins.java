@@ -7,7 +7,8 @@ public enum DuckSkins implements NameableEnum {
 
     mallard,
     pekin,
-    rubber;
+    rubber,
+    bronze;
 
     @Override
     public Component getDisplayName() {
