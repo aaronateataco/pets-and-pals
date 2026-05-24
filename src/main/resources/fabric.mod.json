@@ -11,7 +11,8 @@
   ],
   "contact": {
     "homepage": "https://modrinth.com/mod/pets-mod",
-    "sources": "https://github.com/downloadableduck/petsmod"
+    "sources": "https://github.com/downloadableduck/petsmod",
+    "issues": "https://github.com/downloadableduck/petsmod/issues"
   },
   "license": "MIT",
   "icon": "assets/pets-mod/icon.png",
@@ -46,10 +47,9 @@
   },
   "custom": {
     "modmenu": {
-      "name": "Pets Mod",
-      "description": "Adds completely client-sided pets to your game. Supports every vanilla mob and will work on any server, including in singleplayer!",
-      "icon": "assets/pets-mod/icon.png",
-      "environment": "client"
+      "links": {
+        "modmenu.modrinth": "https://modrinth.com/mod/pets-mod"
+      }
     }
   }
 }

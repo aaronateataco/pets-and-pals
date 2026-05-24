@@ -3,6 +3,7 @@ import com.vanniktech.maven.publish.SonatypeHost
 plugins {
     id 'net.fabricmc.fabric-loom' version "${loom_version}"
     id 'maven-publish'
+    id "com.modrinth.minotaur" version "2.+"
     id "com.vanniktech.maven.publish" version "0.28.0"
     id 'signing'
 }
@@ -18,6 +19,7 @@ repositories {
     maven { url "https://maven.shedaniel.me/" }
     maven { url "https://maven.terraformersmc.com/" }
     maven { url "https://maven.isxander.dev/releases" }
+    maven { url "https://api.modrinth.com/maven"}
     // Add repositories to retrieve artifacts from in here.
     // You should only use this when depending on other mods because
     // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
@@ -48,6 +50,9 @@ dependencies {
     implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
     implementation("com.terraformersmc:modmenu:${project.modmenu_version}")
     implementation "dev.isxander:yet-another-config-lib:${project.yacl_version}"
+    implementation "maven.modrinth:pets-earth:1.0.1-26.1.x"
+    implementation "maven.modrinth:petsmod-nyan-cat:1.0.0"
+
 
 }
 
@@ -68,6 +73,7 @@ java {
     // if it is present.
     // If you remove this line, sources will not be generated.
     withSourcesJar()
+    withJavadocJar()
 
     sourceCompatibility = JavaVersion.VERSION_25
     targetCompatibility = JavaVersion.VERSION_25
@@ -113,3 +119,20 @@ mavenPublishing {
         }
     }
 }
+
+/*modrinth {
+    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+    System.out.println("Enter a Modrinth token: ");
+    token = br.readLine(); // Enter the token you got from the basics part of this tutorial.
+    projectId = "WwqTyEtB" // Enter your Modrinth project ID here.
+    System.out.println("Enter the version number:");
+    versionNumber = project.mod_version;
+    System.out.println("Enter the version name:");
+    versionName = br.readLine();
+    System.out.println("Enter the game version number: (See minotaur docs for valids)");
+    gameVersions = [br.readLine()];
+    System.out.println("Enter changelog:");
+    changelog = br.readLine();
+    additionalFiles = [sourcesJar, javadocJar]
+    loaders = ["fabric"]
+}*/

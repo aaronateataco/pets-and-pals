@@ -29,6 +29,8 @@ dependencies {
     implementation("com.terraformersmc:modmenu:${project.modmenu_version}")
     implementation "dev.isxander:yet-another-config-lib:${project.yacl_version}"
     implementation "maven.modrinth:pets-mod:${project.petsmod_version}"
+    //add the sources jar as well
+    implementation "maven.modrinth:pets-mod:${project.petsmod_version}:sources"
 }
 ```
 
@@ -37,7 +39,7 @@ Now you will have to add the versions to your gradle.properties. The latest mod 
 fabric_api_version=0.144.3+26.1
 modmenu_version=18.0.0-alpha.8
 yacl_version=3.9.1+26.1-fabric
-petsmod_version=0.7.4-26.1.x
+petsmod_version=0.7.6-26.1.x
 cloth_config_version=26.1.154
 ```
 Here are some quick links to each mod's version page:

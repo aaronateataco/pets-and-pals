@@ -10,6 +10,7 @@ import dev.isxander.yacl3.api.controller.*;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Util;
 
 import java.util.Objects;
 
@@ -984,8 +985,34 @@ public class PetsConfigScreen implements ModMenuApi {
                                             .build())
                                     .build())
                             .build())
+                    .category(ConfigCategory.createBuilder()
+                            .name(Component.literal("Addons"))
+                            .option(Option.<String>createBuilder()
+                                    .name(Component.literal("Addons installed: "))
+                                    .description(OptionDescription.of(Component.literal("Installed addons: \n" + getInstalledAddons())))
+                                    .binding(
+                                            "none",
+                                            () -> String.valueOf(PetsClientInitializer.ADDONS.size()),
+                                            _ -> {
+
+                                            }
+                                    ).controller(StringControllerBuilder::create).available(false)
+                                    .build())
+                            .option(ButtonOption.createBuilder()
+                                    .name(Component.literal("Browse Addons"))
+                                    .description(OptionDescription.of(Component.literal("Click to view our website, which houses a list of addons to browse.")))
+                                    .action((_, _) -> Util.getPlatform().openUri("https://petsmod.com/addons"))
+                                    .text(Component.empty())
+                                    .build())
+                            .build())
                     .build()
                     .generateScreen(parentScreen);
         };
+    }
+    private static String getInstalledAddons() {
+        if (PetsClientInitializer.ADDONS.isEmpty()) {
+            return "none";
+        }
+        return String.join(", \n", PetsClientInitializer.ADDONS);
     }
 }

@@ -124,6 +124,7 @@ import com.jeff.pets.rendering.vanilla.zombie.ClientZombieRenderer;
 import com.jeff.pets.rendering.vanilla.zombievillager.ClientZombieVillagerModel;
 import com.jeff.pets.rendering.vanilla.zombievillager.ClientZombieVillagerRenderer;
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
@@ -405,7 +406,9 @@ public class PetsClientInitializer implements ClientModInitializer {
         ModelLayerRegistry.registerModelLayer(KoiRenderer.KOI_LOCATION, KoiModel::createBodyLayer);
         ModelLayerRegistry.registerModelLayer(StingrayRenderer.STINGRAY_LOCATION, StingrayModel::createBodyLayer);
 
-        LOGGER.info("PetsMod addons loaded:{}", ADDONS);
+        ClientLifecycleEvents.CLIENT_STARTED.register((mc) -> {
+            LOGGER.info("PetsMod addons loaded:{}", ADDONS);
+        });
     }
 
     /**

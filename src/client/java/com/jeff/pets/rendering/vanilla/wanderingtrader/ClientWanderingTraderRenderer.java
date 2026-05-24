@@ -16,12 +16,12 @@ public class ClientWanderingTraderRenderer extends PetRenderer<@NotNull ClientWa
 
     public ClientWanderingTraderRenderer(EntityRendererProvider.Context context) {
         super(context, new VillagerModel(context.bakeLayer(ModelLayers.WANDERING_TRADER)), 0.5F);
-        this.addLayer(new CustomHeadLayer(this, context.getModelSet(), context.getPlayerSkinRenderCache()));
+        this.addLayer(new CustomHeadLayer<>(this, context.getModelSet(), context.getPlayerSkinRenderCache()));
     }
 
     @Override
     public @NotNull Identifier getTextureLocation(VillagerRenderState villagerRenderState) {
-        return Identifier.withDefaultNamespace("textures/entity/wandering_trader.png");
+        return Identifier.withDefaultNamespace("textures/entity/wandering_trader/wandering_trader.png");
     }
 
     @Override
