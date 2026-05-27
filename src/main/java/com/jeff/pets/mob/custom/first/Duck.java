@@ -229,6 +229,14 @@ public class Duck extends AbstractPet {
             if (!this.onGround()) {
                 this.processFlappingMovement();
             }
+
+            if (owner.getDeltaMovement().lengthSqr() < 0.01) {
+                this.waitingTime++;
+                if (this.waitingTime > 30) this.wander();
+            } else {
+                this.waitingTime = 0;
+            }
+
             this.setYRot(Duck.rotlerp(this.getYRot(), (float) targetYaw));
             this.setYHeadRot(this.getYRot());
 

@@ -72,13 +72,13 @@ public class PetsConfigScreen implements ModMenuApi {
             PetsConfig CONFIG = AutoConfig.getConfigHolder(PetsConfig.class).getConfig();
             String activePet = CONFIG.activePet;
             return YetAnotherConfigLib.createBuilder()
-                    .title(Component.literal("Pets Config"))
+                    .title(Component.literal("Config"))
                     .save(() -> {
                         AutoConfig.getConfigHolder(PetsConfig.class).save();
                         Minecraft.getInstance().setScreen(this.getModConfigScreenFactory().create(null));
                     })
                     .category(ConfigCategory.createBuilder()
-                            .name(Component.literal("Pets Config"))
+                            .name(Component.literal("Config"))
                             .tooltip(Component.literal("The configuration menu for the Pets mod."))
                             .group(OptionGroup.createBuilder()
                                     .name(Component.literal("Settings"))
@@ -989,22 +989,19 @@ public class PetsConfigScreen implements ModMenuApi {
                             .build())
                     .category(ConfigCategory.createBuilder()
                             .name(Component.literal("Addons"))
-                            .option(Option.<String>createBuilder()
+                            .option(ButtonOption.createBuilder()
                                     .name(Component.literal("Addons installed: "))
                                     .description(OptionDescription.of(Component.literal("Installed addons: \n" + getInstalledAddons())))
-                                    .binding(
-                                            "none",
-                                            () -> String.valueOf(PetsClientInitializer.ADDONS.size()),
-                                            _ -> {
+                                    .text(Component.literal(String.valueOf(PetsClientInitializer.ADDONS.size())))
+                                    .action((_, _) -> {
 
-                                            }
-                                    ).controller(StringControllerBuilder::create).available(false)
+                                    })
                                     .build())
                             .option(ButtonOption.createBuilder()
                                     .name(Component.literal("Browse Addons"))
                                     .description(OptionDescription.of(Component.literal("Click to view our website, which houses a list of addons to browse.")))
                                     .action((_, _) -> Util.getPlatform().openUri("https://petsmod.com/addons"))
-                                    .text(Component.empty())
+                                    .text(Component.literal("www.petsmod.com/addons"))
                                     .build())
                             .build())
                     .build()

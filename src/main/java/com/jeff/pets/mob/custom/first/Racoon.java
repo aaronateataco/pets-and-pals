@@ -154,6 +154,13 @@ public class Racoon extends AbstractPet {
                 this.setDeltaMovement(this.getDeltaMovement().add(0, -0.01, 0));
             }
 
+            if (owner.getDeltaMovement().lengthSqr() < 0.01) {
+                this.waitingTime++;
+                if (this.waitingTime > 30) this.wander();
+            } else {
+                this.waitingTime = 0;
+            }
+
             if (!this.onGround()) {
                 this.processFlappingMovement();
             }

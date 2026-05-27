@@ -1,10 +1,12 @@
 package com.jeff.pets.rendering;
 
+import com.jeff.pets.compat.ViaFabricPlusCompat;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -20,5 +22,11 @@ public abstract class PetRenderer<D extends Mob, U extends LivingEntityRenderSta
     public void extractRenderState(D entity, U state, float f) {
         super.extractRenderState(entity, state, f);
         state.isUpsideDown = entity.getPlainTextName().equals("Grumm") || entity.getPlainTextName().equals("Dinnerbone");
+        if (state.passengerOffset == null) {
+            state.passengerOffset = new Vec3(0, 0, 0);
+        }
+        if (ViaFabricPlusCompat.shouldUpdateThingy() && entity.isPassenger()) {
+            state.passengerOffset = new Vec3(state.passengerOffset.x, state.passengerOffset.y + 0.35, state.passengerOffset.z);
+        }
     }
 }

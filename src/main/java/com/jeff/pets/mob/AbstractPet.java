@@ -1,18 +1,23 @@
 package com.jeff.pets.mob;
 
+import com.jeff.pets.mob.custom.first.Duck;
+import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -20,8 +25,11 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
+
+import java.util.Objects;
 
 /**
  * Abstract class that extends {@link TamableAnimal}, providing multiple utilities
@@ -36,6 +44,11 @@ import org.jspecify.annotations.Nullable;
  * @see GroundPet
  */
 public abstract class AbstractPet extends TamableAnimal {
+
+    private boolean isReturningToOwner = false;
+    private float randomX = (float) (Math.random() - 1f);
+    private float randomZ = (float) (Math.random() - 1);
+    protected int waitingTime = 0;
 
     protected AbstractPet(EntityType<? extends @NotNull TamableAnimal> type, Level level) {
         super(type, level);
@@ -178,5 +191,67 @@ public abstract class AbstractPet extends TamableAnimal {
      */
     public void setName(String string) {
         this.setCustomName(Component.literal(string));
+    }
+
+    public void wander() {
+        float speed = (float) (this.getSpeed() - 0.35);
+        Vec3 lookDir;
+        float z = speed * this.randomZ;
+
+        float distance = this.distanceTo(this.getOwner());
+        float yVelo = (float) this.getDeltaMovement().y;
+
+        if (distance > 5) {
+            this.reCalcPos();
+            this.isReturningToOwner = true;
+        } else if (distance < 2) {
+            this.reCalcPos();
+            this.isReturningToOwner = false;
+        }
+
+        if (!this.isReturningToOwner) {
+            this.setDeltaMovement(new Vec3(speed, yVelo, z));
+        } else {
+            this.setDeltaMovement(new Vec3(-speed, yVelo, -z));
+        }
+
+        //this.lookAt(EntityAnchorArgument.Anchor.EYES, lookDir);
+
+        double moveX = this.getDeltaMovement().x;
+        double moveZ = this.getDeltaMovement().z;
+
+        lookDir = new Vec3(
+                this.getX() + (moveX * 2),
+                this.getY() + this.getEyeHeight(),
+                this.getZ() + (moveZ * 2)
+        );
+        this.getLookControl().setLookAt(lookDir.x, lookDir.y, lookDir.z, 1.0F, (float) this.getMaxHeadXRot());
+
+        if (moveX * moveX + moveZ * moveZ > 0.001) {
+            float targetYaw = (float) (Math.atan2(-moveX, moveZ) * (180D / Math.PI));
+            float smoothYaw = net.minecraft.util.Mth.rotLerp(0.2f, this.getYRot(), targetYaw);
+
+            this.setYRot(smoothYaw);
+            this.setYHeadRot(smoothYaw);
+            this.yBodyRot = smoothYaw;
+        }
+
+        if (this.horizontalCollision && this.onGround()) {
+            this.jumpFromGround();
+        } if (!this.onGround()) {
+            this.setDeltaMovement(this.getDeltaMovement().add(0, -0.04, 0));
+        }
+        double dx = lookDir.x - this.getX();
+        double dz = lookDir.z - this.getZ();
+        float targetYaw = (float) (Math.atan2(-dx, dz) * (180D / Math.PI));
+
+        this.setYRot(targetYaw);
+        this.setYHeadRot(targetYaw);
+        this.yBodyRot = targetYaw;
+    }
+
+    private void reCalcPos() {
+        this.randomX = (float) (Math.random() - 1);
+        this.randomZ = (float) (Math.random() - 1);
     }
 }

@@ -2197,8 +2197,7 @@ public class Central implements ClientModInitializer {
     }
 
     /**
-     * Idk what this is here for tbh id assume its for clearing summonedEntity but it doesn't actually clear the actual list.
-     * It probably serves some purpose
+     * Clears the summon entities when the player joins a world so they are re-summoned
      */
     void createJoinHandler() {
         ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
