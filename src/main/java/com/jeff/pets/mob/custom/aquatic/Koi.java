@@ -193,7 +193,7 @@ public class Koi extends FlyingPet {
                 this.jumpFromGround();
             }
 
-            if (yHeightToOwner > -1) {
+            if (yHeightToOwner > -1 || this.horizontalCollision) {
                 this.setDeltaMovement(this.getDeltaMovement().add(0, -0.01, 0));
             }
 

@@ -218,7 +218,7 @@ public class Duck extends AbstractPet {
 
             int yHeightToOwner = (int) (owner.getY() - this.getY());
 
-            if (yHeightToOwner > 1 && !this.isServerEntity()) {
+            if ((yHeightToOwner > 1 || this.horizontalCollision) && !this.isServerEntity()) {
                 this.jumpFromGround();
             }
 

@@ -185,7 +185,7 @@ public class DumboOctopus extends FlyingPet {
 
             int yHeightToOwner = (int) (owner.getY() - this.getY());
 
-            if (yHeightToOwner > 1) {
+            if (yHeightToOwner > 1 || this.horizontalCollision) {
                 this.jumpFromGround();
             }
 

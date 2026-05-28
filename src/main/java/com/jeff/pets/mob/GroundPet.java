@@ -88,7 +88,7 @@ public abstract class GroundPet extends AbstractPet {
 
             int yHeightToOwner = (int) (owner.getY() - this.getY());
 
-            if (yHeightToOwner > 1) {
+            if (this.horizontalCollision) {
                 this.jumpFromGround();
             }
 
