@@ -516,3 +516,123 @@ public class ExamplePetsModAddonClient implements ClientModInitializer {
 ```
 
 Now, we are officially finished. Remember, if you have any questions or issues, please, open an issue on my GitHub. Have a great day!
+
+### Creating a Skin
+
+To create a skin, we first need to add a new value to our config that represents our skin.
+
+```java
+@Config(name = "petsmod_addon_config")
+public class ExamplePetsModAddonConfig implements ConfigData {
+    public String customEntityName;
+    public String customEntitySkin;
+}
+```
+
+Now, let's make sure that it isn't null in our initializer class.
+
+```java
+private void checkForNullObjects() {
+        CUSTOM_CONFIG.customEntityName = Utils.checkNullString(CUSTOM_CONFIG.customEntityName);
+        CUSTOM_CONFIG.customEntitySkin = Utils.checkNullString(CUSTOM_CONFIG.customEntitySkin, "normal");
+}
+```
+
+Great, we now have our object! Let's go ahead and make sure that our pet will actually change its texture based on its skin. To do this, we modify the getTextureLocation() method with an if statement.
+
+```java
+public class CustomEntityRenderer extends PetRenderer<CustomEntity, GhastRenderState, GhastModel> {
+    @Override
+    public void getTextureLocation(GhastRenderState state) {
+        if (CUSTOM_CONFIG.customEntitySkin.equals("normal")) {
+            return Identifier.withDefaultNamespace("textures/entity/ghast/ghast.png");
+        } else {
+            return Identifier.withDefaultNamespace("textures/entity/ghast/ghast_shooting.png");
+        }
+    }
+}
+```
+
+However, we haven't actually given the user the ability to assign custom skins. Let's do that right now. Head over to your CentralMixin.
+
+```java
+@Mixin(Central.class)
+public class CentralMixin {
+    @Inject(at = @At("HEAD"), method = "lambda$createPetSkinCommand$1")
+    private static void createPetSkinCommand(CommandContext<?> context, CallbackInfoReturnable<Integer> cir) {
+        String skin = StringArgumentType.getString(context, "skin");
+        if (CONFIG.activePet.equals(CUSTOM_ENTITY_VALUE)) {
+            //get what the user inputted and assign it if our custom entity is active
+            if (skin.equals("normal")) {
+                CUSTOM_CONFIG.customEntitySkin = "normal";
+            } else if (skin.equals("angry")) {
+                CUSTOM_CONFIG.customEntitySkin = "angry";
+            }
+        }
+        //save the config
+        AutoConfig.getConfigHolder(ExamplePetsModAddonConfig.class).save();
+    }
+}
+```
+
+Great, but the user won't be able to actually see the suggestion pop up in chat. Let's add that real quick:
+
+```java
+@Mixin(Central.class)
+public class CentralMixin {
+    @Inject(at = @At(value = "INVOKE", target = "Lcom/mojang/brigadier/suggestion/SuggestionsBuilder;buildFuture()Ljava/util/concurrent/CompletableFuture;"),
+            method = "lambda$new$0")
+    private static void addSkinSuggestions(CommandContext<?> context, SuggestionsBuilder builder, CallbackInfoReturnable<CompletableFuture> cir) {
+        String remaining = builder.getRemainingLowerCase();
+        if (CONFIG.activePet.equals(CUSTOM_ENTITY_VALUE)) {
+            for (String s : MY_SKIN_SUGGESTIONS) {
+                if (s.toLowerCase().startsWith(remaining)) {
+                    builder.suggest(s);
+                }
+            }
+        }
+    }
+}
+```
+
+Oop, wait a second! We haven't actually created our suggestions yet. Let's do that. Add this to the top of your file:
+
+```java
+@Mixin(Central.class)
+public class CentralMixin {
+    //these are what the user will see pop up in their suggestion list when they type /petspecies.
+    @Unique
+    private static final List<String> MY_SKIN_SUGGESTIONS = List.of("normal", "angry");
+}
+```
+
+Almost done! Let's add this to the end of our createSummonCommand() method.
+
+```java
+@Mixin(Central.class)
+public class CentralMixin {
+    @Inject(at = @At("HEAD"), method = "lambda$createPetSpeciesCommand$1", cancellable = true)
+    private static void createSummonCommand(CommandContext<FabricClientCommandSource> context, CallbackInfoReturnable<Integer> cir) {
+        String species = StringArgumentType.getString(context, "species");
+        if (Objects.equals(species, CUSTOM_ENTITY_VALUE_NO_SPACES) || Objects.equals(species, CUSTOM_ENTITY_VALUE)) {
+            spawnCustomEntity(context, customEntity, CUSTOM_ENTITY_VALUE);
+            //update the suggestions since we return early
+            updateSuggestions(Minecraft.getInstance());
+            cir.setReturnValue(1);
+        }
+    }
+}
+```
+
+You might have to shadow (inherit the method) updateSuggestions since it was private until 0.7.7.
+
+```java
+@Mixin(Central.class)
+public class CentralMixin {
+    /**Shadow updateSuggestions since it wasn't made public until 0.7.7*/
+    @Shadow
+    private static void updateSuggestions(Minecraft client) {
+
+    }
+}
+```
