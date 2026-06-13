@@ -43,6 +43,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.ClientSuggestionProvider;
+import net.minecraft.client.renderer.Panorama;
+import net.minecraft.client.renderer.state.gui.PanoramaRenderState;
 import net.minecraft.client.resources.SplashManager;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.synchronization.SuggestionProviders;
