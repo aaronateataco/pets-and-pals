@@ -5,7 +5,7 @@ I am more familiar with PetsMod's workings and will likely be able to figure out
 
 # Creating an Add-On for PetsMod
 
-PetsMod is a Minecraft mod developed by downloadableduck and the pets team. This mod brings custom, client-sided pets into your game that will follow you around and interact with you. As of 0.7.4, PetsMod supports user-made addons, which allow new custom pets to exist. 
+PetsMod is a Minecraft mod developed by downloadableduck and the pets team. This mod brings custom, client-sided pets into your game that will follow you around and interact with you. As of 0.7.4, PetsMod supports user-made addons, which allow new custom pets to exist.
 
 "Add-Ons" refers to a _coded_ project. For creating PetsMod resourcepacks, please see the section on custom resourcepacks.
 
@@ -39,7 +39,7 @@ Now you will have to add the versions to your gradle.properties. The latest mod 
 fabric_api_version=0.144.3+26.1
 modmenu_version=18.0.0-alpha.8
 yacl_version=3.9.1+26.1-fabric
-petsmod_version=0.7.6-26.1.x
+petsmod_version=0.7.8-26.1.x
 cloth_config_version=26.1.154
 ```
 Here are some quick links to each mod's version page:
@@ -54,7 +54,7 @@ Here are some quick links to each mod's version page:
 <br>
 [Cloth Config](https://modrinth.com/mod/cloth-config/versions)
 
-Additionally, make sure to depend on PetsMod `0.7.4` or greater in your `fabric.mod.json`. 
+Additionally, make sure to depend on PetsMod `0.7.4` or greater in your `fabric.mod.json`.
 
 `src/main/resources/fabric.mod.json`
 ```JSON
@@ -68,7 +68,7 @@ Now that we've added our libraries, let's get started!
 ## Introduction to PetsMod
 This is an introduction to how PetsMod works internally and a couple of it's main classes. Please do not skip this part as this information may help you along the way.
 
-Most of the activity inside of PetsMod is defined by its config (defined in `Central.class`). For example, when the user switches their active pet, the config's active pet gets changed, and as a result, the game despawns the current pet and summons the new one. When the user changes what skin their pet is using, the specific value in the config that holds that pet's skin is changed. 
+Most of the activity inside of PetsMod is defined by its config (defined in `Central.class`). For example, when the user switches their active pet, the config's active pet gets changed, and as a result, the game despawns the current pet and summons the new one. When the user changes what skin their pet is using, the specific value in the config that holds that pet's skin is changed.
 
 Please note that the config is stored in the `client` package, and is thus inaccessible from the `main` package.
 
@@ -236,7 +236,7 @@ public class ExamplePetsModAddonClient {
     }
 }
 ```
-Finally, we need to add two `static final` fields. 
+Finally, we need to add two `static final` fields.
 
 ```java
 public class ExamplePetsModAddonClient {
@@ -245,7 +245,7 @@ public class ExamplePetsModAddonClient {
 }
 ```
 > Note: The first value is what the CONFIG.activePet value will be set to when your custom entity is active. This should be consistant with what your pet is labeled as, unique, and most importantly, must be maintaned wherever you are checking something relating to CONFIG.activePet.
-> 
+>
 > The second value is the same as the first, but without spaces. This will be here for use in the commands, so when the user types `/petspecies custom entity`, it will still work.
 
 
@@ -285,16 +285,16 @@ Now that we have our class set up, let's mix in to the most important method, `c
     }
 ```
 > Tip: If you are looking to eventually expand this addon into something bigger, consider making a utility class containing methods like these.
-> Additionally, when calling this method, **always use underscores and not spaces in the `activePet` parameter.** 
+> Additionally, when calling this method, **always use underscores and not spaces in the `activePet` parameter.**
 
-**What this does**: 
+**What this does**:
 - Sets the active pet in the CONFIG
 - Saves the config
 - Sends the player a notification that their active pet has been switched
 - Despawns the currently active pet
 - Re-summons the newly active pet
 
-This method is **reusable**. You can use it multiple times for each of your custom pets - just switch up the `entity` and `activePet` parameters. 
+This method is **reusable**. You can use it multiple times for each of your custom pets - just switch up the `entity` and `activePet` parameters.
 
 After this, we can start injecting. Let's start with, as previously stated, the /petspecies command.
 
@@ -336,7 +336,7 @@ Let's focus on one thing at a time, and try to get this entity to spawn in the w
 ```
 > Tip: Hover over any `Utils` methods to see what they do.
 
-**What this does**: 
+**What this does**:
 - Initializes the `customEntity` field safely. We cannot initialize it earlier as it would end in an `IllegalArgumentException`. Can you guess why?
 <details>
 <summary>Answer</summary>
@@ -408,17 +408,17 @@ If you go in-game and try to run `/petname` on your pet, you will see that nothi
 `Utils.checkName`:
 The method used in
 Central#refreshPetNames(). Checks whether the entities'
-name is equal to the name in the config. Additionally, 
+name is equal to the name in the config. Additionally,
 this method provides a layer of safety
 that ensures that Minecraft will not
 throw a NullPointerException if `entity` is `null`.
 
 That's it for `Central.class` - we don't need to add anything more to this class. However, we still have to inject into the config screen to make sure it doesn't crash with an `IllegelStateException`.
 
-In case you don't know, YetAnotherConfigLib's `EnumDropdownControllerBuilder` takes an enum and cycles through each of the options. Unfortunately, there is no way to inject a new enum constant into an enum, so we will have to create our own and make YetAnotherConfigLib use that enum. 
+In case you don't know, YetAnotherConfigLib's `EnumDropdownControllerBuilder` takes an enum and cycles through each of the options. Unfortunately, there is no way to inject a new enum constant into an enum, so we will have to create our own and make YetAnotherConfigLib use that enum.
 
 Create a new enum called `CustomEntityValues`.
-Copy all of the enum constants from `PetList.class` and paste it into your enum. 
+Copy all of the enum constants from `PetList.class` and paste it into your enum.
 
 > Note: Every time PetsMod updates, new values will be added to the original PetList enum. Make sure to refer to the appropriate file in the UPDATING.md file to make sure that your addon doesn't cause mismatches.
 
@@ -480,7 +480,7 @@ These injections use our custom enum to make sure the game does not crash.
 Finally, we have two last injections to ensure that the naming works correctly.
 
 ```java
-@Mixin(PetsConfigScreen.class) 
+@Mixin(PetsConfigScreen.class)
 public class ConfigScreenMixin {
     /**When the user opens the menu, they should see their currently selected pets name. 
      * This ensures that if our custom entity is active, they will see our custom entities 

@@ -621,7 +621,6 @@ public class Central implements ClientModInitializer {
                 Utils.summonPet(potatoHusk, CONFIG.potatoHuskName);
             } else if (Objects.equals(CONFIG.activePet, "head")) {
                 Utils.summonPet(head, CONFIG.headName);
-                checkForHeadResourcePack();
             } else if (Objects.equals(CONFIG.activePet, "traitor")) {
                 Utils.summonPet(traitor, CONFIG.traitorName);
             } else if (Objects.equals(CONFIG.activePet, "dumbo_octopus")) {
@@ -806,13 +805,13 @@ public class Central implements ClientModInitializer {
         Options options = client.options;
         List<String> resourcePacks = new ArrayList<>(options.resourcePacks);
 
-        if (!resourcePacks.contains("file/headpack") && Objects.equals(CONFIG.activePet, "head")) {
+        /*if (!resourcePacks.contains("file/headpack") && Objects.equals(CONFIG.activePet, "head")) {
             resourcePacks.add("file/headpack");
             client.getResourcePackRepository().addPack("file/headpack");
             options.save();
             client.reloadResourcePacks();
             //client.player.sendSystemMessage(Component.literal("§b[PetsMod] §aSorry for the interruption, the head pet requires a custom resource pack to work correctly and we loaded a pack for you. This will not affect anything except the head texture."));
-        }
+        }*/
     }
 
     /**
@@ -845,19 +844,7 @@ public class Central implements ClientModInitializer {
     public void onInitializeClient() {
         AutoConfig.register(PetsConfig.class, GsonConfigSerializer::new);
         CONFIG = AutoConfig.getConfigHolder(PetsConfig.class).getConfig();
-        if (CONFIG.headSkin != null) {
-            try {
-                HeadSkin.getHeadSkinFromMinotar(CONFIG.headSkin);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            try {
-                HeadSkin.getHeadSkinFromMinotar("downloadableduck");
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        }
+
         this.createPetSkinCommand();
         this.checkForNullObjects();
         this.createJoinHandler();
@@ -1531,13 +1518,6 @@ public class Central implements ClientModInitializer {
                             }
                         } else if (Objects.equals(CONFIG.activePet, "head")) {
                             CONFIG.headSkin = skin.toLowerCase();
-                            try {
-                                HeadSkin.getHeadSkinFromMinotar(CONFIG.headSkin);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                            Minecraft.getInstance().getResourcePackRepository().addPack("file/headpack");
-                            Minecraft.getInstance().reloadResourcePacks();
                         } else if (Objects.equals(CONFIG.activePet, "traitor")) {
                             switch (skin) {
                                 case "desert" -> CONFIG.traitorSkin = "desert";
@@ -1770,6 +1750,8 @@ public class Central implements ClientModInitializer {
 
         CONFIG.koiName = Utils.checkNullString(CONFIG.koiName);
         CONFIG.stingrayName = Utils.checkNullString(CONFIG.stingrayName);
+
+        CONFIG.headSkin = Utils.checkNullString(CONFIG.headSkin, "downloadableduck");
     }
 
     /**
@@ -1979,13 +1961,6 @@ public class Central implements ClientModInitializer {
                 Utils.setActivePet(potatoHusk, "potato_husk");
             } else if (Objects.equals(species, "head")) {
                 Utils.setActivePet(head, "head");
-                checkForHeadResourcePack();
-                try {
-                    HeadSkin.getHeadSkinFromMinotar(CONFIG.headSkin);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-                Minecraft.getInstance().reloadResourcePacks();
             } else if (Objects.equals(species, "traitor")) {
                 Utils.setActivePet(traitor, "traitor");
             } else if (Objects.equals(species, "dumbo_octopus") || Objects.equals(species, "dumbo octopus")) {
