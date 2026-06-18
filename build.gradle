@@ -44,15 +44,11 @@ dependencies {
     // To change the versions see the gradle.properties file
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     implementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    implementation "me.shedaniel.cloth:cloth-config-fabric:26.1.154"
+    implementation "me.shedaniel.cloth:cloth-config-fabric:26.2.155"
     // Fabric API. This is technically optional, but you probably want it anyway.
     implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
     implementation("com.terraformersmc:modmenu:${project.modmenu_version}")
     implementation "dev.isxander:yet-another-config-lib:${project.yacl_version}"
-    implementation "maven.modrinth:pets-earth:1.0.1-26.1.x"
-    implementation "maven.modrinth:petsmod-nyan-cat:1.0.0"
-
-
 }
 
 processResources {

@@ -75,7 +75,8 @@ public class PetsConfigScreen implements ModMenuApi {
                     .title(Component.literal("Config"))
                     .save(() -> {
                         AutoConfig.getConfigHolder(PetsConfig.class).save();
-                        Minecraft.getInstance().setScreen(this.getModConfigScreenFactory().create(null));
+                        Minecraft.getInstance().gui.setScreen(this.getModConfigScreenFactory().create(null));
+                        Central.refreshChatSuggestor(Minecraft.getInstance());
                     })
                     .category(ConfigCategory.createBuilder()
                             .name(Component.literal("Config"))
@@ -226,6 +227,7 @@ public class PetsConfigScreen implements ModMenuApi {
                                                                 case "dumbo_octopus" -> CONFIG.dumboOctopusName;
                                                                 case "koi" -> CONFIG.koiName;
                                                                 case "stingray" -> CONFIG.stingrayName;
+                                                                case "sulfur_cube" -> CONFIG.sulfurCubeName;
                                                                 default -> "";
                                                             },
                                                     name -> {
@@ -323,6 +325,7 @@ public class PetsConfigScreen implements ModMenuApi {
                                                             case "dumbo_octopus" -> CONFIG.dumboOctopusName = name;
                                                             case "koi" -> CONFIG.koiName = name;
                                                             case "stingray" -> CONFIG.stingrayName = name;
+                                                            case "sulfur_cube" -> CONFIG.sulfurCubeName = name;
                                                         }
                                                         Central.refreshPetNames();
                                                         //throw new IllegalArgumentException();
@@ -916,7 +919,7 @@ public class PetsConfigScreen implements ModMenuApi {
                                                         }
                                                     }
                                                 }
-                                            })
+                                            }).available(!CONFIG.activePet.equals("sulfur_cube"))
                                             .controller(opt -> {
                                                 switch (CONFIG.activePet) {
                                                     case "duck" -> enumClass = DuckSkins.class;
