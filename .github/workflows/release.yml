@@ -1,0 +1,38 @@
+# Builds the tagged commit and publishes a GitHub release with the mod jar.
+# Trigger by pushing a tag like v0.7.10-26.2 (tag on the branch you want released).
+
+name: release
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v4
+      - name: validate gradle wrapper
+        uses: gradle/actions/wrapper-validation@v4
+      - name: setup jdk
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'microsoft'
+      - name: make gradle wrapper executable
+        run: chmod +x ./gradlew
+      - name: build
+        run: ./gradlew build
+      - name: collect release jar
+        run: |
+          mkdir release
+          cp build/libs/*.jar release/
+          rm -f release/*-sources.jar release/*-javadoc.jar
+      - name: create github release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release/*.jar
+          generate_release_notes: true
