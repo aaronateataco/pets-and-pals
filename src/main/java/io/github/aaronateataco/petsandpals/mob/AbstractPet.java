@@ -96,7 +96,6 @@ public abstract class AbstractPet extends TamableAnimal {
     private boolean perched = false;
     private int combatPerchTimer = 0;
     private int ownerSprintTicks = 0;
-    private boolean orbMode = false;
 
     protected AbstractPet(EntityType<? extends @NotNull TamableAnimal> type, Level level) {
         super(type, level);
@@ -193,8 +192,7 @@ public abstract class AbstractPet extends TamableAnimal {
         // Fortnite-style combat tuck: when the owner readies a weapon or other players /
         // hostiles are close, the pet automatically glides to its perch behind the owner's
         // shoulder so it never blocks the crosshair - and hops back down once things calm.
-        if (this.usesGoalMovement() && this.level().isClientSide() && this.isAlive() && !this.isPassenger()
-                && !this.orbMode) {
+        if (this.usesGoalMovement() && this.level().isClientSide() && this.isAlive() && !this.isPassenger()) {
             // Sprint tracking lives here (not in the follow goal) so it survives the goal
             // stopping/restarting - otherwise the run-alongside timer kept resetting.
             LivingEntity sprintOwner = this.getOwner();
@@ -222,7 +220,7 @@ public abstract class AbstractPet extends TamableAnimal {
                 LivingEntity safetyOwner = this.getOwner();
                 if (safetyOwner != null && safetyOwner.level() == this.level()
                         && this.distanceToSqr(safetyOwner) > 32.0 * 32.0) {
-                    this.enterOrbMode();
+                    this.repositionToOwner();
                 }
             }
         }
@@ -232,7 +230,7 @@ public abstract class AbstractPet extends TamableAnimal {
         // client-only pets we drive the same machinery ourselves. Runs before super.tick()
         // so travel() consumes the freshly computed movement inputs this same tick.
         if (this.usesGoalMovement() && this.level().isClientSide() && this.isAlive()
-                && !this.isPassenger() && !this.perched && !this.orbMode) {
+                && !this.isPassenger() && !this.perched) {
             this.getSensing().tick();
             this.goalSelector.tick();
             this.getNavigation().tick();
@@ -288,48 +286,74 @@ public abstract class AbstractPet extends TamableAnimal {
     }
 
     /**
-     * Whether the pet is currently in "ghost form" - a floating nether-star orb (see
-     * {@link PetOrb}) used whenever the pet can't physically follow. The pet entity stays
-     * alive but invisible and parked, dragged along by the orb, until it re-materializes.
+     * Repositions the pet to a safe spot inside the owner's field of view, with a small
+     * particle+chime effect at both ends so it reads as intentional, never a raw blip.
+     * Used whenever the pet genuinely can't follow (stuck, far behind, out of sight).
      */
-    public boolean isOrbMode() {
-        return this.orbMode;
-    }
-
-    public void enterOrbMode() {
-        if (this.orbMode || this.perched || !this.level().isClientSide() || this.isRemoved()) {
+    public void repositionToOwner() {
+        LivingEntity owner = this.getOwner();
+        if (owner == null || !this.level().isClientSide() || owner.level() != this.level()) {
             return;
         }
-        this.orbMode = true;
-        this.setInvisible(true);
-        this.noPhysics = true;
-        this.setNoGravity(true);
+        this.transitionEffects();
         this.getNavigation().stop();
-        this.setDeltaMovement(Vec3.ZERO);
-        // Visible transformation, never a silent vanish.
-        for (int i = 0; i < 8; i++) {
+
+        Level level = this.level();
+        for (int attempt = 0; attempt < 12; attempt++) {
+            float yaw = owner.getYHeadRot() + (this.random.nextFloat() * 80.0F - 40.0F);
+            Vec3 direction = Vec3.directionFromRotation(0.0F, yaw);
+            double distance = 2.5 + this.random.nextDouble() * 2.0;
+            double x = owner.getX() + direction.x * distance;
+            double z = owner.getZ() + direction.z * distance;
+
+            if (this.followYOffset() > 0.0F) {
+                double y = owner.getY() + this.followYOffset();
+                if (this.fitsAt(level, x, y, z)) {
+                    this.finishReposition(x, y, z);
+                    return;
+                }
+            } else {
+                for (int dy = 2; dy >= -3; dy--) {
+                    net.minecraft.core.BlockPos pos = net.minecraft.core.BlockPos.containing(x, owner.getY() + dy, z);
+                    net.minecraft.core.BlockPos below = pos.below();
+                    if (!level.getBlockState(below).isFaceSturdy(level, below, net.minecraft.core.Direction.UP)) {
+                        continue;
+                    }
+                    if (this.fitsAt(level, x, pos.getY(), z)) {
+                        this.finishReposition(x, pos.getY(), z);
+                        return;
+                    }
+                }
+            }
+        }
+        this.tryToTeleportToOwner();
+        this.transitionEffects();
+    }
+
+    private void finishReposition(double x, double y, double z) {
+        this.snapTo(x, y, z, this.getYRot(), this.getXRot());
+        this.transitionEffects();
+    }
+
+    private void transitionEffects() {
+        for (int i = 0; i < 6; i++) {
             this.level().addParticle(
                     net.minecraft.core.particles.ParticleTypes.END_ROD,
                     this.getRandomX(0.7), this.getRandomY(), this.getRandomZ(0.7),
-                    0.0, 0.03, 0.0
+                    0.0, 0.02, 0.0
             );
         }
         float volume = (float) soundVolume.getAsDouble();
         if (volume > 0.0f) {
             this.level().playLocalSound(this, net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_CHIME,
-                    SoundSource.NEUTRAL, volume * 0.8f, 1.6f);
+                    SoundSource.NEUTRAL, volume * 0.7f, 1.4f);
         }
-        clientEntitySpawner.accept(PetOrb.create(this.level(), this));
     }
 
-    /** Called by the orb when it found a valid spot: become the pet again there. */
-    public void exitOrbMode(Vec3 spot) {
-        this.orbMode = false;
-        this.setInvisible(false);
-        this.noPhysics = false;
-        this.setNoGravity(false);
-        this.setDeltaMovement(Vec3.ZERO);
-        this.snapTo(spot.x, spot.y, spot.z, this.getYRot(), 0.0F);
+    private boolean fitsAt(Level level, double x, double y, double z) {
+        net.minecraft.world.phys.AABB box = this.getBoundingBox().move(
+                x - this.getX(), y - this.getY(), z - this.getZ());
+        return level.noCollision(this, box);
     }
 
     /**

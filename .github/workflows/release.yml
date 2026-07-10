@@ -12,6 +12,8 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-24.04
+    env:
+      MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
     steps:
       - name: checkout repository
         uses: actions/checkout@v4
@@ -36,3 +38,16 @@ jobs:
         with:
           files: release/*.jar
           generate_release_notes: true
+      # Auto-publishes the same jar to Modrinth when the repo has the secrets set:
+      #   MODRINTH_TOKEN - a Modrinth personal access token (user settings -> PATs,
+      #                    needs the "create versions" scope)
+      #   MODRINTH_ID    - the project id/slug (create the project on Modrinth first)
+      # Without the secrets this step just skips, so releases keep working either way.
+      - name: publish to modrinth
+        if: ${{ env.MODRINTH_TOKEN != '' }}
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          modrinth-id: ${{ secrets.MODRINTH_ID }}
+          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
+          files: release/*.jar
+          loaders: fabric
