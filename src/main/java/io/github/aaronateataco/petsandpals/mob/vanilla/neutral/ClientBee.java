@@ -11,6 +11,13 @@ import org.jetbrains.annotations.NotNull;
 
 @CanFly
 public class ClientBee extends FlyingPet {
+
+    /** Bees emerge from a bee nest in the spawn animation. */
+    @Override
+    public net.minecraft.world.level.block.state.BlockState spawnDwellingBlock() {
+        return net.minecraft.world.level.block.Blocks.BEE_NEST.defaultBlockState();
+    }
+
     public ClientBee(EntityType<? extends @NotNull TamableAnimal> entityType, Level level) {
         super(entityType, level);
     }

@@ -32,7 +32,14 @@ import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
 import net.minecraft.world.entity.ai.goal.SitWhenOrderedToGoal;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.MaceItem;
+import net.minecraft.world.item.ProjectileWeaponItem;
+import net.minecraft.world.item.TridentItem;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -75,6 +82,7 @@ public abstract class AbstractPet extends TamableAnimal {
     protected int waitingTime = 0;
 
     private boolean perched = false;
+    private int combatPerchTimer = 0;
 
     protected AbstractPet(EntityType<? extends @NotNull TamableAnimal> type, Level level) {
         super(type, level);
@@ -168,6 +176,21 @@ public abstract class AbstractPet extends TamableAnimal {
 
     @Override
     public void tick() {
+        // Fortnite-style combat tuck: when the owner readies a weapon or other players /
+        // hostiles are close, the pet automatically glides to its perch behind the owner's
+        // shoulder so it never blocks the crosshair - and hops back down once things calm.
+        if (this.usesGoalMovement() && this.level().isClientSide() && this.isAlive() && !this.isPassenger()) {
+            if (this.tickCount % 10 == 0 && this.getOwner() instanceof Player ownerPlayer
+                    && this.ownerInCombat(ownerPlayer)) {
+                this.combatPerchTimer = 70;
+            }
+            boolean shouldPerch = this.combatPerchTimer > 0;
+            if (this.combatPerchTimer > 0) this.combatPerchTimer--;
+            if (shouldPerch != this.perched) {
+                this.setPerched(shouldPerch);
+            }
+        }
+
         // Vanilla runs the whole mob AI (goals, navigation, move/look/jump controls) in
         // serverAiStep, which is hard-gated behind !level().isClientSide() - so for these
         // client-only pets we drive the same machinery ourselves. Runs before super.tick()
@@ -221,6 +244,35 @@ public abstract class AbstractPet extends TamableAnimal {
      */
     public float followYOffset() {
         return 0.0F;
+    }
+
+    /**
+     * Whether the owner looks like they're in (or near) a fight: holding a weapon, another
+     * player within 16 blocks, or a hostile mob within 12.
+     */
+    private boolean ownerInCombat(Player owner) {
+        ItemStack held = owner.getMainHandItem();
+        Item item = held.getItem();
+        if (held.is(ItemTags.SWORDS) || held.is(ItemTags.AXES)
+                || item instanceof ProjectileWeaponItem
+                || item instanceof TridentItem
+                || item instanceof MaceItem) {
+            return true;
+        }
+        for (Player other : this.level().players()) {
+            if (other != owner && !other.isSpectator() && other.distanceToSqr(owner) < 16.0 * 16.0) {
+                return true;
+            }
+        }
+        return !this.level().getEntitiesOfClass(Monster.class, owner.getBoundingBox().inflate(12.0)).isEmpty();
+    }
+
+    /**
+     * The "home" block this pet emerges from in the spawn animation (a bee nest for the
+     * bee). Null (the default) skips the animation and spawns the pet normally.
+     */
+    public @Nullable BlockState spawnDwellingBlock() {
+        return null;
     }
 
     private void tickPerched() {
@@ -315,20 +367,16 @@ public abstract class AbstractPet extends TamableAnimal {
             return InteractionResult.SUCCESS;
         }
 
-        if (this.isTame() && itemStack.isEmpty() && player.isShiftKeyDown()) {
-            if (this.usesGoalMovement()) {
-                // Backbling-style perch: float behind the shoulder instead of rigid mounting.
-                if (this.isPassenger()) this.stopRiding();
-                this.setPerched(!this.isPerched());
+        // Legacy pickup for the bespoke custom mobs (duck, racoon, ...). Goal-driven pets
+        // perch automatically during combat instead (see ownerInCombat), so shift+click
+        // does nothing special for them.
+        if (this.isTame() && itemStack.isEmpty() && player.isShiftKeyDown() && !this.usesGoalMovement()) {
+            if (!this.isPassenger()) {
+                this.startRiding(player);
+                this.lookAt(player, 1f, 1f);
             } else {
-                // Legacy pickup for the bespoke custom mobs (duck, racoon, ...).
-                if (!this.isPassenger()) {
-                    this.startRiding(player);
-                    this.lookAt(player, 1f, 1f);
-                } else {
-                    this.stopRiding();
-                    this.setOrderedToSit(false);
-                }
+                this.stopRiding();
+                this.setOrderedToSit(false);
             }
             return InteractionResult.SUCCESS;
         }
