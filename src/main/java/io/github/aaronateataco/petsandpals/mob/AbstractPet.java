@@ -89,6 +89,7 @@ public abstract class AbstractPet extends TamableAnimal {
 
     private boolean perched = false;
     private int combatPerchTimer = 0;
+    private int ownerSprintTicks = 0;
 
     protected AbstractPet(EntityType<? extends @NotNull TamableAnimal> type, Level level) {
         super(type, level);
@@ -186,6 +187,11 @@ public abstract class AbstractPet extends TamableAnimal {
         // hostiles are close, the pet automatically glides to its perch behind the owner's
         // shoulder so it never blocks the crosshair - and hops back down once things calm.
         if (this.usesGoalMovement() && this.level().isClientSide() && this.isAlive() && !this.isPassenger()) {
+            // Sprint tracking lives here (not in the follow goal) so it survives the goal
+            // stopping/restarting - otherwise the run-alongside timer kept resetting.
+            LivingEntity sprintOwner = this.getOwner();
+            this.ownerSprintTicks = (sprintOwner != null && sprintOwner.isSprinting())
+                    ? this.ownerSprintTicks + 1 : 0;
             if (this.tickCount % 10 == 0 && this.getOwner() instanceof Player ownerPlayer
                     && this.ownerInCombat(ownerPlayer)) {
                 this.combatPerchTimer = 70;
@@ -250,6 +256,11 @@ public abstract class AbstractPet extends TamableAnimal {
      */
     public float followYOffset() {
         return 0.0F;
+    }
+
+    /** How many consecutive ticks the owner has been sprinting. */
+    public int ownerSprintTicks() {
+        return this.ownerSprintTicks;
     }
 
     /**

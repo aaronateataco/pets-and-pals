@@ -43,7 +43,6 @@ public class PetFollowOwnerGoal extends Goal {
     private final float stopDistance;
     private LivingEntity owner;
     private int timeToRecalcPath;
-    private int ownerSprintTicks;
 
     public PetFollowOwnerGoal(AbstractPet pet, double speedModifier, float startDistance, float stopDistance) {
         this.pet = pet;
@@ -62,7 +61,11 @@ public class PetFollowOwnerGoal extends Goal {
         if (this.pet.isOrderedToSit() || this.pet.isPassenger() || this.pet.isPerched()) {
             return false;
         }
-        if (this.pet.distanceToSqr(livingEntity) < (double) (this.startDistance * this.startDistance)) {
+        double distanceSqr = this.pet.distanceToSqr(livingEntity);
+        // Run-alongside engages even when the pet is already close - it needs to swing
+        // out to the owner's side, not wait until it falls behind.
+        boolean wantsAlongside = this.runningAlongside() && distanceSqr > 2.25;
+        if (!wantsAlongside && distanceSqr < (double) (this.startDistance * this.startDistance)) {
             return false;
         }
         this.owner = livingEntity;
@@ -89,7 +92,7 @@ public class PetFollowOwnerGoal extends Goal {
      * fully animated at the owner's side, slightly ahead - where the camera can see it.
      */
     private boolean runningAlongside() {
-        return this.ownerSprintTicks > 30 && AbstractPet.firstPersonView.getAsBoolean();
+        return this.pet.ownerSprintTicks() > 30 && AbstractPet.firstPersonView.getAsBoolean();
     }
 
     @Override
@@ -100,13 +103,11 @@ public class PetFollowOwnerGoal extends Goal {
     @Override
     public void stop() {
         this.owner = null;
-        this.ownerSprintTicks = 0;
         this.pet.getNavigation().stop();
     }
 
     @Override
     public void tick() {
-        this.ownerSprintTicks = this.owner.isSprinting() ? this.ownerSprintTicks + 1 : 0;
         this.pet.getLookControl().setLookAt(this.owner, 10.0F, (float) this.pet.getMaxHeadXRot());
         if (--this.timeToRecalcPath > 0) {
             return;
