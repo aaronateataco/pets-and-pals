@@ -96,6 +96,7 @@ public abstract class AbstractPet extends TamableAnimal {
     private boolean perched = false;
     private int combatPerchTimer = 0;
     private int ownerSprintTicks = 0;
+    private boolean orbMode = false;
     private int outOfViewTicks = 0;
     private int stuckScore = 0;
     private double lastTrackedDistanceSqr = 0.0;
@@ -195,7 +196,8 @@ public abstract class AbstractPet extends TamableAnimal {
         // Fortnite-style combat tuck: when the owner readies a weapon or other players /
         // hostiles are close, the pet automatically glides to its perch behind the owner's
         // shoulder so it never blocks the crosshair - and hops back down once things calm.
-        if (this.usesGoalMovement() && this.level().isClientSide() && this.isAlive() && !this.isPassenger()) {
+        if (this.usesGoalMovement() && this.level().isClientSide() && this.isAlive() && !this.isPassenger()
+                && !this.orbMode) {
             // Sprint tracking lives here (not in the follow goal) so it survives the goal
             // stopping/restarting - otherwise the run-alongside timer kept resetting.
             LivingEntity sprintOwner = this.getOwner();
@@ -252,7 +254,7 @@ public abstract class AbstractPet extends TamableAnimal {
         // client-only pets we drive the same machinery ourselves. Runs before super.tick()
         // so travel() consumes the freshly computed movement inputs this same tick.
         if (this.usesGoalMovement() && this.level().isClientSide() && this.isAlive()
-                && !this.isPassenger() && !this.perched) {
+                && !this.isPassenger() && !this.perched && !this.orbMode) {
             this.getSensing().tick();
             this.goalSelector.tick();
             this.getNavigation().tick();
@@ -305,6 +307,40 @@ public abstract class AbstractPet extends TamableAnimal {
     /** How many consecutive ticks the owner has been sprinting. */
     public int ownerSprintTicks() {
         return this.ownerSprintTicks;
+    }
+
+    /**
+     * Ghost form fallback: when the pet is lost AND no valid reposition spot exists
+     * (tight tunnels, solid walls everywhere), it becomes the floating nether star
+     * ({@link PetOrb}) which glides through anything to the owner and turns back into
+     * the pet as soon as there's room. Guarantees the pet can never be stuck.
+     */
+    public boolean isOrbMode() {
+        return this.orbMode;
+    }
+
+    public void enterOrbMode() {
+        if (this.orbMode || this.perched || !this.level().isClientSide() || this.isRemoved()) {
+            return;
+        }
+        this.orbMode = true;
+        this.setInvisible(true);
+        this.noPhysics = true;
+        this.setNoGravity(true);
+        this.getNavigation().stop();
+        this.setDeltaMovement(Vec3.ZERO);
+        this.transitionEffects();
+        clientEntitySpawner.accept(PetOrb.create(this.level(), this));
+    }
+
+    /** Called by the orb when it found a valid spot: become the pet again there. */
+    public void exitOrbMode(Vec3 spot) {
+        this.orbMode = false;
+        this.setInvisible(false);
+        this.noPhysics = false;
+        this.setNoGravity(false);
+        this.setDeltaMovement(Vec3.ZERO);
+        this.snapTo(spot.x, spot.y, spot.z, this.getYRot(), 0.0F);
     }
 
     /**
@@ -373,8 +409,8 @@ public abstract class AbstractPet extends TamableAnimal {
                 }
             }
         }
-        this.tryToTeleportToOwner();
-        this.transitionEffects();
+        // Nowhere to put the pet: become the ghost star and glide there instead.
+        this.enterOrbMode();
     }
 
     private void finishReposition(double x, double y, double z) {

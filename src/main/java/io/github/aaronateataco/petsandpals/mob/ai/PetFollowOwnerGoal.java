@@ -70,7 +70,7 @@ public class PetFollowOwnerGoal extends Goal {
         if (livingEntity == null || livingEntity.isSpectator()) {
             return false;
         }
-        if (this.pet.isOrderedToSit() || this.pet.isPassenger() || this.pet.isPerched()) {
+        if (this.pet.isOrderedToSit() || this.pet.isPassenger() || this.pet.isPerched() || this.pet.isOrbMode()) {
             return false;
         }
         double distanceSqr = this.pet.distanceToSqr(livingEntity);
@@ -93,7 +93,7 @@ public class PetFollowOwnerGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
-        if (this.pet.isOrderedToSit() || this.pet.isPassenger() || this.pet.isPerched()) {
+        if (this.pet.isOrderedToSit() || this.pet.isPassenger() || this.pet.isPerched() || this.pet.isOrbMode()) {
             return false;
         }
         if (this.runningAlongside()) {
@@ -162,11 +162,18 @@ public class PetFollowOwnerGoal extends Goal {
             // blocked, it swaps to the other side during the same maneuver.
             Vec3 anchor = this.alongsideAnchor();
             double lagSqr = this.pet.distanceToSqr(anchor.x, anchor.y + this.pet.followYOffset(), anchor.z);
-            if (lagSqr > 12.25 && !this.pet.ownerInViewCone()) {
+            if (lagSqr > 12.25) {
+                // The entrance timer runs regardless of whether the pet is on camera.
                 if (++this.alongsideLagTicks >= 15) {
                     this.alongsideLagTicks = 0;
-                    this.leapEntrance();
-                    return;
+                    if (this.pet.ownerInViewCone()) {
+                        // Watched: no teleporting - full burst so it visibly sprints into place.
+                        this.smoothedBoost = MAX_ALONGSIDE_BOOST - 1.0;
+                        this.updateAlongsideBoost();
+                    } else {
+                        this.leapEntrance();
+                        return;
+                    }
                 }
             } else {
                 this.alongsideLagTicks = 0;
