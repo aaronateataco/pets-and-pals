@@ -15,7 +15,7 @@
     "sources": "https://github.com/aaronateataco/pets-and-pals",
     "issues": "https://github.com/aaronateataco/pets-and-pals/issues"
   },
-  "license": "CC0-1.0",
+  "license": "All-Rights-Reserved",
   "icon": "assets/pets-and-pals/icon.png",
   "environment": "client",
   "entrypoints": {

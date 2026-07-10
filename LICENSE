@@ -1,52 +1,50 @@
-About Gemini Opens in a new window
-Get Gemini App Opens in a new window
-Subscriptions Opens in a new window
-For Business Opens in a new window
-Conversation with Gemini
+Pets&Pals License
+Copyright (c) 2026 aaronateataco
 
-for my minecraft mod, what license do i go for if i want people to credit, dont want people to copy the code and make their own, only want people to ask me for edits and if don't want to then can make different versions but not allowed to be public on github or modrinth or anything just shared between friends and small communities, not allowed for commercial use
+All rights reserved, with the following permissions granted.
 
-Based on what you want, standard open-source licenses (like MIT or GPL) won't work because they specifically allow people to copy, modify, and re-distribute the code publicly.
+DEFINITIONS
+"The Mod" means Pets&Pals, including its source code, compiled builds, assets,
+textures, models, and documentation, except for the Inherited Work defined below.
+"Inherited Work" means code and assets originating from Pets Mod by
+downloadableduck and The Pets Team, which were released under CC0 1.0 (public
+domain) and remain so; this license applies to everything added or changed in
+this fork.
 
-Instead, you are looking for a Custom Proprietary License (often called "All Rights Reserved" with specific exceptions), or a highly restrictive source-available license.
+YOU MAY:
+1. Download, install, and play with The Mod, in singleplayer or on any server.
+2. Include The Mod in modpacks (public or private), provided the pack links back
+   to the official download page and credits "Pets&Pals by aaronateataco".
+3. Create modified versions of The Mod for personal use, and share those
+   modified versions PRIVATELY with friends and small communities (for example a
+   private Discord server or a friends' SMP).
+4. Record videos, stream, and publish screenshots featuring The Mod.
 
-Here is a breakdown of how you can structure your mod's license to fit all your rules:
-1. The Core: All Rights Reserved (Proprietary)
+YOU MAY NOT:
+1. Copy code or assets from The Mod into your own projects, mods, or resource
+   packs without written permission from the copyright holder.
+2. Publish modified versions or forks of The Mod publicly (including but not
+   limited to GitHub, Modrinth, CurseForge, or any other distribution platform)
+   without written permission from the copyright holder.
+3. Redistribute The Mod itself on other platforms or claim it as your own work.
+4. Use The Mod, or any part of it, for commercial purposes, including selling
+   it, locking it behind paywalls, or bundling it with paid products.
 
-By default, you should state that your mod is Proprietary. This means you own all the rights, and nobody can copy, distribute, or modify it without your explicit permission.
-2. The Allowed Exceptions (What they can do)
+CREDIT
+Any permitted use that presents The Mod to others (modpacks, videos, private
+forks) must credit "Pets&Pals by aaronateataco".
 
-To allow the specific things you mentioned, you need to add a "Permissions" or "Clarity" section to your text file. You should explicitly state:
+PERMISSIONS
+For any use not covered above (public forks, code reuse, ports, commercial
+requests), ask first: open an issue at
+https://github.com/aaronateataco/pets-and-pals or contact the copyright holder.
+Permission is granted only when given explicitly and in writing.
 
-    Credit Required: Anyone showcasing, reviewing, or including the mod in a private pack must clearly credit you as the original creator.
+WARRANTY
+The Mod is provided "as is", without warranty of any kind. The copyright holder
+is not liable for any damages arising from its use.
 
-    Private/Friends Modification Only: Users are allowed to modify the code only for personal use or to share directly with a small, private group of friends.
-
-    No Public Distribution: Modified versions are strictly prohibited from being uploaded to public platforms, including but not limited to GitHub, Modrinth, CurseForge, or public Discord servers.
-
-    Non-Commercial: No one is allowed to make money from your mod, its code, or its assets (e.g., no selling the mod, no locking features behind paywalls like Patreon, no putting it on ad-focused shorteners).
-
-How to write this in your project
-
-You can create a file named LICENSE.txt or README.md in your mod's root folder and use text similar to this:
-
-    Copyright (c) [Year] [Your Name/Username]
-
-    All Rights Reserved.
-
-    Redistribution and use in source and binary forms, with or without modification, are prohibited except under the following conditions:
-
-        Credit: Proper attribution to the original author ([Your Username]) must be given in any public showcase, review, or allowed distribution.
-
-        Non-Commercial: This software and its derivatives may not be used for commercial purposes or financial gain.
-
-        Private Modifications: You may modify the source code for personal use or to share privately among a small group of friends.
-
-        No Public Distribution of Edits: You may not publish, upload, or distribute modified versions of this software to any public repository, hosting service, or platform (including GitHub, Modrinth, CurseForge, etc.) without express written permission from the author.
-
-A Quick Note on Enforcement
-
-Keep in mind that while putting this in your project makes your rules legally clear, platforms like GitHub or Modrinth rely on you reporting violations. If someone breaks your rules and uploads your code, you can file a DMCA Takedown Notice on that platform to have it removed.
-
-
-Gemini isn’t human. It can make mistakes, including about people, so double-check it. Your privacy & Gemini Opens in a new window
+ATTRIBUTION OF INHERITED WORK
+Pets&Pals is a fork of Pets Mod by downloadableduck and The Pets Team
+(https://github.com/downloadableduck/petsmod), released under CC0 1.0. Full
+credit and thanks to the original authors.
