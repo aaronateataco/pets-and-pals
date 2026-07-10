@@ -21,8 +21,8 @@ import org.jetbrains.annotations.NotNull;
 public class PetOrbRenderer extends EntityRenderer<@NotNull PetOrb, PetOrbRenderer.@NotNull PetOrbRenderState> {
 
     private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/item/nether_star.png");
-    private static final float HALF_SIZE = 0.42F;
-    private static final int ALPHA = 190;
+    private static final float HALF_SIZE = 0.17F;
+    private static final int ALPHA = 225;
     private static final int FULL_BRIGHT = 0xF000F0;
 
     public PetOrbRenderer(EntityRendererProvider.Context context) {
@@ -51,7 +51,7 @@ public class PetOrbRenderer extends EntityRenderer<@NotNull PetOrb, PetOrbRender
         RenderType renderType = RenderTypes.entityTranslucentEmissive(TEXTURE);
 
         poseStack.pushPose();
-        poseStack.translate(0.0F, 0.35F, 0.0F);
+        poseStack.translate(0.0F, 0.25F, 0.0F);
         poseStack.mulPose(Axis.YP.rotationDegrees(state.spin));
 
         // Vertical star plane.
