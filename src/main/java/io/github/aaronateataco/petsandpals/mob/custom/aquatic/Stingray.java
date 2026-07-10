@@ -101,7 +101,7 @@ public class Stingray extends FlyingPet {
     }
 
     protected void playStepSound(final @NotNull BlockPos pos, final @NotNull BlockState blockState) {
-        this.playSound(SoundEvents.FISH_SWIM, 0.15F, 1.0F);
+        this.playSound(SoundEvents.FISH_SWIM, 0.15F * (float) soundVolume.getAsDouble(), 1.0F);
     }
 
     public @Nullable Stingray getBreedOffspring(final @NotNull ServerLevel level, final @NotNull AgeableMob partner) {
@@ -251,7 +251,7 @@ public class Stingray extends FlyingPet {
 
         int ambient = (int) (Math.random() * (60 * 20));
         if (ambient == 1) {
-            level().playLocalSound(this, SoundEvents.SQUID_AMBIENT, SoundSource.AMBIENT, 1.0f, 1.0f);
+            level().playLocalSound(this, SoundEvents.SQUID_AMBIENT, SoundSource.AMBIENT, (float) soundVolume.getAsDouble(), 1.0f);
         }
     }
 }

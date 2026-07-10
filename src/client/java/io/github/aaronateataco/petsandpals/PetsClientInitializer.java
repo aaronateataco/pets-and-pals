@@ -406,7 +406,7 @@ public class PetsClientInitializer implements ClientModInitializer {
         ModelLayerRegistry.registerModelLayer(StingrayRenderer.STINGRAY_LOCATION, StingrayModel::createBodyLayer);
 
         ClientLifecycleEvents.CLIENT_STARTED.register((mc) -> {
-            LOGGER.info("Pets & Pals addons loaded:{}", ADDONS);
+            LOGGER.info("Pets&Pals addons loaded:{}", ADDONS);
         });
     }
 

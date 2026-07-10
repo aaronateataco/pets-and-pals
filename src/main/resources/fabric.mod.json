@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "pets-and-pals",
   "version": "${version}",
-  "name": "Pets & Pals",
+  "name": "Pets&Pals",
   "accessWidener": "pets-and-pals.accesswidener",
   "description": "Your client-side companion mod: pets with real presence that walk at your side. Supports every vanilla mob and works on any server. A fork of downloadableduck's Pets Mod.",
   "authors": [

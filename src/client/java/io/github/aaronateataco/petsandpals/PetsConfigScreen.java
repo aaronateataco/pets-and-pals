@@ -58,7 +58,7 @@ public class PetsConfigScreen implements ModMenuApi {
      * {@code Option}, this will not generate a {@code ClassCastException}.
      * <p> {@code Baby?}: Uses a {@code TickBoxControllerBuilder} to let the user decide
      * whether their pet is a baby or not.
-     * <p> {@code Custom Title Enabled}: Controls whether the game will use the custom Pets & Pals title, edition, and splash text.
+     * <p> {@code Custom Title Enabled}: Controls whether the game will use the custom Pets&Pals title, edition, and splash text.
      * Please note that the splash text is only initialized once, during the game launch, so
      * it will require a restart to change, but everything else will adjust instantly. (Note: a restart
      * is not forced upon the user, as it is only splash text and won't impact gameplay severely.)
@@ -107,6 +107,16 @@ public class PetsConfigScreen implements ModMenuApi {
                                                     .range(0.25f, 3.0f)
                                                     .step(0.05f))
                                             .build())
+                                    .option(Option.<Float>createBuilder()
+                                            .name(Component.literal("Pet Volume"))
+                                            .description(OptionDescription.of(Component.literal("Volume of all pet sounds (quacks, buzzes, ambient noises). 0 mutes your pet entirely.")))
+                                            .binding(1.0f,
+                                                    () -> CONFIG.petVolume == null ? 1.0f : CONFIG.petVolume,
+                                                    newVal -> CONFIG.petVolume = newVal)
+                                            .controller(opt -> FloatSliderControllerBuilder.create(opt)
+                                                    .range(0.0f, 1.0f)
+                                                    .step(0.05f))
+                                            .build())
                                     .build())
                             .group(OptionGroup.createBuilder()
                                     .name(Component.literal("Active Pet"))
@@ -123,7 +133,7 @@ public class PetsConfigScreen implements ModMenuApi {
                                                         } catch (IllegalArgumentException e) {
                                                             assert Minecraft.getInstance().player != null;
                                                             if (!hasPrintedMessage) {
-                                                                Minecraft.getInstance().player.sendSystemMessage(Component.literal("§b[Pets & Pals] §cWe ran into an error and couldn't generate your config screen. Please report this stacktrace on my GitHub§r: " + e.getMessage() + ". §cThis is usually caused by tampering with the config JSON or a logic error in the code. §aIn the" +
+                                                                Minecraft.getInstance().player.sendSystemMessage(Component.literal("§b[Pets&Pals] §cWe ran into an error and couldn't generate your config screen. Please report this stacktrace on my GitHub§r: " + e.getMessage() + ". §cThis is usually caused by tampering with the config JSON or a logic error in the code. §aIn the" +
                                                                         " meantime, try using the /pet commands."));
                                                                 Minecraft.getInstance().player.sendSystemMessage(Component.literal("§aRecommended course of action: run /petspecies and choose a valid option from the suggestions."));
                                                                 hasPrintedMessage = true;
@@ -423,7 +433,7 @@ public class PetsConfigScreen implements ModMenuApi {
                                                 } catch (IllegalArgumentException e) {
                                                     assert Minecraft.getInstance().player != null;
                                                     if (!hasPrintedMessage) {
-                                                        Minecraft.getInstance().player.sendSystemMessage(Component.literal("§b[Pets & Pals] §cWe ran into an error and couldn't generate your config screen. Please report this stacktrace on my GitHub§r: " + e.getMessage() + ". §cThis is usually caused by tampering with the config JSON or a logic error in the code. §aIn the" +
+                                                        Minecraft.getInstance().player.sendSystemMessage(Component.literal("§b[Pets&Pals] §cWe ran into an error and couldn't generate your config screen. Please report this stacktrace on my GitHub§r: " + e.getMessage() + ". §cThis is usually caused by tampering with the config JSON or a logic error in the code. §aIn the" +
                                                                 " meantime, try using the /pet commands."));
                                                         Minecraft.getInstance().player.sendSystemMessage(Component.literal("§aRecommended course of action: run /petskin and choose a valid option from the suggestions."));
                                                         hasPrintedMessage = true;

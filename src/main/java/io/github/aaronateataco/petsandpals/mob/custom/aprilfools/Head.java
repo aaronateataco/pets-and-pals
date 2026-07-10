@@ -238,12 +238,12 @@ public class Head extends AbstractPet {
         }
 
         /*if (this.walkAnimation.isMoving()) {
-            level().playLocalSound(this, SoundEvents., SoundSource.NEUTRAL, 1.0f, 1.0f);
+            level().playLocalSound(this, SoundEvents., SoundSource.NEUTRAL, (float) soundVolume.getAsDouble(), 1.0f);
         }*/
 
         /*int ambient = (int) (Math.random() * (60 * 20));
         if (ambient == 1) {
-            level().playLocalSound(this, PetsSounds.PENGUIN_AMBIENT, SoundSource.NEUTRAL, 1.0f, 1.0f);
+            level().playLocalSound(this, PetsSounds.PENGUIN_AMBIENT, SoundSource.NEUTRAL, (float) soundVolume.getAsDouble(), 1.0f);
         }*/
     }
 

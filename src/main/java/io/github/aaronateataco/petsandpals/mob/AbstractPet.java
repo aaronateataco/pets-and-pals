@@ -62,6 +62,12 @@ public abstract class AbstractPet extends TamableAnimal {
     public static DoubleSupplier speedMultiplier = () -> 1.0;
 
     /**
+     * The user-adjustable pet sound volume ("Pet Volume" in the config screen, 0 = muted).
+     * Applied to every sound the pets play; wired to the config in {@code Central}.
+     */
+    public static DoubleSupplier soundVolume = () -> 1.0;
+
+    /**
      * @deprecated Only used by the bundled custom mobs' legacy tick logic; the goal-driven
      * movement classes no longer touch it.
      */
@@ -183,8 +189,9 @@ public abstract class AbstractPet extends TamableAnimal {
             this.tickPerched();
         }
 
-        if (this.random.nextInt(60 * 20) == 0 && this.getAmbientSound() != null) {
-            this.level().playLocalSound(this, this.getAmbientSound(), SoundSource.NEUTRAL, 1.0f, 1.0f);
+        float volume = (float) soundVolume.getAsDouble();
+        if (volume > 0.0f && this.random.nextInt(60 * 20) == 0 && this.getAmbientSound() != null) {
+            this.level().playLocalSound(this, this.getAmbientSound(), SoundSource.NEUTRAL, volume, 1.0f);
         }
     }
 
