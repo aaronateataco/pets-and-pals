@@ -70,6 +70,11 @@ public abstract class AbstractPet extends TamableAnimal {
         super(type, level);
         this.setSpeed(0.5f);
         this.copyVanillaAttributes(type);
+        // Mob's constructor only calls registerGoals() when the level is a ServerLevel,
+        // and pets only ever exist in the ClientLevel - so register them ourselves.
+        if (level != null && level.isClientSide() && this.usesGoalMovement()) {
+            this.registerGoals();
+        }
     }
 
     public static AttributeSupplier.Builder createAttributes() {
@@ -130,6 +135,16 @@ public abstract class AbstractPet extends TamableAnimal {
         return this.usesGoalMovement() || super.isEffectiveAi();
     }
 
+    /**
+     * Makes {@code canSimulateMovement()} return true, so {@code LivingEntity.aiStep}
+     * actually runs {@code travel()} (real physics from the move/jump controls) for this
+     * client-side entity instead of waiting for server position packets that never come.
+     */
+    @Override
+    protected boolean isLocalClientAuthoritative() {
+        return this.usesGoalMovement() || super.isLocalClientAuthoritative();
+    }
+
     @Override
     protected void registerGoals() {
         if (!this.usesGoalMovement()) return;
@@ -142,6 +157,19 @@ public abstract class AbstractPet extends TamableAnimal {
 
     @Override
     public void tick() {
+        // Vanilla runs the whole mob AI (goals, navigation, move/look/jump controls) in
+        // serverAiStep, which is hard-gated behind !level().isClientSide() - so for these
+        // client-only pets we drive the same machinery ourselves. Runs before super.tick()
+        // so travel() consumes the freshly computed movement inputs this same tick.
+        if (this.usesGoalMovement() && this.level().isClientSide() && this.isAlive() && !this.isPassenger()) {
+            this.getSensing().tick();
+            this.goalSelector.tick();
+            this.getNavigation().tick();
+            this.getMoveControl().tick();
+            this.getLookControl().tick();
+            this.getJumpControl().tick();
+        }
+
         super.tick();
         if (!this.usesGoalMovement()) return;
 
