@@ -18,6 +18,7 @@ public class PetsConfig implements ConfigData {
     public Boolean petOn;
     public Boolean customTitleEnabled;
     public String activePet;
+    public float petSpeed = 1.0f;
     public String penguinName;
     public String duckName;
     public String racoonName;

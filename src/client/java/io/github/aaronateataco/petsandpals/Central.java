@@ -9,6 +9,7 @@ package io.github.aaronateataco.petsandpals;
 import io.github.aaronateataco.petsandpals.mixin.client.ChatAccessor;
 import io.github.aaronateataco.petsandpals.mixin.client.SplashManagerMixin;
 import io.github.aaronateataco.petsandpals.mixin.client.TitleScreenRenderingMixin;
+import io.github.aaronateataco.petsandpals.mob.AbstractPet;
 import io.github.aaronateataco.petsandpals.mob.aprilfools.*;
 import io.github.aaronateataco.petsandpals.mob.custom.aprilfools.Head;
 import io.github.aaronateataco.petsandpals.mob.custom.aquatic.DumboOctopus;
@@ -846,6 +847,10 @@ public class Central implements ClientModInitializer {
     public void onInitializeClient() {
         AutoConfig.register(PetsConfig.class, GsonConfigSerializer::new);
         CONFIG = AutoConfig.getConfigHolder(PetsConfig.class).getConfig();
+
+        // Configs from before the setting existed deserialize petSpeed as 0.
+        if (CONFIG.petSpeed <= 0.0f) CONFIG.petSpeed = 1.0f;
+        AbstractPet.speedMultiplier = () -> CONFIG.petSpeed;
 
         this.createPetSkinCommand();
         this.checkForNullObjects();

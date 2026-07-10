@@ -97,6 +97,16 @@ public class PetsConfigScreen implements ModMenuApi {
                                             })
                                             .controller(TickBoxControllerBuilder::create)
                                             .build())
+                                    .option(Option.<Float>createBuilder()
+                                            .name(Component.literal("Pet Speed"))
+                                            .description(OptionDescription.of(Component.literal("How fast your pet moves, as a multiplier of its normal (vanilla) speed. 1.0 = vanilla.")))
+                                            .binding(1.0f,
+                                                    () -> CONFIG.petSpeed,
+                                                    newVal -> CONFIG.petSpeed = newVal)
+                                            .controller(opt -> FloatSliderControllerBuilder.create(opt)
+                                                    .range(0.25f, 3.0f)
+                                                    .step(0.05f))
+                                            .build())
                                     .build())
                             .group(OptionGroup.createBuilder()
                                     .name(Component.literal("Active Pet"))

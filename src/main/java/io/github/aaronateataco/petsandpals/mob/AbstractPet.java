@@ -1,35 +1,42 @@
 package io.github.aaronateataco.petsandpals.mob;
 
-import io.github.aaronateataco.petsandpals.mob.custom.first.Duck;
-import net.minecraft.commands.arguments.EntityAnchorArgument;
+import io.github.aaronateataco.petsandpals.mob.ai.PetFollowOwnerGoal;
+import net.minecraft.core.Holder;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.util.Mth;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
+import net.minecraft.world.entity.ai.goal.FloatGoal;
+import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
+import net.minecraft.world.entity.ai.goal.RandomLookAroundGoal;
+import net.minecraft.world.entity.ai.goal.SitWhenOrderedToGoal;
 import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Objects;
+import java.util.function.DoubleSupplier;
 
 /**
  * Abstract class that extends {@link TamableAnimal}, providing multiple utilities
@@ -45,18 +52,120 @@ import java.util.Objects;
  */
 public abstract class AbstractPet extends TamableAnimal {
 
-    private boolean isReturningToOwner = false;
-    private float randomX = (float) (Math.random() - 1f);
-    private float randomZ = (float) (Math.random() - 1);
+    /**
+     * The user-adjustable pet speed multiplier ("Pet Speed" in the config screen).
+     * Wired to the config in {@code Central}; kept as a supplier because this class
+     * lives in the main source set and cannot reference the client config directly.
+     */
+    public static DoubleSupplier speedMultiplier = () -> 1.0;
+
+    /**
+     * @deprecated Only used by the bundled custom mobs' legacy tick logic; the goal-driven
+     * movement classes no longer touch it.
+     */
+    @Deprecated
     protected int waitingTime = 0;
 
     protected AbstractPet(EntityType<? extends @NotNull TamableAnimal> type, Level level) {
         super(type, level);
         this.setSpeed(0.5f);
+        this.copyVanillaAttributes(type);
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return Animal.createAnimalAttributes().add(Attributes.MAX_HEALTH, 8.0F).add(Attributes.MOVEMENT_SPEED, 0.23F);
+        return Animal.createAnimalAttributes()
+                .add(Attributes.MAX_HEALTH, 8.0F)
+                .add(Attributes.MOVEMENT_SPEED, 0.25F)
+                .add(Attributes.FLYING_SPEED, 0.4F);
+    }
+
+    /**
+     * Pets that copy a vanilla mob (pets-and-pals:wolf, pets-and-pals:cat, ...) should move at
+     * that mob's real speed. Looks up the same-named vanilla entity type and copies its
+     * movement-relevant attribute base values; pets without a vanilla counterpart (duck, racoon,
+     * april fools mobs, ...) keep the defaults from {@link #createAttributes()}.
+     */
+    @SuppressWarnings("unchecked")
+    private void copyVanillaAttributes(EntityType<?> type) {
+        Identifier id = BuiltInRegistries.ENTITY_TYPE.getKey(type);
+        EntityType<?> vanillaType = BuiltInRegistries.ENTITY_TYPE
+                .getOptional(Identifier.withDefaultNamespace(id.getPath()))
+                .orElse(null);
+        if (vanillaType == null || vanillaType == type) return;
+        AttributeSupplier vanilla;
+        try {
+            vanilla = DefaultAttributes.getSupplier((EntityType<? extends LivingEntity>) vanillaType);
+        } catch (Exception e) {
+            return;
+        }
+        this.copyAttribute(vanilla, Attributes.MOVEMENT_SPEED);
+        this.copyAttribute(vanilla, Attributes.FLYING_SPEED);
+        this.copyAttribute(vanilla, Attributes.STEP_HEIGHT);
+    }
+
+    private void copyAttribute(AttributeSupplier vanilla, Holder<Attribute> attribute) {
+        if (!vanilla.hasAttribute(attribute)) return;
+        AttributeInstance instance = this.getAttribute(attribute);
+        if (instance != null) {
+            instance.setBaseValue(vanilla.getBaseValue(attribute));
+        }
+    }
+
+    /**
+     * Whether this pet's movement is driven by the vanilla goal/navigation system
+     * ({@link GroundPet}, {@link FlyingPet}, {@link SlimeLikePet}). Custom mobs that
+     * define their own bespoke tick logic return {@code false} and are left alone.
+     */
+    protected boolean usesGoalMovement() {
+        return false;
+    }
+
+    /**
+     * Pets are client-side only, so vanilla would normally skip all mob AI (goals,
+     * navigation, move/look/jump controls run in {@code serverAiStep}). Returning
+     * {@code true} here is what makes real pathfinding possible on the client.
+     */
+    @Override
+    public boolean isEffectiveAi() {
+        return this.usesGoalMovement() || super.isEffectiveAi();
+    }
+
+    @Override
+    protected void registerGoals() {
+        if (!this.usesGoalMovement()) return;
+        this.goalSelector.addGoal(0, new FloatGoal(this));
+        this.goalSelector.addGoal(1, new SitWhenOrderedToGoal(this));
+        this.goalSelector.addGoal(2, new PetFollowOwnerGoal(this, 1.0, this.stopDistance() + 2.0f, this.stopDistance()));
+        this.goalSelector.addGoal(3, new LookAtPlayerGoal(this, Player.class, 8.0F));
+        this.goalSelector.addGoal(4, new RandomLookAroundGoal(this));
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (!this.usesGoalMovement()) return;
+
+        LivingEntity owner = this.getOwner();
+        if (owner != null && owner.hasPassenger(this)) {
+            if (owner.isCrouching() && owner.isJumping()) {
+                this.stopRiding();
+                this.setOrderedToSit(false);
+            } else {
+                this.setOrderedToSit(true);
+            }
+        }
+
+        if (this.random.nextInt(60 * 20) == 0 && this.getAmbientSound() != null) {
+            this.level().playLocalSound(this, this.getAmbientSound(), SoundSource.NEUTRAL, 1.0f, 1.0f);
+        }
+    }
+
+    /**
+     * Clicking a pet must never shove it around: damage is server-side and the server
+     * doesn't know this entity exists, so any client-side hit reaction is pure noise.
+     */
+    @Override
+    public void knockback(double strength, double x, double z) {
     }
 
     /**
@@ -83,32 +192,8 @@ public abstract class AbstractPet extends TamableAnimal {
 
     /**
      * Custom interactions.
-     * - Right clicking on a pet with an empty hand will let make hearts appear above it:
-     * <pre>
-     *     {@code if (this.isTame() && itemStack.isEmpty() && !player.isShiftKeyDown()) {
-     *         this.level().addParticle(
-     *                 ParticleTypes.HEART,
-     *                 this.getX(),
-     *                 this.getY() + this.heartHeight(),
-     *                 this.getZ(),
-     *                 5, 5, 5
-     *         );
-     *         return InteractionResult.SUCCESS;
-     *     }}</pre>
-     * - Shifting and right clicking on a pet with an empty hand will pick it up:
-     * <pre>
-     *     {@code if (this.isTame() && itemStack.isEmpty() && player.isShiftKeyDown()) {
-     *         if (!this.isPassenger()) {
-     *             this.startRiding(player);
-     *             this.lookAt(player, 1f, 1f);
-     *             return InteractionResult.SUCCESS;
-     *         } else {
-     *             this.stopRiding();
-     *         }
-     *         return InteractionResult.SUCCESS;
-     *     }
-     *     }
-     * </pre>
+     * - Right clicking on a pet with an empty hand will let make hearts appear above it.
+     * - Shifting and right clicking on a pet with an empty hand will pick it up.
      *
      * @return It's super method
      */
@@ -134,6 +219,7 @@ public abstract class AbstractPet extends TamableAnimal {
                 return InteractionResult.SUCCESS;
             } else {
                 this.stopRiding();
+                this.setOrderedToSit(false);
             }
             return InteractionResult.SUCCESS;
         }
@@ -193,65 +279,12 @@ public abstract class AbstractPet extends TamableAnimal {
         this.setCustomName(Component.literal(string));
     }
 
+    /**
+     * @deprecated Pets no longer wander away from an idle owner; movement is handled by the
+     * goal system ({@link PetFollowOwnerGoal}). Kept as a no-op because the bundled custom
+     * mobs (duck, racoon, koi, ...) still call it from their bespoke tick logic.
+     */
+    @Deprecated
     public void wander() {
-        float speed = (float) (this.getSpeed() - 0.35);
-        Vec3 lookDir;
-        float z = speed * this.randomZ;
-
-        float distance = this.distanceTo(this.getOwner());
-        float yVelo = (float) this.getDeltaMovement().y;
-
-        if (distance > 5) {
-            this.reCalcPos();
-            this.isReturningToOwner = true;
-        } else if (distance < 2) {
-            this.reCalcPos();
-            this.isReturningToOwner = false;
-        }
-
-        if (!this.isReturningToOwner) {
-            this.setDeltaMovement(new Vec3(speed, yVelo, z));
-        } else {
-            this.setDeltaMovement(new Vec3(-speed, yVelo, -z));
-        }
-
-        //this.lookAt(EntityAnchorArgument.Anchor.EYES, lookDir);
-
-        double moveX = this.getDeltaMovement().x;
-        double moveZ = this.getDeltaMovement().z;
-
-        lookDir = new Vec3(
-                this.getX() + (moveX * 2),
-                this.getY() + this.getEyeHeight(),
-                this.getZ() + (moveZ * 2)
-        );
-        this.getLookControl().setLookAt(lookDir.x, lookDir.y, lookDir.z, 1.0F, (float) this.getMaxHeadXRot());
-
-        if (moveX * moveX + moveZ * moveZ > 0.001) {
-            float targetYaw = (float) (Math.atan2(-moveX, moveZ) * (180D / Math.PI));
-            float smoothYaw = net.minecraft.util.Mth.rotLerp(0.2f, this.getYRot(), targetYaw);
-
-            this.setYRot(smoothYaw);
-            this.setYHeadRot(smoothYaw);
-            this.yBodyRot = smoothYaw;
-        }
-
-        if (this.horizontalCollision && this.onGround()) {
-            this.jumpFromGround();
-        } if (!this.onGround()) {
-            this.setDeltaMovement(this.getDeltaMovement().add(0, -0.04, 0));
-        }
-        double dx = lookDir.x - this.getX();
-        double dz = lookDir.z - this.getZ();
-        float targetYaw = (float) (Math.atan2(-dx, dz) * (180D / Math.PI));
-
-        this.setYRot(targetYaw);
-        this.setYHeadRot(targetYaw);
-        this.yBodyRot = targetYaw;
-    }
-
-    private void reCalcPos() {
-        this.randomX = (float) (Math.random() - 1);
-        this.randomZ = (float) (Math.random() - 1);
     }
 }
