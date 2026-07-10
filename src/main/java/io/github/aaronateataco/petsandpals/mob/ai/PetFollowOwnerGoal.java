@@ -61,6 +61,7 @@ public class PetFollowOwnerGoal extends Goal {
     private double smoothedBoost;
     private int glanceTicks;
     private int glanceCooldown;
+    private int alongsideLagTicks;
 
     public PetFollowOwnerGoal(AbstractPet pet, double speedModifier, float startDistance, float stopDistance) {
         this.pet = pet;
@@ -163,6 +164,21 @@ public class PetFollowOwnerGoal extends Goal {
             // Smooth the dynamic speed every tick (updating it only on path recalcs made
             // the pace visibly step, which read as jank).
             this.updateAlongsideBoost();
+
+            // If the pet can't physically get into formation quickly (it was trailing
+            // far behind when the sprint started), rift it there via the ghost star -
+            // the player should SEE the sidekick arrive, never wait out a slow entrance.
+            Vec3 anchor = this.alongsideAnchor();
+            double lagSqr = this.pet.distanceToSqr(anchor.x, anchor.y + this.pet.followYOffset(), anchor.z);
+            if (lagSqr > 9.0) {
+                if (++this.alongsideLagTicks >= 40) {
+                    this.alongsideLagTicks = 0;
+                    this.pet.enterOrbMode();
+                    return;
+                }
+            } else {
+                this.alongsideLagTicks = 0;
+            }
         } else {
             this.pet.getLookControl().setLookAt(this.owner, 10.0F, (float) this.pet.getMaxHeadXRot());
         }

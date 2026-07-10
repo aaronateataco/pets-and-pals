@@ -306,6 +306,19 @@ public abstract class AbstractPet extends TamableAnimal {
         this.setNoGravity(true);
         this.getNavigation().stop();
         this.setDeltaMovement(Vec3.ZERO);
+        // Visible transformation, never a silent vanish.
+        for (int i = 0; i < 8; i++) {
+            this.level().addParticle(
+                    net.minecraft.core.particles.ParticleTypes.END_ROD,
+                    this.getRandomX(0.7), this.getRandomY(), this.getRandomZ(0.7),
+                    0.0, 0.03, 0.0
+            );
+        }
+        float volume = (float) soundVolume.getAsDouble();
+        if (volume > 0.0f) {
+            this.level().playLocalSound(this, net.minecraft.sounds.SoundEvents.AMETHYST_BLOCK_CHIME,
+                    SoundSource.NEUTRAL, volume * 0.8f, 1.6f);
+        }
         clientEntitySpawner.accept(PetOrb.create(this.level(), this));
     }
 
