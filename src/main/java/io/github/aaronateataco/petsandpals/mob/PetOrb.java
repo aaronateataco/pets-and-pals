@@ -79,6 +79,12 @@ public class PetOrb extends Entity {
         this.pet.setPos(this.getX(), this.getY() - this.pet.getBbHeight() * 0.5, this.getZ());
         this.pet.setDeltaMovement(Vec3.ZERO);
 
+        // Small sparkle trail so the (candle-sized) star is easy to spot.
+        if (this.tickCount % 4 == 0) {
+            this.level().addParticle(ParticleTypes.END_ROD,
+                    this.getX(), this.getY() + 0.25, this.getZ(), 0.0, 0.0, 0.0);
+        }
+
         // Once we're with the owner, look for a spot to become the pet again.
         if (this.tickCount > 15 && this.tickCount % 8 == 0 && distance < 5.0) {
             Vec3 spot = this.findMaterializeSpot(owner);
