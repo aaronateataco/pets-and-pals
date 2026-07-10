@@ -43,6 +43,7 @@ public class PetFollowOwnerGoal extends Goal {
     private final float stopDistance;
     private LivingEntity owner;
     private int timeToRecalcPath;
+    private int ownerSprintTicks;
 
     public PetFollowOwnerGoal(AbstractPet pet, double speedModifier, float startDistance, float stopDistance) {
         this.pet = pet;
@@ -70,13 +71,25 @@ public class PetFollowOwnerGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
-        if (this.pet.getNavigation().isDone()) {
-            return false;
-        }
         if (this.pet.isOrderedToSit() || this.pet.isPassenger() || this.pet.isPerched()) {
             return false;
         }
+        if (this.runningAlongside()) {
+            return true;
+        }
+        if (this.pet.getNavigation().isDone()) {
+            return false;
+        }
         return this.pet.distanceToSqr(this.owner) > (double) (this.stopDistance * this.stopDistance);
+    }
+
+    /**
+     * Fortnite-style: after the owner has been sprinting for ~1.5s (first person only,
+     * since that's when a trailing pet is invisible), the pet stops trailing and runs
+     * fully animated at the owner's side, slightly ahead - where the camera can see it.
+     */
+    private boolean runningAlongside() {
+        return this.ownerSprintTicks > 30 && AbstractPet.firstPersonView.getAsBoolean();
     }
 
     @Override
@@ -87,16 +100,19 @@ public class PetFollowOwnerGoal extends Goal {
     @Override
     public void stop() {
         this.owner = null;
+        this.ownerSprintTicks = 0;
         this.pet.getNavigation().stop();
     }
 
     @Override
     public void tick() {
+        this.ownerSprintTicks = this.owner.isSprinting() ? this.ownerSprintTicks + 1 : 0;
         this.pet.getLookControl().setLookAt(this.owner, 10.0F, (float) this.pet.getMaxHeadXRot());
         if (--this.timeToRecalcPath > 0) {
             return;
         }
-        this.timeToRecalcPath = this.adjustedTickDelay(10);
+        boolean alongside = this.runningAlongside();
+        this.timeToRecalcPath = this.adjustedTickDelay(alongside ? 4 : 10);
 
         double distanceSqr = this.pet.distanceToSqr(this.owner);
         boolean seen = this.ownerCanSeePet();
@@ -111,11 +127,27 @@ public class PetFollowOwnerGoal extends Goal {
 
         double distance = Math.sqrt(distanceSqr);
         double boost = Mth.clamp(1.0 + (distance - this.stopDistance) * 0.09, 1.0, MAX_CATCH_UP_BOOST);
+        double targetX = this.owner.getX();
+        double targetZ = this.owner.getZ();
+        if (alongside) {
+            // Aim beside and slightly ahead of the owner (relative to their motion) so the
+            // pet is visible at the edge of the first-person view while both are running.
+            Vec3 forward = this.owner.getDeltaMovement();
+            Vec3 flat = new Vec3(forward.x, 0.0, forward.z);
+            if (flat.lengthSqr() < 1.0e-4) {
+                flat = Vec3.directionFromRotation(0.0F, this.owner.yBodyRot);
+            }
+            flat = flat.normalize();
+            Vec3 right = new Vec3(-flat.z, 0.0, flat.x);
+            targetX += flat.x * 1.2 + right.x * 1.6;
+            targetZ += flat.z * 1.2 + right.z * 1.6;
+            boost = Math.max(boost, 1.5);
+        }
         double speed = this.speedModifier * AbstractPet.speedMultiplier.getAsDouble() * boost;
         this.pet.getNavigation().moveTo(
-                this.owner.getX(),
+                targetX,
                 this.owner.getY() + this.pet.followYOffset(),
-                this.owner.getZ(),
+                targetZ,
                 speed
         );
     }

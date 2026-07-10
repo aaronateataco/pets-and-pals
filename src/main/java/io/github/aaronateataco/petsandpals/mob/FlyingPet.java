@@ -36,7 +36,7 @@ public abstract class FlyingPet extends AbstractPet {
      */
     @Override
     public float followYOffset() {
-        return 1.6F;
+        return 2.0F;
     }
 
     @Override

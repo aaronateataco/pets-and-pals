@@ -853,6 +853,7 @@ public class Central implements ClientModInitializer {
         if (CONFIG.petVolume == null) CONFIG.petVolume = 1.0f;
         AbstractPet.speedMultiplier = () -> CONFIG.petSpeed;
         AbstractPet.soundVolume = () -> CONFIG.petVolume;
+        AbstractPet.firstPersonView = () -> Minecraft.getInstance().options.getCameraType().isFirstPerson();
 
         this.createPetSkinCommand();
         this.checkForNullObjects();

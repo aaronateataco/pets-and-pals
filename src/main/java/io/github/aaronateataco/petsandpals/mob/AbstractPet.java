@@ -75,6 +75,12 @@ public abstract class AbstractPet extends TamableAnimal {
     public static DoubleSupplier soundVolume = () -> 1.0;
 
     /**
+     * Whether the game is currently in first-person view; wired to the client camera in
+     * {@code Central}. Used by the sprint run-alongside behavior, which is first-person only.
+     */
+    public static java.util.function.BooleanSupplier firstPersonView = () -> true;
+
+    /**
      * @deprecated Only used by the bundled custom mobs' legacy tick logic; the goal-driven
      * movement classes no longer touch it.
      */
