@@ -42,7 +42,7 @@ public class PetFollowOwnerGoal extends Goal {
     private static final double MAX_CATCH_UP_BOOST = 1.75;
     /** Transient speed modifier used while pacing a sprinting owner; value updated dynamically. */
     private static final Identifier ALONGSIDE_SPEED_ID = Identifier.fromNamespaceAndPath("pets-and-pals", "run_alongside_boost");
-    private static final double MAX_ALONGSIDE_BOOST = 2.5;
+    private static final double MAX_ALONGSIDE_BOOST = 3.0;
     /** cos(75 degrees) - half-angle of what counts as "the owner can see the pet". */
     private static final double VIEW_CONE_COS = 0.2588;
 
@@ -54,6 +54,7 @@ public class PetFollowOwnerGoal extends Goal {
     private int timeToRecalcPath;
     private double lastDistance;
     private int noProgressTicks;
+    private boolean wasAlongside;
 
     public PetFollowOwnerGoal(AbstractPet pet, double speedModifier, float startDistance, float stopDistance) {
         this.pet = pet;
@@ -69,7 +70,7 @@ public class PetFollowOwnerGoal extends Goal {
         if (livingEntity == null || livingEntity.isSpectator()) {
             return false;
         }
-        if (this.pet.isOrderedToSit() || this.pet.isPassenger() || this.pet.isPerched()) {
+        if (this.pet.isOrderedToSit() || this.pet.isPassenger() || this.pet.isPerched() || this.pet.isOrbMode()) {
             return false;
         }
         double distanceSqr = this.pet.distanceToSqr(livingEntity);
@@ -92,7 +93,7 @@ public class PetFollowOwnerGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
-        if (this.pet.isOrderedToSit() || this.pet.isPassenger() || this.pet.isPerched()) {
+        if (this.pet.isOrderedToSit() || this.pet.isPassenger() || this.pet.isPerched() || this.pet.isOrbMode()) {
             return false;
         }
         if (this.runningAlongside()) {
@@ -134,7 +135,7 @@ public class PetFollowOwnerGoal extends Goal {
         // reposition silently into the owner's view so the pet is never lost.
         if (distanceSqr > TELEPORT_DISTANCE * TELEPORT_DISTANCE
                 || (!seen && distanceSqr > OUT_OF_SIGHT_TELEPORT_DISTANCE * OUT_OF_SIGHT_TELEPORT_DISTANCE)) {
-            this.teleportIntoOwnersView();
+            this.pet.enterOrbMode();
             return;
         }
 
@@ -143,10 +144,10 @@ public class PetFollowOwnerGoal extends Goal {
         // Never lose the pet: even when it's visible, if it makes no progress toward the
         // owner for ~5s while far away (stuck on a cliff, across water, broken path...),
         // reposition it rather than leaving it behind.
-        if (distance > 10.0 && distance > this.lastDistance - 0.5) {
+        if (distance > 6.0 && distance > this.lastDistance - 0.5) {
             this.noProgressTicks += 10;
-            if (this.noProgressTicks >= 100) {
-                this.teleportIntoOwnersView();
+            if (this.noProgressTicks >= 80) {
+                this.pet.enterOrbMode();
                 this.noProgressTicks = 0;
                 this.lastDistance = Double.MAX_VALUE;
                 return;
@@ -160,27 +161,30 @@ public class PetFollowOwnerGoal extends Goal {
         double targetX = this.owner.getX();
         double targetZ = this.owner.getZ();
 
+        if (alongside != this.wasAlongside) {
+            this.wasAlongside = alongside;
+            io.github.aaronateataco.petsandpals.PetsInitializer.LOGGER.info(
+                    "[Pets&Pals] run-alongside {} (sprintTicks={}, firstPerson={})",
+                    alongside ? "ENGAGED" : "ended",
+                    this.pet.ownerSprintTicks(), AbstractPet.firstPersonView.getAsBoolean());
+        }
         if (alongside) {
-            // Aim at a point beside-and-ahead of the owner, led by their motion so the
-            // path stays valid between recalcs, and dynamically raise the pet's speed
-            // attribute just enough to hold formation - farther behind = bigger boost,
-            // in position = barely boosted, so the pace change reads as natural.
+            // Anchor to the CAMERA yaw (not the motion vector) so the formation point sits
+            // at the front-right of what the player actually sees - turning the view keeps
+            // the pet on screen instead of leaving it wherever the velocity points. Still
+            // led by motion so the path stays valid between recalcs.
             Vec3 motion = this.owner.getDeltaMovement();
-            Vec3 forward = new Vec3(motion.x, 0.0, motion.z);
-            if (forward.lengthSqr() < 1.0e-4) {
-                forward = Vec3.directionFromRotation(0.0F, this.owner.yBodyRot);
-            } else {
-                forward = forward.normalize();
-            }
+            Vec3 forward = Vec3.directionFromRotation(0.0F, this.owner.getYHeadRot());
+            forward = new Vec3(forward.x, 0.0, forward.z).normalize();
             Vec3 right = new Vec3(-forward.z, 0.0, forward.x);
-            Vec3 lead = motion.scale(6.0);
+            Vec3 lead = new Vec3(motion.x, 0.0, motion.z).scale(4.0);
             targetX += forward.x * 1.5 + right.x * 1.4 + lead.x;
             targetZ += forward.z * 1.5 + right.z * 1.4 + lead.z;
 
             double anchorDx = targetX - this.pet.getX();
             double anchorDz = targetZ - this.pet.getZ();
             double lag = Math.sqrt(anchorDx * anchorDx + anchorDz * anchorDz);
-            double dynamicBoost = Mth.clamp(0.35 + lag * 0.28, 0.35, MAX_ALONGSIDE_BOOST - 1.0);
+            double dynamicBoost = Mth.clamp(0.35 + lag * 0.32, 0.35, MAX_ALONGSIDE_BOOST - 1.0);
             AttributeModifier modifier = new AttributeModifier(
                     ALONGSIDE_SPEED_ID, dynamicBoost, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
             this.applyAlongsideBoost(Attributes.MOVEMENT_SPEED, modifier);
@@ -231,54 +235,4 @@ public class PetFollowOwnerGoal extends Goal {
         return this.owner.hasLineOfSight(this.pet);
     }
 
-    /**
-     * Teleports the pet to a safe spot just ahead of where the owner is looking, inside the
-     * view cone - the warp itself is never on screen (only called while unseen or extremely
-     * far), so the pet simply "is there" when the owner looks around.
-     */
-    private void teleportIntoOwnersView() {
-        this.pet.getNavigation().stop();
-        Level level = this.pet.level();
-
-        for (int attempt = 0; attempt < 12; attempt++) {
-            float yaw = this.owner.getYHeadRot() + (this.pet.getRandom().nextFloat() * 80.0F - 40.0F);
-            Vec3 direction = Vec3.directionFromRotation(0.0F, yaw);
-            double distance = this.stopDistance + 1.0 + this.pet.getRandom().nextDouble() * 2.0;
-            double x = this.owner.getX() + direction.x * distance;
-            double z = this.owner.getZ() + direction.z * distance;
-
-            if (this.pet.followYOffset() > 0.0F) {
-                // Flying pet: place it hovering at its follow height, it just needs free space.
-                double y = this.owner.getY() + this.pet.followYOffset();
-                if (this.noCollisionAt(level, x, y, z)) {
-                    this.pet.snapTo(x, y, z, this.pet.getYRot(), this.pet.getXRot());
-                    return;
-                }
-            } else {
-                // Ground pet: scan for standable ground near the owner's feet level.
-                for (int dy = 2; dy >= -3; dy--) {
-                    BlockPos pos = BlockPos.containing(x, this.owner.getY() + dy, z);
-                    BlockPos below = pos.below();
-                    if (!level.getBlockState(below).isFaceSturdy(level, below, Direction.UP)) {
-                        continue;
-                    }
-                    if (this.noCollisionAt(level, x, pos.getY(), z)) {
-                        this.pet.snapTo(x, pos.getY(), z, this.pet.getYRot(), this.pet.getXRot());
-                        return;
-                    }
-                }
-            }
-        }
-        // No clean spot in view found (tight cave, wall of blocks...) - vanilla fallback.
-        this.pet.tryToTeleportToOwner();
-    }
-
-    private boolean noCollisionAt(@NotNull Level level, double x, double y, double z) {
-        AABB box = this.pet.getBoundingBox().move(
-                x - this.pet.getX(),
-                y - this.pet.getY(),
-                z - this.pet.getZ()
-        );
-        return level.noCollision(this.pet, box);
-    }
 }
