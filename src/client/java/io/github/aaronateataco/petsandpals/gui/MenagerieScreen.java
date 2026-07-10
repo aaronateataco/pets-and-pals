@@ -259,9 +259,9 @@ public class MenagerieScreen extends Screen {
                     panelX + 6, boxBottom - 10, 0xFFAAAAAA);
             graphics.text(this.font, Component.literal(String.format(Locale.ROOT, "%.1fm", player.getBbHeight())),
                     panelX + half + 8, boxBottom - 10, 0xFFAAAAAA);
-        } else if (player == null) {
-            graphics.text(this.font, Component.literal("Join a world"), panelX, boxTop + 30, 0xFF888888);
-            graphics.text(this.font, Component.literal("for previews"), panelX, boxTop + 42, 0xFF888888);
+        } else {
+            graphics.text(this.font, Component.literal("Previews need"), panelX, boxTop + 30, 0xFF888888);
+            graphics.text(this.font, Component.literal("a loaded world"), panelX, boxTop + 42, 0xFF888888);
         }
     }
 

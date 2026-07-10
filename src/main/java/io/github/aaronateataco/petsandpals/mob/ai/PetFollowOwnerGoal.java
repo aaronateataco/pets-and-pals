@@ -37,14 +37,10 @@ import java.util.EnumSet;
  */
 public class PetFollowOwnerGoal extends Goal {
 
-    private static final double TELEPORT_DISTANCE = 24.0;
-    private static final double OUT_OF_SIGHT_TELEPORT_DISTANCE = 6.0;
     private static final double MAX_CATCH_UP_BOOST = 1.75;
     /** Transient speed modifier used while pacing a sprinting owner; value updated dynamically. */
     private static final Identifier ALONGSIDE_SPEED_ID = Identifier.fromNamespaceAndPath("pets-and-pals", "run_alongside_boost");
     private static final double MAX_ALONGSIDE_BOOST = 3.0;
-    /** cos(75 degrees) - half-angle of what counts as "the owner can see the pet". */
-    private static final double VIEW_CONE_COS = 0.2588;
 
     private final AbstractPet pet;
     private final double speedModifier;
@@ -52,9 +48,6 @@ public class PetFollowOwnerGoal extends Goal {
     private final float stopDistance;
     private LivingEntity owner;
     private int timeToRecalcPath;
-    private double lastDistance;
-    private int noProgressTicks;
-    private int unseenTicks;
     private boolean wasAlongside;
     /** +1 = owner's right, -1 = left; picked from where the pet already is, with hysteresis. */
     private int alongsideSide;
@@ -106,18 +99,15 @@ public class PetFollowOwnerGoal extends Goal {
         if (this.runningAlongside()) {
             return true;
         }
-        if (this.pet.getNavigation().isDone()) {
-            return false;
-        }
+        // Deliberately NOT checking navigation.isDone(): a finished path segment used to
+        // stop the goal, whose restart wiped every tracking counter and cancelled paths -
+        // the cause of pets stuttering at gaps/stairs and stuck-detection never firing.
         return this.pet.distanceToSqr(this.owner) > (double) (this.stopDistance * this.stopDistance);
     }
 
     @Override
     public void start() {
         this.timeToRecalcPath = 0;
-        this.lastDistance = Double.MAX_VALUE;
-        this.noProgressTicks = 0;
-        this.unseenTicks = 0;
         this.alongsideSide = 0;
         this.smoothedBoost = 0.35;
         this.glanceTicks = 0;
@@ -165,15 +155,18 @@ public class PetFollowOwnerGoal extends Goal {
             // the pace visibly step, which read as jank).
             this.updateAlongsideBoost();
 
-            // If the pet can't physically get into formation quickly (it was trailing
-            // far behind when the sprint started), rift it there via the ghost star -
-            // the player should SEE the sidekick arrive, never wait out a slow entrance.
+            // Deterministic entrance: if the pet is lagging its formation point while the
+            // player isn't looking at it (it's behind them), place it AT the formation
+            // point with the transition effects - the sidekick arrives on screen fast,
+            // and never pops while being watched.
             Vec3 anchor = this.alongsideAnchor();
             double lagSqr = this.pet.distanceToSqr(anchor.x, anchor.y + this.pet.followYOffset(), anchor.z);
-            if (lagSqr > 9.0) {
-                if (++this.alongsideLagTicks >= 40) {
+            if (lagSqr > 12.25 && !this.pet.ownerInViewCone()) {
+                if (++this.alongsideLagTicks >= 15) {
                     this.alongsideLagTicks = 0;
-                    this.pet.repositionToOwner();
+                    if (!this.pet.tryRepositionTo(anchor.x, anchor.y + this.pet.followYOffset(), anchor.z)) {
+                        this.pet.repositionToOwner();
+                    }
                     return;
                 }
             } else {
@@ -189,39 +182,9 @@ public class PetFollowOwnerGoal extends Goal {
         this.timeToRecalcPath = this.adjustedTickDelay(alongside ? 5 : 10);
 
         double distanceSqr = this.pet.distanceToSqr(this.owner);
-        boolean seen = this.ownerCanSeePet();
-
-        // Ghost form when the pet is effectively lost: sustained out-of-sight beyond the
-        // stop ring, clearly out of sight and lagging, or simply way too far.
-        if (!seen && distanceSqr > (double) ((this.stopDistance + 1.0f) * (this.stopDistance + 1.0f))) {
-            this.unseenTicks += 10;
-        } else {
-            this.unseenTicks = 0;
-        }
-        if (distanceSqr > TELEPORT_DISTANCE * TELEPORT_DISTANCE
-                || this.unseenTicks >= 50
-                || (!seen && distanceSqr > OUT_OF_SIGHT_TELEPORT_DISTANCE * OUT_OF_SIGHT_TELEPORT_DISTANCE)) {
-            this.pet.repositionToOwner();
-            return;
-        }
-
         double distance = Math.sqrt(distanceSqr);
-
-        // Never lose the pet: even when it's visible, if it makes no progress toward the
-        // owner for ~4s while far away (stuck on a cliff, across water, broken path...),
-        // let it rift to the owner rather than leaving it behind.
-        if (distance > 6.0 && distance > this.lastDistance - 0.5) {
-            this.noProgressTicks += 10;
-            if (this.noProgressTicks >= 80) {
-                this.pet.repositionToOwner();
-                this.noProgressTicks = 0;
-                this.lastDistance = Double.MAX_VALUE;
-                return;
-            }
-        } else {
-            this.noProgressTicks = 0;
-        }
-        this.lastDistance = distance;
+        // (Lost-pet handling - out of view, stuck, too far - lives in AbstractPet.tick,
+        // where it can't be reset by this goal stopping and restarting.)
 
         double boost = Mth.clamp(1.0 + (distance - this.stopDistance) * 0.09, 1.0, MAX_CATCH_UP_BOOST);
         double targetX = this.owner.getX();
@@ -301,21 +264,5 @@ public class PetFollowOwnerGoal extends Goal {
         }
     }
 
-    /**
-     * Whether the pet is roughly within the owner's field of view (a generous horizontal
-     * cone around the owner's head yaw) with a clear line of sight.
-     */
-    private boolean ownerCanSeePet() {
-        Vec3 view = Vec3.directionFromRotation(0.0F, this.owner.getYHeadRot());
-        Vec3 toPet = this.pet.position().subtract(this.owner.getEyePosition());
-        Vec3 flat = new Vec3(toPet.x, 0.0, toPet.z);
-        if (flat.lengthSqr() < 1.0e-4) {
-            return true;
-        }
-        if (new Vec3(view.x, 0.0, view.z).normalize().dot(flat.normalize()) < VIEW_CONE_COS) {
-            return false;
-        }
-        return this.owner.hasLineOfSight(this.pet);
-    }
 
 }

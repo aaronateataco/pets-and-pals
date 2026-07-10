@@ -96,6 +96,9 @@ public abstract class AbstractPet extends TamableAnimal {
     private boolean perched = false;
     private int combatPerchTimer = 0;
     private int ownerSprintTicks = 0;
+    private int outOfViewTicks = 0;
+    private int stuckScore = 0;
+    private double lastTrackedDistanceSqr = 0.0;
 
     protected AbstractPet(EntityType<? extends @NotNull TamableAnimal> type, Level level) {
         super(type, level);
@@ -213,14 +216,33 @@ public abstract class AbstractPet extends TamableAnimal {
                 this.setPerched(shouldPerch);
             }
 
-            // Absolute never-lose-your-pet backstop, independent of whatever the goal
-            // system is doing: if the owner somehow gets far away (server teleport,
-            // ender pearl, elytra, goal wedged), snap the pet back to them.
-            if (this.tickCount % 20 == 0 && !this.perched) {
-                LivingEntity safetyOwner = this.getOwner();
-                if (safetyOwner != null && safetyOwner.level() == this.level()
-                        && this.distanceToSqr(safetyOwner) > 32.0 * 32.0) {
-                    this.repositionToOwner();
+            // Centralized never-lose-your-pet system. Lives here (not in the follow goal)
+            // so goal stops/restarts can't wipe its tracking. Golden rule: the pet NEVER
+            // repositions while the player is facing its location - even occluded, if it's
+            // in your view field it stays put and keeps walking. The moment you look away,
+            // a lost/stuck/far pet quietly moves to a spot inside your view instead.
+            if (!this.perched) {
+                LivingEntity trackedOwner = this.getOwner();
+                if (trackedOwner != null && trackedOwner.level() == this.level()) {
+                    double distSqr = this.distanceToSqr(trackedOwner);
+                    if (this.ownerInViewCone()) {
+                        this.outOfViewTicks = 0;
+                        this.stuckScore = 0;
+                    } else {
+                        double farRing = this.stopDistance() + 2.0;
+                        if (distSqr > farRing * farRing) this.outOfViewTicks++;
+                        else this.outOfViewTicks = 0;
+                        if (this.tickCount % 20 == 0) {
+                            if (distSqr > 64.0 && distSqr > this.lastTrackedDistanceSqr - 4.0) this.stuckScore++;
+                            else this.stuckScore = 0;
+                            this.lastTrackedDistanceSqr = distSqr;
+                        }
+                        if (distSqr > 24.0 * 24.0 || this.outOfViewTicks >= 50 || this.stuckScore >= 3) {
+                            this.repositionToOwner();
+                            this.outOfViewTicks = 0;
+                            this.stuckScore = 0;
+                        }
+                    }
                 }
             }
         }
@@ -283,6 +305,31 @@ public abstract class AbstractPet extends TamableAnimal {
     /** How many consecutive ticks the owner has been sprinting. */
     public int ownerSprintTicks() {
         return this.ownerSprintTicks;
+    }
+
+    /**
+     * Whether the owner is facing the pet's location - a generous 75-degree half-angle
+     * horizontal cone around the head yaw, deliberately ignoring line of sight: if the
+     * player is looking toward the pet (even through a wall or leaves), it must never
+     * blip; they might be able to see the spot.
+     */
+    public boolean ownerInViewCone() {
+        LivingEntity owner = this.getOwner();
+        if (owner == null) return false;
+        Vec3 view = Vec3.directionFromRotation(0.0F, owner.getYHeadRot());
+        Vec3 toPet = this.position().subtract(owner.getEyePosition());
+        Vec3 flat = new Vec3(toPet.x, 0.0, toPet.z);
+        if (flat.lengthSqr() < 1.0e-4) return true;
+        return new Vec3(view.x, 0.0, view.z).normalize().dot(flat.normalize()) > 0.2588;
+    }
+
+    /** Repositions to an exact spot if the pet fits there, with transition effects. */
+    public boolean tryRepositionTo(double x, double y, double z) {
+        if (!this.fitsAt(this.level(), x, y, z)) return false;
+        this.transitionEffects();
+        this.getNavigation().stop();
+        this.finishReposition(x, y, z);
+        return true;
     }
 
     /**
