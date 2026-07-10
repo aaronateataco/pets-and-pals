@@ -30,6 +30,15 @@ public abstract class FlyingPet extends AbstractPet {
         return true;
     }
 
+    /**
+     * Flyers follow to head height instead of the owner's feet, so bees (and the
+     * swimming pets that reuse flight) hover beside you rather than skimming the ground.
+     */
+    @Override
+    public float followYOffset() {
+        return 1.6F;
+    }
+
     @Override
     protected @NotNull PathNavigation createNavigation(@NotNull Level level) {
         FlyingPathNavigation navigation = new FlyingPathNavigation(this, level);
