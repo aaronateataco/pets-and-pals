@@ -64,12 +64,16 @@ public class Utils {
         // it, and the block sinks back into the ground. Falls back to a plain spawn if
         // no clean grid spot exists (mid-air, tight spaces, ...).
         BlockState dwellingBlock = entity.spawnDwellingBlock();
-        BlockPos dwellingPos = dwellingBlock == null ? null : findDwellingPos(player, world);
-        if (dwellingPos != null) {
-            entity.setPos(dwellingPos.getX() + 0.5, dwellingPos.getY(), dwellingPos.getZ() + 0.5);
+        BlockPos frontPos = findDwellingPos(player, world);
+        if (dwellingBlock != null && frontPos != null) {
+            entity.setPos(frontPos.getX() + 0.5, frontPos.getY(), frontPos.getZ() + 0.5);
             entity.setInvisible(true);
             world.addEntity(entity);
-            world.addEntity(PetDwelling.create(world, dwellingPos, dwellingBlock, entity));
+            world.addEntity(PetDwelling.create(world, frontPos, dwellingBlock, entity));
+        } else if (frontPos != null) {
+            // Every pet spawns in front of the camera, not underfoot/behind.
+            entity.setPos(frontPos.getX() + 0.5, frontPos.getY(), frontPos.getZ() + 0.5);
+            world.addEntity(entity);
         } else {
             entity.setPos(x, y, z);
             world.addEntity(entity);

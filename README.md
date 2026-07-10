@@ -39,6 +39,12 @@ See `RESEARCH.md` for the Phase 0 research behind the redesign. The phases, in o
 ## Requirements
 This mod requires [Fabric API](https://modrinth.com/mod/fabric-api), [Cloth Config API](https://modrinth.com/mod/cloth-config), [YACL](https://modrinth.com/mod/yacl) (YetAnotherConfigLib) and [Mod Menu](https://modrinth.com/mod/modmenu). It's a lot, I know, but hopefully you already have most of them installed!
 
+## Privacy & Compliance
+Pets&Pals is a purely client-side, cosmetic mod:
+- **No data collection.** The mod has no telemetry, no analytics, no network calls of its own, and stores nothing but your local settings file. There is no personal data to process, so there is nothing to consent to under GDPR or similar privacy laws.
+- **Minecraft EULA & Usage Guidelines.** The mod is free, gives no gameplay advantage (pets are visual companions with no combat, mining, or movement benefits to the player), sells nothing, and ships no Mojang assets - it only references the game's own resources at runtime, as mods are permitted to do.
+- **Server rules.** Because pets exist only on your client and are invisible to servers and other players, they don't affect server gameplay. As with any client mod, individual servers set their own allowed-modifications policies - if a server has a strict mods list, check it before playing.
+
 ## FAQ
 **Is this mod paid/are some features paid?**
 No, and they never will be! This mod will forever remain free for everyone to use.
