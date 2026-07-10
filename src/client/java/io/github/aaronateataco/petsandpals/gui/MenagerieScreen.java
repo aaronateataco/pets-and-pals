@@ -11,6 +11,12 @@ import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.world.entity.LivingEntity;
+
+import java.lang.reflect.Field;
+import java.util.HashMap;
+import java.util.Map;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
@@ -33,6 +39,10 @@ import static io.github.aaronateataco.petsandpals.Central.CONFIG;
 public class MenagerieScreen extends Screen {
 
     private static final int PANEL_WIDTH = 132;
+    private static final int PREVIEW_HEIGHT = 90;
+
+    /** species enum name -> live pet instance (Central pre-constructs one of each on summon). */
+    private static Map<String, AbstractPet> previewPets;
     private static final int CELL_WIDTH = 96;
     private static final int CELL_HEIGHT = 20;
     private static final int CELL_GAP = 3;
@@ -92,7 +102,7 @@ public class MenagerieScreen extends Screen {
         }).bounds(36, pageY, 20, 20).build());
 
         int panelX = this.width - PANEL_WIDTH - 6;
-        int y = GRID_TOP;
+        int y = GRID_TOP + PREVIEW_HEIGHT + 4;
         this.addRenderableWidget(Button.builder(Component.literal("Summon"), b -> this.summonSelected())
                 .bounds(panelX, y, PANEL_WIDTH, 20).build());
         y += 24;
@@ -120,6 +130,35 @@ public class MenagerieScreen extends Screen {
 
         this.applyFilter();
         this.rebuildGrid();
+    }
+
+    /**
+     * Central keeps one pre-constructed instance of every pet species in public static
+     * fields (bee, caveSpider, ...). Map them by species id so the catalog can render a
+     * live preview of any species without summoning it.
+     */
+    private static Map<String, AbstractPet> previewPets() {
+        if (previewPets == null) {
+            previewPets = new HashMap<>();
+            for (Field field : Central.class.getFields()) {
+                if (AbstractPet.class.isAssignableFrom(field.getType())) {
+                    String snake = field.getName().replaceAll("([a-z])([A-Z])", "$1_$2").toLowerCase(Locale.ROOT);
+                    try {
+                        Object value = field.get(null);
+                        if (value != null) {
+                            previewPets.put(snake, (AbstractPet) value);
+                        }
+                    } catch (IllegalAccessException ignored) {
+                    }
+                }
+            }
+        }
+        return previewPets;
+    }
+
+    private AbstractPet selectedPreview() {
+        if (this.selected == null) return null;
+        return previewPets().get(this.selected.name().toLowerCase(Locale.ROOT));
     }
 
     private int pageSize() {
@@ -198,6 +237,31 @@ public class MenagerieScreen extends Screen {
         if (this.selected != null) {
             graphics.text(this.font, Component.literal("Selected:"), panelX, 28, 0xFFAAAAAA);
             graphics.text(this.font, this.selected.getDisplayName(), panelX, 38, 0xFFFFFFFF);
+        }
+
+        // Live preview: the actual pet next to your own player at one shared scale,
+        // so the size comparison is true.
+        AbstractPet pet = this.selectedPreview();
+        LivingEntity player = this.minecraft != null ? this.minecraft.player : null;
+        int boxTop = GRID_TOP;
+        int boxBottom = GRID_TOP + PREVIEW_HEIGHT;
+        if (pet != null && player != null && !pet.isRemoved()) {
+            float tallest = Math.max(player.getBbHeight(), pet.getBbHeight());
+            int scale = Math.max(8, (int) ((PREVIEW_HEIGHT - 20) / tallest));
+            int half = PANEL_WIDTH / 2;
+            InventoryScreen.extractEntityInInventoryFollowsMouse(graphics,
+                    panelX, boxTop, panelX + half - 2, boxBottom,
+                    scale, 0.0625F, mouseX, mouseY, pet);
+            InventoryScreen.extractEntityInInventoryFollowsMouse(graphics,
+                    panelX + half + 2, boxTop, panelX + PANEL_WIDTH, boxBottom,
+                    scale, 0.0625F, mouseX, mouseY, player);
+            graphics.text(this.font, Component.literal(String.format(Locale.ROOT, "%.1fm", pet.getBbHeight())),
+                    panelX + 6, boxBottom - 10, 0xFFAAAAAA);
+            graphics.text(this.font, Component.literal(String.format(Locale.ROOT, "%.1fm", player.getBbHeight())),
+                    panelX + half + 8, boxBottom - 10, 0xFFAAAAAA);
+        } else if (player == null) {
+            graphics.text(this.font, Component.literal("Join a world"), panelX, boxTop + 30, 0xFF888888);
+            graphics.text(this.font, Component.literal("for previews"), panelX, boxTop + 42, 0xFF888888);
         }
     }
 

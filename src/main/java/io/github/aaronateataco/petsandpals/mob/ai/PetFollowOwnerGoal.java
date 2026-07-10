@@ -77,7 +77,7 @@ public class PetFollowOwnerGoal extends Goal {
         if (livingEntity == null || livingEntity.isSpectator()) {
             return false;
         }
-        if (this.pet.isOrderedToSit() || this.pet.isPassenger() || this.pet.isPerched() || this.pet.isOrbMode()) {
+        if (this.pet.isOrderedToSit() || this.pet.isPassenger() || this.pet.isPerched()) {
             return false;
         }
         double distanceSqr = this.pet.distanceToSqr(livingEntity);
@@ -100,7 +100,7 @@ public class PetFollowOwnerGoal extends Goal {
 
     @Override
     public boolean canContinueToUse() {
-        if (this.pet.isOrderedToSit() || this.pet.isPassenger() || this.pet.isPerched() || this.pet.isOrbMode()) {
+        if (this.pet.isOrderedToSit() || this.pet.isPassenger() || this.pet.isPerched()) {
             return false;
         }
         if (this.runningAlongside()) {
@@ -173,7 +173,7 @@ public class PetFollowOwnerGoal extends Goal {
             if (lagSqr > 9.0) {
                 if (++this.alongsideLagTicks >= 40) {
                     this.alongsideLagTicks = 0;
-                    this.pet.enterOrbMode();
+                    this.pet.repositionToOwner();
                     return;
                 }
             } else {
@@ -201,7 +201,7 @@ public class PetFollowOwnerGoal extends Goal {
         if (distanceSqr > TELEPORT_DISTANCE * TELEPORT_DISTANCE
                 || this.unseenTicks >= 50
                 || (!seen && distanceSqr > OUT_OF_SIGHT_TELEPORT_DISTANCE * OUT_OF_SIGHT_TELEPORT_DISTANCE)) {
-            this.pet.enterOrbMode();
+            this.pet.repositionToOwner();
             return;
         }
 
@@ -213,7 +213,7 @@ public class PetFollowOwnerGoal extends Goal {
         if (distance > 6.0 && distance > this.lastDistance - 0.5) {
             this.noProgressTicks += 10;
             if (this.noProgressTicks >= 80) {
-                this.pet.enterOrbMode();
+                this.pet.repositionToOwner();
                 this.noProgressTicks = 0;
                 this.lastDistance = Double.MAX_VALUE;
                 return;
