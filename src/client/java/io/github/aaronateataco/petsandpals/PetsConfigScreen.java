@@ -66,8 +66,13 @@ public class PetsConfigScreen implements ModMenuApi {
      * @see SplashManagerMixin
      * @see TitleScreenRenderingMixin
      */
+    /** The Menagerie catalog is the mod's front door; YACL remains as "Advanced settings". */
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
+        return io.github.aaronateataco.petsandpals.gui.MenagerieScreen::new;
+    }
+
+    public ConfigScreenFactory<?> getAdvancedConfigScreenFactory() {
         return parentScreen -> {
             PetsConfig CONFIG = AutoConfig.getConfigHolder(PetsConfig.class).getConfig();
             String activePet = CONFIG.activePet;
@@ -75,7 +80,7 @@ public class PetsConfigScreen implements ModMenuApi {
                     .title(Component.literal("Config"))
                     .save(() -> {
                         AutoConfig.getConfigHolder(PetsConfig.class).save();
-                        Minecraft.getInstance().setScreen(this.getModConfigScreenFactory().create(null));
+                        Minecraft.getInstance().setScreen(this.getAdvancedConfigScreenFactory().create(null));
                         Central.refreshChatSuggestor(Minecraft.getInstance());
                     })
                     .category(ConfigCategory.createBuilder()
