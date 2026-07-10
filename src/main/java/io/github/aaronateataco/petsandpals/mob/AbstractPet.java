@@ -397,6 +397,11 @@ public abstract class AbstractPet extends TamableAnimal {
         }
     }
 
+    /** Whether the pet's hitbox fits (no collisions) at the given position. */
+    public boolean canFitAt(double x, double y, double z) {
+        return this.fitsAt(this.level(), x, y, z);
+    }
+
     private boolean fitsAt(Level level, double x, double y, double z) {
         net.minecraft.world.phys.AABB box = this.getBoundingBox().move(
                 x - this.getX(), y - this.getY(), z - this.getZ());

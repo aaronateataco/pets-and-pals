@@ -195,6 +195,7 @@ public class MenagerieScreen extends Screen {
             String label = (isActive ? "✔ " : "") + species.getDisplayName().getString();
             Button cell = Button.builder(Component.literal(label), b -> {
                 this.selected = species;
+                this.applySelected();
                 this.rebuildGrid();
             }).bounds(x, y, CELL_WIDTH, CELL_HEIGHT).build();
             cell.active = species != this.selected;
@@ -205,6 +206,18 @@ public class MenagerieScreen extends Screen {
         this.page = Mth.clamp(this.page, 0, maxPage);
         this.prevButton.active = this.page > 0;
         this.nextButton.active = this.page < maxPage;
+    }
+
+    /** Clicking a species in the grid makes it the active pet immediately. */
+    private void applySelected() {
+        if (this.selected == null) return;
+        CONFIG.activePet = this.selected.name();
+        this.saveConfig();
+        if (this.minecraft != null && this.minecraft.level != null && Boolean.TRUE.equals(CONFIG.petOn)) {
+            Central.despawnPet();
+            Central.summonPet();
+            Central.refreshChatSuggestor(this.minecraft);
+        }
     }
 
     private void summonSelected() {

@@ -155,18 +155,17 @@ public class PetFollowOwnerGoal extends Goal {
             // the pace visibly step, which read as jank).
             this.updateAlongsideBoost();
 
-            // Deterministic entrance: if the pet is lagging its formation point while the
-            // player isn't looking at it (it's behind them), place it AT the formation
-            // point with the transition effects - the sidekick arrives on screen fast,
-            // and never pops while being watched.
+            // Leap entrance: if the pet is lagging its formation point while unwatched
+            // (behind the player), quietly move it to just BEHIND the camera and give it a
+            // full speed burst - so it visibly leaps past the player's shoulder into
+            // formation, running the whole way. Also the obstacle recovery: if its side is
+            // blocked, it swaps to the other side during the same maneuver.
             Vec3 anchor = this.alongsideAnchor();
             double lagSqr = this.pet.distanceToSqr(anchor.x, anchor.y + this.pet.followYOffset(), anchor.z);
             if (lagSqr > 12.25 && !this.pet.ownerInViewCone()) {
                 if (++this.alongsideLagTicks >= 15) {
                     this.alongsideLagTicks = 0;
-                    if (!this.pet.tryRepositionTo(anchor.x, anchor.y + this.pet.followYOffset(), anchor.z)) {
-                        this.pet.repositionToOwner();
-                    }
+                    this.leapEntrance();
                     return;
                 }
             } else {
@@ -205,6 +204,59 @@ public class PetFollowOwnerGoal extends Goal {
     }
 
     /**
+     * Places the pet just behind the camera (out of view) with a max speed burst so it
+     * sprints into frame past the player's shoulder. If the formation side is blocked
+     * by an obstacle, flips to the other side first.
+     */
+    private void leapEntrance() {
+        // Prefer the current side; if its anchor is blocked, swap sides.
+        Vec3 anchor = this.alongsideAnchor();
+        if (!this.pet.canFitAt(anchor.x, anchor.y + this.pet.followYOffset(), anchor.z)) {
+            this.alongsideSide = -this.alongsideSide;
+            anchor = this.alongsideAnchor();
+        }
+
+        Vec3 forward = Vec3.directionFromRotation(0.0F, this.owner.getYHeadRot());
+        forward = new Vec3(forward.x, 0.0, forward.z).normalize();
+        Vec3 right = new Vec3(-forward.z, 0.0, forward.x);
+        Vec3 behind = this.owner.position()
+                .subtract(forward.scale(2.2))
+                .add(right.scale(0.9 * this.alongsideSide));
+
+        boolean placed = false;
+        if (this.pet.followYOffset() > 0.0F) {
+            placed = this.pet.tryRepositionTo(behind.x, this.owner.getY() + this.pet.followYOffset(), behind.z);
+        } else {
+            for (int dy = 2; dy >= -3 && !placed; dy--) {
+                BlockPos pos = BlockPos.containing(behind.x, this.owner.getY() + dy, behind.z);
+                BlockPos below = pos.below();
+                if (!this.pet.level().getBlockState(below).isFaceSturdy(this.pet.level(), below, Direction.UP)) {
+                    continue;
+                }
+                placed = this.pet.tryRepositionTo(behind.x, pos.getY(), behind.z);
+            }
+        }
+        if (!placed) {
+            // No room behind the camera (wall right behind you) - appear past the
+            // obstruction near the formation point instead.
+            if (!this.pet.tryRepositionTo(anchor.x, anchor.y + this.pet.followYOffset(), anchor.z)) {
+                this.pet.repositionToOwner();
+                return;
+            }
+        }
+        // Full burst so the entrance is a leap, easing back down as it reaches formation.
+        this.smoothedBoost = MAX_ALONGSIDE_BOOST - 1.0;
+        this.updateAlongsideBoost();
+        Vec3 lead = new Vec3(this.owner.getDeltaMovement().x, 0.0, this.owner.getDeltaMovement().z).scale(5.0);
+        this.pet.getNavigation().moveTo(
+                anchor.x + lead.x,
+                this.owner.getY() + this.pet.followYOffset(),
+                anchor.z + lead.z,
+                this.speedModifier * AbstractPet.speedMultiplier.getAsDouble());
+        this.timeToRecalcPath = this.adjustedTickDelay(5);
+    }
+
+    /**
      * The formation point: well ahead of the camera (so the pet sits comfortably on
      * screen, not at the bottom edge) and offset to whichever side the pet is already
      * on - it may switch sides naturally if it drifts across, with hysteresis so it
@@ -229,9 +281,20 @@ public class PetFollowOwnerGoal extends Goal {
         float pitchDown = Math.max(0.0F, this.owner.getXRot());
         double forwardDistance = Mth.clamp(3.4 - pitchDown * 0.045, 2.0, 3.8);
 
-        return this.owner.position()
-                .add(forward.scale(forwardDistance))
-                .add(right.scale(1.5 * this.alongsideSide));
+        double fitY = this.owner.getY() + Math.max(0.1, this.pet.followYOffset());
+        Vec3 base = this.owner.position().add(forward.scale(forwardDistance));
+        Vec3 sideAnchor = base.add(right.scale(1.5 * this.alongsideSide));
+        if (this.pet.canFitAt(sideAnchor.x, fitY, sideAnchor.z)) {
+            return sideAnchor;
+        }
+        // Side blocked (wall, tree...): try the other side.
+        Vec3 otherAnchor = base.add(right.scale(-1.5 * this.alongsideSide));
+        if (this.pet.canFitAt(otherAnchor.x, fitY, otherAnchor.z)) {
+            this.alongsideSide = -this.alongsideSide;
+            return otherAnchor;
+        }
+        // Both sides blocked (narrow tunnel, hallway): run single file, directly ahead.
+        return this.owner.position().add(forward.scale(Math.max(2.0, forwardDistance * 0.7)));
     }
 
     /** Smoothly sized speed boost, updated every tick: big when lagging, gentle in formation. */
