@@ -854,6 +854,11 @@ public class Central implements ClientModInitializer {
         AbstractPet.speedMultiplier = () -> CONFIG.petSpeed;
         AbstractPet.soundVolume = () -> CONFIG.petVolume;
         AbstractPet.firstPersonView = () -> Minecraft.getInstance().options.getCameraType().isFirstPerson();
+        AbstractPet.clientEntitySpawner = entity -> {
+            if (Minecraft.getInstance().level != null) {
+                Minecraft.getInstance().level.addEntity(entity);
+            }
+        };
 
         this.createPetSkinCommand();
         this.checkForNullObjects();
