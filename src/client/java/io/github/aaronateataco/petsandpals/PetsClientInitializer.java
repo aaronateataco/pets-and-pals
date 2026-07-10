@@ -209,6 +209,9 @@ public class PetsClientInitializer implements ClientModInitializer {
 
         EntityRenderers.register(PetsInitializer.HEAD, HeadRenderer::new);
         EntityRenderers.register(PetsInitializer.DUCK, DuckRenderer::new);
+        // Vanilla falling-block renderer draws the spawn-animation ghost block for free.
+        EntityRenderers.register(PetsInitializer.PET_DWELLING,
+                context -> (net.minecraft.client.renderer.entity.EntityRenderer) new net.minecraft.client.renderer.entity.FallingBlockRenderer(context));
         EntityRenderers.register(PetsInitializer.RACOON, RacoonRenderer::new);
         EntityRenderers.register(PetsInitializer.PENGUIN, PenguinRenderer::new);
         EntityRenderers.register(PetsInitializer.SHEEP, ClientSheepRenderer::new);

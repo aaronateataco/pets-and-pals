@@ -1,5 +1,6 @@
 package io.github.aaronateataco.petsandpals;
 
+import io.github.aaronateataco.petsandpals.mob.PetDwelling;
 import io.github.aaronateataco.petsandpals.mob.aprilfools.*;
 import io.github.aaronateataco.petsandpals.mob.custom.aprilfools.Head;
 import io.github.aaronateataco.petsandpals.mob.custom.aquatic.DumboOctopus;
@@ -41,6 +42,15 @@ public class PetsInitializer implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
     private static final ResourceKey<@NotNull EntityType<?>> RACOON_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "racoon"));
+    private static final ResourceKey<@NotNull EntityType<?>> PET_DWELLING_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "pet_dwelling"));
+    /** Visual-only ghost block used by the pet spawn animation (see {@code PetDwelling}). */
+    public static final EntityType<@NotNull PetDwelling> PET_DWELLING = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "pet_dwelling"),
+            EntityType.Builder.of(PetDwelling::new, MobCategory.MISC)
+                    .sized(0.98f, 0.98f)
+                    .build(PET_DWELLING_KEY));
     public static final EntityType<@NotNull Racoon> RACOON = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
             Identifier.fromNamespaceAndPath(MOD_ID, "racoon"),

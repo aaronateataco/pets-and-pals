@@ -10,6 +10,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import io.github.aaronateataco.petsandpals.mob.PetDwelling;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 
 import java.lang.reflect.Field;
@@ -53,11 +57,52 @@ public class Utils {
         double y = player.getY() + (double) 0.5F;
         double z = player.getZ() - lookAngle.z * (double) 0.5F;
 
-        entity.setPos(x, y, z);
         entity.setCustomName(Component.literal(entityName));
-        world.addEntity(entity);
+
+        // Pets with a "dwelling" block (e.g. bee -> bee nest) get the spawn animation:
+        // a grid-aligned ghost block rises in front of the camera, the pet emerges from
+        // it, and the block sinks back into the ground. Falls back to a plain spawn if
+        // no clean grid spot exists (mid-air, tight spaces, ...).
+        BlockState dwellingBlock = entity.spawnDwellingBlock();
+        BlockPos dwellingPos = dwellingBlock == null ? null : findDwellingPos(player, world);
+        if (dwellingPos != null) {
+            entity.setPos(dwellingPos.getX() + 0.5, dwellingPos.getY(), dwellingPos.getZ() + 0.5);
+            entity.setInvisible(true);
+            world.addEntity(entity);
+            world.addEntity(PetDwelling.create(world, dwellingPos, dwellingBlock, entity));
+        } else {
+            entity.setPos(x, y, z);
+            world.addEntity(entity);
+        }
         entity.tame(player);
         Central.summonedEntity.add(entity);
+    }
+
+    /**
+     * Finds a grid-aligned spot ~3.5 blocks ahead of where the player is looking with
+     * solid ground below and room for a block, for the spawn-animation dwelling.
+     */
+    private static BlockPos findDwellingPos(Player player, ClientLevel world) {
+        Vec3 look = player.getLookAngle();
+        Vec3 flat = new Vec3(look.x, 0.0, look.z);
+        if (flat.lengthSqr() < 1.0e-4) {
+            flat = Vec3.directionFromRotation(0.0F, player.getYRot());
+        }
+        flat = flat.normalize();
+        double reach = 3.5;
+        BlockPos base = BlockPos.containing(
+                player.getX() + flat.x * reach,
+                player.getY() + 0.5,
+                player.getZ() + flat.z * reach);
+        for (int dy : new int[]{0, -1, 1, -2, 2, -3}) {
+            BlockPos pos = base.above(dy);
+            BlockPos below = pos.below();
+            if (!world.getBlockState(below).isFaceSturdy(world, below, Direction.UP)) continue;
+            if (!world.getBlockState(pos).getCollisionShape(world, pos).isEmpty()) continue;
+            if (!world.getBlockState(pos.above()).getCollisionShape(world, pos.above()).isEmpty()) continue;
+            return pos;
+        }
+        return null;
     }
 
     /**
