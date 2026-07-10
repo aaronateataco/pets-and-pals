@@ -52,6 +52,8 @@ public class PetFollowOwnerGoal extends Goal {
     private final float stopDistance;
     private LivingEntity owner;
     private int timeToRecalcPath;
+    private double lastDistance;
+    private int noProgressTicks;
 
     public PetFollowOwnerGoal(AbstractPet pet, double speedModifier, float startDistance, float stopDistance) {
         this.pet = pet;
@@ -105,6 +107,8 @@ public class PetFollowOwnerGoal extends Goal {
     @Override
     public void start() {
         this.timeToRecalcPath = 0;
+        this.lastDistance = Double.MAX_VALUE;
+        this.noProgressTicks = 0;
     }
 
     @Override
@@ -135,6 +139,23 @@ public class PetFollowOwnerGoal extends Goal {
         }
 
         double distance = Math.sqrt(distanceSqr);
+
+        // Never lose the pet: even when it's visible, if it makes no progress toward the
+        // owner for ~5s while far away (stuck on a cliff, across water, broken path...),
+        // reposition it rather than leaving it behind.
+        if (distance > 10.0 && distance > this.lastDistance - 0.5) {
+            this.noProgressTicks += 10;
+            if (this.noProgressTicks >= 100) {
+                this.teleportIntoOwnersView();
+                this.noProgressTicks = 0;
+                this.lastDistance = Double.MAX_VALUE;
+                return;
+            }
+        } else {
+            this.noProgressTicks = 0;
+        }
+        this.lastDistance = distance;
+
         double boost = Mth.clamp(1.0 + (distance - this.stopDistance) * 0.09, 1.0, MAX_CATCH_UP_BOOST);
         double targetX = this.owner.getX();
         double targetZ = this.owner.getZ();

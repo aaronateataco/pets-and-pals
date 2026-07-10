@@ -201,6 +201,17 @@ public abstract class AbstractPet extends TamableAnimal {
             if (shouldPerch != this.perched) {
                 this.setPerched(shouldPerch);
             }
+
+            // Absolute never-lose-your-pet backstop, independent of whatever the goal
+            // system is doing: if the owner somehow gets far away (server teleport,
+            // ender pearl, elytra, goal wedged), snap the pet back to them.
+            if (this.tickCount % 20 == 0 && !this.perched) {
+                LivingEntity safetyOwner = this.getOwner();
+                if (safetyOwner != null && safetyOwner.level() == this.level()
+                        && this.distanceToSqr(safetyOwner) > 32.0 * 32.0) {
+                    this.tryToTeleportToOwner();
+                }
+            }
         }
 
         // Vanilla runs the whole mob AI (goals, navigation, move/look/jump controls) in
