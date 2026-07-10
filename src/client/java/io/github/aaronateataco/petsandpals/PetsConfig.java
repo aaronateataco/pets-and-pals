@@ -163,6 +163,4 @@ public class PetsConfig implements ConfigData {
 
     public boolean isBaby;
 
-    public String sulfurCubeName;
-    public String sulfurCubeSkin;
 }

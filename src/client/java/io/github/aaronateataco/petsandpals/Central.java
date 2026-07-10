@@ -59,7 +59,6 @@ import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import static io.github.aaronateataco.petsandpals.PetsInitializer.MOD_ID;
-import static io.github.aaronateataco.petsandpals.PetsInitializer.SULPHUR_CUBE;
 
 /**
  * This class is the "central" of the logic that despawns, spawns, and swaps out pets, as well as creating all of the commands.
@@ -210,7 +209,6 @@ public class Central implements ClientModInitializer {
     public static DumboOctopus dumboOctopus;
     public static Koi koi;
     public static Stingray stingray;
-    private static ClientSulfurCube sulfurCube;
 
     private final SuggestionProvider<FabricClientCommandSource> SKINS = (context, builder) -> {
         String remaining = builder.getRemainingLowerCase();
@@ -328,7 +326,6 @@ public class Central implements ClientModInitializer {
         Utils.despawnEntity(dumboOctopus);
         Utils.despawnEntity(koi);
         Utils.despawnEntity(stingray);
-        Utils.despawnEntity(sulfurCube);
     }
 
     /**
@@ -436,7 +433,6 @@ public class Central implements ClientModInitializer {
         dumboOctopus = new DumboOctopus(PetsInitializer.DUMBO_OCTOPUS, world);
         koi = new Koi(PetsInitializer.KOI, world);
         stingray = new Stingray(PetsInitializer.STINGRAY, world);
-        sulfurCube = new ClientSulfurCube(PetsInitializer.SULPHUR_CUBE, world);
 
         if (world != null) {
             if (Objects.equals(CONFIG.activePet, "duck")) {
@@ -635,8 +631,6 @@ public class Central implements ClientModInitializer {
                 Utils.summonPet(koi, CONFIG.koiName);
             } else if (Objects.equals(CONFIG.activePet, "stingray")) {
                 Utils.summonPet(stingray, CONFIG.stingrayName);
-            } else if (Objects.equals(CONFIG.activePet, "sulfur_cube")) {
-                Utils.summonPet(sulfurCube, CONFIG.sulfurCubeName);
             }
         }
     }
@@ -741,7 +735,6 @@ public class Central implements ClientModInitializer {
         Utils.checkName("dumbo_octopus", dumboOctopus, CONFIG.dumboOctopusName);
         Utils.checkName("koi", koi, CONFIG.koiName);
         Utils.checkName("stingray", stingray, CONFIG.stingrayName);
-        Utils.checkName("sulfur_cube", sulfurCube, CONFIG.sulfurCubeName);
     }
 
     /**
@@ -782,7 +775,6 @@ public class Central implements ClientModInitializer {
             case "head" -> HEAD_SKINS;
             case "traitor" -> TRAITOR_SKINS;
             case "dumbo_octopus" -> DUMBO_OCTOPUS_SKINS;
-            case "sulfur_cube" -> Utils.getAllBlocks();
             case null, default -> EMPTY_LIST;
         };
 
@@ -800,8 +792,7 @@ public class Central implements ClientModInitializer {
      * @see ChatAccessor
      */
     public static void refreshChatSuggestor(Minecraft client) {
-        if (client.gui == null) return;
-        Screen screen = client.gui.screen();
+        Screen screen = client.screen;
         if ((screen instanceof ChatScreen chatScreen)) {
             ((ChatAccessor) chatScreen).getChatInputSuggestor().updateCommandInfo();
         }
@@ -1550,8 +1541,6 @@ public class Central implements ClientModInitializer {
                                 case "pink" -> CONFIG.dumboOctopusSkin = "pink";
                                 case null, default -> isValid = false;
                             }
-                        } else if (Objects.equals("sulfur_cube", CONFIG.activePet)) {
-                            CONFIG.sulfurCubeSkin = skin.replace(" ", "_").toLowerCase();
                         }
                     }
 
@@ -1766,8 +1755,6 @@ public class Central implements ClientModInitializer {
 
         CONFIG.headSkin = Utils.checkNullString(CONFIG.headSkin, "downloadableduck");
 
-        CONFIG.sulfurCubeName = Utils.checkNullString(CONFIG.sulfurCubeName);
-        CONFIG.sulfurCubeSkin = Utils.checkNullString(CONFIG.sulfurCubeSkin, "air");
     }
 
     /**
@@ -1985,8 +1972,6 @@ public class Central implements ClientModInitializer {
                 Utils.setActivePet(koi, "koi");
             } else if (Objects.equals(species, "stingray")) {
                 Utils.setActivePet(stingray, "stingray");
-            } else if (Objects.equals(species, "sulfur_cube") || Objects.equals(species, "sulfur cube")) {
-                Utils.setActivePet(sulfurCube, "sulfur_cube");
             } else {
                 isValid = false;
             }
@@ -2159,7 +2144,6 @@ public class Central implements ClientModInitializer {
                     case "dumbo_octopus" -> CONFIG.dumboOctopusName = name;
                     case "koi" -> CONFIG.koiName = name;
                     case "stingray" -> CONFIG.stingrayName = name;
-                    case "sulfur_cube" -> CONFIG.sulfurCubeName = name;
                 }
                 AutoConfig.getConfigHolder(PetsConfig.class).save();
             }
@@ -2232,7 +2216,7 @@ public class Central implements ClientModInitializer {
                  "spider", "squid", "stingray",  "stray", "strider",  "tadpole", "toxifin slab",
                 "traitor", "turtle",
                  "vex", "villager", "vindicator", "wandering trader", "warden", "witch", "wither",
-                "wither skeleton", "wolf", "zombie", "zombie villager", "sulfur cube"};
+                "wither skeleton", "wolf", "zombie", "zombie villager"};
         PETS_LIST.addAll(List.of(stuffs));
     }
 

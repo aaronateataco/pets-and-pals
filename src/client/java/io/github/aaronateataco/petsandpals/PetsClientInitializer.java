@@ -109,7 +109,6 @@ import io.github.aaronateataco.petsandpals.rendering.vanilla.spider.ClientSpider
 import io.github.aaronateataco.petsandpals.rendering.vanilla.squid.ClientSquidRenderer;
 import io.github.aaronateataco.petsandpals.rendering.vanilla.stray.ClientStrayRenderer;
 import io.github.aaronateataco.petsandpals.rendering.vanilla.strider.ClientStriderRenderer;
-import io.github.aaronateataco.petsandpals.rendering.vanilla.sulfur_cube.ClientSulfurCubeRenderer;
 import io.github.aaronateataco.petsandpals.rendering.vanilla.tadpole.ClientTadpoleRenderer;
 import io.github.aaronateataco.petsandpals.rendering.vanilla.turtle.ClientTurtleRenderer;
 import io.github.aaronateataco.petsandpals.rendering.vanilla.vex.ClientVexRenderer;
@@ -167,14 +166,12 @@ import net.minecraft.client.model.monster.skeleton.BoggedModel;
 import net.minecraft.client.model.monster.skeleton.SkeletonModel;
 import net.minecraft.client.model.monster.slime.MagmaCubeModel;
 import net.minecraft.client.model.monster.slime.SlimeModel;
-import net.minecraft.client.model.monster.slime.SulfurCubeModel;
 import net.minecraft.client.model.monster.spider.SpiderModel;
 import net.minecraft.client.model.monster.strider.AdultStriderModel;
 import net.minecraft.client.model.monster.vex.VexModel;
 import net.minecraft.client.model.monster.warden.WardenModel;
 import net.minecraft.client.model.monster.witch.WitchModel;
 import net.minecraft.client.renderer.entity.EntityRenderers;
-import net.minecraft.client.renderer.entity.SulfurCubeRenderer;
 import net.minecraft.resources.Identifier;
 import org.lwjgl.glfw.GLFW;
 
@@ -306,7 +303,6 @@ public class PetsClientInitializer implements ClientModInitializer {
         EntityRenderers.register(PetsInitializer.DUMBO_OCTOPUS, DumboOctopusRenderer::new);
         EntityRenderers.register(PetsInitializer.KOI, KoiRenderer::new);
         EntityRenderers.register(PetsInitializer.STINGRAY, StingrayRenderer::new);
-        EntityRenderers.register(PetsInitializer.SULPHUR_CUBE, ClientSulfurCubeRenderer::new);
 
         ModelLayerRegistry.registerModelLayer(HeadModel.LAYER_LOCATION, HeadModel::getTexturedModelData);
         ModelLayerRegistry.registerModelLayer(RacoonRenderer.RACOON_LOCATION, RacoonModel::getTexturedModelData);
@@ -408,7 +404,6 @@ public class PetsClientInitializer implements ClientModInitializer {
         ModelLayerRegistry.registerModelLayer(DumboOctopusRenderer.DUMBO_OCTOPUS_LOCATION, DumboOctopusModel::createBodyLayer);
         ModelLayerRegistry.registerModelLayer(KoiRenderer.KOI_LOCATION, KoiModel::createBodyLayer);
         ModelLayerRegistry.registerModelLayer(StingrayRenderer.STINGRAY_LOCATION, StingrayModel::createBodyLayer);
-        ModelLayerRegistry.registerModelLayer(ClientSulfurCubeRenderer.SULFUR_CUBE_LOCATION, SulfurCubeModel::createOuterBodyLayer);
 
         ClientLifecycleEvents.CLIENT_STARTED.register((mc) -> {
             LOGGER.info("Pets & Pals addons loaded:{}", ADDONS);
@@ -424,7 +419,7 @@ public class PetsClientInitializer implements ClientModInitializer {
 
         ClientTickEvents.END_CLIENT_TICK.register((client) -> {
             if (keyMapping.consumeClick()) {
-                client.gui.setScreen(PetsConfigScreen.getInstance().getModConfigScreenFactory().create(client.gui.screen()));
+                client.setScreen(PetsConfigScreen.getInstance().getModConfigScreenFactory().create(client.screen));
             }
         });
     }
