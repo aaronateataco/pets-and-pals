@@ -2020,6 +2020,24 @@ public class Central implements ClientModInitializer {
                 summonedEntity.clear();
             }
 
+            // Watchdog for the active pet, running OUTSIDE the entity: if the pet drifts
+            // beyond render distance its chunk unloads and the entity stops ticking, so
+            // none of its own never-lose logic can run - it would be frozen out there
+            // forever. From here we can always pull it back.
+            if (this.i % 20 == 0 && client.player != null && world != null) {
+                for (Entity summoned : summonedEntity) {
+                    if (!(summoned instanceof AbstractPet pet)) continue;
+                    if (pet.isRemoved()) {
+                        summonedEntity.clear();
+                        break;
+                    }
+                    if (pet.level() == world && !pet.isPerched()
+                            && pet.distanceToSqr(client.player) > 40.0 * 40.0) {
+                        pet.repositionToOwner();
+                    }
+                }
+            }
+
             refreshPetNames();
 
         }));

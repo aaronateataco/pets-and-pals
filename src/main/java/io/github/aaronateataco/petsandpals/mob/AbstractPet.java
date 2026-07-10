@@ -227,7 +227,14 @@ public abstract class AbstractPet extends TamableAnimal {
                 LivingEntity trackedOwner = this.getOwner();
                 if (trackedOwner != null && trackedOwner.level() == this.level()) {
                     double distSqr = this.distanceToSqr(trackedOwner);
-                    if (this.ownerInViewCone()) {
+                    if (distSqr > 20.0 * 20.0) {
+                        // Hard cap regardless of view direction: at this range the pet is a
+                        // speck, so pulling it in reads as nothing - and letting it drift
+                        // further risks its chunk unloading (a frozen, unrescuable pet).
+                        this.repositionToOwner();
+                        this.outOfViewTicks = 0;
+                        this.stuckScore = 0;
+                    } else if (this.ownerInViewCone()) {
                         this.outOfViewTicks = 0;
                         this.stuckScore = 0;
                     } else {
@@ -239,7 +246,7 @@ public abstract class AbstractPet extends TamableAnimal {
                             else this.stuckScore = 0;
                             this.lastTrackedDistanceSqr = distSqr;
                         }
-                        if (distSqr > 24.0 * 24.0 || this.outOfViewTicks >= 50 || this.stuckScore >= 3) {
+                        if (this.outOfViewTicks >= 40 || this.stuckScore >= 3) {
                             this.repositionToOwner();
                             this.outOfViewTicks = 0;
                             this.stuckScore = 0;
