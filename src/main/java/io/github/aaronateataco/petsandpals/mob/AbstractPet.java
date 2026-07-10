@@ -251,6 +251,12 @@ public abstract class AbstractPet extends TamableAnimal {
      * player within 16 blocks, or a hostile mob within 12.
      */
     private boolean ownerInCombat(Player owner) {
+        // No combat tuck when the owner can't actually fight or be hurt - adventure-mode
+        // lobbies (Hypixel etc.), creative, spectator, invulnerable. Otherwise the pet
+        // would perch permanently the moment other players are around.
+        if (owner.isSpectator() || owner.getAbilities().invulnerable || !owner.getAbilities().mayBuild) {
+            return false;
+        }
         ItemStack held = owner.getMainHandItem();
         Item item = held.getItem();
         if (held.is(ItemTags.SWORDS) || held.is(ItemTags.AXES)
