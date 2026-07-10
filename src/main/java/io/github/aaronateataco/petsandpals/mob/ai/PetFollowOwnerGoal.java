@@ -3,6 +3,12 @@ package io.github.aaronateataco.petsandpals.mob.ai;
 import io.github.aaronateataco.petsandpals.mob.AbstractPet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.goal.Goal;
@@ -34,6 +40,9 @@ public class PetFollowOwnerGoal extends Goal {
     private static final double TELEPORT_DISTANCE = 24.0;
     private static final double OUT_OF_SIGHT_TELEPORT_DISTANCE = 8.0;
     private static final double MAX_CATCH_UP_BOOST = 1.75;
+    /** Transient speed modifier used while pacing a sprinting owner; value updated dynamically. */
+    private static final Identifier ALONGSIDE_SPEED_ID = Identifier.fromNamespaceAndPath("pets-and-pals", "run_alongside_boost");
+    private static final double MAX_ALONGSIDE_BOOST = 2.5;
     /** cos(75 degrees) - half-angle of what counts as "the owner can see the pet". */
     private static final double VIEW_CONE_COS = 0.2588;
 
@@ -62,14 +71,21 @@ public class PetFollowOwnerGoal extends Goal {
             return false;
         }
         double distanceSqr = this.pet.distanceToSqr(livingEntity);
-        // Run-alongside engages even when the pet is already close - it needs to swing
-        // out to the owner's side, not wait until it falls behind.
-        boolean wantsAlongside = this.runningAlongside() && distanceSqr > 2.25;
+        boolean wantsAlongside = this.runningAlongside() && distanceSqr > 1.0;
         if (!wantsAlongside && distanceSqr < (double) (this.startDistance * this.startDistance)) {
             return false;
         }
         this.owner = livingEntity;
         return true;
+    }
+
+    /**
+     * Fortnite-style: after the owner has been sprinting for ~1s (first person only, since
+     * that's when a trailing pet is invisible), the pet runs at the owner's front-right -
+     * on screen - with a dynamically boosted speed attribute so it genuinely keeps pace.
+     */
+    private boolean runningAlongside() {
+        return this.pet.ownerSprintTicks() > 20 && AbstractPet.firstPersonView.getAsBoolean();
     }
 
     @Override
@@ -86,15 +102,6 @@ public class PetFollowOwnerGoal extends Goal {
         return this.pet.distanceToSqr(this.owner) > (double) (this.stopDistance * this.stopDistance);
     }
 
-    /**
-     * Fortnite-style: after the owner has been sprinting for ~1.5s (first person only,
-     * since that's when a trailing pet is invisible), the pet stops trailing and runs
-     * fully animated at the owner's side, slightly ahead - where the camera can see it.
-     */
-    private boolean runningAlongside() {
-        return this.pet.ownerSprintTicks() > 30 && AbstractPet.firstPersonView.getAsBoolean();
-    }
-
     @Override
     public void start() {
         this.timeToRecalcPath = 0;
@@ -104,6 +111,7 @@ public class PetFollowOwnerGoal extends Goal {
     public void stop() {
         this.owner = null;
         this.pet.getNavigation().stop();
+        this.clearAlongsideBoost();
     }
 
     @Override
@@ -130,20 +138,36 @@ public class PetFollowOwnerGoal extends Goal {
         double boost = Mth.clamp(1.0 + (distance - this.stopDistance) * 0.09, 1.0, MAX_CATCH_UP_BOOST);
         double targetX = this.owner.getX();
         double targetZ = this.owner.getZ();
+
         if (alongside) {
-            // Aim beside and slightly ahead of the owner (relative to their motion) so the
-            // pet is visible at the edge of the first-person view while both are running.
-            Vec3 forward = this.owner.getDeltaMovement();
-            Vec3 flat = new Vec3(forward.x, 0.0, forward.z);
-            if (flat.lengthSqr() < 1.0e-4) {
-                flat = Vec3.directionFromRotation(0.0F, this.owner.yBodyRot);
+            // Aim at a point beside-and-ahead of the owner, led by their motion so the
+            // path stays valid between recalcs, and dynamically raise the pet's speed
+            // attribute just enough to hold formation - farther behind = bigger boost,
+            // in position = barely boosted, so the pace change reads as natural.
+            Vec3 motion = this.owner.getDeltaMovement();
+            Vec3 forward = new Vec3(motion.x, 0.0, motion.z);
+            if (forward.lengthSqr() < 1.0e-4) {
+                forward = Vec3.directionFromRotation(0.0F, this.owner.yBodyRot);
+            } else {
+                forward = forward.normalize();
             }
-            flat = flat.normalize();
-            Vec3 right = new Vec3(-flat.z, 0.0, flat.x);
-            targetX += flat.x * 1.2 + right.x * 1.6;
-            targetZ += flat.z * 1.2 + right.z * 1.6;
-            boost = Math.max(boost, 1.5);
+            Vec3 right = new Vec3(-forward.z, 0.0, forward.x);
+            Vec3 lead = motion.scale(6.0);
+            targetX += forward.x * 1.5 + right.x * 1.4 + lead.x;
+            targetZ += forward.z * 1.5 + right.z * 1.4 + lead.z;
+
+            double anchorDx = targetX - this.pet.getX();
+            double anchorDz = targetZ - this.pet.getZ();
+            double lag = Math.sqrt(anchorDx * anchorDx + anchorDz * anchorDz);
+            double dynamicBoost = Mth.clamp(0.35 + lag * 0.28, 0.35, MAX_ALONGSIDE_BOOST - 1.0);
+            AttributeModifier modifier = new AttributeModifier(
+                    ALONGSIDE_SPEED_ID, dynamicBoost, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+            this.applyAlongsideBoost(Attributes.MOVEMENT_SPEED, modifier);
+            this.applyAlongsideBoost(Attributes.FLYING_SPEED, modifier);
+        } else {
+            this.clearAlongsideBoost();
         }
+
         double speed = this.speedModifier * AbstractPet.speedMultiplier.getAsDouble() * boost;
         this.pet.getNavigation().moveTo(
                 targetX,
@@ -151,6 +175,22 @@ public class PetFollowOwnerGoal extends Goal {
                 targetZ,
                 speed
         );
+    }
+
+    private void applyAlongsideBoost(Holder<Attribute> attribute, AttributeModifier modifier) {
+        AttributeInstance instance = this.pet.getAttribute(attribute);
+        if (instance != null) {
+            instance.addOrUpdateTransientModifier(modifier);
+        }
+    }
+
+    private void clearAlongsideBoost() {
+        for (Holder<Attribute> attribute : java.util.List.of(Attributes.MOVEMENT_SPEED, Attributes.FLYING_SPEED)) {
+            AttributeInstance instance = this.pet.getAttribute(attribute);
+            if (instance != null && instance.hasModifier(ALONGSIDE_SPEED_ID)) {
+                instance.removeModifier(ALONGSIDE_SPEED_ID);
+            }
+        }
     }
 
     /**
