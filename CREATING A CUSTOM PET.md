@@ -28,9 +28,9 @@ dependencies {
     implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
     implementation("com.terraformersmc:modmenu:${project.modmenu_version}")
     implementation "dev.isxander:yet-another-config-lib:${project.yacl_version}"
-    implementation "maven.modrinth:pets-mod:${project.petsmod_version}"
+    implementation "maven.modrinth:pets-and-pals:${project.petsmod_version}"
     //add the sources jar as well
-    implementation "maven.modrinth:pets-mod:${project.petsmod_version}:sources"
+    implementation "maven.modrinth:pets-and-pals:${project.petsmod_version}:sources"
 }
 ```
 
@@ -50,7 +50,7 @@ Here are some quick links to each mod's version page:
 <br>
 [YetAnotherConfigLib](https://modrinth.com/mod/yacl/versions)
 <br>
-[PetsMod](https://modrinth.com/mod/pets-mod/versions)
+[PetsMod](https://modrinth.com/mod/pets-and-pals/versions)
 <br>
 [Cloth Config](https://modrinth.com/mod/cloth-config/versions)
 
@@ -59,7 +59,7 @@ Additionally, make sure to depend on PetsMod `0.7.4` or greater in your `fabric.
 `src/main/resources/fabric.mod.json`
 ```JSON
 "depends": {
-    "pets-mod": ">=0.7.4"
+    "pets-and-pals": ">=0.7.4"
 }
 ```
 
@@ -81,7 +81,7 @@ Without further ado, let's get started!
 ### Giving Your Entity Custom Logic
 In order to give your custom entity the logic it requires, take your entity class and make it extend `FlyingPet` or `GroundPet`, depending on whether it can fly or not. You will need to override the following methods:
 
-`src/main/java/com/jeff/pets/CustomEntity.java`
+`src/main/java/io/github/aaronateataco/petsandpals/CustomEntity.java`
 ```java
     /**This method is used to determine how far
      * the entity should be when it
@@ -109,7 +109,7 @@ In order to give your custom entity the logic it requires, take your entity clas
 
 There, it now has custom logic and will function on any server. Let's dive over to our rendering class real quick:
 
-`src/client/com/jeff/pets/CustomEntityRenderer.java`
+`src/client/io/github/aaronateataco/petsandpals/CustomEntityRenderer.java`
 ```java
 public class CustomEntityRenderer extends MobRenderer<CustomEntity, GhastRenderState, GhastModel> {
 
@@ -133,7 +133,7 @@ public class CustomEntityRenderer extends MobRenderer<CustomEntity, GhastRenderS
 
 Real quick, go ahead and change `extends MobRenderer` to `extends PetRenderer`. This gives it the logic that will flip it upside down if the entities' name is **Dinnerbone** or **Grumm**.
 
-`src/client/com/jeff/pets/CustomEntityRenderer.java`
+`src/client/io/github/aaronateataco/petsandpals/CustomEntityRenderer.java`
 ```java
 public class CustomEntityRenderer extends PetRenderer<CustomEntity, GhastRenderState, GhastModel> {
 
@@ -162,7 +162,7 @@ The first thing we need to do is set up a config for our mod that contains our p
 
 Create a new class in your `client` module that implements `ConfigData`. Now, add an `@Config` annotation on the class, like such:
 
-`src/client/com/jeff/pets/ExamplePetsModAddonConfig.java`
+`src/client/io/github/aaronateataco/petsandpals/ExamplePetsModAddonConfig.java`
 ```java
 @Config(name = "petsmod_addon_config")
 public class ExamplePetsModAddonConfig implements ConfigData {
@@ -173,13 +173,13 @@ public class ExamplePetsModAddonConfig implements ConfigData {
 
 Now, add a simple String into this config. Do not assign a value - otherwise, it will be set to that specific value every time the game reloads - which is not what we want! We want the user to be able to set their own values.
 
-`src/client/com/jeff/pets/ExamplePetsModAddonConfig.java`
+`src/client/io/github/aaronateataco/petsandpals/ExamplePetsModAddonConfig.java`
 
 `public String customEntityName;`
 
 Great! Let's hop over to our **client initializer** class to do a couple of things. The first thing that we will do is register our config.
 
-`src/client/com/jeff/pets/ExamplePetsModAddonClient.java`
+`src/client/io/github/aaronateataco/petsandpals/ExamplePetsModAddonClient.java`
 ```java
 public class ExamplePetsModAddonClient {
     /**Create the config so that we can access it from our code. Call this as soon as possible,
@@ -193,7 +193,7 @@ public class ExamplePetsModAddonClient {
 
 And call it in your `onInitializeClient()` method:
 
-`src/client/com/jeff/pets/ExamplePetsModAddonClient.java`
+`src/client/io/github/aaronateataco/petsandpals/ExamplePetsModAddonClient.java`
 
 ```java
 public class ExamplePetsModAddonClient {
@@ -206,7 +206,7 @@ public class ExamplePetsModAddonClient {
 
 While we are here, we should also add a `null` check to our config values to make sure they don't cause any unwanted `NullPointerExceptions`.
 
-`src/client/com/jeff/pets/ExamplePetsModAddonClient.java`
+`src/client/io/github/aaronateataco/petsandpals/ExamplePetsModAddonClient.java`
 ```java
 public class ExamplePetsModAddonClient {
     [. . .]
@@ -223,7 +223,7 @@ public class ExamplePetsModAddonClient {
 
 Call it in your `onInitializeClient()` as well:
 
-`src/client/com/jeff/pets/ExamplePetsModAddonClient.java`
+`src/client/io/github/aaronateataco/petsandpals/ExamplePetsModAddonClient.java`
 ```java
 public class ExamplePetsModAddonClient {
     @Override
@@ -256,7 +256,7 @@ As you might remember from our Introduction to PetsMod section, Central contains
 
 Let's create a new file in our `client/mixin` package.
 
-`src/client/java/com/jeff/pets/exampleaddon/client/mixin/CentralMixin.class`
+`src/client/java/io/github/aaronateataco/petsandpals/exampleaddon/client/mixin/CentralMixin.class`
 ```java
 @Mixin(Central.class)
 public class CentralMixin {
@@ -266,14 +266,14 @@ public class CentralMixin {
 
 Add a quick field to it as well. This will be an instance of our custom entity that can be summoned and de-spawned at will.
 
-`src/client/java/com/jeff/pets/exampleaddon/client/mixin/CentralMixin.java`
+`src/client/java/io/github/aaronateataco/petsandpals/exampleaddon/client/mixin/CentralMixin.java`
 ```java
 @Unique
 private static CustomEntity customEntity;
 ```
 
 Now that we have our class set up, let's mix in to the most important method, `createSummonCommand`. However, we will need a custom helper method to help us summon our entity. Add this to your code:
-`src/client/java/com/jeff/pets/exampleaddon/client/mixin/CentralMixin.java`
+`src/client/java/io/github/aaronateataco/petsandpals/exampleaddon/client/mixin/CentralMixin.java`
 ```java
 @Unique
     private static void spawnCustomEntity(CommandContext<FabricClientCommandSource> context, Entity entity, String activePet) {
@@ -298,7 +298,7 @@ This method is **reusable**. You can use it multiple times for each of your cust
 
 After this, we can start injecting. Let's start with, as previously stated, the /petspecies command.
 
-`src/client/java/com/jeff/pets/exampleaddon/client/mixin/CentralMixin.java`
+`src/client/java/io/github/aaronateataco/petsandpals/exampleaddon/client/mixin/CentralMixin.java`
 ```java
 @Inject(at = @At("HEAD"), method = "lambda$createPetSpeciesCommand$1", cancellable = true)
 private static void createSummonCommand(CommandContext<FabricClientCommandSource> context, CallbackInfoReturnable<Integer> cir) {
@@ -322,7 +322,7 @@ However, we are far from done. We still have to:
 Let's focus on one thing at a time, and try to get this entity to spawn in the world first. Add a new `@Inject`, this time for `summonPet()`.
 
 
-`src/client/java/com/jeff/pets/exampleaddon/client/mixin/CentralMixin.java`
+`src/client/java/io/github/aaronateataco/petsandpals/exampleaddon/client/mixin/CentralMixin.java`
 ```java
     /**Uses the Utils.summonPet method to summon the pet in the world if
      * CONFIG.activePet is equal to "custom_entity".*/
@@ -348,7 +348,7 @@ When Minecraft initially launches, Minecraft.getInstance().level is null.
 
 When loading into a game, you should now see that you can use /petspecies to switch your pet. However, the game will not **suggest** this entity while the user is typing. Let's add that real quick. Hop over to your client initializer and add this code in your `onInitializeClient()` method.
 
-`src/client/com/jeff/pets/exampleaddon/client/ExamplePetsModAddonClient.java`
+`src/client/io/github/aaronateataco/petsandpals/exampleaddon/client/ExamplePetsModAddonClient.java`
 ```java
 public void onInitializeClient() {
         /* Adds our custom entity to the list of suggestions that appear when the user types
@@ -362,7 +362,7 @@ Now, you should see your suggestion popping up when you try to run `/petspecies`
 
 Try running `/petspecies` again. You should see that another pet will spawn, but your custom entity will not _despawn_. So, let's make that happen with a quick injection into `Central.despawnPet()`.
 
-`src/client/java/com/jeff/pets/exampleaddon/client/mixin/CentralMixin.java`
+`src/client/java/io/github/aaronateataco/petsandpals/exampleaddon/client/mixin/CentralMixin.java`
 ```java
     /** Utils.despawnEntity checks if the entity is not null,
      * and discards it if it is not.*/
@@ -374,7 +374,7 @@ Try running `/petspecies` again. You should see that another pet will spawn, but
 ```
 Great, it will now despawn when the user runs `/petspecies`. Let's add the naming logic next. Add this to your `CentralMixin.java`:
 
-`src/client/java/com/jeff/pets/exampleaddon/client/mixin/CentralMixin.java`
+`src/client/java/io/github/aaronateataco/petsandpals/exampleaddon/client/mixin/CentralMixin.java`
 ```java
 
     /** Makes sure that the command assigns the inputted name
@@ -394,7 +394,7 @@ SImply, when the user runs `/petname`, the command logic checks what the active 
 
 If you go in-game and try to run `/petname` on your pet, you will see that nothing happens. This is because, while the value in CUSTOM_CONFIG is changed, the name isn't actually re-assigned to the entity until it spawns. To solve this, there is a method in `Central` called `refreshPetNames()` that runs every tick. Let's inject into that.
 
-`src/client/java/com/jeff/pets/exampleaddon/client/mixin/CentralMixin.java`
+`src/client/java/io/github/aaronateataco/petsandpals/exampleaddon/client/mixin/CentralMixin.java`
 ```java
 
      /** This code runs every tick. Utils.checkName checks if the entity's custom name is

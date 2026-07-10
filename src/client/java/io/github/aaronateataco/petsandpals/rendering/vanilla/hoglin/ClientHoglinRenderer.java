@@ -1,0 +1,49 @@
+package io.github.aaronateataco.petsandpals.rendering.vanilla.hoglin;
+
+import io.github.aaronateataco.petsandpals.mob.vanilla.hostile.ClientHoglin;
+import io.github.aaronateataco.petsandpals.rendering.PetRenderer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.HoglinRenderState;
+import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
+
+import static io.github.aaronateataco.petsandpals.Central.CONFIG;
+
+public class ClientHoglinRenderer extends PetRenderer<@NotNull ClientHoglin, @NotNull HoglinRenderState, @NotNull ClientHoglinModel> {
+
+    public static final ModelLayerLocation HOGLIN_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("clienthoglin"), "main");
+
+    public ClientHoglinRenderer(EntityRendererProvider.Context context) {
+        super(context, new ClientHoglinModel(context.bakeLayer(ModelLayers.HOGLIN)), 0.75f);
+    }
+
+    @Override
+    protected void scale(HoglinRenderState state, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+        }
+    }
+
+    @Override
+    public @NotNull Identifier getTextureLocation(HoglinRenderState livingEntityRenderState) {
+        String hoglinTexturePath;
+        if (Objects.equals(CONFIG.hoglinSkin, "hoglin")) {
+            hoglinTexturePath = "textures/entity/hoglin/hoglin.png";
+        } else if (Objects.equals(CONFIG.hoglinSkin, "zoglin")) {
+            hoglinTexturePath = "textures/entity/hoglin/zoglin.png";
+        } else {
+            hoglinTexturePath = "textures/entity/hoglin/hoglin.png";
+        }
+        return Identifier.withDefaultNamespace(hoglinTexturePath);
+    }
+
+    @Override
+    public HoglinRenderState createRenderState() {
+        return new HoglinRenderState();
+    }
+}

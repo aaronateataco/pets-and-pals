@@ -6,14 +6,14 @@ freshly-modded Modrinth page, and the JourneyMap API repo.*
 
 ## 1. Local dev environment (ground truth)
 
-- **Repo**: `pets-mod` 0.7.10 on branch `26.2`, MC **26.2**, loader 0.18.4, Fabric API
-  0.152.1+26.2, YACL 3.9.4, Mod Menu 20.0.0-beta.2. Entity namespace is **`pets-mod`**
+- **Repo**: `pets-and-pals` 0.7.10 on branch `26.2`, MC **26.2**, loader 0.18.4, Fabric API
+  0.152.1+26.2, YACL 3.9.4, Mod Menu 20.0.0-beta.2. Entity namespace is **`pets-and-pals`**
   (hyphenated) — matters for Xaero icon definition paths.
 - **Prism Launcher** is a host flatpak (`org.prismlauncher.PrismLauncher`); this dev shell is a
   container, so the instance lives at
   `/run/host/root/home/aaron/.var/app/org.prismlauncher.PrismLauncher/data/PrismLauncher/instances/`.
 - **Exactly one instance exists: "Fresh & Smooth 2.9.2" on MC 26.1.2** (192 mods), running
-  pets-mod **0.7.9-26.1**, pets-earth 1.0.1, pets-natural 1.1.2, Xaero's Minimap
+  pets-and-pals **0.7.9-26.1**, pets-earth 1.0.1, pets-natural 1.1.2, Xaero's Minimap
   26.1.5 + Xaero World Map + XaeroPlus, EMF 3.2.4 + ETF 7.1, Fresh Animations.
 - ⚠️ **Version mismatch**: the repo builds for 26.2 but the only test instance is 26.1.2.
   In-game testing of phase work needs either `./gradlew runClient` (Loom dev client) or a
@@ -21,7 +21,7 @@ freshly-modded Modrinth page, and the JourneyMap API repo.*
 
 ## 2. Addon repos — what a real API must replace
 
-All three depend on `"pets-mod": "*"` in fabric.mod.json. Two integration styles exist:
+All three depend on `"pets-and-pals": "*"` in fabric.mod.json. Two integration styles exist:
 
 ### Style A — client "more species" addons (cobblepets, pets-earth)
 Both mixin into petsmod's client classes, mostly targeting **compiler-generated lambda
@@ -119,7 +119,7 @@ cross-mod API surface — renaming/re-namespacing them is a breaking change for 
   renderer/animations apply automatically — zero per-mob work. Registering petsmod-clone
   EntityTypes instead would break every such pack. Prefer wrapping the real type.
 - Existing petsmod texture pack convention (`CREATING A TEXTUREPACK.md`): custom-entity
-  textures at `assets/pets-mod/textures/entity/<entity>/<skin>.png`; vanilla-copy pets use
+  textures at `assets/pets-and-pals/textures/entity/<entity>/<skin>.png`; vanilla-copy pets use
   vanilla texture paths, so vanilla-targeting packs already reskin them. Extend this same
   path convention for user-created pet folders/packs rather than inventing a new format.
 

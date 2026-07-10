@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "io.github.aaronateataco.petsandpals.mixin.client",
+  "compatibilityLevel": "JAVA_21",
+  "client": [
+    "ChatAccessor",
+    "SplashManagerMixin",
+    "TitleScreenRenderingMixin",
+    "ShutUpEntityClientLevelMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

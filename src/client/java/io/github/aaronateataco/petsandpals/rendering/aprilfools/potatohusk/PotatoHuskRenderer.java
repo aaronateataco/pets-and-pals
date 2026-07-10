@@ -1,0 +1,45 @@
+package io.github.aaronateataco.petsandpals.rendering.aprilfools.potatohusk;
+
+import io.github.aaronateataco.petsandpals.mob.aprilfools.PotatoHusk;
+import io.github.aaronateataco.petsandpals.rendering.PetRenderer;
+import io.github.aaronateataco.petsandpals.rendering.vanilla.zombie.ClientZombieModel;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.ZombieRenderState;
+import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.NotNull;
+
+import static io.github.aaronateataco.petsandpals.Central.CONFIG;
+
+public class PotatoHuskRenderer extends PetRenderer<@NotNull PotatoHusk, @NotNull ZombieRenderState, @NotNull ClientZombieModel> {
+
+    public static final ModelLayerLocation POTATO_HUSK_LOCATION = new ModelLayerLocation(Identifier.withDefaultNamespace("potatohusk"), "main");
+
+    public PotatoHuskRenderer(EntityRendererProvider.Context context) {
+        super(context, new ClientZombieModel(context.bakeLayer(ModelLayers.HUSK)), 0.75f);
+    }
+
+    protected void scale(ZombieRenderState state, @NotNull PoseStack poseStack) {
+        if (CONFIG.isBaby) {
+            poseStack.scale(0.5f, 0.5f, 0.5f);
+        }
+    }
+
+    @Override
+    public @NotNull Identifier getTextureLocation(ZombieRenderState livingEntityRenderState) {
+        return Identifier.withDefaultNamespace("textures/entity/zombie/husk_potato.png");
+    }
+
+    @Override
+    public ZombieRenderState createRenderState() {
+        return new ZombieRenderState();
+    }
+
+    @Override
+    public void extractRenderState(PotatoHusk husk, ZombieRenderState state, float f) {
+        super.extractRenderState(husk, state, f);
+        state.isPassenger = husk.isPassenger();
+    }
+}
