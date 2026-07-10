@@ -15,6 +15,7 @@ import net.minecraft.server.level.ServerEntity;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.AgeableMob;
@@ -33,6 +34,7 @@ import net.minecraft.world.entity.animal.Animal;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.Nullable;
 
@@ -65,6 +67,8 @@ public abstract class AbstractPet extends TamableAnimal {
      */
     @Deprecated
     protected int waitingTime = 0;
+
+    private boolean perched = false;
 
     protected AbstractPet(EntityType<? extends @NotNull TamableAnimal> type, Level level) {
         super(type, level);
@@ -162,7 +166,8 @@ public abstract class AbstractPet extends TamableAnimal {
         // serverAiStep, which is hard-gated behind !level().isClientSide() - so for these
         // client-only pets we drive the same machinery ourselves. Runs before super.tick()
         // so travel() consumes the freshly computed movement inputs this same tick.
-        if (this.usesGoalMovement() && this.level().isClientSide() && this.isAlive() && !this.isPassenger()) {
+        if (this.usesGoalMovement() && this.level().isClientSide() && this.isAlive()
+                && !this.isPassenger() && !this.perched) {
             this.getSensing().tick();
             this.goalSelector.tick();
             this.getNavigation().tick();
@@ -174,19 +179,81 @@ public abstract class AbstractPet extends TamableAnimal {
         super.tick();
         if (!this.usesGoalMovement()) return;
 
-        LivingEntity owner = this.getOwner();
-        if (owner != null && owner.hasPassenger(this)) {
-            if (owner.isCrouching() && owner.isJumping()) {
-                this.stopRiding();
-                this.setOrderedToSit(false);
-            } else {
-                this.setOrderedToSit(true);
-            }
+        if (this.perched) {
+            this.tickPerched();
         }
 
         if (this.random.nextInt(60 * 20) == 0 && this.getAmbientSound() != null) {
             this.level().playLocalSound(this, this.getAmbientSound(), SoundSource.NEUTRAL, 1.0f, 1.0f);
         }
+    }
+
+    /**
+     * Whether the pet is in "perched" mode (toggled by shift + right-click): instead of
+     * being rigidly mounted on the player, it floats just behind and above the owner's
+     * shoulder and glides after them with a slight lag - backbling-style, so it reads as
+     * a companion hovering along rather than an accessory bolted to the head.
+     */
+    public boolean isPerched() {
+        return this.perched;
+    }
+
+    public void setPerched(boolean perched) {
+        this.perched = perched;
+        this.noPhysics = perched;
+        this.setNoGravity(perched);
+        this.getNavigation().stop();
+        if (!perched) {
+            this.setDeltaMovement(Vec3.ZERO);
+        }
+    }
+
+    /**
+     * How far above the owner's feet this pet aims while following. Zero for ground pets;
+     * flying pets hover near the owner's head instead of hugging the ground.
+     */
+    public float followYOffset() {
+        return 0.0F;
+    }
+
+    private void tickPerched() {
+        LivingEntity owner = this.getOwner();
+        if (owner == null || !owner.isAlive() || owner.isRemoved()) {
+            this.setPerched(false);
+            return;
+        }
+
+        // Anchor just behind and above the owner's shoulder, following the BODY yaw (not the
+        // head) so glancing around doesn't swing the pet, plus a gentle floating bob.
+        float rad = owner.yBodyRot * ((float) Math.PI / 180.0F);
+        Vec3 back = new Vec3(Mth.sin(rad), 0.0, -Mth.cos(rad));
+        Vec3 right = new Vec3(-Mth.cos(rad), 0.0, -Mth.sin(rad));
+        double bob = Math.sin(this.tickCount * 0.12) * 0.06;
+        double up = owner.getBbHeight() + 0.35 + bob;
+        double backDistance = 0.55 + this.getBbWidth() * 0.4;
+        Vec3 anchor = owner.position()
+                .add(back.scale(backDistance))
+                .add(right.scale(0.3))
+                .add(0.0, up, 0.0);
+
+        Vec3 delta = anchor.subtract(this.position());
+        double distance = delta.length();
+        if (distance > 6.0) {
+            // Owner teleported/respawned - snap instead of gliding across the world.
+            this.snapTo(anchor.x, anchor.y, anchor.z, owner.yBodyRot, 0.0F);
+        } else {
+            // Distance-scaled lerp: trails lazily when close, hurries when the owner sprints.
+            double k = Mth.clamp(0.10 + distance * 0.18, 0.10, 0.55);
+            Vec3 next = this.position().add(delta.scale(k));
+            this.setPos(next.x, next.y, next.z);
+        }
+
+        this.setDeltaMovement(Vec3.ZERO);
+        this.fallDistance = 0;
+        this.setYRot(owner.yBodyRot);
+        this.yBodyRot = owner.yBodyRot;
+        this.setYHeadRot(owner.yBodyRot);
+        this.setXRot(0.0F);
     }
 
     /**
@@ -242,13 +309,19 @@ public abstract class AbstractPet extends TamableAnimal {
         }
 
         if (this.isTame() && itemStack.isEmpty() && player.isShiftKeyDown()) {
-            if (!this.isPassenger()) {
-                this.startRiding(player);
-                this.lookAt(player, 1f, 1f);
-                return InteractionResult.SUCCESS;
+            if (this.usesGoalMovement()) {
+                // Backbling-style perch: float behind the shoulder instead of rigid mounting.
+                if (this.isPassenger()) this.stopRiding();
+                this.setPerched(!this.isPerched());
             } else {
-                this.stopRiding();
-                this.setOrderedToSit(false);
+                // Legacy pickup for the bespoke custom mobs (duck, racoon, ...).
+                if (!this.isPassenger()) {
+                    this.startRiding(player);
+                    this.lookAt(player, 1f, 1f);
+                } else {
+                    this.stopRiding();
+                    this.setOrderedToSit(false);
+                }
             }
             return InteractionResult.SUCCESS;
         }
