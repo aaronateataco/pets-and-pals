@@ -1,10 +1,10 @@
-# Pets & Pals
+# Pets&Pals
 
-**Pets & Pals** brings your own client-side companions into your game — pets with real presence that walk at your side, react to the world, and follow you anywhere. From squids to iron golems to even penguins, Pets & Pals offers nearly every mob from vanilla Minecraft, and more! And it works no matter whether you are on a multiplayer server or your own singleplayer world.
+**Pets&Pals** brings your own client-side companions into your game — pets with real presence that walk at your side, react to the world, and follow you anywhere. From squids to iron golems to even penguins, Pets&Pals offers nearly every mob from vanilla Minecraft, and more! And it works no matter whether you are on a multiplayer server or your own singleplayer world.
 
-Pets & Pals comes with its own configuration screen **and** custom commands to easily toggle between pets, change whether the mod is enabled at all, and switch up the appearance of your pets with **skins** and **names**.
+Pets&Pals comes with its own configuration screen **and** custom commands to easily toggle between pets, change whether the mod is enabled at all, and switch up the appearance of your pets with **skins** and **names**.
 
-> **Pets & Pals is a fork of [Pets Mod](https://github.com/downloadableduck/petsmod) by downloadableduck and The Pets Team** — full credit to them for the original mod this project is built on (which itself grew out of [DuckMod](https://modrinth.com/mod/duck--mod)). This fork is a ground-up redesign: real pathfinding-driven movement and animation, minimap compatibility, a proper addon API, a new companion-catalog UI, multi-version support, and opt-in networked pet visibility.
+> **Pets&Pals is a fork of [Pets Mod](https://github.com/downloadableduck/petsmod) by downloadableduck and The Pets Team** — full credit to them for the original mod this project is built on (which itself grew out of [DuckMod](https://modrinth.com/mod/duck--mod)). This fork is a ground-up redesign: real pathfinding-driven movement and animation, minimap compatibility, a proper addon API, a new companion-catalog UI, multi-version support, and opt-in networked pet visibility.
 
 ## Features
 - Almost EVERY vanilla Minecraft mob
@@ -44,7 +44,7 @@ This mod requires [Fabric API](https://modrinth.com/mod/fabric-api), [Cloth Conf
 No, and they never will be! This mod will forever remain free for everyone to use.
 
 **How does this relate to the original Pets Mod?**
-Pets & Pals started as a full redesign of Pets Mod (CC0-licensed) and is published as its own standalone mod, with credit to the original. Existing Pets Mod addons target the original mod's `pets-mod` id; a compatibility layer and a proper addon API are part of the roadmap (Phase 4).
+Pets&Pals started as a full redesign of Pets Mod (CC0-licensed) and is published as its own standalone mod, with credit to the original. Existing Pets Mod addons target the original mod's `pets-mod` id; a compatibility layer and a proper addon API are part of the roadmap (Phase 4).
 
 **How can I contribute?**
 Play the mod! If you have an issue, please report it on GitHub — we look forward to making this mod the best - and clearest of bugs - that it can be!

@@ -132,7 +132,7 @@ public class Duck extends AbstractPet {
     }
 
     protected void playStepSound(final @NotNull BlockPos pos, final @NotNull BlockState blockState) {
-        this.playSound(SoundEvents.CHICKEN_STEP.value(), 0.15F, 1.0F);
+        this.playSound(SoundEvents.CHICKEN_STEP.value(), 0.15F * (float) soundVolume.getAsDouble(), 1.0F);
     }
 
     public @Nullable Duck getBreedOffspring(final @NotNull ServerLevel level, final @NotNull AgeableMob partner) {
@@ -259,12 +259,12 @@ public class Duck extends AbstractPet {
         }
 
         /*if (this.walkAnimation.isMoving()) {
-            level().playLocalSound(this, SoundEvents.CHICKEN_STEP, SoundSource.NEUTRAL, 1.0f, 1.0f);
+            level().playLocalSound(this, SoundEvents.CHICKEN_STEP, SoundSource.NEUTRAL, (float) soundVolume.getAsDouble(), 1.0f);
         }*/
 
         int ambient = (int) (Math.random() * (60 * 20));
         if (ambient == 1) {
-            level().playLocalSound(this, PetsSounds.DUCK_AMBIENT, SoundSource.NEUTRAL, 1.0f, 1.0f);
+            level().playLocalSound(this, PetsSounds.DUCK_AMBIENT, SoundSource.NEUTRAL, (float) soundVolume.getAsDouble(), 1.0f);
         }
     }
 

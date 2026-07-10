@@ -411,7 +411,7 @@ public class PetsClientInitializer implements ClientModInitializer {
         ModelLayerRegistry.registerModelLayer(ClientSulfurCubeRenderer.SULFUR_CUBE_LOCATION, SulfurCubeModel::createOuterBodyLayer);
 
         ClientLifecycleEvents.CLIENT_STARTED.register((mc) -> {
-            LOGGER.info("Pets & Pals addons loaded:{}", ADDONS);
+            LOGGER.info("Pets&Pals addons loaded:{}", ADDONS);
         });
     }
 

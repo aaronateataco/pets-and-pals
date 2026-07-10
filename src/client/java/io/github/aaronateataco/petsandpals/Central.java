@@ -822,7 +822,7 @@ public class Central implements ClientModInitializer {
             client.getResourcePackRepository().addPack("file/headpack");
             options.save();
             client.reloadResourcePacks();
-            //client.player.sendSystemMessage(Component.literal("§b[Pets & Pals] §aSorry for the interruption, the head pet requires a custom resource pack to work correctly and we loaded a pack for you. This will not affect anything except the head texture."));
+            //client.player.sendSystemMessage(Component.literal("§b[Pets&Pals] §aSorry for the interruption, the head pet requires a custom resource pack to work correctly and we loaded a pack for you. This will not affect anything except the head texture."));
         }*/
     }
 
@@ -859,7 +859,9 @@ public class Central implements ClientModInitializer {
 
         // Configs from before the setting existed deserialize petSpeed as 0.
         if (CONFIG.petSpeed <= 0.0f) CONFIG.petSpeed = 1.0f;
+        if (CONFIG.petVolume == null) CONFIG.petVolume = 1.0f;
         AbstractPet.speedMultiplier = () -> CONFIG.petSpeed;
+        AbstractPet.soundVolume = () -> CONFIG.petVolume;
 
         this.createPetSkinCommand();
         this.checkForNullObjects();
@@ -1561,9 +1563,9 @@ public class Central implements ClientModInitializer {
                     }
 
                     if (isValid) {
-                        context.getSource().sendFeedback(Component.literal("§b[Pets & Pals] §aYour pet's skin has been updated."));
+                        context.getSource().sendFeedback(Component.literal("§b[Pets&Pals] §aYour pet's skin has been updated."));
                     } else {
-                        context.getSource().sendFeedback(Component.literal("§b[Pets & Pals] §cEither your currently selected pet doesn't support multiple skins, or that is not a valid skin. Try something else."));
+                        context.getSource().sendFeedback(Component.literal("§b[Pets&Pals] §cEither your currently selected pet doesn't support multiple skins, or that is not a valid skin. Try something else."));
                     }
                     AutoConfig.getConfigHolder(PetsConfig.class).save();
 
@@ -2038,7 +2040,7 @@ public class Central implements ClientModInitializer {
     void createPetHelpCommand() {
         ClientCommandRegistrationCallback.EVENT.register(((dispatcher, registryAccess) -> dispatcher.register(ClientCommands.literal("pethelp").executes(context -> {
             context.getSource().getPlayer().sendSystemMessage(Component.literal("""
-                    §b[Pets & Pals] §aPossible commands:\
+                    §b[Pets&Pals] §aPossible commands:\
                     
                     §a/pethelp: §rdisplays a list of commands\
                     
@@ -2181,14 +2183,14 @@ public class Central implements ClientModInitializer {
             String preference = StringArgumentType.getString(context, "preference");
             if (Objects.equals(preference, "off")) {
                 CONFIG.petOn = false;
-                context.getSource().sendFeedback(Component.literal("§b[Pets & Pals] §7Pet §coff."));
+                context.getSource().sendFeedback(Component.literal("§b[Pets&Pals] §7Pet §coff."));
                 AutoConfig.getConfigHolder(PetsConfig.class).save();
             } else if (Objects.equals(preference, "on")) {
                 CONFIG.petOn = true;
                 AutoConfig.getConfigHolder(PetsConfig.class).save();
-                context.getSource().sendFeedback(Component.literal("§b[Pets & Pals] §7Pet §aon."));
+                context.getSource().sendFeedback(Component.literal("§b[Pets&Pals] §7Pet §aon."));
             } else {
-                context.getSource().sendFeedback(Component.literal("§b[Pets & Pals] §c§lUnknown value " + preference + "! Possible values: §r§aon, §6off"));
+                context.getSource().sendFeedback(Component.literal("§b[Pets&Pals] §c§lUnknown value " + preference + "! Possible values: §r§aon, §6off"));
             }
 
             return 1;
@@ -2243,13 +2245,13 @@ public class Central implements ClientModInitializer {
 
     public void checkValidPet(boolean isValid, CommandContext<FabricClientCommandSource> context, String species) {
         if (!isValid) {
-            context.getSource().sendFeedback(Component.literal("§b[Pets & Pals] §cThat's not a pet that's currently supported. Try something else. (Unknown input \"" + species + "\")"));
+            context.getSource().sendFeedback(Component.literal("§b[Pets&Pals] §cThat's not a pet that's currently supported. Try something else. (Unknown input \"" + species + "\")"));
         } else if (isValid && CONFIG.petOn) {
             despawnPet();
-            context.getSource().sendFeedback(Component.literal("§b[Pets & Pals] §aYour active pet has been switched to " + CONFIG.activePet.replace("_", " ") + "."));
+            context.getSource().sendFeedback(Component.literal("§b[Pets&Pals] §aYour active pet has been switched to " + CONFIG.activePet.replace("_", " ") + "."));
             summonPet();
         } else if (isValid && !CONFIG.petOn) {
-            context.getSource().sendFeedback(Component.literal("§b[Pets & Pals] §cYour pet has been switched to " + CONFIG.activePet.replace("_", " ") + ", but you currently do not have your pet enabled. Run §l/pet on§r§c to change this."));
+            context.getSource().sendFeedback(Component.literal("§b[Pets&Pals] §cYour pet has been switched to " + CONFIG.activePet.replace("_", " ") + ", but you currently do not have your pet enabled. Run §l/pet on§r§c to change this."));
         }
     }
 }
