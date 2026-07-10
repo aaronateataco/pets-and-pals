@@ -1,0 +1,244 @@
+package io.github.aaronateataco.petsandpals.gui;
+
+import io.github.aaronateataco.petsandpals.Central;
+import io.github.aaronateataco.petsandpals.PetsConfig;
+import io.github.aaronateataco.petsandpals.PetsConfigScreen;
+import io.github.aaronateataco.petsandpals.enums.PetList;
+import io.github.aaronateataco.petsandpals.mob.AbstractPet;
+import me.shedaniel.autoconfig.AutoConfig;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.AbstractSliderButton;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.Mth;
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+import java.util.function.DoubleConsumer;
+
+import static io.github.aaronateataco.petsandpals.Central.CONFIG;
+
+/**
+ * The Menagerie: Pets&Pals' companion catalog. A searchable grid of every pet species
+ * with a side panel for summoning and the core settings - designed to read as "pick your
+ * companion", not as an options list. The old YACL screen stays available via the
+ * "Advanced settings" button for names, skins, and everything else (until those migrate
+ * here in a later pass).
+ */
+public class MenagerieScreen extends Screen {
+
+    private static final int PANEL_WIDTH = 132;
+    private static final int CELL_WIDTH = 96;
+    private static final int CELL_HEIGHT = 20;
+    private static final int CELL_GAP = 3;
+    private static final int GRID_TOP = 52;
+
+    private final Screen parent;
+    private final List<PetList> allSpecies;
+    private List<PetList> filtered;
+    private final List<Button> gridWidgets = new ArrayList<>();
+    private EditBox searchBox;
+    private Button prevButton;
+    private Button nextButton;
+    private PetList selected;
+    private int page = 0;
+    private int columns = 3;
+    private int rows = 6;
+    private String query = "";
+
+    public MenagerieScreen(Screen parent) {
+        super(Component.literal("Menagerie"));
+        this.parent = parent;
+        this.allSpecies = new ArrayList<>(List.of(PetList.values()));
+        this.allSpecies.sort(Comparator.comparing(p -> p.getDisplayName().getString()));
+        this.filtered = this.allSpecies;
+        try {
+            this.selected = PetList.valueOf(CONFIG.activePet.replaceAll(" ", "_"));
+        } catch (Exception e) {
+            this.selected = PetList.values()[0];
+        }
+    }
+
+    @Override
+    protected void init() {
+        int gridAreaWidth = this.width - PANEL_WIDTH - 24;
+        this.columns = Math.max(2, gridAreaWidth / (CELL_WIDTH + CELL_GAP));
+        this.rows = Math.max(3, (this.height - GRID_TOP - 40) / (CELL_HEIGHT + CELL_GAP));
+
+        this.searchBox = new EditBox(this.font, 12, 26, Math.min(220, gridAreaWidth - 4), 18,
+                Component.literal("Search"));
+        this.searchBox.setValue(this.query);
+        this.searchBox.setResponder(text -> {
+            this.query = text;
+            this.page = 0;
+            this.applyFilter();
+            this.rebuildGrid();
+        });
+        this.addRenderableWidget(this.searchBox);
+
+        int pageY = this.height - 28;
+        this.prevButton = this.addRenderableWidget(Button.builder(Component.literal("<"), b -> {
+            if (this.page > 0) this.page--;
+            this.rebuildGrid();
+        }).bounds(12, pageY, 20, 20).build());
+        this.nextButton = this.addRenderableWidget(Button.builder(Component.literal(">"), b -> {
+            if ((this.page + 1) * this.pageSize() < this.filtered.size()) this.page++;
+            this.rebuildGrid();
+        }).bounds(36, pageY, 20, 20).build());
+
+        int panelX = this.width - PANEL_WIDTH - 6;
+        int y = GRID_TOP;
+        this.addRenderableWidget(Button.builder(Component.literal("Summon"), b -> this.summonSelected())
+                .bounds(panelX, y, PANEL_WIDTH, 20).build());
+        y += 24;
+        this.addRenderableWidget(Button.builder(this.petToggleLabel(), b -> {
+            CONFIG.petOn = !Boolean.TRUE.equals(CONFIG.petOn);
+            if (CONFIG.petOn) Central.summonPet();
+            else Central.despawnPet();
+            b.setMessage(this.petToggleLabel());
+        }).bounds(panelX, y, PANEL_WIDTH, 20).build());
+        y += 24;
+        this.addRenderableWidget(new PercentSlider(panelX, y, PANEL_WIDTH, 20, "Speed", 0.25, 3.0,
+                CONFIG.petSpeed, value -> CONFIG.petSpeed = (float) value));
+        y += 24;
+        this.addRenderableWidget(new PercentSlider(panelX, y, PANEL_WIDTH, 20, "Volume", 0.0, 1.0,
+                CONFIG.petVolume == null ? 1.0f : CONFIG.petVolume, value -> CONFIG.petVolume = (float) value));
+        y += 28;
+        this.addRenderableWidget(Button.builder(Component.literal("Advanced settings..."), b -> {
+            if (this.minecraft != null) {
+                this.minecraft.gui.setScreen(PetsConfigScreen.getInstance().getAdvancedConfigScreenFactory().create(this));
+            }
+        }).bounds(panelX, y, PANEL_WIDTH, 20).build());
+
+        this.addRenderableWidget(Button.builder(Component.literal("Done"), b -> this.onClose())
+                .bounds(panelX, this.height - 28, PANEL_WIDTH, 20).build());
+
+        this.applyFilter();
+        this.rebuildGrid();
+    }
+
+    private int pageSize() {
+        return this.columns * this.rows;
+    }
+
+    private Component petToggleLabel() {
+        return Component.literal(Boolean.TRUE.equals(CONFIG.petOn) ? "Pet: ON" : "Pet: OFF");
+    }
+
+    private void applyFilter() {
+        String q = this.query.trim().toLowerCase(Locale.ROOT);
+        if (q.isEmpty()) {
+            this.filtered = this.allSpecies;
+        } else {
+            this.filtered = this.allSpecies.stream()
+                    .filter(p -> p.getDisplayName().getString().toLowerCase(Locale.ROOT).contains(q))
+                    .toList();
+        }
+    }
+
+    private void rebuildGrid() {
+        this.gridWidgets.forEach(this::removeWidget);
+        this.gridWidgets.clear();
+
+        int start = this.page * this.pageSize();
+        for (int i = 0; i < this.pageSize() && start + i < this.filtered.size(); i++) {
+            PetList species = this.filtered.get(start + i);
+            int col = i % this.columns;
+            int row = i / this.columns;
+            int x = 12 + col * (CELL_WIDTH + CELL_GAP);
+            int y = GRID_TOP + row * (CELL_HEIGHT + CELL_GAP);
+            boolean isActive = species.name().equals(CONFIG.activePet);
+            String label = (isActive ? "✔ " : "") + species.getDisplayName().getString();
+            Button cell = Button.builder(Component.literal(label), b -> {
+                this.selected = species;
+                this.rebuildGrid();
+            }).bounds(x, y, CELL_WIDTH, CELL_HEIGHT).build();
+            cell.active = species != this.selected;
+            this.gridWidgets.add(this.addRenderableWidget(cell));
+        }
+
+        int maxPage = Math.max(0, (this.filtered.size() - 1) / this.pageSize());
+        this.page = Mth.clamp(this.page, 0, maxPage);
+        this.prevButton.active = this.page > 0;
+        this.nextButton.active = this.page < maxPage;
+    }
+
+    private void summonSelected() {
+        if (this.selected == null) return;
+        CONFIG.activePet = this.selected.name();
+        CONFIG.petOn = true;
+        this.saveConfig();
+        Central.despawnPet();
+        Central.summonPet();
+        if (this.minecraft != null) {
+            Central.refreshChatSuggestor(this.minecraft);
+        }
+        this.rebuildGrid();
+    }
+
+    private void saveConfig() {
+        AutoConfig.getConfigHolder(PetsConfig.class).save();
+    }
+
+    @Override
+    public void extractRenderState(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+        graphics.text(this.font, this.title, this.width / 2 - this.font.width(this.title) / 2, 10, 0xFFFFFFFF);
+        graphics.text(this.font, Component.literal("Page " + (this.page + 1) + "/"
+                        + (Math.max(0, (this.filtered.size() - 1) / this.pageSize()) + 1)
+                        + "  (" + this.filtered.size() + " pets)"),
+                62, this.height - 22, 0xFFAAAAAA);
+
+        int panelX = this.width - PANEL_WIDTH - 6;
+        if (this.selected != null) {
+            graphics.text(this.font, Component.literal("Selected:"), panelX, 28, 0xFFAAAAAA);
+            graphics.text(this.font, this.selected.getDisplayName(), panelX, 38, 0xFFFFFFFF);
+        }
+    }
+
+    @Override
+    public void onClose() {
+        this.saveConfig();
+        AbstractPet.speedMultiplier = () -> CONFIG.petSpeed;
+        if (this.minecraft != null) {
+            this.minecraft.gui.setScreen(this.parent);
+        }
+    }
+
+    /** Simple labeled value slider mapping 0..1 to [min, max]. */
+    private static class PercentSlider extends AbstractSliderButton {
+        private final String label;
+        private final double min;
+        private final double max;
+        private final DoubleConsumer setter;
+
+        PercentSlider(int x, int y, int width, int height, String label,
+                      double min, double max, double current, DoubleConsumer setter) {
+            super(x, y, width, height, Component.empty(), (current - min) / (max - min));
+            this.label = label;
+            this.min = min;
+            this.max = max;
+            this.setter = setter;
+            this.updateMessage();
+        }
+
+        private double current() {
+            return this.min + this.value * (this.max - this.min);
+        }
+
+        @Override
+        protected void updateMessage() {
+            this.setMessage(Component.literal(String.format(Locale.ROOT, "%s: %.2fx", this.label, this.current())));
+        }
+
+        @Override
+        protected void applyValue() {
+            this.setter.accept(this.current());
+        }
+    }
+}
