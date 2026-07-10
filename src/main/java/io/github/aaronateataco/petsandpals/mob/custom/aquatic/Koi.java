@@ -34,6 +34,16 @@ import org.jspecify.annotations.Nullable;
 import static io.github.aaronateataco.petsandpals.PetsInitializer.KOI;
 
 public class Koi extends FlyingPet {
+
+    /**
+     * Legacy custom swim logic drives this mob's movement from its own tick();
+     * opting out of the goal system keeps that behavior unchanged.
+     */
+    @Override
+    protected boolean usesGoalMovement() {
+        return false;
+    }
+
     public static final EntityDataAccessor<@NotNull Boolean> IS_SERVER_ENTITY =
             SynchedEntityData.defineId(Koi.class, EntityDataSerializers.BOOLEAN);
 

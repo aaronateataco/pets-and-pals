@@ -71,9 +71,12 @@ public abstract class AbstractPet extends TamableAnimal {
         this.setSpeed(0.5f);
         this.copyVanillaAttributes(type);
         // Mob's constructor only calls registerGoals() when the level is a ServerLevel,
-        // and pets only ever exist in the ClientLevel - so register them ourselves.
+        // and pets only ever exist in the ClientLevel - so register goals ourselves.
+        // Deliberately NOT the overridable registerGoals(): several bundled custom mobs
+        // override it with server-only goals (e.g. BreedGoal casts to ServerLevel) that
+        // were dead code before and crash if constructed on the client.
         if (level != null && level.isClientSide() && this.usesGoalMovement()) {
-            this.registerGoals();
+            this.registerDefaultPetGoals();
         }
     }
 
@@ -145,9 +148,7 @@ public abstract class AbstractPet extends TamableAnimal {
         return this.usesGoalMovement() || super.isLocalClientAuthoritative();
     }
 
-    @Override
-    protected void registerGoals() {
-        if (!this.usesGoalMovement()) return;
+    private void registerDefaultPetGoals() {
         this.goalSelector.addGoal(0, new FloatGoal(this));
         this.goalSelector.addGoal(1, new SitWhenOrderedToGoal(this));
         this.goalSelector.addGoal(2, new PetFollowOwnerGoal(this, 1.0, this.stopDistance() + 2.0f, this.stopDistance()));
