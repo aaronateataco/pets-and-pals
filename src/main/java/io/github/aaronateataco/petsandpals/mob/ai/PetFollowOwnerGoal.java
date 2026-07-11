@@ -309,6 +309,9 @@ public class PetFollowOwnerGoal extends Goal {
                 if (!this.pet.level().getBlockState(below).isFaceSturdy(this.pet.level(), below, Direction.UP)) {
                     continue;
                 }
+                if (!this.pet.level().getFluidState(pos).isEmpty()) {
+                    continue;
+                }
                 placed = this.pet.tryRepositionTo(behind.x, pos.getY(), behind.z);
             }
         }
@@ -337,6 +340,9 @@ public class PetFollowOwnerGoal extends Goal {
             BlockPos below = pos.below();
             if (!this.pet.level().getBlockState(below).isFaceSturdy(this.pet.level(), below, Direction.UP)) {
                 continue;
+            }
+            if (!this.pet.level().getFluidState(pos).isEmpty()) {
+                continue; // never underwater
             }
             if (this.pet.tryRepositionTo(point.x, pos.getY(), point.z)) {
                 return true;

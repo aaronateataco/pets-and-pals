@@ -173,7 +173,7 @@ public class MenagerieScreen extends Screen {
 
     /** Maps species ids to Central's pre-built pet instances for the preview. */
     private static Map<String, AbstractPet> previewPets() {
-        if (previewPets == null) {
+        if (previewPets == null || previewPets.isEmpty()) {
             previewPets = new HashMap<>();
             for (Field field : Central.class.getFields()) {
                 if (AbstractPet.class.isAssignableFrom(field.getType())) {
@@ -213,6 +213,7 @@ public class MenagerieScreen extends Screen {
     private void applyFilter() {
         String q = this.query.trim().toLowerCase(Locale.ROOT);
         this.filtered = this.allSpecies.stream()
+                .filter(p -> !p.name().equals("mega_spud"))
                 .filter(p -> this.element == Element.ALL || elementOf(p) == this.element)
                 .filter(p -> q.isEmpty() || p.getDisplayName().getString().toLowerCase(Locale.ROOT).contains(q))
                 .toList();
