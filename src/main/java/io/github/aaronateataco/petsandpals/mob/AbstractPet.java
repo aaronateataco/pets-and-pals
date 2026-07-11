@@ -205,7 +205,8 @@ public abstract class AbstractPet extends TamableAnimal {
             }
 
             // pet raft: when the owner boards a boat, a raft floats alongside for the pet
-            if (!this.perched && this.getOwner() instanceof Player boatOwner
+            if (!this.perched && !this.rafted && !this.orbMode
+                    && this.getOwner() instanceof Player boatOwner
                     && boatOwner.getVehicle() instanceof net.minecraft.world.entity.vehicle.boat.AbstractBoat boat
                     && boatOwner.level() == this.level()) {
                 this.setRafted(true);
