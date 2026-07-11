@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.13.0
+- The raft is now tied to your boat with a real lead - and it sits properly on the water surface (actual fluid height, not a guess)
+- Raft uses the game's own spruce plank texture, so resource packs restyle it automatically; hitbox now matches its flat shape and pets stand right on the deck
+- Sprinting pets now drive in a straight line parallel to you with pre-planned jumps instead of pathfinding - the start and obstacle handling should finally feel solid
+
 ## 0.12.2
 - Fixed the sprint run-alongside only working while staring at your pet: it now reliably arrives in formation whenever you sprint, watched or not
 - Brief sprint interruptions (wall bumps, brushing entities) no longer cancel run-alongside

@@ -146,6 +146,35 @@ public class PetFollowOwnerGoal extends Goal {
             // smooth the speed boost every tick or the pace visibly steps
             this.updateAlongsideBoost();
 
+            // direct steering: while pacing the owner, skip pathfinding entirely and
+            // drive straight at the (moving) formation point - paths to a target moving
+            // at sprint speed rarely completed, which made the whole feature flaky
+            Vec3 steer = this.alongsideAnchor();
+            Vec3 steerLead = new Vec3(this.owner.getDeltaMovement().x, 0.0, this.owner.getDeltaMovement().z).scale(5.0);
+            double steerY = this.owner.getY() + this.pet.followYOffset();
+            this.pet.getMoveControl().setWantedPosition(
+                    steer.x + steerLead.x, steerY, steer.z + steerLead.z,
+                    this.speedModifier * AbstractPet.speedMultiplier.getAsDouble());
+            if (this.pet.followYOffset() <= 0.0F && this.pet.onGround()) {
+                // pre-planned jumps: hop when a block edge is coming up, don't wait to bump it
+                double sdx = steer.x - this.pet.getX();
+                double sdz = steer.z - this.pet.getZ();
+                double len = Math.sqrt(sdx * sdx + sdz * sdz);
+                if (len > 0.01) {
+                    BlockPos ahead = BlockPos.containing(
+                            this.pet.getX() + sdx / len * 0.9,
+                            this.pet.getY() + 0.1,
+                            this.pet.getZ() + sdz / len * 0.9);
+                    boolean blocked = !this.pet.level().getBlockState(ahead)
+                            .getCollisionShape(this.pet.level(), ahead).isEmpty();
+                    boolean headroom = this.pet.level().getBlockState(ahead.above())
+                            .getCollisionShape(this.pet.level(), ahead.above()).isEmpty();
+                    if ((blocked && headroom) || this.pet.horizontalCollision) {
+                        this.pet.getJumpControl().jump();
+                    }
+                }
+            }
+
             Vec3 anchor = this.alongsideAnchor();
             double lagSqr = this.pet.distanceToSqr(anchor.x, anchor.y + this.pet.followYOffset(), anchor.z);
             if (lagSqr > 12.25) {
@@ -185,20 +214,15 @@ public class PetFollowOwnerGoal extends Goal {
 
         double distanceSqr = this.pet.distanceToSqr(this.owner);
         double distance = Math.sqrt(distanceSqr);
-        double boost = Mth.clamp(1.0 + (distance - this.stopDistance) * 0.09, 1.0, MAX_CATCH_UP_BOOST);
-        double targetX = this.owner.getX();
-        double targetZ = this.owner.getZ();
         if (alongside) {
-            Vec3 anchor = this.alongsideAnchor();
-            Vec3 lead = new Vec3(this.owner.getDeltaMovement().x, 0.0, this.owner.getDeltaMovement().z).scale(5.0);
-            targetX = anchor.x + lead.x;
-            targetZ = anchor.z + lead.z;
+            return; // direct steering above already handled movement
         }
+        double boost = Mth.clamp(1.0 + (distance - this.stopDistance) * 0.09, 1.0, MAX_CATCH_UP_BOOST);
         double speed = this.speedModifier * AbstractPet.speedMultiplier.getAsDouble() * boost;
         this.pet.getNavigation().moveTo(
-                targetX,
+                this.owner.getX(),
                 this.owner.getY() + this.pet.followYOffset(),
-                targetZ,
+                this.owner.getZ(),
                 speed
         );
     }
