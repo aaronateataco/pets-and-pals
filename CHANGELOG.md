@@ -1,0 +1,48 @@
+# Changelog
+
+## 0.11.1
+- Releases now include proper changelogs on GitHub and Modrinth
+- Marked as client-side only on Modrinth
+- Internal comment cleanup
+
+## 0.11.0
+- Fixed the Summon button being able to spawn a second pet on servers
+- Sprint entrance now works from any position: a visible pet runs off camera behind you first, then swings back into view
+- Pets react to turns with a slight delay and visibly correct course instead of snapping instantly
+- Menagerie: new Land / Sky / Sea tabs
+- Themed spawn animations for ~25 more species (foxes rise from a berry bush, zombies dig out of coarse dirt, slimes from slime blocks, and more)
+- Flying pets no longer drift high above you - they sink back below ~3.5 blocks over your head
+
+## 0.10.5
+- Pets can no longer be lost: hard 20-block leash plus a watchdog that rescues a pet even if its chunk unloaded
+
+## 0.10.4
+- The ghost star is back as a last resort: if a pet is stuck with nowhere to teleport, it turns into a floating star that glides to you and reforms
+- While sprinting, a stuck pet's star flies in the running position instead of hiding at your hip
+- The sprint entrance timer now runs whether or not the pet is on screen
+
+## 0.10.3
+- Sprint entrance: the pet leaps in from behind the camera at full speed instead of appearing in place
+- If the pet's side is blocked it swaps sides; in tunnels and hallways it runs single file ahead of you
+- Fixed picking a pet in the Menagerie not actually applying until Summon was pressed
+- Every pet now spawns in front of you on solid ground
+- Added a Privacy & Compliance section to the readme
+
+## 0.10.2
+- Major follow fix: pets no longer stutter or give up at gaps and stairs
+- Pets never teleport while you are facing their location, even through walls
+- Lost-pet handling moved out of the follow goal so it can't be reset mid-chase
+
+## 0.10.1
+- Menagerie now shows a live animated preview of the selected pet next to your player at true scale
+- Removed the ghost star in favor of particle + chime repositioning (it returned in 0.10.4 as a fallback)
+- Releases can auto-publish to Modrinth
+
+## 0.10.0
+- New Menagerie screen: searchable catalog of all pets with summon, speed and volume controls
+
+## 0.9.x
+- Real vanilla movement AI for all pets (pathfinding, animations, per-species speeds)
+- Fortnite-style sprint run-alongside and combat shoulder-perch
+- Bee nest spawn animation, pet volume setting, Xaero's Minimap radar icons
+- Renamed to Pets&Pals with a new fox icon

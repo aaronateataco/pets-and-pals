@@ -61,35 +61,19 @@ import java.util.function.DoubleSupplier;
  */
 public abstract class AbstractPet extends TamableAnimal {
 
-    /**
-     * The user-adjustable pet speed multiplier ("Pet Speed" in the config screen).
-     * Wired to the config in {@code Central}; kept as a supplier because this class
-     * lives in the main source set and cannot reference the client config directly.
-     */
+    /** "Pet Speed" config multiplier, wired up in Central (this class can't see the client config). */
     public static DoubleSupplier speedMultiplier = () -> 1.0;
 
-    /**
-     * The user-adjustable pet sound volume ("Pet Volume" in the config screen, 0 = muted).
-     * Applied to every sound the pets play; wired to the config in {@code Central}.
-     */
+    /** "Pet Volume" config value, 0 = muted. */
     public static DoubleSupplier soundVolume = () -> 1.0;
 
-    /**
-     * Whether the game is currently in first-person view; wired to the client camera in
-     * {@code Central}. Used by the sprint run-alongside behavior, which is first-person only.
-     */
+    /** True while in first person, wired up in Central. */
     public static java.util.function.BooleanSupplier firstPersonView = () -> true;
 
-    /**
-     * Spawns a client-side entity into the current ClientLevel; wired in {@code Central}
-     * because this main-source class can't reference client classes directly.
-     */
+    /** Adds an entity to the client level, wired up in Central. */
     public static java.util.function.Consumer<net.minecraft.world.entity.Entity> clientEntitySpawner = e -> {};
 
-    /**
-     * @deprecated Only used by the bundled custom mobs' legacy tick logic; the goal-driven
-     * movement classes no longer touch it.
-     */
+    /** @deprecated only the legacy custom mob tick logic uses this. */
     @Deprecated
     protected int waitingTime = 0;
 
@@ -105,11 +89,9 @@ public abstract class AbstractPet extends TamableAnimal {
         super(type, level);
         this.setSpeed(0.5f);
         this.copyVanillaAttributes(type);
-        // Mob's constructor only calls registerGoals() when the level is a ServerLevel,
-        // and pets only ever exist in the ClientLevel - so register goals ourselves.
-        // Deliberately NOT the overridable registerGoals(): several bundled custom mobs
-        // override it with server-only goals (e.g. BreedGoal casts to ServerLevel) that
-        // were dead code before and crash if constructed on the client.
+        // Mob only calls registerGoals() on ServerLevel, so do it here. Not via the
+        // overridable registerGoals() - some custom mobs override that with server-only
+        // goals (BreedGoal casts to ServerLevel) that crash on the client.
         if (level != null && level.isClientSide() && this.usesGoalMovement()) {
             this.registerDefaultPetGoals();
         }
@@ -122,12 +104,7 @@ public abstract class AbstractPet extends TamableAnimal {
                 .add(Attributes.FLYING_SPEED, 0.4F);
     }
 
-    /**
-     * Pets that copy a vanilla mob (pets-and-pals:wolf, pets-and-pals:cat, ...) should move at
-     * that mob's real speed. Looks up the same-named vanilla entity type and copies its
-     * movement-relevant attribute base values; pets without a vanilla counterpart (duck, racoon,
-     * april fools mobs, ...) keep the defaults from {@link #createAttributes()}.
-     */
+    /** Copies movement speeds from the same-named vanilla mob, if one exists. */
     @SuppressWarnings("unchecked")
     private void copyVanillaAttributes(EntityType<?> type) {
         Identifier id = BuiltInRegistries.ENTITY_TYPE.getKey(type);
@@ -154,30 +131,18 @@ public abstract class AbstractPet extends TamableAnimal {
         }
     }
 
-    /**
-     * Whether this pet's movement is driven by the vanilla goal/navigation system
-     * ({@link GroundPet}, {@link FlyingPet}, {@link SlimeLikePet}). Custom mobs that
-     * define their own bespoke tick logic return {@code false} and are left alone.
-     */
+    /** True for goal/navigation-driven pets; custom mobs with their own tick logic return false. */
     protected boolean usesGoalMovement() {
         return false;
     }
 
-    /**
-     * Pets are client-side only, so vanilla would normally skip all mob AI (goals,
-     * navigation, move/look/jump controls run in {@code serverAiStep}). Returning
-     * {@code true} here is what makes real pathfinding possible on the client.
-     */
+    /** Client-side pets need this true or vanilla skips all their AI. */
     @Override
     public boolean isEffectiveAi() {
         return this.usesGoalMovement() || super.isEffectiveAi();
     }
 
-    /**
-     * Makes {@code canSimulateMovement()} return true, so {@code LivingEntity.aiStep}
-     * actually runs {@code travel()} (real physics from the move/jump controls) for this
-     * client-side entity instead of waiting for server position packets that never come.
-     */
+    /** Lets travel() run for this client-only entity (no server packets are coming). */
     @Override
     protected boolean isLocalClientAuthoritative() {
         return this.usesGoalMovement() || super.isLocalClientAuthoritative();
@@ -193,13 +158,10 @@ public abstract class AbstractPet extends TamableAnimal {
 
     @Override
     public void tick() {
-        // Fortnite-style combat tuck: when the owner readies a weapon or other players /
-        // hostiles are close, the pet automatically glides to its perch behind the owner's
-        // shoulder so it never blocks the crosshair - and hops back down once things calm.
+        // combat tuck: perch behind the shoulder while the owner is fighting
         if (this.usesGoalMovement() && this.level().isClientSide() && this.isAlive() && !this.isPassenger()
                 && !this.orbMode) {
-            // Sprint tracking lives here (not in the follow goal) so it survives the goal
-            // stopping/restarting - otherwise the run-alongside timer kept resetting.
+            // sprint tracking lives here so goal restarts can't reset it
             LivingEntity sprintOwner = this.getOwner();
             this.ownerSprintTicks = (sprintOwner != null && sprintOwner.isSprinting())
                     ? this.ownerSprintTicks + 1 : 0;
@@ -218,24 +180,18 @@ public abstract class AbstractPet extends TamableAnimal {
                 this.setPerched(shouldPerch);
             }
 
-            // Centralized never-lose-your-pet system. Lives here (not in the follow goal)
-            // so goal stops/restarts can't wipe its tracking. Golden rule: the pet NEVER
-            // repositions while the player is facing its location - even occluded, if it's
-            // in your view field it stays put and keeps walking. The moment you look away,
-            // a lost/stuck/far pet quietly moves to a spot inside your view instead.
+            // keep-the-pet-close tracking. Rule: never reposition while the player is
+            // facing the pet's location, even if it's occluded.
             if (!this.perched) {
                 LivingEntity trackedOwner = this.getOwner();
                 if (trackedOwner != null && trackedOwner.level() == this.level()) {
-                    // Flyer ceiling: never hover more than ~3.5 blocks above the owner's
-                    // head - gently sink back down instead of drifting into the sky.
+                    // flyer ceiling: sink back down if too far above the owner
                     if (this.followYOffset() > 0.0F && this.getY() > trackedOwner.getY() + 3.5) {
                         this.setDeltaMovement(this.getDeltaMovement().add(0.0, -0.04, 0.0));
                     }
                     double distSqr = this.distanceToSqr(trackedOwner);
                     if (distSqr > 20.0 * 20.0) {
-                        // Hard cap regardless of view direction: at this range the pet is a
-                        // speck, so pulling it in reads as nothing - and letting it drift
-                        // further risks its chunk unloading (a frozen, unrescuable pet).
+                        // hard leash - past this the pet is a speck and risks chunk unload
                         this.repositionToOwner();
                         this.outOfViewTicks = 0;
                         this.stuckScore = 0;
@@ -261,10 +217,8 @@ public abstract class AbstractPet extends TamableAnimal {
             }
         }
 
-        // Vanilla runs the whole mob AI (goals, navigation, move/look/jump controls) in
-        // serverAiStep, which is hard-gated behind !level().isClientSide() - so for these
-        // client-only pets we drive the same machinery ourselves. Runs before super.tick()
-        // so travel() consumes the freshly computed movement inputs this same tick.
+        // serverAiStep is server-only in vanilla, so drive the AI ourselves.
+        // Runs before super.tick() so travel() sees fresh inputs this tick.
         if (this.usesGoalMovement() && this.level().isClientSide() && this.isAlive()
                 && !this.isPassenger() && !this.perched && !this.orbMode) {
             this.getSensing().tick();
@@ -288,12 +242,7 @@ public abstract class AbstractPet extends TamableAnimal {
         }
     }
 
-    /**
-     * Whether the pet is in "perched" mode (toggled by shift + right-click): instead of
-     * being rigidly mounted on the player, it floats just behind and above the owner's
-     * shoulder and glides after them with a slight lag - backbling-style, so it reads as
-     * a companion hovering along rather than an accessory bolted to the head.
-     */
+    /** Perched = floating behind the owner's shoulder during combat. */
     public boolean isPerched() {
         return this.perched;
     }
@@ -308,10 +257,7 @@ public abstract class AbstractPet extends TamableAnimal {
         }
     }
 
-    /**
-     * How far above the owner's feet this pet aims while following. Zero for ground pets;
-     * flying pets hover near the owner's head instead of hugging the ground.
-     */
+    /** Follow height above the owner's feet; 0 for ground pets. */
     public float followYOffset() {
         return 0.0F;
     }
@@ -321,12 +267,7 @@ public abstract class AbstractPet extends TamableAnimal {
         return this.ownerSprintTicks;
     }
 
-    /**
-     * Ghost form fallback: when the pet is lost AND no valid reposition spot exists
-     * (tight tunnels, solid walls everywhere), it becomes the floating nether star
-     * ({@link PetOrb}) which glides through anything to the owner and turns back into
-     * the pet as soon as there's room. Guarantees the pet can never be stuck.
-     */
+    /** Ghost form: used when there's nowhere valid to reposition (see PetOrb). */
     public boolean isOrbMode() {
         return this.orbMode;
     }
@@ -355,12 +296,7 @@ public abstract class AbstractPet extends TamableAnimal {
         this.snapTo(spot.x, spot.y, spot.z, this.getYRot(), 0.0F);
     }
 
-    /**
-     * Whether the owner is facing the pet's location - a generous 75-degree half-angle
-     * horizontal cone around the head yaw, deliberately ignoring line of sight: if the
-     * player is looking toward the pet (even through a wall or leaves), it must never
-     * blip; they might be able to see the spot.
-     */
+    /** Is the owner facing the pet's location? (75 degree cone, ignores line of sight on purpose.) */
     public boolean ownerInViewCone() {
         LivingEntity owner = this.getOwner();
         if (owner == null) return false;
@@ -371,7 +307,7 @@ public abstract class AbstractPet extends TamableAnimal {
         return new Vec3(view.x, 0.0, view.z).normalize().dot(flat.normalize()) > 0.2588;
     }
 
-    /** Repositions to an exact spot if the pet fits there, with transition effects. */
+    /** Reposition to an exact spot if the pet fits there. */
     public boolean tryRepositionTo(double x, double y, double z) {
         if (!this.fitsAt(this.level(), x, y, z)) return false;
         this.transitionEffects();
@@ -380,11 +316,7 @@ public abstract class AbstractPet extends TamableAnimal {
         return true;
     }
 
-    /**
-     * Repositions the pet to a safe spot inside the owner's field of view, with a small
-     * particle+chime effect at both ends so it reads as intentional, never a raw blip.
-     * Used whenever the pet genuinely can't follow (stuck, far behind, out of sight).
-     */
+    /** Move the pet to a safe spot inside the owner's view, with a small effect. */
     public void repositionToOwner() {
         LivingEntity owner = this.getOwner();
         if (owner == null || !this.level().isClientSide() || owner.level() != this.level()) {
@@ -421,7 +353,7 @@ public abstract class AbstractPet extends TamableAnimal {
                 }
             }
         }
-        // Nowhere to put the pet: become the ghost star and glide there instead.
+        // nowhere to go - ghost form
         this.enterOrbMode();
     }
 
@@ -456,14 +388,9 @@ public abstract class AbstractPet extends TamableAnimal {
         return level.noCollision(this, box);
     }
 
-    /**
-     * Whether the owner looks like they're in (or near) a fight: holding a weapon, another
-     * player within 16 blocks, or a hostile mob within 12.
-     */
+    /** Weapon in hand, players within 16 blocks, or hostiles within 12. */
     private boolean ownerInCombat(Player owner) {
-        // No combat tuck when the owner can't actually fight or be hurt - adventure-mode
-        // lobbies (Hypixel etc.), creative, spectator, invulnerable. Otherwise the pet
-        // would perch permanently the moment other players are around.
+        // skip when the owner can't fight anyway (adventure lobbies, creative, spectator)
         if (owner.isSpectator() || owner.getAbilities().invulnerable || !owner.getAbilities().mayBuild) {
             return false;
         }
@@ -483,10 +410,7 @@ public abstract class AbstractPet extends TamableAnimal {
         return !this.level().getEntitiesOfClass(Monster.class, owner.getBoundingBox().inflate(12.0)).isEmpty();
     }
 
-    /**
-     * The "home" block this pet emerges from in the spawn animation. Defaults are themed
-     * per species below; null skips the animation and the pet just spawns in front of you.
-     */
+    /** Block this pet emerges from in the spawn animation; null = no animation. */
     public @Nullable BlockState spawnDwellingBlock() {
         String path = BuiltInRegistries.ENTITY_TYPE.getKey(this.getType()).getPath();
         net.minecraft.world.level.block.Block block = switch (path) {
@@ -522,8 +446,7 @@ public abstract class AbstractPet extends TamableAnimal {
             return;
         }
 
-        // Anchor just behind and above the owner's shoulder, following the BODY yaw (not the
-        // head) so glancing around doesn't swing the pet, plus a gentle floating bob.
+        // anchor behind the shoulder, tracking body yaw so head turns don't swing it
         float rad = owner.yBodyRot * ((float) Math.PI / 180.0F);
         Vec3 back = new Vec3(Mth.sin(rad), 0.0, -Mth.cos(rad));
         Vec3 right = new Vec3(-Mth.cos(rad), 0.0, -Mth.sin(rad));
@@ -538,10 +461,10 @@ public abstract class AbstractPet extends TamableAnimal {
         Vec3 delta = anchor.subtract(this.position());
         double distance = delta.length();
         if (distance > 6.0) {
-            // Owner teleported/respawned - snap instead of gliding across the world.
+            // owner teleported, just snap
             this.snapTo(anchor.x, anchor.y, anchor.z, owner.yBodyRot, 0.0F);
         } else {
-            // Distance-scaled lerp: trails lazily when close, hurries when the owner sprints.
+            // distance-scaled lerp so it trails lazily and catches up when needed
             double k = Mth.clamp(0.10 + distance * 0.18, 0.10, 0.55);
             Vec3 next = this.position().add(delta.scale(k));
             this.setPos(next.x, next.y, next.z);
@@ -555,10 +478,7 @@ public abstract class AbstractPet extends TamableAnimal {
         this.setXRot(0.0F);
     }
 
-    /**
-     * Clicking a pet must never shove it around: damage is server-side and the server
-     * doesn't know this entity exists, so any client-side hit reaction is pure noise.
-     */
+    /** No knockback - the server doesn't know this entity exists. */
     @Override
     public void knockback(double strength, double x, double z, net.minecraft.world.damagesource.DamageSource source, float power) {
     }
@@ -611,9 +531,7 @@ public abstract class AbstractPet extends TamableAnimal {
             return InteractionResult.SUCCESS;
         }
 
-        // Legacy pickup for the bespoke custom mobs (duck, racoon, ...). Goal-driven pets
-        // perch automatically during combat instead (see ownerInCombat), so shift+click
-        // does nothing special for them.
+        // legacy shift+click pickup for the custom mobs; goal pets perch automatically
         if (this.isTame() && itemStack.isEmpty() && player.isShiftKeyDown() && !this.usesGoalMovement()) {
             if (!this.isPassenger()) {
                 this.startRiding(player);
@@ -680,11 +598,7 @@ public abstract class AbstractPet extends TamableAnimal {
         this.setCustomName(Component.literal(string));
     }
 
-    /**
-     * @deprecated Pets no longer wander away from an idle owner; movement is handled by the
-     * goal system ({@link PetFollowOwnerGoal}). Kept as a no-op because the bundled custom
-     * mobs (duck, racoon, koi, ...) still call it from their bespoke tick logic.
-     */
+    /** @deprecated no-op, kept because the custom mobs still call it. */
     @Deprecated
     public void wander() {
     }

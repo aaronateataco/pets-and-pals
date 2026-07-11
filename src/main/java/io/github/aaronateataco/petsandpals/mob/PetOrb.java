@@ -21,11 +21,8 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * The pet's "ghost form", Fortnite-sidekick style: when the pet can't physically follow
- * (stuck on stairs, no path, left too far behind), it transforms into this floating,
- * translucent spinning nether star that glides through anything to the owner's side and
- * carries the pet's position. As soon as there's a valid spot near the owner to stand
- * (or hover), it transforms back into the pet with a chime and a puff of particles.
+ * The pet's ghost form: a floating nether star that glides through anything back to the
+ * owner and turns back into the pet once there's room. Used when the pet can't follow.
  */
 public class PetOrb extends Entity {
 
@@ -53,14 +50,12 @@ public class PetOrb extends Entity {
         }
         LivingEntity owner = this.pet.getOwner();
         if (owner == null || !owner.isAlive() || owner.isRemoved() || owner.level() != this.level()) {
-            // Owner gone: drop the pet back where the orb is and bail out.
+            // owner gone, drop the pet here
             this.materializeAt(this.position());
             return;
         }
 
-        // Glide through anything - that's the whole point of the ghost form. Normally it
-        // floats at the owner's hip; while the owner sprints in first person it takes the
-        // pet's place in the run-alongside formation (front-side, on screen) instead.
+        // floats at the owner's hip normally, or in the run-alongside spot while sprinting
         double bob = Math.sin(this.tickCount * 0.15) * 0.08;
         Vec3 anchor;
         if (owner.isSprinting() && AbstractPet.firstPersonView.getAsBoolean()) {
@@ -85,17 +80,17 @@ public class PetOrb extends Entity {
             this.setPos(next.x, next.y, next.z);
         }
 
-        // The orb IS the pet's location while in ghost form (nameplate and all).
+        // the orb carries the pet's position while in ghost form
         this.pet.setPos(this.getX(), this.getY() - this.pet.getBbHeight() * 0.5, this.getZ());
         this.pet.setDeltaMovement(Vec3.ZERO);
 
-        // Small sparkle trail so the (candle-sized) star is easy to spot.
+        // sparkle trail so the little star is easy to spot
         if (this.tickCount % 4 == 0) {
             this.level().addParticle(ParticleTypes.END_ROD,
                     this.getX(), this.getY() + 0.25, this.getZ(), 0.0, 0.0, 0.0);
         }
 
-        // Once we're with the owner, look for a spot to become the pet again.
+        // near the owner: look for a spot to reform
         if (this.tickCount > 15 && this.tickCount % 8 == 0 && distance < 5.0) {
             Vec3 spot = this.findMaterializeSpot(owner);
             if (spot != null) {
@@ -122,10 +117,7 @@ public class PetOrb extends Entity {
         this.discard();
     }
 
-    /**
-     * A spot near the owner where the pet can exist again: hover space for flyers,
-     * standable ground for walkers.
-     */
+    /** Hover space for flyers, standable ground for walkers. */
     private Vec3 findMaterializeSpot(LivingEntity owner) {
         Level level = this.level();
         for (int attempt = 0; attempt < 8; attempt++) {

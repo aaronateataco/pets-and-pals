@@ -7,10 +7,8 @@ import net.minecraft.world.entity.player.Player;
 import java.util.EnumSet;
 
 /**
- * Client-safe replacement for the vanilla {@code LookAtPlayerGoal}: identical behavior
- * (occasionally watch a nearby player for a few seconds), but without the
- * {@code Goal.getServerLevel} call that crashes with a ClassCastException when the goal
- * runs in a ClientLevel - which is the only place pets ever exist.
+ * Copy of vanilla LookAtPlayerGoal without the Goal.getServerLevel call, which
+ * crashes when the goal runs in a ClientLevel.
  */
 public class PetLookAtPlayerGoal extends Goal {
 
