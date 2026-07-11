@@ -871,6 +871,15 @@ public class Central implements ClientModInitializer {
         AbstractPet.speedMultiplier = () -> CONFIG.petSpeed;
         AbstractPet.soundVolume = () -> CONFIG.petVolume;
         if (CONFIG.raftWood == null) CONFIG.raftWood = "spruce";
+        // cushions are a backport here - bare deck by default, unlike 26.3+
+        if (CONFIG.cushionColor == null) CONFIG.cushionColor = "none";
+        AbstractPet.cushionColor = () -> {
+            if ("none".equals(CONFIG.cushionColor)) return io.github.aaronateataco.petsandpals.mob.PetRaftBlock.NO_CUSHION;
+            for (int i = 0; i < io.github.aaronateataco.petsandpals.mob.PetRaftBlock.DYES.length; i++) {
+                if (io.github.aaronateataco.petsandpals.mob.PetRaftBlock.DYES[i].equals(CONFIG.cushionColor)) return i;
+            }
+            return 5;
+        };
         AbstractPet.raftStyle = () -> {
             for (int i = 0; i < io.github.aaronateataco.petsandpals.mob.PetRaftBlock.WOODS.length; i++) {
                 if (io.github.aaronateataco.petsandpals.mob.PetRaftBlock.WOODS[i].equals(CONFIG.raftWood)) return i;
@@ -880,7 +889,7 @@ public class Central implements ClientModInitializer {
         AbstractPet.firstPersonView = () -> Minecraft.getInstance().options.getCameraType().isFirstPerson();
         AbstractPet.clientEntitySpawner = entity -> {
             if (Minecraft.getInstance().level != null) {
-                Minecraft.getInstance().level.addEntity(entity);
+                Utils.spawnClientEntity(Minecraft.getInstance().level, entity);
             }
         };
 
