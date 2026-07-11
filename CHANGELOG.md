@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.14.8
+- Fixed the endless spawn-animation loop (and disappearing rafts/orbs): every client-side entity was being created with the same internal id, so each new one silently deleted the last. Pets, dwellings, rafts and orbs now get their own ids
+- Menagerie: hover the raft or cushion button to see a live spinning preview of your raft
+- New "Cushion: None" option for a bare deck, and poplar as a 13th raft wood
+- The cushion color you pick now actually applies to the raft (it was stuck on red)
+- Stairs no longer trip sprinting pets - shallow drops read as slopes, not cliffs
+- Pits deeper than 3 blocks now count as cliffs; pets stop at the edge instead of diving in
+- If the pet can't catch up mid-sprint it now re-enters from behind the camera instead of lagging behind until you stop and sprint again
+
 ## 0.14.2 (26.3 snapshot)
 - Cushion colors! All 16 dyes on the Mk2 raft, with a favorite-cushion picker in the Menagerie - real snapshot cushion textures, so packs restyle them
 - Fixed the cushion texture path (the snapshot ships cushions as entities; their textures are now merged into the block atlas)

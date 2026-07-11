@@ -873,6 +873,7 @@ public class Central implements ClientModInitializer {
         if (CONFIG.raftWood == null) CONFIG.raftWood = "spruce";
         if (CONFIG.cushionColor == null) CONFIG.cushionColor = "red";
         AbstractPet.cushionColor = () -> {
+            if ("none".equals(CONFIG.cushionColor)) return io.github.aaronateataco.petsandpals.mob.PetRaftBlock.NO_CUSHION;
             for (int i = 0; i < io.github.aaronateataco.petsandpals.mob.PetRaftBlock.DYES.length; i++) {
                 if (io.github.aaronateataco.petsandpals.mob.PetRaftBlock.DYES[i].equals(CONFIG.cushionColor)) return i;
             }
@@ -887,7 +888,7 @@ public class Central implements ClientModInitializer {
         AbstractPet.firstPersonView = () -> Minecraft.getInstance().options.getCameraType().isFirstPerson();
         AbstractPet.clientEntitySpawner = entity -> {
             if (Minecraft.getInstance().level != null) {
-                Minecraft.getInstance().level.addEntity(entity);
+                Utils.spawnClientEntity(Minecraft.getInstance().level, entity);
             }
         };
 
