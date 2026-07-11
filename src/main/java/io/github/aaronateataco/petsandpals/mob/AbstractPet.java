@@ -73,6 +73,9 @@ public abstract class AbstractPet extends TamableAnimal {
     /** Raft wood style index (see PetRaftBlock.WOODS), wired up in Central. */
     public static java.util.function.IntSupplier raftStyle = () -> 1;
 
+    /** Favorite cushion dye index (see PetRaftBlock.DYES), wired up in Central. */
+    public static java.util.function.IntSupplier cushionColor = () -> 5;
+
     /** Adds an entity to the client level, wired up in Central. */
     public static java.util.function.Consumer<net.minecraft.world.entity.Entity> clientEntitySpawner = e -> {};
 

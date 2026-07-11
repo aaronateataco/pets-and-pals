@@ -157,6 +157,13 @@ public class MenagerieScreen extends Screen {
             CONFIG.raftWood = woods[(i + 1) % woods.length];
             b.setMessage(this.raftWoodLabel());
         }).bounds(panelX, y, PANEL_WIDTH, 20).build());
+        y += 24;
+        this.addRenderableWidget(Button.builder(this.cushionLabel(), b -> {
+            String[] dyes = io.github.aaronateataco.petsandpals.mob.PetRaftBlock.DYES;
+            int i = java.util.Arrays.asList(dyes).indexOf(CONFIG.cushionColor);
+            CONFIG.cushionColor = dyes[(i + 1) % dyes.length];
+            b.setMessage(this.cushionLabel());
+        }).bounds(panelX, y, PANEL_WIDTH, 20).build());
         y += 28;
         this.addRenderableWidget(Button.builder(Component.literal("Advanced settings..."), b -> {
             if (this.minecraft != null) {
@@ -204,6 +211,12 @@ public class MenagerieScreen extends Screen {
         String wood = CONFIG.raftWood == null ? "spruce" : CONFIG.raftWood;
         String pretty = wood.replace('_', ' ');
         return Component.literal("Raft: " + Character.toUpperCase(pretty.charAt(0)) + pretty.substring(1));
+    }
+
+    private Component cushionLabel() {
+        String dye = CONFIG.cushionColor == null ? "red" : CONFIG.cushionColor;
+        String pretty = dye.replace('_', ' ');
+        return Component.literal("Cushion: " + Character.toUpperCase(pretty.charAt(0)) + pretty.substring(1));
     }
 
     private Component petToggleLabel() {

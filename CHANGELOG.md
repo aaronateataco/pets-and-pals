@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.14.2 (26.3 snapshot only)
+- Cushion colors! All 16 dyes on the Mk2 raft, with a favorite-cushion picker in the Menagerie - real snapshot cushion textures, so packs restyle them
+- Fixed the cushion texture path (the snapshot ships cushions as entities; their textures are now merged into the block atlas)
+
 ## 0.14.0
 - New: 26.3-snapshot-3 version! The raft upgrades to the Mk2 model with the new cushion on deck (all 12 wood styles included)
 - Raft wood is now customizable: 12 plank styles (oak through warped) selectable in the Menagerie, using the game's own textures so resource packs restyle them

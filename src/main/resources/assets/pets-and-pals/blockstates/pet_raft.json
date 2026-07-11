@@ -1,40 +1,580 @@
 {
   "variants": {
-    "style=0": {
-      "model": "pets-and-pals:block/pet_raft_oak"
+    "cushion=0,style=0": {
+      "model": "pets-and-pals:block/pet_raft_oak_white"
     },
-    "style=1": {
-      "model": "pets-and-pals:block/pet_raft_spruce"
+    "cushion=1,style=0": {
+      "model": "pets-and-pals:block/pet_raft_oak_light_gray"
     },
-    "style=2": {
-      "model": "pets-and-pals:block/pet_raft_birch"
+    "cushion=2,style=0": {
+      "model": "pets-and-pals:block/pet_raft_oak_gray"
     },
-    "style=3": {
-      "model": "pets-and-pals:block/pet_raft_jungle"
+    "cushion=3,style=0": {
+      "model": "pets-and-pals:block/pet_raft_oak_black"
     },
-    "style=4": {
-      "model": "pets-and-pals:block/pet_raft_acacia"
+    "cushion=4,style=0": {
+      "model": "pets-and-pals:block/pet_raft_oak_brown"
     },
-    "style=5": {
-      "model": "pets-and-pals:block/pet_raft_dark_oak"
+    "cushion=5,style=0": {
+      "model": "pets-and-pals:block/pet_raft_oak_red"
     },
-    "style=6": {
-      "model": "pets-and-pals:block/pet_raft_mangrove"
+    "cushion=6,style=0": {
+      "model": "pets-and-pals:block/pet_raft_oak_orange"
     },
-    "style=7": {
-      "model": "pets-and-pals:block/pet_raft_cherry"
+    "cushion=7,style=0": {
+      "model": "pets-and-pals:block/pet_raft_oak_yellow"
     },
-    "style=8": {
-      "model": "pets-and-pals:block/pet_raft_pale_oak"
+    "cushion=8,style=0": {
+      "model": "pets-and-pals:block/pet_raft_oak_lime"
     },
-    "style=9": {
-      "model": "pets-and-pals:block/pet_raft_bamboo"
+    "cushion=9,style=0": {
+      "model": "pets-and-pals:block/pet_raft_oak_green"
     },
-    "style=10": {
-      "model": "pets-and-pals:block/pet_raft_crimson"
+    "cushion=10,style=0": {
+      "model": "pets-and-pals:block/pet_raft_oak_cyan"
     },
-    "style=11": {
-      "model": "pets-and-pals:block/pet_raft_warped"
+    "cushion=11,style=0": {
+      "model": "pets-and-pals:block/pet_raft_oak_light_blue"
+    },
+    "cushion=12,style=0": {
+      "model": "pets-and-pals:block/pet_raft_oak_blue"
+    },
+    "cushion=13,style=0": {
+      "model": "pets-and-pals:block/pet_raft_oak_purple"
+    },
+    "cushion=14,style=0": {
+      "model": "pets-and-pals:block/pet_raft_oak_magenta"
+    },
+    "cushion=15,style=0": {
+      "model": "pets-and-pals:block/pet_raft_oak_pink"
+    },
+    "cushion=0,style=1": {
+      "model": "pets-and-pals:block/pet_raft_spruce_white"
+    },
+    "cushion=1,style=1": {
+      "model": "pets-and-pals:block/pet_raft_spruce_light_gray"
+    },
+    "cushion=2,style=1": {
+      "model": "pets-and-pals:block/pet_raft_spruce_gray"
+    },
+    "cushion=3,style=1": {
+      "model": "pets-and-pals:block/pet_raft_spruce_black"
+    },
+    "cushion=4,style=1": {
+      "model": "pets-and-pals:block/pet_raft_spruce_brown"
+    },
+    "cushion=5,style=1": {
+      "model": "pets-and-pals:block/pet_raft_spruce_red"
+    },
+    "cushion=6,style=1": {
+      "model": "pets-and-pals:block/pet_raft_spruce_orange"
+    },
+    "cushion=7,style=1": {
+      "model": "pets-and-pals:block/pet_raft_spruce_yellow"
+    },
+    "cushion=8,style=1": {
+      "model": "pets-and-pals:block/pet_raft_spruce_lime"
+    },
+    "cushion=9,style=1": {
+      "model": "pets-and-pals:block/pet_raft_spruce_green"
+    },
+    "cushion=10,style=1": {
+      "model": "pets-and-pals:block/pet_raft_spruce_cyan"
+    },
+    "cushion=11,style=1": {
+      "model": "pets-and-pals:block/pet_raft_spruce_light_blue"
+    },
+    "cushion=12,style=1": {
+      "model": "pets-and-pals:block/pet_raft_spruce_blue"
+    },
+    "cushion=13,style=1": {
+      "model": "pets-and-pals:block/pet_raft_spruce_purple"
+    },
+    "cushion=14,style=1": {
+      "model": "pets-and-pals:block/pet_raft_spruce_magenta"
+    },
+    "cushion=15,style=1": {
+      "model": "pets-and-pals:block/pet_raft_spruce_pink"
+    },
+    "cushion=0,style=2": {
+      "model": "pets-and-pals:block/pet_raft_birch_white"
+    },
+    "cushion=1,style=2": {
+      "model": "pets-and-pals:block/pet_raft_birch_light_gray"
+    },
+    "cushion=2,style=2": {
+      "model": "pets-and-pals:block/pet_raft_birch_gray"
+    },
+    "cushion=3,style=2": {
+      "model": "pets-and-pals:block/pet_raft_birch_black"
+    },
+    "cushion=4,style=2": {
+      "model": "pets-and-pals:block/pet_raft_birch_brown"
+    },
+    "cushion=5,style=2": {
+      "model": "pets-and-pals:block/pet_raft_birch_red"
+    },
+    "cushion=6,style=2": {
+      "model": "pets-and-pals:block/pet_raft_birch_orange"
+    },
+    "cushion=7,style=2": {
+      "model": "pets-and-pals:block/pet_raft_birch_yellow"
+    },
+    "cushion=8,style=2": {
+      "model": "pets-and-pals:block/pet_raft_birch_lime"
+    },
+    "cushion=9,style=2": {
+      "model": "pets-and-pals:block/pet_raft_birch_green"
+    },
+    "cushion=10,style=2": {
+      "model": "pets-and-pals:block/pet_raft_birch_cyan"
+    },
+    "cushion=11,style=2": {
+      "model": "pets-and-pals:block/pet_raft_birch_light_blue"
+    },
+    "cushion=12,style=2": {
+      "model": "pets-and-pals:block/pet_raft_birch_blue"
+    },
+    "cushion=13,style=2": {
+      "model": "pets-and-pals:block/pet_raft_birch_purple"
+    },
+    "cushion=14,style=2": {
+      "model": "pets-and-pals:block/pet_raft_birch_magenta"
+    },
+    "cushion=15,style=2": {
+      "model": "pets-and-pals:block/pet_raft_birch_pink"
+    },
+    "cushion=0,style=3": {
+      "model": "pets-and-pals:block/pet_raft_jungle_white"
+    },
+    "cushion=1,style=3": {
+      "model": "pets-and-pals:block/pet_raft_jungle_light_gray"
+    },
+    "cushion=2,style=3": {
+      "model": "pets-and-pals:block/pet_raft_jungle_gray"
+    },
+    "cushion=3,style=3": {
+      "model": "pets-and-pals:block/pet_raft_jungle_black"
+    },
+    "cushion=4,style=3": {
+      "model": "pets-and-pals:block/pet_raft_jungle_brown"
+    },
+    "cushion=5,style=3": {
+      "model": "pets-and-pals:block/pet_raft_jungle_red"
+    },
+    "cushion=6,style=3": {
+      "model": "pets-and-pals:block/pet_raft_jungle_orange"
+    },
+    "cushion=7,style=3": {
+      "model": "pets-and-pals:block/pet_raft_jungle_yellow"
+    },
+    "cushion=8,style=3": {
+      "model": "pets-and-pals:block/pet_raft_jungle_lime"
+    },
+    "cushion=9,style=3": {
+      "model": "pets-and-pals:block/pet_raft_jungle_green"
+    },
+    "cushion=10,style=3": {
+      "model": "pets-and-pals:block/pet_raft_jungle_cyan"
+    },
+    "cushion=11,style=3": {
+      "model": "pets-and-pals:block/pet_raft_jungle_light_blue"
+    },
+    "cushion=12,style=3": {
+      "model": "pets-and-pals:block/pet_raft_jungle_blue"
+    },
+    "cushion=13,style=3": {
+      "model": "pets-and-pals:block/pet_raft_jungle_purple"
+    },
+    "cushion=14,style=3": {
+      "model": "pets-and-pals:block/pet_raft_jungle_magenta"
+    },
+    "cushion=15,style=3": {
+      "model": "pets-and-pals:block/pet_raft_jungle_pink"
+    },
+    "cushion=0,style=4": {
+      "model": "pets-and-pals:block/pet_raft_acacia_white"
+    },
+    "cushion=1,style=4": {
+      "model": "pets-and-pals:block/pet_raft_acacia_light_gray"
+    },
+    "cushion=2,style=4": {
+      "model": "pets-and-pals:block/pet_raft_acacia_gray"
+    },
+    "cushion=3,style=4": {
+      "model": "pets-and-pals:block/pet_raft_acacia_black"
+    },
+    "cushion=4,style=4": {
+      "model": "pets-and-pals:block/pet_raft_acacia_brown"
+    },
+    "cushion=5,style=4": {
+      "model": "pets-and-pals:block/pet_raft_acacia_red"
+    },
+    "cushion=6,style=4": {
+      "model": "pets-and-pals:block/pet_raft_acacia_orange"
+    },
+    "cushion=7,style=4": {
+      "model": "pets-and-pals:block/pet_raft_acacia_yellow"
+    },
+    "cushion=8,style=4": {
+      "model": "pets-and-pals:block/pet_raft_acacia_lime"
+    },
+    "cushion=9,style=4": {
+      "model": "pets-and-pals:block/pet_raft_acacia_green"
+    },
+    "cushion=10,style=4": {
+      "model": "pets-and-pals:block/pet_raft_acacia_cyan"
+    },
+    "cushion=11,style=4": {
+      "model": "pets-and-pals:block/pet_raft_acacia_light_blue"
+    },
+    "cushion=12,style=4": {
+      "model": "pets-and-pals:block/pet_raft_acacia_blue"
+    },
+    "cushion=13,style=4": {
+      "model": "pets-and-pals:block/pet_raft_acacia_purple"
+    },
+    "cushion=14,style=4": {
+      "model": "pets-and-pals:block/pet_raft_acacia_magenta"
+    },
+    "cushion=15,style=4": {
+      "model": "pets-and-pals:block/pet_raft_acacia_pink"
+    },
+    "cushion=0,style=5": {
+      "model": "pets-and-pals:block/pet_raft_dark_oak_white"
+    },
+    "cushion=1,style=5": {
+      "model": "pets-and-pals:block/pet_raft_dark_oak_light_gray"
+    },
+    "cushion=2,style=5": {
+      "model": "pets-and-pals:block/pet_raft_dark_oak_gray"
+    },
+    "cushion=3,style=5": {
+      "model": "pets-and-pals:block/pet_raft_dark_oak_black"
+    },
+    "cushion=4,style=5": {
+      "model": "pets-and-pals:block/pet_raft_dark_oak_brown"
+    },
+    "cushion=5,style=5": {
+      "model": "pets-and-pals:block/pet_raft_dark_oak_red"
+    },
+    "cushion=6,style=5": {
+      "model": "pets-and-pals:block/pet_raft_dark_oak_orange"
+    },
+    "cushion=7,style=5": {
+      "model": "pets-and-pals:block/pet_raft_dark_oak_yellow"
+    },
+    "cushion=8,style=5": {
+      "model": "pets-and-pals:block/pet_raft_dark_oak_lime"
+    },
+    "cushion=9,style=5": {
+      "model": "pets-and-pals:block/pet_raft_dark_oak_green"
+    },
+    "cushion=10,style=5": {
+      "model": "pets-and-pals:block/pet_raft_dark_oak_cyan"
+    },
+    "cushion=11,style=5": {
+      "model": "pets-and-pals:block/pet_raft_dark_oak_light_blue"
+    },
+    "cushion=12,style=5": {
+      "model": "pets-and-pals:block/pet_raft_dark_oak_blue"
+    },
+    "cushion=13,style=5": {
+      "model": "pets-and-pals:block/pet_raft_dark_oak_purple"
+    },
+    "cushion=14,style=5": {
+      "model": "pets-and-pals:block/pet_raft_dark_oak_magenta"
+    },
+    "cushion=15,style=5": {
+      "model": "pets-and-pals:block/pet_raft_dark_oak_pink"
+    },
+    "cushion=0,style=6": {
+      "model": "pets-and-pals:block/pet_raft_mangrove_white"
+    },
+    "cushion=1,style=6": {
+      "model": "pets-and-pals:block/pet_raft_mangrove_light_gray"
+    },
+    "cushion=2,style=6": {
+      "model": "pets-and-pals:block/pet_raft_mangrove_gray"
+    },
+    "cushion=3,style=6": {
+      "model": "pets-and-pals:block/pet_raft_mangrove_black"
+    },
+    "cushion=4,style=6": {
+      "model": "pets-and-pals:block/pet_raft_mangrove_brown"
+    },
+    "cushion=5,style=6": {
+      "model": "pets-and-pals:block/pet_raft_mangrove_red"
+    },
+    "cushion=6,style=6": {
+      "model": "pets-and-pals:block/pet_raft_mangrove_orange"
+    },
+    "cushion=7,style=6": {
+      "model": "pets-and-pals:block/pet_raft_mangrove_yellow"
+    },
+    "cushion=8,style=6": {
+      "model": "pets-and-pals:block/pet_raft_mangrove_lime"
+    },
+    "cushion=9,style=6": {
+      "model": "pets-and-pals:block/pet_raft_mangrove_green"
+    },
+    "cushion=10,style=6": {
+      "model": "pets-and-pals:block/pet_raft_mangrove_cyan"
+    },
+    "cushion=11,style=6": {
+      "model": "pets-and-pals:block/pet_raft_mangrove_light_blue"
+    },
+    "cushion=12,style=6": {
+      "model": "pets-and-pals:block/pet_raft_mangrove_blue"
+    },
+    "cushion=13,style=6": {
+      "model": "pets-and-pals:block/pet_raft_mangrove_purple"
+    },
+    "cushion=14,style=6": {
+      "model": "pets-and-pals:block/pet_raft_mangrove_magenta"
+    },
+    "cushion=15,style=6": {
+      "model": "pets-and-pals:block/pet_raft_mangrove_pink"
+    },
+    "cushion=0,style=7": {
+      "model": "pets-and-pals:block/pet_raft_cherry_white"
+    },
+    "cushion=1,style=7": {
+      "model": "pets-and-pals:block/pet_raft_cherry_light_gray"
+    },
+    "cushion=2,style=7": {
+      "model": "pets-and-pals:block/pet_raft_cherry_gray"
+    },
+    "cushion=3,style=7": {
+      "model": "pets-and-pals:block/pet_raft_cherry_black"
+    },
+    "cushion=4,style=7": {
+      "model": "pets-and-pals:block/pet_raft_cherry_brown"
+    },
+    "cushion=5,style=7": {
+      "model": "pets-and-pals:block/pet_raft_cherry_red"
+    },
+    "cushion=6,style=7": {
+      "model": "pets-and-pals:block/pet_raft_cherry_orange"
+    },
+    "cushion=7,style=7": {
+      "model": "pets-and-pals:block/pet_raft_cherry_yellow"
+    },
+    "cushion=8,style=7": {
+      "model": "pets-and-pals:block/pet_raft_cherry_lime"
+    },
+    "cushion=9,style=7": {
+      "model": "pets-and-pals:block/pet_raft_cherry_green"
+    },
+    "cushion=10,style=7": {
+      "model": "pets-and-pals:block/pet_raft_cherry_cyan"
+    },
+    "cushion=11,style=7": {
+      "model": "pets-and-pals:block/pet_raft_cherry_light_blue"
+    },
+    "cushion=12,style=7": {
+      "model": "pets-and-pals:block/pet_raft_cherry_blue"
+    },
+    "cushion=13,style=7": {
+      "model": "pets-and-pals:block/pet_raft_cherry_purple"
+    },
+    "cushion=14,style=7": {
+      "model": "pets-and-pals:block/pet_raft_cherry_magenta"
+    },
+    "cushion=15,style=7": {
+      "model": "pets-and-pals:block/pet_raft_cherry_pink"
+    },
+    "cushion=0,style=8": {
+      "model": "pets-and-pals:block/pet_raft_pale_oak_white"
+    },
+    "cushion=1,style=8": {
+      "model": "pets-and-pals:block/pet_raft_pale_oak_light_gray"
+    },
+    "cushion=2,style=8": {
+      "model": "pets-and-pals:block/pet_raft_pale_oak_gray"
+    },
+    "cushion=3,style=8": {
+      "model": "pets-and-pals:block/pet_raft_pale_oak_black"
+    },
+    "cushion=4,style=8": {
+      "model": "pets-and-pals:block/pet_raft_pale_oak_brown"
+    },
+    "cushion=5,style=8": {
+      "model": "pets-and-pals:block/pet_raft_pale_oak_red"
+    },
+    "cushion=6,style=8": {
+      "model": "pets-and-pals:block/pet_raft_pale_oak_orange"
+    },
+    "cushion=7,style=8": {
+      "model": "pets-and-pals:block/pet_raft_pale_oak_yellow"
+    },
+    "cushion=8,style=8": {
+      "model": "pets-and-pals:block/pet_raft_pale_oak_lime"
+    },
+    "cushion=9,style=8": {
+      "model": "pets-and-pals:block/pet_raft_pale_oak_green"
+    },
+    "cushion=10,style=8": {
+      "model": "pets-and-pals:block/pet_raft_pale_oak_cyan"
+    },
+    "cushion=11,style=8": {
+      "model": "pets-and-pals:block/pet_raft_pale_oak_light_blue"
+    },
+    "cushion=12,style=8": {
+      "model": "pets-and-pals:block/pet_raft_pale_oak_blue"
+    },
+    "cushion=13,style=8": {
+      "model": "pets-and-pals:block/pet_raft_pale_oak_purple"
+    },
+    "cushion=14,style=8": {
+      "model": "pets-and-pals:block/pet_raft_pale_oak_magenta"
+    },
+    "cushion=15,style=8": {
+      "model": "pets-and-pals:block/pet_raft_pale_oak_pink"
+    },
+    "cushion=0,style=9": {
+      "model": "pets-and-pals:block/pet_raft_bamboo_white"
+    },
+    "cushion=1,style=9": {
+      "model": "pets-and-pals:block/pet_raft_bamboo_light_gray"
+    },
+    "cushion=2,style=9": {
+      "model": "pets-and-pals:block/pet_raft_bamboo_gray"
+    },
+    "cushion=3,style=9": {
+      "model": "pets-and-pals:block/pet_raft_bamboo_black"
+    },
+    "cushion=4,style=9": {
+      "model": "pets-and-pals:block/pet_raft_bamboo_brown"
+    },
+    "cushion=5,style=9": {
+      "model": "pets-and-pals:block/pet_raft_bamboo_red"
+    },
+    "cushion=6,style=9": {
+      "model": "pets-and-pals:block/pet_raft_bamboo_orange"
+    },
+    "cushion=7,style=9": {
+      "model": "pets-and-pals:block/pet_raft_bamboo_yellow"
+    },
+    "cushion=8,style=9": {
+      "model": "pets-and-pals:block/pet_raft_bamboo_lime"
+    },
+    "cushion=9,style=9": {
+      "model": "pets-and-pals:block/pet_raft_bamboo_green"
+    },
+    "cushion=10,style=9": {
+      "model": "pets-and-pals:block/pet_raft_bamboo_cyan"
+    },
+    "cushion=11,style=9": {
+      "model": "pets-and-pals:block/pet_raft_bamboo_light_blue"
+    },
+    "cushion=12,style=9": {
+      "model": "pets-and-pals:block/pet_raft_bamboo_blue"
+    },
+    "cushion=13,style=9": {
+      "model": "pets-and-pals:block/pet_raft_bamboo_purple"
+    },
+    "cushion=14,style=9": {
+      "model": "pets-and-pals:block/pet_raft_bamboo_magenta"
+    },
+    "cushion=15,style=9": {
+      "model": "pets-and-pals:block/pet_raft_bamboo_pink"
+    },
+    "cushion=0,style=10": {
+      "model": "pets-and-pals:block/pet_raft_crimson_white"
+    },
+    "cushion=1,style=10": {
+      "model": "pets-and-pals:block/pet_raft_crimson_light_gray"
+    },
+    "cushion=2,style=10": {
+      "model": "pets-and-pals:block/pet_raft_crimson_gray"
+    },
+    "cushion=3,style=10": {
+      "model": "pets-and-pals:block/pet_raft_crimson_black"
+    },
+    "cushion=4,style=10": {
+      "model": "pets-and-pals:block/pet_raft_crimson_brown"
+    },
+    "cushion=5,style=10": {
+      "model": "pets-and-pals:block/pet_raft_crimson_red"
+    },
+    "cushion=6,style=10": {
+      "model": "pets-and-pals:block/pet_raft_crimson_orange"
+    },
+    "cushion=7,style=10": {
+      "model": "pets-and-pals:block/pet_raft_crimson_yellow"
+    },
+    "cushion=8,style=10": {
+      "model": "pets-and-pals:block/pet_raft_crimson_lime"
+    },
+    "cushion=9,style=10": {
+      "model": "pets-and-pals:block/pet_raft_crimson_green"
+    },
+    "cushion=10,style=10": {
+      "model": "pets-and-pals:block/pet_raft_crimson_cyan"
+    },
+    "cushion=11,style=10": {
+      "model": "pets-and-pals:block/pet_raft_crimson_light_blue"
+    },
+    "cushion=12,style=10": {
+      "model": "pets-and-pals:block/pet_raft_crimson_blue"
+    },
+    "cushion=13,style=10": {
+      "model": "pets-and-pals:block/pet_raft_crimson_purple"
+    },
+    "cushion=14,style=10": {
+      "model": "pets-and-pals:block/pet_raft_crimson_magenta"
+    },
+    "cushion=15,style=10": {
+      "model": "pets-and-pals:block/pet_raft_crimson_pink"
+    },
+    "cushion=0,style=11": {
+      "model": "pets-and-pals:block/pet_raft_warped_white"
+    },
+    "cushion=1,style=11": {
+      "model": "pets-and-pals:block/pet_raft_warped_light_gray"
+    },
+    "cushion=2,style=11": {
+      "model": "pets-and-pals:block/pet_raft_warped_gray"
+    },
+    "cushion=3,style=11": {
+      "model": "pets-and-pals:block/pet_raft_warped_black"
+    },
+    "cushion=4,style=11": {
+      "model": "pets-and-pals:block/pet_raft_warped_brown"
+    },
+    "cushion=5,style=11": {
+      "model": "pets-and-pals:block/pet_raft_warped_red"
+    },
+    "cushion=6,style=11": {
+      "model": "pets-and-pals:block/pet_raft_warped_orange"
+    },
+    "cushion=7,style=11": {
+      "model": "pets-and-pals:block/pet_raft_warped_yellow"
+    },
+    "cushion=8,style=11": {
+      "model": "pets-and-pals:block/pet_raft_warped_lime"
+    },
+    "cushion=9,style=11": {
+      "model": "pets-and-pals:block/pet_raft_warped_green"
+    },
+    "cushion=10,style=11": {
+      "model": "pets-and-pals:block/pet_raft_warped_cyan"
+    },
+    "cushion=11,style=11": {
+      "model": "pets-and-pals:block/pet_raft_warped_light_blue"
+    },
+    "cushion=12,style=11": {
+      "model": "pets-and-pals:block/pet_raft_warped_blue"
+    },
+    "cushion=13,style=11": {
+      "model": "pets-and-pals:block/pet_raft_warped_purple"
+    },
+    "cushion=14,style=11": {
+      "model": "pets-and-pals:block/pet_raft_warped_magenta"
+    },
+    "cushion=15,style=11": {
+      "model": "pets-and-pals:block/pet_raft_warped_pink"
     }
   }
 }

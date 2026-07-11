@@ -871,6 +871,13 @@ public class Central implements ClientModInitializer {
         AbstractPet.speedMultiplier = () -> CONFIG.petSpeed;
         AbstractPet.soundVolume = () -> CONFIG.petVolume;
         if (CONFIG.raftWood == null) CONFIG.raftWood = "spruce";
+        if (CONFIG.cushionColor == null) CONFIG.cushionColor = "red";
+        AbstractPet.cushionColor = () -> {
+            for (int i = 0; i < io.github.aaronateataco.petsandpals.mob.PetRaftBlock.DYES.length; i++) {
+                if (io.github.aaronateataco.petsandpals.mob.PetRaftBlock.DYES[i].equals(CONFIG.cushionColor)) return i;
+            }
+            return 5;
+        };
         AbstractPet.raftStyle = () -> {
             for (int i = 0; i < io.github.aaronateataco.petsandpals.mob.PetRaftBlock.WOODS.length; i++) {
                 if (io.github.aaronateataco.petsandpals.mob.PetRaftBlock.WOODS[i].equals(CONFIG.raftWood)) return i;
