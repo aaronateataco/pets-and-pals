@@ -427,7 +427,7 @@ public class PetsClientInitializer implements ClientModInitializer {
      * is pressed
      */
     void createKeyBinding() {
-        KeyMapping keyMapping = KeyMappingHelper.registerKeyMapping(new KeyMapping("Open Pets Menu", GLFW.GLFW_KEY_P, new KeyMapping.Category(Identifier.fromNamespaceAndPath(PetsInitializer.MOD_ID, "petsandpals.keymapping"))));
+        KeyMapping keyMapping = KeyMappingHelper.registerKeyMapping(new KeyMapping("Open Pets Menu", GLFW.GLFW_KEY_SEMICOLON, new KeyMapping.Category(Identifier.fromNamespaceAndPath(PetsInitializer.MOD_ID, "petsandpals.keymapping"))));
 
         ClientTickEvents.END_CLIENT_TICK.register((client) -> {
             if (keyMapping.consumeClick()) {

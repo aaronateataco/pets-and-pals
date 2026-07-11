@@ -4,6 +4,12 @@
 - Cushion colors! All 16 dyes on the Mk2 raft, with a favorite-cushion picker in the Menagerie - real snapshot cushion textures, so packs restyle them
 - Fixed the cushion texture path (the snapshot ships cushions as entities; their textures are now merged into the block atlas)
 - Includes the 0.14.1 fixes: cliff guard, ferry rafts, boat-matched raft wood
+## 0.14.7
+- Pets, spawn bushes, and repositions can no longer be placed underwater - fixes the spawn animation looping, foxes appearing under the sea, and raft flicker over water
+- Default keybind moved from P (vanilla social menu) to ; (semicolon)
+- Menagerie preview no longer gets stuck saying a world is needed
+- Removed the mega spud from the catalog
+
 ## 0.14.6
 - Fixed pets endlessly teleporting instead of walking on 26.3 snapshots: the snapshot broke client-side pathfinding, so pets now steer directly at you (with step-hopping and surface swimming) whenever pathfinding is unavailable
 

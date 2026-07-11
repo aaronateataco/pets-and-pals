@@ -102,6 +102,7 @@ public class Utils {
             BlockPos pos = base.above(dy);
             BlockPos below = pos.below();
             if (!world.getBlockState(below).isFaceSturdy(world, below, Direction.UP)) continue;
+            if (!world.getFluidState(pos).isEmpty()) continue; // never underwater
             if (!world.getBlockState(pos).getCollisionShape(world, pos).isEmpty()) continue;
             if (!world.getBlockState(pos.above()).getCollisionShape(world, pos.above()).isEmpty()) continue;
             return pos;
