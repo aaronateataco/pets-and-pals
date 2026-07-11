@@ -18,6 +18,7 @@ import org.jetbrains.annotations.NotNull;
 public class PetRaft extends FallingBlockEntity implements net.minecraft.world.entity.Leashable {
 
     private AbstractPet pet;
+    private boolean ferry = false;
     private Vec3 velocity = Vec3.ZERO;
     private net.minecraft.world.entity.Leashable.LeashData leashData;
     private int idleTimer = 40;
@@ -33,7 +34,7 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
     public static PetRaft create(Level level, AbstractPet pet, AbstractBoat boat) {
         PetRaft raft = new PetRaft(PetsInitializer.PET_RAFT, level);
         raft.blockState = PetsInitializer.PET_RAFT_BLOCK.defaultBlockState()
-                .setValue(PetRaftBlock.STYLE, Math.floorMod(AbstractPet.raftStyle.getAsInt(), PetRaftBlock.WOODS.length));
+                .setValue(PetRaftBlock.STYLE, styleFor(boat));
         raft.pet = pet;
         Vec3 side = sideAnchor(boat);
         raft.setPos(side.x, side.y, side.z);
@@ -53,6 +54,26 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
 
     private static final double ROPE_LENGTH = 2.8;
 
+    /** Ferry: pops in when a land pet must cross water to reach you - no boat involved. */
+    public static PetRaft createFerry(Level level, AbstractPet pet) {
+        PetRaft raft = new PetRaft(PetsInitializer.PET_RAFT, level);
+        raft.blockState = PetsInitializer.PET_RAFT_BLOCK.defaultBlockState()
+                .setValue(PetRaftBlock.STYLE, Math.floorMod(AbstractPet.raftStyle.getAsInt(), PetRaftBlock.WOODS.length));
+        raft.pet = pet;
+        raft.ferry = true;
+        raft.setPos(pet.getX(), pet.getY(), pet.getZ());
+        return raft;
+    }
+
+    /** Match the raft wood to the boat being ridden; config style is the fallback. */
+    private static int styleFor(AbstractBoat boat) {
+        String path = net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE.getKey(boat.getType()).getPath();
+        for (int i = 0; i < PetRaftBlock.WOODS.length; i++) {
+            if (path.startsWith(PetRaftBlock.WOODS[i])) return i;
+        }
+        return Math.floorMod(AbstractPet.raftStyle.getAsInt(), PetRaftBlock.WOODS.length);
+    }
+
     private static Vec3 sideAnchor(AbstractBoat boat) {
         // spawn position: directly behind the boat
         float rad = boat.getYRot() * ((float) Math.PI / 180.0F);
@@ -68,8 +89,15 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
             return;
         }
         LivingEntity owner = this.pet.getOwner();
-        if (owner == null || !owner.isAlive() || owner.level() != this.level()
-                || !(owner.getVehicle() instanceof AbstractBoat boat)) {
+        if (owner == null || !owner.isAlive() || owner.level() != this.level()) {
+            this.release();
+            return;
+        }
+        if (this.ferry) {
+            this.tickFerry(owner);
+            return;
+        }
+        if (!(owner.getVehicle() instanceof AbstractBoat boat)) {
             this.release();
             return;
         }
@@ -138,6 +166,28 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
             }
         }
         return Double.MIN_VALUE;
+    }
+
+    // carries the pet toward the owner across water, drops it at the far shore
+    private void tickFerry(LivingEntity owner) {
+        Vec3 toOwner = new Vec3(owner.getX() - this.getX(), 0.0, owner.getZ() - this.getZ());
+        double distance = toOwner.length();
+        double step = Math.min(0.28, distance);
+        double nextX = this.getX() + toOwner.x / Math.max(0.001, distance) * step;
+        double nextZ = this.getZ() + toOwner.z / Math.max(0.001, distance) * step;
+        double surface = this.waterSurfaceY(nextX, this.getY(), nextZ);
+        if (surface == Double.MIN_VALUE || distance < 2.0) {
+            this.release();
+            return;
+        }
+        this.setPos(nextX, surface - 0.01 + 0.02 * Math.sin(this.tickCount * 0.09), nextZ);
+        this.pet.setPos(this.getX(), this.getY() + 0.07, this.getZ());
+        this.pet.setDeltaMovement(Vec3.ZERO);
+        this.pet.fallDistance = 0;
+        float yaw = (float) (Math.toDegrees(Mth.atan2(toOwner.z, toOwner.x))) - 90.0F;
+        this.pet.setYRot(yaw);
+        this.pet.yBodyRot = yaw;
+        this.pet.setYHeadRot(yaw);
     }
 
     private void release() {

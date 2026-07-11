@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.14.1
+- Land pets no longer run or jump off cliffs while sprinting with you - they stop at edges with no safe landing
+- Ferry rafts: if a land pet has to cross water to reach you, a raft blips in under it and carries it across at full speed, dropping it at the far shore
+- The boat-side raft now matches your boat's wood automatically; your chosen style is used for ferries
+
 ## 0.14.0
 - Raft wood is now customizable: 12 plank styles (oak through warped) selectable in the Menagerie, using the game's own textures so resource packs restyle them
 - Realistic tow physics: the raft trails BEHIND your boat on a taut-rope model - it drifts with water drag, gets yanked when the rope tightens, and swings wide through turns
