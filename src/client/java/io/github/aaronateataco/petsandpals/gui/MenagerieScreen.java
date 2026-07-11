@@ -30,11 +30,8 @@ import java.util.function.DoubleConsumer;
 import static io.github.aaronateataco.petsandpals.Central.CONFIG;
 
 /**
- * The Menagerie: Pets&Pals' companion catalog. A searchable grid of every pet species
- * with a side panel for summoning and the core settings - designed to read as "pick your
- * companion", not as an options list. The old YACL screen stays available via the
- * "Advanced settings" button for names, skins, and everything else (until those migrate
- * here in a later pass).
+ * The Menagerie: searchable catalog of every pet with a live preview and the core
+ * settings. Names/skins still live in the old YACL screen behind "Advanced settings".
  */
 public class MenagerieScreen extends Screen {
 
@@ -62,7 +59,7 @@ public class MenagerieScreen extends Screen {
     private String query = "";
     private Element element = Element.ALL;
 
-    /** Skylanders-style element categories. */
+    // element categories
     private enum Element { ALL, LAND, SKY, SEA }
 
     private static final java.util.Set<String> SKY_PETS = java.util.Set.of(
@@ -110,7 +107,7 @@ public class MenagerieScreen extends Screen {
         });
         this.addRenderableWidget(this.searchBox);
 
-        // Element tabs, Skylanders SuperChargers style.
+        // element tabs
         int tabX = this.searchBox.getX() + this.searchBox.getWidth() + 6;
         for (Element el : Element.values()) {
             Element tabElement = el;
@@ -167,11 +164,7 @@ public class MenagerieScreen extends Screen {
         this.rebuildGrid();
     }
 
-    /**
-     * Central keeps one pre-constructed instance of every pet species in public static
-     * fields (bee, caveSpider, ...). Map them by species id so the catalog can render a
-     * live preview of any species without summoning it.
-     */
+    /** Maps species ids to Central's pre-built pet instances for the preview. */
     private static Map<String, AbstractPet> previewPets() {
         if (previewPets == null) {
             previewPets = new HashMap<>();
@@ -240,7 +233,7 @@ public class MenagerieScreen extends Screen {
         this.nextButton.active = this.page < maxPage;
     }
 
-    /** Clicking a species in the grid makes it the active pet immediately. */
+    // clicking a species applies it right away
     private void applySelected() {
         if (this.selected == null) return;
         CONFIG.activePet = this.selected.name();
@@ -284,8 +277,7 @@ public class MenagerieScreen extends Screen {
             graphics.text(this.font, this.selected.getDisplayName(), panelX, 38, 0xFFFFFFFF);
         }
 
-        // Live preview: the actual pet next to your own player at one shared scale,
-        // so the size comparison is true.
+        // live preview: pet next to the player at one shared scale
         AbstractPet pet = this.selectedPreview();
         LivingEntity player = this.minecraft != null ? this.minecraft.player : null;
         int boxTop = GRID_TOP;

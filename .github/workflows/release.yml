@@ -33,11 +33,18 @@ jobs:
           mkdir release
           cp build/libs/*.jar release/
           rm -f release/*-sources.jar release/*-javadoc.jar
+      - name: extract changelog
+        run: |
+          # tag v0.11.0-26.1.2 -> section "## 0.11.0" from CHANGELOG.md
+          VERSION=$(echo "${GITHUB_REF_NAME}" | sed -E 's/^v([0-9]+\.[0-9]+\.[0-9]+).*/\1/')
+          awk -v ver="$VERSION" '/^## /{p = ($2 == ver)} p && !/^## /' CHANGELOG.md > changelog-section.md
+          if [ ! -s changelog-section.md ]; then echo "See CHANGELOG.md" > changelog-section.md; fi
+          cat changelog-section.md
       - name: create github release
         uses: softprops/action-gh-release@v2
         with:
           files: release/*.jar
-          generate_release_notes: true
+          body_path: changelog-section.md
       # Auto-publishes the same jar to Modrinth when the repo has the secrets set:
       #   MODRINTH_TOKEN - a Modrinth personal access token (user settings -> PATs,
       #                    needs the "create versions" scope)
@@ -50,4 +57,5 @@ jobs:
           modrinth-id: ${{ secrets.MODRINTH_ID }}
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           files: release/*.jar
+          changelog-file: changelog-section.md
           loaders: fabric

@@ -20,25 +20,14 @@ import org.jetbrains.annotations.NotNull;
 import java.util.EnumSet;
 
 /**
- * A vanilla-style follow goal modeled on {@link net.minecraft.world.entity.ai.goal.FollowOwnerGoal},
- * tuned so the owner never loses their pet:
- * <ul>
- *   <li><b>Visible pet</b>: catches up smoothly - speed scales with distance (capped at
- *   {@link #MAX_CATCH_UP_BOOST}) so it hurries without teleport-popping on screen.</li>
- *   <li><b>Unseen pet</b>: if it falls behind while outside the owner's view cone (or behind a
- *   wall), it silently teleports to a safe spot <i>inside</i> the owner's field of view - so
- *   whenever you turn around, your pet is already there.</li>
- *   <li>Hard teleport regardless of visibility past {@link #TELEPORT_DISTANCE} blocks.</li>
- * </ul>
- * Flying pets follow to {@code followYOffset()} above the owner's feet (bees hover near your
- * head instead of hugging the ground). The final movement speed is
- * {@code speedModifier * AbstractPet.speedMultiplier} (the "Pet Speed" config setting)
- * on top of the pet's own vanilla movement-speed attribute.
+ * Follow goal for pets. Handles normal following with distance-scaled catch-up speed,
+ * plus the sprint run-alongside mode where the pet paces the owner on screen.
+ * Lost/stuck handling is in {@link AbstractPet#tick()} so it survives goal restarts.
  */
 public class PetFollowOwnerGoal extends Goal {
 
     private static final double MAX_CATCH_UP_BOOST = 1.75;
-    /** Transient speed modifier used while pacing a sprinting owner; value updated dynamically. */
+    // transient speed modifier used while pacing a sprinting owner
     private static final Identifier ALONGSIDE_SPEED_ID = Identifier.fromNamespaceAndPath("pets-and-pals", "run_alongside_boost");
     private static final double MAX_ALONGSIDE_BOOST = 3.0;
 
@@ -49,15 +38,13 @@ public class PetFollowOwnerGoal extends Goal {
     private LivingEntity owner;
     private int timeToRecalcPath;
     private boolean wasAlongside;
-    /** +1 = owner's right, -1 = left; picked from where the pet already is, with hysteresis. */
+    // +1 right, -1 left
     private int alongsideSide;
     private double smoothedBoost;
     private int glanceTicks;
     private int glanceCooldown;
     private int alongsideLagTicks;
-    /** Ring buffer of the owner's recent head yaw - the pet reacts to WHERE YOU WERE
-     * looking ~0.4s ago and visibly corrects, like a real animal, instead of snapping
-     * to keyboard inputs the same tick. */
+    // owner yaw from ~0.4s ago, so direction changes register with a small delay
     private final float[] yawHistory = new float[8];
     private int yawIndex = -1;
 
@@ -87,11 +74,7 @@ public class PetFollowOwnerGoal extends Goal {
         return true;
     }
 
-    /**
-     * Fortnite-style: after the owner has been sprinting for ~1s (first person only, since
-     * that's when a trailing pet is invisible), the pet runs at the owner's front-right -
-     * on screen - with a dynamically boosted speed attribute so it genuinely keeps pace.
-     */
+    // engages after ~1s of sprinting, first person only
     private boolean runningAlongside() {
         return this.pet.ownerSprintTicks() > 20 && AbstractPet.firstPersonView.getAsBoolean();
     }
@@ -104,9 +87,8 @@ public class PetFollowOwnerGoal extends Goal {
         if (this.runningAlongside()) {
             return true;
         }
-        // Deliberately NOT checking navigation.isDone(): a finished path segment used to
-        // stop the goal, whose restart wiped every tracking counter and cancelled paths -
-        // the cause of pets stuttering at gaps/stairs and stuck-detection never firing.
+        // don't check navigation.isDone() here - stopping on finished path segments
+        // caused constant goal restarts and stuttering at gaps/stairs
         return this.pet.distanceToSqr(this.owner) > (double) (this.stopDistance * this.stopDistance);
     }
 
@@ -149,9 +131,7 @@ public class PetFollowOwnerGoal extends Goal {
         }
 
         if (alongside) {
-            // Mostly watch where it's going; occasionally glance at the owner for a moment
-            // (the sidekick "checking in on you" look), instead of running with its head
-            // craned sideways the whole time.
+            // look ahead while running, glance at the owner every few seconds
             if (this.glanceTicks > 0) {
                 this.glanceTicks--;
                 this.pet.getLookControl().setLookAt(this.owner, 10.0F, (float) this.pet.getMaxHeadXRot());
@@ -163,15 +143,9 @@ public class PetFollowOwnerGoal extends Goal {
                     this.glanceCooldown = 70 + this.pet.getRandom().nextInt(70);
                 }
             }
-            // Smooth the dynamic speed every tick (updating it only on path recalcs made
-            // the pace visibly step, which read as jank).
+            // smooth the speed boost every tick or the pace visibly steps
             this.updateAlongsideBoost();
 
-            // Leap entrance: if the pet is lagging its formation point while unwatched
-            // (behind the player), quietly move it to just BEHIND the camera and give it a
-            // full speed burst - so it visibly leaps past the player's shoulder into
-            // formation, running the whole way. Also the obstacle recovery: if its side is
-            // blocked, it swaps to the other side during the same maneuver.
             Vec3 anchor = this.alongsideAnchor();
             double lagSqr = this.pet.distanceToSqr(anchor.x, anchor.y + this.pet.followYOffset(), anchor.z);
             if (lagSqr > 12.25) {
@@ -179,9 +153,8 @@ public class PetFollowOwnerGoal extends Goal {
                 if (++this.alongsideLagTicks >= 15) {
                     this.alongsideLagTicks = 0;
                     if (this.pet.ownerInViewCone()) {
-                        // Watched: glide OFF camera first - full-burst run to just behind the
-                        // player. Once it leaves the view cone, the unwatched branch performs
-                        // the leap entrance. The whole maneuver is visible motion, no pops.
+                        // visible: run off camera behind the player first, the unwatched
+                        // branch does the actual entrance once it leaves the view
                         this.smoothedBoost = MAX_ALONGSIDE_BOOST - 1.0;
                         this.updateAlongsideBoost();
                         Vec3 behind = this.behindCameraPoint();
@@ -210,9 +183,6 @@ public class PetFollowOwnerGoal extends Goal {
 
         double distanceSqr = this.pet.distanceToSqr(this.owner);
         double distance = Math.sqrt(distanceSqr);
-        // (Lost-pet handling - out of view, stuck, too far - lives in AbstractPet.tick,
-        // where it can't be reset by this goal stopping and restarting.)
-
         double boost = Mth.clamp(1.0 + (distance - this.stopDistance) * 0.09, 1.0, MAX_CATCH_UP_BOOST);
         double targetX = this.owner.getX();
         double targetZ = this.owner.getZ();
@@ -231,11 +201,7 @@ public class PetFollowOwnerGoal extends Goal {
         );
     }
 
-    /**
-     * Places the pet just behind the camera (out of view) with a max speed burst so it
-     * sprints into frame past the player's shoulder. If the formation side is blocked
-     * by an obstacle, flips to the other side first.
-     */
+    /** Entrance: place the pet behind the camera and burst it into frame. */
     private void leapEntrance() {
         // Prefer the current side; if its anchor is blocked, swap sides.
         Vec3 anchor = this.alongsideAnchor();
@@ -260,14 +226,12 @@ public class PetFollowOwnerGoal extends Goal {
             }
         }
         if (!placed) {
-            // No room behind the camera (wall right behind you) - appear past the
-            // obstruction near the formation point instead.
+            // no room behind the player, appear near the formation point instead
             if (!this.pet.tryRepositionTo(anchor.x, anchor.y + this.pet.followYOffset(), anchor.z)) {
                 this.pet.repositionToOwner();
                 return;
             }
         }
-        // Full burst so the entrance is a leap, easing back down as it reaches formation.
         this.smoothedBoost = MAX_ALONGSIDE_BOOST - 1.0;
         this.updateAlongsideBoost();
         Vec3 lead = new Vec3(this.owner.getDeltaMovement().x, 0.0, this.owner.getDeltaMovement().z).scale(5.0);
@@ -279,7 +243,7 @@ public class PetFollowOwnerGoal extends Goal {
         this.timeToRecalcPath = this.adjustedTickDelay(5);
     }
 
-    /** A point just behind the camera, slightly to the formation side - off screen. */
+    /** Just behind the camera, slightly toward the formation side. */
     private Vec3 behindCameraPoint() {
         Vec3 forward = Vec3.directionFromRotation(0.0F, this.owner.getYHeadRot());
         forward = new Vec3(forward.x, 0.0, forward.z).normalize();
@@ -289,13 +253,8 @@ public class PetFollowOwnerGoal extends Goal {
                 .add(right.scale(0.9 * this.alongsideSide));
     }
 
-    /**
-     * The formation point: well ahead of the camera (so the pet sits comfortably on
-     * screen, not at the bottom edge) and offset to whichever side the pet is already
-     * on - it may switch sides naturally if it drifts across, with hysteresis so it
-     * doesn't flicker between them.
-     */
-    /** The owner's head yaw from ~0.4s ago (reaction delay - see yawHistory). */
+    /** Formation point: ahead of the camera, offset to the pet's current side. */
+    /** Owner head yaw from ~0.4s ago. */
     private float delayedHeadYaw() {
         if (this.yawIndex < 0) return this.owner.getYHeadRot();
         return this.yawHistory[this.yawIndex]; // oldest slot (about to be overwritten)
@@ -314,9 +273,7 @@ public class PetFollowOwnerGoal extends Goal {
             this.alongsideSide = -this.alongsideSide;
         }
 
-        // Scale how far ahead the pet runs by the camera pitch: looking level/up pushes it
-        // farther out so it sits comfortably in frame; looking down brings it in closer so
-        // it doesn't drift out of the top of the view.
+        // push the point farther out when looking level, closer when looking down
         float pitchDown = Math.max(0.0F, this.owner.getXRot());
         double forwardDistance = Mth.clamp(3.4 - pitchDown * 0.045, 2.0, 3.8);
 
@@ -326,17 +283,17 @@ public class PetFollowOwnerGoal extends Goal {
         if (this.pet.canFitAt(sideAnchor.x, fitY, sideAnchor.z)) {
             return sideAnchor;
         }
-        // Side blocked (wall, tree...): try the other side.
+        // side blocked, try the other one
         Vec3 otherAnchor = base.add(right.scale(-1.5 * this.alongsideSide));
         if (this.pet.canFitAt(otherAnchor.x, fitY, otherAnchor.z)) {
             this.alongsideSide = -this.alongsideSide;
             return otherAnchor;
         }
-        // Both sides blocked (narrow tunnel, hallway): run single file, directly ahead.
+        // both sides blocked (tunnel/hallway), run single file ahead
         return this.owner.position().add(forward.scale(Math.max(2.0, forwardDistance * 0.7)));
     }
 
-    /** Smoothly sized speed boost, updated every tick: big when lagging, gentle in formation. */
+    /** Speed boost sized by how far the pet lags its formation point. */
     private void updateAlongsideBoost() {
         Vec3 anchor = this.alongsideAnchor();
         double dx = anchor.x - this.pet.getX();

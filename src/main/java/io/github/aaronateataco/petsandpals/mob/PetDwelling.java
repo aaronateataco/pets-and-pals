@@ -13,13 +13,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * The client-only "ghost block" used by the pet spawn animation: a grid-aligned block
- * (e.g. a bee nest for the bee) that rises out of the ground in front of the player's
- * camera, releases the pet, then sinks back into the ground and disappears.
- * <p>
- * Extends {@link FallingBlockEntity} purely so the vanilla {@code FallingBlockRenderer}
- * renders it as a real block for free; all falling physics are replaced by the scripted
- * animation below. It never modifies the world - it's a purely visual entity.
+ * Ghost block for the spawn animation: rises out of the ground, releases the pet, sinks
+ * back. Extends FallingBlockEntity so the vanilla renderer draws it; never touches the world.
  */
 public class PetDwelling extends FallingBlockEntity {
 
@@ -61,7 +56,7 @@ public class PetDwelling extends FallingBlockEntity {
         double z = this.getZ();
 
         if (this.age <= RISE_END) {
-            // Ease-out rise from fully buried to sitting on the grid.
+            // ease-out rise
             double t = this.age / (double) RISE_END;
             double ease = 1.0 - (1.0 - t) * (1.0 - t);
             this.setPos(x, this.baseY - 1.0 + ease, z);
@@ -73,7 +68,7 @@ public class PetDwelling extends FallingBlockEntity {
         }
 
         if (this.age >= SINK_START && this.age <= SINK_END) {
-            // Ease-in sink back underground.
+            // ease-in sink
             double t = (this.age - SINK_START) / (double) (SINK_END - SINK_START);
             this.setPos(x, this.baseY - 1.3 * t * t, z);
             if (this.age % 4 == 0) {

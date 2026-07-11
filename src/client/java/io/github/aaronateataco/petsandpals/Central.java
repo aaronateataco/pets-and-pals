@@ -856,7 +856,7 @@ public class Central implements ClientModInitializer {
         AutoConfig.register(PetsConfig.class, GsonConfigSerializer::new);
         CONFIG = AutoConfig.getConfigHolder(PetsConfig.class).getConfig();
 
-        // Configs from before the setting existed deserialize petSpeed as 0.
+        // old configs deserialize petSpeed as 0
         if (CONFIG.petSpeed <= 0.0f) CONFIG.petSpeed = 1.0f;
         if (CONFIG.petVolume == null) CONFIG.petVolume = 1.0f;
         AbstractPet.speedMultiplier = () -> CONFIG.petSpeed;
@@ -2028,10 +2028,8 @@ public class Central implements ClientModInitializer {
                 summonedEntity.clear();
             }
 
-            // Watchdog for the active pet, running OUTSIDE the entity: if the pet drifts
-            // beyond render distance its chunk unloads and the entity stops ticking, so
-            // none of its own never-lose logic can run - it would be frozen out there
-            // forever. From here we can always pull it back.
+            // watchdog: a pet past render distance stops ticking (chunk unload), so
+            // its own tracking goes dead - rescue it from out here
             if (this.i % 20 == 0 && client.player != null && world != null) {
                 summonedEntity.removeIf(Entity::isRemoved);
                 for (Entity summoned : summonedEntity) {

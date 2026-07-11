@@ -14,10 +14,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-/**
- * Renders the pet's ghost form ({@link PetOrb}) as two crossed, spinning, translucent
- * nether-star planes - one vertical, one horizontal - glowing regardless of light level.
- */
+/** Draws the ghost star: two crossed spinning nether-star planes, emissive. */
 public class PetOrbRenderer extends EntityRenderer<@NotNull PetOrb, PetOrbRenderer.@NotNull PetOrbRenderState> {
 
     private static final Identifier TEXTURE = Identifier.withDefaultNamespace("textures/item/nether_star.png");
@@ -54,10 +51,10 @@ public class PetOrbRenderer extends EntityRenderer<@NotNull PetOrb, PetOrbRender
         poseStack.translate(0.0F, 0.25F, 0.0F);
         poseStack.mulPose(Axis.YP.rotationDegrees(state.spin));
 
-        // Vertical star plane.
+        // vertical plane
         collector.submitCustomGeometry(poseStack, renderType, PetOrbRenderer::renderStarQuad);
 
-        // Horizontal star plane, spinning in the perpendicular axis.
+        // horizontal plane
         poseStack.pushPose();
         poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
         poseStack.mulPose(Axis.ZP.rotationDegrees(state.spin * 0.7F));
@@ -68,7 +65,7 @@ public class PetOrbRenderer extends EntityRenderer<@NotNull PetOrb, PetOrbRender
     }
 
     private static void renderStarQuad(PoseStack.Pose pose, VertexConsumer consumer) {
-        // Both faces of the quad so it's visible from behind too.
+        // both faces so it's visible from behind
         quad(pose, consumer, false);
         quad(pose, consumer, true);
     }
