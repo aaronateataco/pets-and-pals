@@ -2062,8 +2062,7 @@ public class Central implements ClientModInitializer {
             // screenshots (used for gallery shots in automated test runs)
             if (this.i % 80 == 0 && client.level != null
                     && java.nio.file.Files.exists(client.gameDirectory.toPath().resolve(".pnp_autoshot"))) {
-                net.minecraft.client.Screenshot.grab(client.gameDirectory,
-                        client.getMainRenderTarget(), component -> {});
+                net.minecraft.client.Screenshot.grab(client, false);
             }
 
         }));
