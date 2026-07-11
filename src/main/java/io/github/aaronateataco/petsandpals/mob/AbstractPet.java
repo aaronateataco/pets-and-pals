@@ -389,6 +389,9 @@ public abstract class AbstractPet extends TamableAnimal {
                     if (!level.getBlockState(below).isFaceSturdy(level, below, net.minecraft.core.Direction.UP)) {
                         continue;
                     }
+                    if (!level.getFluidState(pos).isEmpty()) {
+                        continue; // never underwater
+                    }
                     if (this.fitsAt(level, x, pos.getY(), z)) {
                         this.finishReposition(x, pos.getY(), z);
                         return;

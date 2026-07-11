@@ -139,6 +139,9 @@ public class PetOrb extends Entity {
                     if (!level.getBlockState(below).isFaceSturdy(level, below, Direction.UP)) {
                         continue;
                     }
+                    if (!level.getFluidState(pos).isEmpty()) {
+                        continue; // never underwater
+                    }
                     if (this.petFitsAt(level, x, pos.getY(), z)) {
                         return new Vec3(x, pos.getY(), z);
                     }

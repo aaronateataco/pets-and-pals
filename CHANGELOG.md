@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.14.7
+- Pets, spawn bushes, and repositions can no longer be placed underwater - fixes the spawn animation looping, foxes appearing under the sea, and raft flicker over water
+- Default keybind moved from P (vanilla social menu) to ; (semicolon)
+- Menagerie preview no longer gets stuck saying a world is needed
+- Removed the mega spud from the catalog
+
 ## 0.14.6
 - Fixed pets endlessly teleporting instead of walking on 26.3 snapshots: the snapshot broke client-side pathfinding, so pets now steer directly at you (with step-hopping and surface swimming) whenever pathfinding is unavailable
 
