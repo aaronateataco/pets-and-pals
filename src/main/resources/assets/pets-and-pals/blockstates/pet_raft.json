@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "pets-and-pals:block/pet_raft"
+    }
+  }
+}

@@ -2,6 +2,7 @@ package io.github.aaronateataco.petsandpals;
 
 import io.github.aaronateataco.petsandpals.mob.PetDwelling;
 import io.github.aaronateataco.petsandpals.mob.PetOrb;
+import io.github.aaronateataco.petsandpals.mob.PetRaft;
 import io.github.aaronateataco.petsandpals.mob.aprilfools.*;
 import io.github.aaronateataco.petsandpals.mob.custom.aprilfools.Head;
 import io.github.aaronateataco.petsandpals.mob.custom.aquatic.DumboOctopus;
@@ -52,6 +53,25 @@ public class PetsInitializer implements ModInitializer {
             EntityType.Builder.of(PetOrb::new, MobCategory.MISC)
                     .sized(0.6f, 0.6f)
                     .build(PET_ORB_KEY));
+    private static final ResourceKey<net.minecraft.world.level.block.@NotNull Block> PET_RAFT_BLOCK_KEY =
+            ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MOD_ID, "pet_raft"));
+    /** Never placed in the world; exists so the raft entity has a block model to render. */
+    public static final net.minecraft.world.level.block.Block PET_RAFT_BLOCK = Registry.register(
+            BuiltInRegistries.BLOCK,
+            Identifier.fromNamespaceAndPath(MOD_ID, "pet_raft"),
+            new net.minecraft.world.level.block.Block(
+                    net.minecraft.world.level.block.state.BlockBehaviour.Properties.of()
+                            .setId(PET_RAFT_BLOCK_KEY)
+                            .noCollision()
+                            .noOcclusion()));
+    private static final ResourceKey<@NotNull EntityType<?>> PET_RAFT_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "pet_raft"));
+    public static final EntityType<@NotNull PetRaft> PET_RAFT = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "pet_raft"),
+            EntityType.Builder.of(PetRaft::new, MobCategory.MISC)
+                    .sized(1.0f, 0.2f)
+                    .build(PET_RAFT_KEY));
     private static final ResourceKey<@NotNull EntityType<?>> PET_DWELLING_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "pet_dwelling"));
     /** Visual-only ghost block used by the pet spawn animation (see {@code PetDwelling}). */
