@@ -870,6 +870,13 @@ public class Central implements ClientModInitializer {
         if (CONFIG.petVolume == null) CONFIG.petVolume = 1.0f;
         AbstractPet.speedMultiplier = () -> CONFIG.petSpeed;
         AbstractPet.soundVolume = () -> CONFIG.petVolume;
+        if (CONFIG.raftWood == null) CONFIG.raftWood = "spruce";
+        AbstractPet.raftStyle = () -> {
+            for (int i = 0; i < io.github.aaronateataco.petsandpals.mob.PetRaftBlock.WOODS.length; i++) {
+                if (io.github.aaronateataco.petsandpals.mob.PetRaftBlock.WOODS[i].equals(CONFIG.raftWood)) return i;
+            }
+            return 1;
+        };
         AbstractPet.firstPersonView = () -> Minecraft.getInstance().options.getCameraType().isFirstPerson();
         AbstractPet.clientEntitySpawner = entity -> {
             if (Minecraft.getInstance().level != null) {

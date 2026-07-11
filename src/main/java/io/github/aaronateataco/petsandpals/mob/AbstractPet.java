@@ -70,6 +70,9 @@ public abstract class AbstractPet extends TamableAnimal {
     /** True while in first person, wired up in Central. */
     public static java.util.function.BooleanSupplier firstPersonView = () -> true;
 
+    /** Raft wood style index (see PetRaftBlock.WOODS), wired up in Central. */
+    public static java.util.function.IntSupplier raftStyle = () -> 1;
+
     /** Adds an entity to the client level, wired up in Central. */
     public static java.util.function.Consumer<net.minecraft.world.entity.Entity> clientEntitySpawner = e -> {};
 

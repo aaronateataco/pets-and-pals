@@ -1,7 +1,40 @@
 {
   "variants": {
-    "": {
-      "model": "pets-and-pals:block/pet_raft"
+    "style=0": {
+      "model": "pets-and-pals:block/pet_raft_oak"
+    },
+    "style=1": {
+      "model": "pets-and-pals:block/pet_raft_spruce"
+    },
+    "style=2": {
+      "model": "pets-and-pals:block/pet_raft_birch"
+    },
+    "style=3": {
+      "model": "pets-and-pals:block/pet_raft_jungle"
+    },
+    "style=4": {
+      "model": "pets-and-pals:block/pet_raft_acacia"
+    },
+    "style=5": {
+      "model": "pets-and-pals:block/pet_raft_dark_oak"
+    },
+    "style=6": {
+      "model": "pets-and-pals:block/pet_raft_mangrove"
+    },
+    "style=7": {
+      "model": "pets-and-pals:block/pet_raft_cherry"
+    },
+    "style=8": {
+      "model": "pets-and-pals:block/pet_raft_pale_oak"
+    },
+    "style=9": {
+      "model": "pets-and-pals:block/pet_raft_bamboo"
+    },
+    "style=10": {
+      "model": "pets-and-pals:block/pet_raft_crimson"
+    },
+    "style=11": {
+      "model": "pets-and-pals:block/pet_raft_warped"
     }
   }
 }
