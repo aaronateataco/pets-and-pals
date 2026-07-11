@@ -44,6 +44,7 @@ public class PetFollowOwnerGoal extends Goal {
     private int glanceTicks;
     private int glanceCooldown;
     private int alongsideLagTicks;
+    private int lagBursts;
     // owner yaw from ~0.4s ago, so direction changes register with a small delay
     private final float[] yawHistory = new float[8];
     private int yawIndex = -1;
@@ -99,6 +100,7 @@ public class PetFollowOwnerGoal extends Goal {
         this.smoothedBoost = 0.35;
         this.glanceTicks = 0;
         this.glanceCooldown = 40;
+        this.lagBursts = 0;
     }
 
     @Override
@@ -173,28 +175,30 @@ public class PetFollowOwnerGoal extends Goal {
                                 .getCollisionShape(this.pet.level(), ahead).isEmpty();
                         boolean headroom = this.pet.level().getBlockState(ahead.above())
                                 .getCollisionShape(this.pet.level(), ahead.above()).isEmpty();
-                        // parkour: leap gaps when the floor ahead is missing but there's a
-                        // landing within a couple blocks
                         BlockPos frontFloor = ahead.below();
                         boolean gap = this.pet.level().getBlockState(ahead)
                                 .getCollisionShape(this.pet.level(), ahead).isEmpty()
                                 && this.pet.level().getBlockState(frontFloor)
                                 .getCollisionShape(this.pet.level(), frontFloor).isEmpty();
-                        boolean landing = false;
-                        if (gap) {
-                            for (int d = 2; d <= 3 && !landing; d++) {
-                                BlockPos land = BlockPos.containing(
-                                        this.pet.getX() + nx * d, this.pet.getY() - 0.9, this.pet.getZ() + nz * d);
-                                landing = !this.pet.level().getBlockState(land)
-                                        .getCollisionShape(this.pet.level(), land).isEmpty();
-                            }
-                        }
-                        if ((blocked && headroom) || (gap && landing) || this.pet.horizontalCollision) {
+                        if ((blocked && headroom) || this.pet.horizontalCollision) {
                             this.pet.getJumpControl().jump();
                         } else if (gap) {
-                            // cliff with no landing: stop at the edge instead of yeeting off
-                            this.pet.getMoveControl().setWantedPosition(
-                                    this.pet.getX(), this.pet.getY(), this.pet.getZ(), 0.0);
+                            // shallow drop (stairs, slopes, <=3 blocks): just keep running.
+                            // deeper: leap it if there's a same-level landing, else it's a
+                            // cliff - stop at the edge instead of yeeting off
+                            int depth = this.dropDepth(this.pet.getX() + nx, this.pet.getZ() + nz);
+                            if (depth > 4) {
+                                boolean landing = false;
+                                for (int d = 2; d <= 3 && !landing; d++) {
+                                    landing = this.dropDepth(this.pet.getX() + nx * d, this.pet.getZ() + nz * d) <= 1;
+                                }
+                                if (landing) {
+                                    this.pet.getJumpControl().jump();
+                                } else {
+                                    this.pet.getMoveControl().setWantedPosition(
+                                            this.pet.getX(), this.pet.getY(), this.pet.getZ(), 0.0);
+                                }
+                            }
                         }
                     }
                 }
@@ -206,7 +210,16 @@ public class PetFollowOwnerGoal extends Goal {
                 if (++this.alongsideLagTicks >= 15) {
                     this.alongsideLagTicks = 0;
                     if (this.pet.ownerInViewCone()) {
-                        // being watched: just burst, no teleporting on screen
+                        // being watched: burst first - but if that keeps failing mid-sprint,
+                        // re-enter from behind the camera (off screen even while watched)
+                        // instead of lagging forever until the sprint restarts
+                        if (++this.lagBursts >= 2) {
+                            this.lagBursts = 0;
+                            this.leapEntrance();
+                            io.github.aaronateataco.petsandpals.PetsInitializer.LOGGER.info(
+                                    "[Pets&Pals] alongside re-entry from behind camera (watched)");
+                            return;
+                        }
                         this.smoothedBoost = MAX_ALONGSIDE_BOOST - 1.0;
                         this.updateAlongsideBoost();
                     } else {
@@ -227,6 +240,7 @@ public class PetFollowOwnerGoal extends Goal {
                 }
             } else {
                 this.alongsideLagTicks = 0;
+                this.lagBursts = 0;
             }
         } else {
             this.pet.getLookControl().setLookAt(this.owner, 10.0F, (float) this.pet.getMaxHeadXRot());
@@ -283,9 +297,26 @@ public class PetFollowOwnerGoal extends Goal {
                         .getCollisionShape(this.pet.level(), ahead.above()).isEmpty();
                 if ((blocked && headroom) || this.pet.horizontalCollision) {
                     this.pet.getJumpControl().jump();
+                } else if (this.dropDepth(this.pet.getX() + dx / len, this.pet.getZ() + dz / len) > 4) {
+                    // pit rule: don't walk off drops deeper than 3 blocks
+                    this.pet.getMoveControl().setWantedPosition(
+                            this.pet.getX(), this.pet.getY(), this.pet.getZ(), 0.0);
                 }
             }
         }
+    }
+
+    /** Blocks of air below foot level at (x, z), capped at 5. */
+    private int dropDepth(double x, double z) {
+        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos(
+                Mth.floor(x), Mth.floor(this.pet.getY() + 0.1) - 1, Mth.floor(z));
+        for (int d = 0; d < 5; d++) {
+            if (!this.pet.level().getBlockState(pos).getCollisionShape(this.pet.level(), pos).isEmpty()) {
+                return d;
+            }
+            pos.move(0, -1, 0);
+        }
+        return 5;
     }
 
     /** Entrance: place the pet behind the camera and burst it into frame. */

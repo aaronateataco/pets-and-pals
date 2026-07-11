@@ -12,14 +12,19 @@ public class PetRaftBlock extends Block {
     public static final String[] WOODS = {"oak", "spruce", "birch", "jungle", "acacia", "dark_oak",
             "mangrove", "cherry", "pale_oak", "bamboo", "crimson", "warped"};
     public static final IntegerProperty STYLE = IntegerProperty.create("style", 0, WOODS.length - 1);
+    public static final String[] DYES = {"white", "light_gray", "gray", "black", "brown", "red",
+            "orange", "yellow", "lime", "green", "cyan", "light_blue", "blue", "purple", "magenta", "pink"};
+    // last cushion index = bare deck (no cushion)
+    public static final int NO_CUSHION = DYES.length;
+    public static final IntegerProperty CUSHION = IntegerProperty.create("cushion", 0, NO_CUSHION);
 
     public PetRaftBlock(Properties properties) {
         super(properties);
-        this.registerDefaultState(this.getStateDefinition().any().setValue(STYLE, 1));
+        this.registerDefaultState(this.getStateDefinition().any().setValue(STYLE, 1).setValue(CUSHION, NO_CUSHION));
     }
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.@NotNull Builder<Block, BlockState> builder) {
-        builder.add(STYLE);
+        builder.add(STYLE, CUSHION);
     }
 }

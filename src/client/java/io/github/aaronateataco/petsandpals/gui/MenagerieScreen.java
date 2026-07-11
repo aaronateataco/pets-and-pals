@@ -46,6 +46,9 @@ public class MenagerieScreen extends Screen {
     private static final int GRID_TOP = 52;
 
     private final Screen parent;
+    private Button raftWoodButton;
+    private Button cushionButton;
+    private io.github.aaronateataco.petsandpals.mob.PetRaft raftPreview;
     private final List<PetList> allSpecies;
     private List<PetList> filtered;
     private final List<Button> gridWidgets = new ArrayList<>();
@@ -151,11 +154,22 @@ public class MenagerieScreen extends Screen {
         this.addRenderableWidget(new PercentSlider(panelX, y, PANEL_WIDTH, 20, "Volume", 0.0, 1.0,
                 CONFIG.petVolume == null ? 1.0f : CONFIG.petVolume, value -> CONFIG.petVolume = (float) value));
         y += 24;
-        this.addRenderableWidget(Button.builder(this.raftWoodLabel(), b -> {
+        this.raftWoodButton = this.addRenderableWidget(Button.builder(this.raftWoodLabel(), b -> {
             String[] woods = io.github.aaronateataco.petsandpals.mob.PetRaftBlock.WOODS;
             int i = java.util.Arrays.asList(woods).indexOf(CONFIG.raftWood);
             CONFIG.raftWood = woods[(i + 1) % woods.length];
+            this.raftPreview = null;
             b.setMessage(this.raftWoodLabel());
+        }).bounds(panelX, y, PANEL_WIDTH, 20).build());
+        y += 24;
+        this.cushionButton = this.addRenderableWidget(Button.builder(this.cushionLabel(), b -> {
+            // cycles through the 16 dyes plus a bare deck
+            List<String> options = new ArrayList<>(List.of(io.github.aaronateataco.petsandpals.mob.PetRaftBlock.DYES));
+            options.add("none");
+            int i = options.indexOf(CONFIG.cushionColor);
+            CONFIG.cushionColor = options.get((i + 1) % options.size());
+            this.raftPreview = null;
+            b.setMessage(this.cushionLabel());
         }).bounds(panelX, y, PANEL_WIDTH, 20).build());
         y += 28;
         this.addRenderableWidget(Button.builder(Component.literal("Advanced settings..."), b -> {
@@ -204,6 +218,31 @@ public class MenagerieScreen extends Screen {
         String wood = CONFIG.raftWood == null ? "spruce" : CONFIG.raftWood;
         String pretty = wood.replace('_', ' ');
         return Component.literal("Raft: " + Character.toUpperCase(pretty.charAt(0)) + pretty.substring(1));
+    }
+
+    private Component cushionLabel() {
+        String dye = CONFIG.cushionColor == null ? "none" : CONFIG.cushionColor;
+        String pretty = dye.equals("none") ? "none" : dye.replace('_', ' ');
+        return Component.literal("Cushion: " + Character.toUpperCase(pretty.charAt(0)) + pretty.substring(1));
+    }
+
+    /** Throwaway raft entity used only to extract a render state for the preview. */
+    private io.github.aaronateataco.petsandpals.mob.PetRaft raftPreview() {
+        if (this.raftPreview == null && this.minecraft != null && this.minecraft.level != null) {
+            var raft = new io.github.aaronateataco.petsandpals.mob.PetRaft(
+                    io.github.aaronateataco.petsandpals.PetsInitializer.PET_RAFT, this.minecraft.level);
+            String[] woods = io.github.aaronateataco.petsandpals.mob.PetRaftBlock.WOODS;
+            int style = Math.max(0, java.util.Arrays.asList(woods).indexOf(CONFIG.raftWood));
+            int cushion = "none".equals(CONFIG.cushionColor)
+                    ? io.github.aaronateataco.petsandpals.mob.PetRaftBlock.NO_CUSHION
+                    : Math.max(0, java.util.Arrays.asList(io.github.aaronateataco.petsandpals.mob.PetRaftBlock.DYES)
+                            .indexOf(CONFIG.cushionColor));
+            raft.blockState = io.github.aaronateataco.petsandpals.PetsInitializer.PET_RAFT_BLOCK.defaultBlockState()
+                    .setValue(io.github.aaronateataco.petsandpals.mob.PetRaftBlock.STYLE, style)
+                    .setValue(io.github.aaronateataco.petsandpals.mob.PetRaftBlock.CUSHION, cushion);
+            this.raftPreview = raft;
+        }
+        return this.raftPreview;
     }
 
     private Component petToggleLabel() {
@@ -291,11 +330,42 @@ public class MenagerieScreen extends Screen {
             graphics.text(this.font, this.selected.getDisplayName(), panelX, 38, 0xFFFFFFFF);
         }
 
+        int boxTop = GRID_TOP;
+        int boxBottom = GRID_TOP + PREVIEW_HEIGHT;
+
+        // hovering the raft/cushion buttons swaps the preview to the raft itself
+        boolean raftHover = (this.raftWoodButton != null && this.raftWoodButton.isHovered())
+                || (this.cushionButton != null && this.cushionButton.isHovered());
+        if (raftHover) {
+            var raft = this.raftPreview();
+            if (raft != null && this.minecraft != null) {
+                @SuppressWarnings({"rawtypes", "unchecked"})
+                net.minecraft.client.renderer.entity.EntityRenderer renderer =
+                        this.minecraft.getEntityRenderDispatcher().getRenderer(raft);
+                @SuppressWarnings("unchecked")
+                net.minecraft.client.renderer.entity.state.EntityRenderState state =
+                        renderer.createRenderState(raft, 1.0f);
+                state.shadowPieces.clear();
+                state.outlineColor = 0;
+                // slow turntable spin with a slight top-down tilt
+                float spin = (System.currentTimeMillis() % 8000L) / 8000.0F * ((float) Math.PI * 2.0F);
+                org.joml.Quaternionf tilt = new org.joml.Quaternionf().rotateX(-0.5F);
+                org.joml.Quaternionf pose = new org.joml.Quaternionf().rotateZ((float) Math.PI)
+                        .mul(tilt).rotateY(spin);
+                graphics.entity(state, 52.0F,
+                        new org.joml.Vector3f(0.0F, 0.35F, 0.0F), pose, tilt,
+                        panelX, boxTop, panelX + PANEL_WIDTH, boxBottom);
+                graphics.text(this.font, this.raftWoodLabel(), panelX, boxBottom - 10, 0xFFAAAAAA);
+                return;
+            }
+            graphics.text(this.font, Component.literal("Raft preview needs"), panelX, boxTop + 30, 0xFF888888);
+            graphics.text(this.font, Component.literal("a loaded world"), panelX, boxTop + 42, 0xFF888888);
+            return;
+        }
+
         // live preview: pet next to the player at one shared scale
         AbstractPet pet = this.selectedPreview();
         LivingEntity player = this.minecraft != null ? this.minecraft.player : null;
-        int boxTop = GRID_TOP;
-        int boxBottom = GRID_TOP + PREVIEW_HEIGHT;
         if (pet != null && player != null && !pet.isRemoved()) {
             float tallest = Math.max(player.getBbHeight(), pet.getBbHeight());
             int scale = Math.max(8, (int) ((PREVIEW_HEIGHT - 20) / tallest));

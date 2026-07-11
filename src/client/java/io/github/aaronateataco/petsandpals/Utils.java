@@ -35,6 +35,19 @@ import static io.github.aaronateataco.petsandpals.PetsInitializer.MOD_ID;
  */
 public class Utils {
 
+    // Client-only entities get ids from Level.getNextEntityId(), which ClientLevel doesn't
+    // implement - everything comes back 0, so each addEntity() silently deletes the previous
+    // one (addEntity removes any entity with the same id first). Hand out our own ids from
+    // the negative range; the server only ever assigns positive ones.
+    private static final java.util.concurrent.atomic.AtomicInteger CLIENT_ENTITY_IDS =
+            new java.util.concurrent.atomic.AtomicInteger(-1000);
+
+    /** Adds a client-only entity with a collision-free id. Use this, never addEntity directly. */
+    public static void spawnClientEntity(ClientLevel world, Entity entity) {
+        entity.setId(CLIENT_ENTITY_IDS.decrementAndGet());
+        world.addEntity(entity);
+    }
+
     /**
      * Used to summon a pet.
      *
@@ -68,15 +81,15 @@ public class Utils {
         if (dwellingBlock != null && frontPos != null) {
             entity.setPos(frontPos.getX() + 0.5, frontPos.getY(), frontPos.getZ() + 0.5);
             entity.setInvisible(true);
-            world.addEntity(entity);
-            world.addEntity(PetDwelling.create(world, frontPos, dwellingBlock, entity));
+            spawnClientEntity(world, entity);
+            spawnClientEntity(world, PetDwelling.create(world, frontPos, dwellingBlock, entity));
         } else if (frontPos != null) {
             // Every pet spawns in front of the camera, not underfoot/behind.
             entity.setPos(frontPos.getX() + 0.5, frontPos.getY(), frontPos.getZ() + 0.5);
-            world.addEntity(entity);
+            spawnClientEntity(world, entity);
         } else {
             entity.setPos(x, y, z);
-            world.addEntity(entity);
+            spawnClientEntity(world, entity);
         }
         entity.tame(player);
         Central.summonedEntity.add(entity);

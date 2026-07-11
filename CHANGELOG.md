@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.14.8
+- Fixed disappearing pets, rafts and spawn orbs: every client-side entity was being created with the same internal id, so each new one silently deleted the last. Pets, dwellings, rafts and orbs now get their own ids
+- Cushions backported from the 26.3 snapshot! Pick any of the 16 dye colors for your raft's cushion in the Menagerie (bare deck stays the default on this version)
+- Menagerie: hover the raft or cushion button to see a live spinning preview of your raft
+- Stairs no longer trip sprinting pets - shallow drops read as slopes, not cliffs
+- Pits deeper than 3 blocks now count as cliffs; pets stop at the edge instead of diving in
+- If the pet can't catch up mid-sprint it now re-enters from behind the camera instead of lagging behind until you stop and sprint again
+
 ## 0.14.7
 - Pets, spawn bushes, and repositions can no longer be placed underwater - fixes the spawn animation looping, foxes appearing under the sea, and raft flicker over water
 - Default keybind moved from P (vanilla social menu) to ; (semicolon)

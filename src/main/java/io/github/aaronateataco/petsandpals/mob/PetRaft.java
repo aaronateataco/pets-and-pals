@@ -34,7 +34,8 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
     public static PetRaft create(Level level, AbstractPet pet, AbstractBoat boat) {
         PetRaft raft = new PetRaft(PetsInitializer.PET_RAFT, level);
         raft.blockState = PetsInitializer.PET_RAFT_BLOCK.defaultBlockState()
-                .setValue(PetRaftBlock.STYLE, styleFor(boat));
+                .setValue(PetRaftBlock.STYLE, styleFor(boat))
+                .setValue(PetRaftBlock.CUSHION, cushionValue());
         raft.pet = pet;
         Vec3 side = sideAnchor(boat);
         raft.setPos(side.x, side.y, side.z);
@@ -58,11 +59,16 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
     public static PetRaft createFerry(Level level, AbstractPet pet) {
         PetRaft raft = new PetRaft(PetsInitializer.PET_RAFT, level);
         raft.blockState = PetsInitializer.PET_RAFT_BLOCK.defaultBlockState()
-                .setValue(PetRaftBlock.STYLE, Math.floorMod(AbstractPet.raftStyle.getAsInt(), PetRaftBlock.WOODS.length));
+                .setValue(PetRaftBlock.STYLE, Math.floorMod(AbstractPet.raftStyle.getAsInt(), PetRaftBlock.WOODS.length))
+                .setValue(PetRaftBlock.CUSHION, cushionValue());
         raft.pet = pet;
         raft.ferry = true;
         raft.setPos(pet.getX(), pet.getY(), pet.getZ());
         return raft;
+    }
+
+    private static int cushionValue() {
+        return Math.floorMod(AbstractPet.cushionColor.getAsInt(), PetRaftBlock.NO_CUSHION + 1);
     }
 
     /** Match the raft wood to the boat being ridden; config style is the fallback. */
