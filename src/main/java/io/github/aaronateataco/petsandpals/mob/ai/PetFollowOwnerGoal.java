@@ -191,6 +191,10 @@ public class PetFollowOwnerGoal extends Goal {
                         }
                         if ((blocked && headroom) || (gap && landing) || this.pet.horizontalCollision) {
                             this.pet.getJumpControl().jump();
+                        } else if (gap) {
+                            // cliff with no landing: stop at the edge instead of yeeting off
+                            this.pet.getMoveControl().setWantedPosition(
+                                    this.pet.getX(), this.pet.getY(), this.pet.getZ(), 0.0);
                         }
                     }
                 }
