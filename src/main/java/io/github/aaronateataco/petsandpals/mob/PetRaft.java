@@ -18,6 +18,10 @@ import org.jetbrains.annotations.NotNull;
 public class PetRaft extends FallingBlockEntity {
 
     private AbstractPet pet;
+    private Vec3 velocity = Vec3.ZERO;
+    private int idleTimer = 40;
+    private int idleAction = 0; // 0 stand, 1 sit, 2 look left, 3 look right
+
 
     public PetRaft(EntityType<? extends @NotNull FallingBlockEntity> type, Level level) {
         super(type, level);
@@ -54,15 +58,18 @@ public class PetRaft extends FallingBlockEntity {
             return;
         }
 
-        // trail the boat with a light lerp, tiny bob so it reads as floating
-        Vec3 anchor = sideAnchor(boat).add(0.0, 0.02 * Math.sin(this.tickCount * 0.1), 0.0);
+        // towed-feel physics: spring toward the anchor with damping so the raft
+        // swings wide in turns and settles, instead of gliding on rails
+        Vec3 anchor = sideAnchor(boat).add(0.0, 0.03 * Math.sin(this.tickCount * 0.09), 0.0);
+        // sit on top of the water: boats float sunken, the raft base is a flat box
+        anchor = new Vec3(anchor.x, boat.getY() + 0.45, anchor.z);
         Vec3 delta = anchor.subtract(this.position());
-        double distance = delta.length();
-        if (distance > 12.0) {
+        if (delta.length() > 12.0) {
             this.snapTo(anchor.x, anchor.y, anchor.z, 0.0F, 0.0F);
+            this.velocity = Vec3.ZERO;
         } else {
-            double k = Mth.clamp(0.12 + distance * 0.15, 0.12, 0.6);
-            Vec3 next = this.position().add(delta.scale(k));
+            this.velocity = this.velocity.add(delta.scale(0.06)).scale(0.80);
+            Vec3 next = this.position().add(this.velocity);
             this.setPos(next.x, next.y, next.z);
         }
 
@@ -70,13 +77,31 @@ public class PetRaft extends FallingBlockEntity {
         this.pet.setPos(this.getX(), this.getY() + 0.19, this.getZ());
         this.pet.setDeltaMovement(Vec3.ZERO);
         this.pet.fallDistance = 0;
-        this.pet.setYRot(boat.getYRot());
-        this.pet.yBodyRot = boat.getYRot();
-        this.pet.setYHeadRot(boat.getYRot());
+        this.tickDeckIdle(boat);
+    }
+
+    // little life on deck: sitting, standing back up, looking around
+    private void tickDeckIdle(AbstractBoat boat) {
+        if (--this.idleTimer <= 0) {
+            this.idleTimer = 50 + this.pet.getRandom().nextInt(120);
+            this.idleAction = this.pet.getRandom().nextInt(4);
+            this.pet.setInSittingPose(this.idleAction == 1);
+        }
+        float baseYaw = boat.getYRot();
+        this.pet.setYRot(baseYaw);
+        this.pet.yBodyRot = baseYaw;
+        float headYaw = switch (this.idleAction) {
+            case 2 -> baseYaw - 45.0F;
+            case 3 -> baseYaw + 45.0F;
+            default -> baseYaw;
+        };
+        // ease the head toward its target so glances look natural
+        this.pet.setYHeadRot(Mth.approachDegrees(this.pet.getYHeadRot(), headYaw, 4.0F));
     }
 
     private void release() {
         if (this.pet != null && !this.pet.isRemoved()) {
+            this.pet.setInSittingPose(false);
             this.pet.setRafted(false);
         }
         this.discard();
