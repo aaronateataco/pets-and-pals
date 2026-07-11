@@ -65,6 +65,12 @@ public class MenagerieScreen extends Screen {
     // element categories
     private enum Element { ALL, LAND, SKY, SEA }
 
+    // public builds only unlock the polished pets for now; a .pnp_testing file in
+    // the game dir (dev instances have one) opens the whole catalog
+    private static final java.util.Set<String> PUBLIC_PETS = java.util.Set.of(
+            "copper_golem", "fox", "cat", "bee");
+    private final boolean testingCatalog;
+
     private static final java.util.Set<String> SKY_PETS = java.util.Set.of(
             "allay", "bat", "bee", "blaze", "breeze", "ghast", "happy_ghast", "angry_ghast",
             "parrot", "phantom", "vex", "wither", "pink_wither", "ender_dragon");
@@ -83,6 +89,8 @@ public class MenagerieScreen extends Screen {
     public MenagerieScreen(Screen parent) {
         super(Component.literal("Menagerie"));
         this.parent = parent;
+        this.testingCatalog = java.nio.file.Files.exists(
+                net.minecraft.client.Minecraft.getInstance().gameDirectory.toPath().resolve(".pnp_testing"));
         this.allSpecies = new ArrayList<>(List.of(PetList.values()));
         this.allSpecies.sort(Comparator.comparing(p -> p.getDisplayName().getString()));
         this.filtered = this.allSpecies;
@@ -270,13 +278,22 @@ public class MenagerieScreen extends Screen {
             int x = 12 + col * (CELL_WIDTH + CELL_GAP);
             int y = GRID_TOP + row * (CELL_HEIGHT + CELL_GAP);
             boolean isActive = species.name().equals(CONFIG.activePet);
+            boolean isPublic = PUBLIC_PETS.contains(species.name());
+            boolean unlocked = isPublic || this.testingCatalog;
             String label = (isActive ? "✔ " : "") + species.getDisplayName().getString();
+            if (this.testingCatalog && !isPublic) {
+                label = "⚗ " + label;
+            }
             Button cell = Button.builder(Component.literal(label), b -> {
                 this.selected = species;
                 this.applySelected();
                 this.rebuildGrid();
             }).bounds(x, y, CELL_WIDTH, CELL_HEIGHT).build();
-            cell.active = species != this.selected;
+            cell.active = unlocked && species != this.selected;
+            if (!unlocked) {
+                cell.setTooltip(net.minecraft.client.gui.components.Tooltip.create(
+                        Component.literal("Coming soon")));
+            }
             this.gridWidgets.add(this.addRenderableWidget(cell));
         }
 
