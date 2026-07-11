@@ -4,6 +4,9 @@
 - Cushion colors! All 16 dyes on the Mk2 raft, with a favorite-cushion picker in the Menagerie - real snapshot cushion textures, so packs restyle them
 - Fixed the cushion texture path (the snapshot ships cushions as entities; their textures are now merged into the block atlas)
 - Includes the 0.14.1 fixes: cliff guard, ferry rafts, boat-matched raft wood
+## 0.14.6
+- Fixed pets endlessly teleporting instead of walking on 26.3 snapshots: the snapshot broke client-side pathfinding, so pets now steer directly at you (with step-hopping and surface swimming) whenever pathfinding is unavailable
+
 ## 0.14.5
 - Fixed the raft spawning a duplicate every tick while boating (the glitchy pile-up of rafts fighting over your pet)
 - Ferry rafts now wait beside a swimming owner instead of dropping the pet back into the water
