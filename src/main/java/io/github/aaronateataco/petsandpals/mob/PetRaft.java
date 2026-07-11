@@ -32,7 +32,8 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
 
     public static PetRaft create(Level level, AbstractPet pet, AbstractBoat boat) {
         PetRaft raft = new PetRaft(PetsInitializer.PET_RAFT, level);
-        raft.blockState = PetsInitializer.PET_RAFT_BLOCK.defaultBlockState();
+        raft.blockState = PetsInitializer.PET_RAFT_BLOCK.defaultBlockState()
+                .setValue(PetRaftBlock.STYLE, Math.floorMod(AbstractPet.raftStyle.getAsInt(), PetRaftBlock.WOODS.length));
         raft.pet = pet;
         Vec3 side = sideAnchor(boat);
         raft.setPos(side.x, side.y, side.z);
@@ -50,10 +51,13 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
         this.leashData = leashData;
     }
 
+    private static final double ROPE_LENGTH = 2.8;
+
     private static Vec3 sideAnchor(AbstractBoat boat) {
+        // spawn position: directly behind the boat
         float rad = boat.getYRot() * ((float) Math.PI / 180.0F);
-        Vec3 right = new Vec3(-Mth.cos(rad), 0.0, -Mth.sin(rad));
-        return boat.position().add(right.scale(2.3));
+        Vec3 forward = new Vec3(-Mth.sin(rad), 0.0, Mth.cos(rad));
+        return boat.position().subtract(forward.scale(ROPE_LENGTH));
     }
 
     @Override
@@ -70,19 +74,32 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
             return;
         }
 
-        // towed-feel physics: spring toward the anchor with damping so the raft
-        // swings wide in turns and settles, instead of gliding on rails
-        Vec3 anchor = sideAnchor(boat);
-        double surface = this.waterSurfaceY(anchor.x, boat.getY(), anchor.z);
-        anchor = new Vec3(anchor.x, surface - 0.01 + 0.02 * Math.sin(this.tickCount * 0.09), anchor.z);
-        Vec3 delta = anchor.subtract(this.position());
-        if (delta.length() > 12.0) {
-            this.snapTo(anchor.x, anchor.y, anchor.z, 0.0F, 0.0F);
+        // rope physics: the raft is pulled only when the rope to the boat goes taut,
+        // drifts with water drag otherwise - it trails behind, swings wide in turns,
+        // and straightens out when cruising
+        Vec3 toBoat = new Vec3(boat.getX() - this.getX(), 0.0, boat.getZ() - this.getZ());
+        double ropeDistance = toBoat.length();
+        if (ropeDistance > 14.0) {
+            Vec3 reset = sideAnchor(boat);
+            double y0 = this.waterSurfaceY(reset.x, boat.getY(), reset.z);
+            this.snapTo(reset.x, y0 - 0.01, reset.z, 0.0F, 0.0F);
             this.velocity = Vec3.ZERO;
         } else {
-            this.velocity = this.velocity.add(delta.scale(0.06)).scale(0.80);
-            Vec3 next = this.position().add(this.velocity);
-            this.setPos(next.x, next.y, next.z);
+            if (ropeDistance > ROPE_LENGTH) {
+                this.velocity = this.velocity.add(toBoat.scale((ropeDistance - ROPE_LENGTH) * 0.12 / ropeDistance));
+            }
+            this.velocity = this.velocity.scale(0.86);
+            double nextX = this.getX() + this.velocity.x;
+            double nextZ = this.getZ() + this.velocity.z;
+            // locked to water: never slides onto land - if the next column has no water,
+            // stay put and bleed the motion off
+            double surface = this.waterSurfaceY(nextX, boat.getY(), nextZ);
+            if (surface == Double.MIN_VALUE) {
+                this.velocity = this.velocity.scale(0.3);
+            } else {
+                double bob = 0.02 * Math.sin(this.tickCount * 0.09);
+                this.setPos(nextX, surface - 0.01 + bob, nextZ);
+            }
         }
 
         // pet rides the deck (hull is 1px, deck top is +0.0625)
@@ -111,7 +128,7 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
         this.pet.setYHeadRot(Mth.approachDegrees(this.pet.getYHeadRot(), headYaw, 4.0F));
     }
 
-    // actual water surface at this column, so the hull sits ON the water
+    // actual water surface at this column; MIN_VALUE when there's no water (land)
     private double waterSurfaceY(double x, double aroundY, double z) {
         for (int dy = 2; dy >= -2; dy--) {
             net.minecraft.core.BlockPos pos = net.minecraft.core.BlockPos.containing(x, aroundY + dy, z);
@@ -120,7 +137,7 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
                 return pos.getY() + fluid.getHeight(this.level(), pos);
             }
         }
-        return aroundY + 0.45;
+        return Double.MIN_VALUE;
     }
 
     private void release() {

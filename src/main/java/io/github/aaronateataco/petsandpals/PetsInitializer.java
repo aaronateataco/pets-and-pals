@@ -3,6 +3,7 @@ package io.github.aaronateataco.petsandpals;
 import io.github.aaronateataco.petsandpals.mob.PetDwelling;
 import io.github.aaronateataco.petsandpals.mob.PetOrb;
 import io.github.aaronateataco.petsandpals.mob.PetRaft;
+import io.github.aaronateataco.petsandpals.mob.PetRaftBlock;
 import io.github.aaronateataco.petsandpals.mob.aprilfools.*;
 import io.github.aaronateataco.petsandpals.mob.custom.aprilfools.Head;
 import io.github.aaronateataco.petsandpals.mob.custom.aquatic.DumboOctopus;
@@ -56,10 +57,10 @@ public class PetsInitializer implements ModInitializer {
     private static final ResourceKey<net.minecraft.world.level.block.@NotNull Block> PET_RAFT_BLOCK_KEY =
             ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MOD_ID, "pet_raft"));
     /** Never placed in the world; exists so the raft entity has a block model to render. */
-    public static final net.minecraft.world.level.block.Block PET_RAFT_BLOCK = Registry.register(
+    public static final PetRaftBlock PET_RAFT_BLOCK = Registry.register(
             BuiltInRegistries.BLOCK,
             Identifier.fromNamespaceAndPath(MOD_ID, "pet_raft"),
-            new net.minecraft.world.level.block.Block(
+            new PetRaftBlock(
                     net.minecraft.world.level.block.state.BlockBehaviour.Properties.of()
                             .setId(PET_RAFT_BLOCK_KEY)
                             .noCollision()

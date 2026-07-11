@@ -20,6 +20,7 @@ public class PetsConfig implements ConfigData {
     public String activePet;
     public float petSpeed = 1.0f;
     public Float petVolume = 1.0f;
+    public String raftWood = "spruce";
     public String penguinName;
     public String duckName;
     public String racoonName;

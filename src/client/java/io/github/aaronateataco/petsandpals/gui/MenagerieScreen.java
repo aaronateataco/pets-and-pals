@@ -150,6 +150,13 @@ public class MenagerieScreen extends Screen {
         y += 24;
         this.addRenderableWidget(new PercentSlider(panelX, y, PANEL_WIDTH, 20, "Volume", 0.0, 1.0,
                 CONFIG.petVolume == null ? 1.0f : CONFIG.petVolume, value -> CONFIG.petVolume = (float) value));
+        y += 24;
+        this.addRenderableWidget(Button.builder(this.raftWoodLabel(), b -> {
+            String[] woods = io.github.aaronateataco.petsandpals.mob.PetRaftBlock.WOODS;
+            int i = java.util.Arrays.asList(woods).indexOf(CONFIG.raftWood);
+            CONFIG.raftWood = woods[(i + 1) % woods.length];
+            b.setMessage(this.raftWoodLabel());
+        }).bounds(panelX, y, PANEL_WIDTH, 20).build());
         y += 28;
         this.addRenderableWidget(Button.builder(Component.literal("Advanced settings..."), b -> {
             if (this.minecraft != null) {
@@ -191,6 +198,12 @@ public class MenagerieScreen extends Screen {
 
     private int pageSize() {
         return this.columns * this.rows;
+    }
+
+    private Component raftWoodLabel() {
+        String wood = CONFIG.raftWood == null ? "spruce" : CONFIG.raftWood;
+        String pretty = wood.replace('_', ' ');
+        return Component.literal("Raft: " + Character.toUpperCase(pretty.charAt(0)) + pretty.substring(1));
     }
 
     private Component petToggleLabel() {

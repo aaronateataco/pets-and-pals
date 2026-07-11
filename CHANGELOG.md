@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.14.0
+- Raft wood is now customizable: 12 plank styles (oak through warped) selectable in the Menagerie, using the game's own textures so resource packs restyle them
+- Realistic tow physics: the raft trails BEHIND your boat on a taut-rope model - it drifts with water drag, gets yanked when the rope tightens, and swings wide through turns
+- Rafts are locked to water: they can never slide onto land
+
 ## 0.13.1
 - Sprinting pets now swim properly at the water surface instead of wallowing when the route crosses water
 - Parkour: sprinting pets leap gaps when there's a landing within a few blocks, and hop steps before bumping into them
