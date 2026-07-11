@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.14.9
+- Fixed the raft cushion showing the whole cushion texture sheet instead of its proper faces (the cushion texture is an entity-style unwrap, not a flat tile)
+- Public builds now unlock the polished pets first: Copper Golem, Fox, Cat (all 12 skins, including ocelot) and Bee - the rest of the catalog shows greyed out as "coming soon" while each species gets the full movement treatment
+
 ## 0.14.8
 - Fixed the endless spawn-animation loop (and disappearing rafts/orbs): every client-side entity was being created with the same internal id, so each new one silently deleted the last. Pets, dwellings, rafts and orbs now get their own ids
 - Menagerie: hover the raft or cushion button to see a live spinning preview of your raft
