@@ -337,6 +337,14 @@ public class Central implements ClientModInitializer {
      * see {@link Utils#summonPet}
      */
     public static void summonPet() {
+        // Idempotency guard: no code path may ever produce two live pets (join handler
+        // + tick watcher racing, GUI apply + Summon, world changes...).
+        summonedEntity.removeIf(Entity::isRemoved);
+        if (!summonedEntity.isEmpty()) {
+            despawnPet();
+            summonedEntity.removeIf(Entity::isRemoved);
+            summonedEntity.clear();
+        }
         Minecraft minecraft = Minecraft.getInstance();
         ClientLevel world = minecraft.level;
         duck = new Duck(PetsInitializer.DUCK, world);
@@ -2040,12 +2048,9 @@ public class Central implements ClientModInitializer {
             // none of its own never-lose logic can run - it would be frozen out there
             // forever. From here we can always pull it back.
             if (this.i % 20 == 0 && client.player != null && world != null) {
+                summonedEntity.removeIf(Entity::isRemoved);
                 for (Entity summoned : summonedEntity) {
                     if (!(summoned instanceof AbstractPet pet)) continue;
-                    if (pet.isRemoved()) {
-                        summonedEntity.clear();
-                        break;
-                    }
                     if (pet.level() == world && !pet.isPerched()
                             && pet.distanceToSqr(client.player) > 40.0 * 40.0) {
                         pet.repositionToOwner();

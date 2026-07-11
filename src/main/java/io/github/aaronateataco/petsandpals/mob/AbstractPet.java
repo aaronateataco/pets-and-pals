@@ -226,6 +226,11 @@ public abstract class AbstractPet extends TamableAnimal {
             if (!this.perched) {
                 LivingEntity trackedOwner = this.getOwner();
                 if (trackedOwner != null && trackedOwner.level() == this.level()) {
+                    // Flyer ceiling: never hover more than ~3.5 blocks above the owner's
+                    // head - gently sink back down instead of drifting into the sky.
+                    if (this.followYOffset() > 0.0F && this.getY() > trackedOwner.getY() + 3.5) {
+                        this.setDeltaMovement(this.getDeltaMovement().add(0.0, -0.04, 0.0));
+                    }
                     double distSqr = this.distanceToSqr(trackedOwner);
                     if (distSqr > 20.0 * 20.0) {
                         // Hard cap regardless of view direction: at this range the pet is a
@@ -479,11 +484,35 @@ public abstract class AbstractPet extends TamableAnimal {
     }
 
     /**
-     * The "home" block this pet emerges from in the spawn animation (a bee nest for the
-     * bee). Null (the default) skips the animation and spawns the pet normally.
+     * The "home" block this pet emerges from in the spawn animation. Defaults are themed
+     * per species below; null skips the animation and the pet just spawns in front of you.
      */
     public @Nullable BlockState spawnDwellingBlock() {
-        return null;
+        String path = BuiltInRegistries.ENTITY_TYPE.getKey(this.getType()).getPath();
+        net.minecraft.world.level.block.Block block = switch (path) {
+            case "clientbee" -> net.minecraft.world.level.block.Blocks.BEE_NEST;
+            case "clientfox" -> net.minecraft.world.level.block.Blocks.SWEET_BERRY_BUSH;
+            case "clientchicken", "diamond_chicken" -> net.minecraft.world.level.block.Blocks.HAY_BLOCK;
+            case "clientrabbit" -> net.minecraft.world.level.block.Blocks.GRASS_BLOCK;
+            case "clientslime" -> net.minecraft.world.level.block.Blocks.SLIME_BLOCK;
+            case "clientmagmacube", "clientblaze" -> net.minecraft.world.level.block.Blocks.MAGMA_BLOCK;
+            case "clientzombie", "clienthusk", "clientdrowned", "clientzombievillager" ->
+                    net.minecraft.world.level.block.Blocks.COARSE_DIRT;
+            case "clientskeleton", "clientstray", "clientbogged", "clientparched",
+                 "clientwitherskeleton", "clientwolf" -> net.minecraft.world.level.block.Blocks.BONE_BLOCK;
+            case "clientspider", "clientcavespider" -> net.minecraft.world.level.block.Blocks.COBWEB;
+            case "clientenderman", "clientendermite" -> net.minecraft.world.level.block.Blocks.END_STONE;
+            case "clientallay", "clientvex" -> net.minecraft.world.level.block.Blocks.AMETHYST_BLOCK;
+            case "clientcat" -> net.minecraft.world.level.block.Blocks.HAY_BLOCK;
+            case "clientfrog", "clienttadpole" -> net.minecraft.world.level.block.Blocks.MUD;
+            case "clientmooshroom" -> net.minecraft.world.level.block.Blocks.RED_MUSHROOM_BLOCK;
+            case "clientaxolotl" -> net.minecraft.world.level.block.Blocks.CLAY;
+            case "clientguardian", "clientelderguardian" -> net.minecraft.world.level.block.Blocks.PRISMARINE;
+            case "clientsniffer" -> net.minecraft.world.level.block.Blocks.MOSS_BLOCK;
+            case "clientturtle" -> net.minecraft.world.level.block.Blocks.SAND;
+            default -> null;
+        };
+        return block == null ? null : block.defaultBlockState();
     }
 
     private void tickPerched() {

@@ -60,6 +60,25 @@ public class MenagerieScreen extends Screen {
     private int columns = 3;
     private int rows = 6;
     private String query = "";
+    private Element element = Element.ALL;
+
+    /** Skylanders-style element categories. */
+    private enum Element { ALL, LAND, SKY, SEA }
+
+    private static final java.util.Set<String> SKY_PETS = java.util.Set.of(
+            "allay", "bat", "bee", "blaze", "breeze", "ghast", "happy_ghast", "angry_ghast",
+            "parrot", "phantom", "vex", "wither", "pink_wither", "ender_dragon");
+    private static final java.util.Set<String> SEA_PETS = java.util.Set.of(
+            "squid", "cod", "salmon", "tropical_fish", "pufferfish", "tadpole", "axolotl",
+            "dolphin", "nautilus", "guardian", "elder_guardian", "koi", "stingray",
+            "dumbo_octopus", "turtle", "plaguewhale_slab", "toxifin_slab");
+
+    private static Element elementOf(PetList species) {
+        String name = species.name().toLowerCase(Locale.ROOT);
+        if (SEA_PETS.contains(name)) return Element.SEA;
+        if (SKY_PETS.contains(name)) return Element.SKY;
+        return Element.LAND;
+    }
 
     public MenagerieScreen(Screen parent) {
         super(Component.literal("Menagerie"));
@@ -90,6 +109,22 @@ public class MenagerieScreen extends Screen {
             this.rebuildGrid();
         });
         this.addRenderableWidget(this.searchBox);
+
+        // Element tabs, Skylanders SuperChargers style.
+        int tabX = this.searchBox.getX() + this.searchBox.getWidth() + 6;
+        for (Element el : Element.values()) {
+            Element tabElement = el;
+            Button tab = Button.builder(Component.literal(switch (el) {
+                case ALL -> "All"; case LAND -> "Land"; case SKY -> "Sky"; case SEA -> "Sea";
+            }), b -> {
+                this.element = tabElement;
+                this.page = 0;
+                this.applyFilter();
+                this.rebuildGrid();
+            }).bounds(tabX, 26, 34, 18).build();
+            tabX += 36;
+            this.addRenderableWidget(tab);
+        }
 
         int pageY = this.height - 28;
         this.prevButton = this.addRenderableWidget(Button.builder(Component.literal("<"), b -> {
@@ -171,13 +206,10 @@ public class MenagerieScreen extends Screen {
 
     private void applyFilter() {
         String q = this.query.trim().toLowerCase(Locale.ROOT);
-        if (q.isEmpty()) {
-            this.filtered = this.allSpecies;
-        } else {
-            this.filtered = this.allSpecies.stream()
-                    .filter(p -> p.getDisplayName().getString().toLowerCase(Locale.ROOT).contains(q))
-                    .toList();
-        }
+        this.filtered = this.allSpecies.stream()
+                .filter(p -> this.element == Element.ALL || elementOf(p) == this.element)
+                .filter(p -> q.isEmpty() || p.getDisplayName().getString().toLowerCase(Locale.ROOT).contains(q))
+                .toList();
     }
 
     private void rebuildGrid() {

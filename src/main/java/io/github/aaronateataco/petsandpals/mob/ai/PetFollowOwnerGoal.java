@@ -55,6 +55,11 @@ public class PetFollowOwnerGoal extends Goal {
     private int glanceTicks;
     private int glanceCooldown;
     private int alongsideLagTicks;
+    /** Ring buffer of the owner's recent head yaw - the pet reacts to WHERE YOU WERE
+     * looking ~0.4s ago and visibly corrects, like a real animal, instead of snapping
+     * to keyboard inputs the same tick. */
+    private final float[] yawHistory = new float[8];
+    private int yawIndex = -1;
 
     public PetFollowOwnerGoal(AbstractPet pet, double speedModifier, float startDistance, float stopDistance) {
         this.pet = pet;
@@ -123,6 +128,13 @@ public class PetFollowOwnerGoal extends Goal {
 
     @Override
     public void tick() {
+        if (this.yawIndex < 0) {
+            java.util.Arrays.fill(this.yawHistory, this.owner.getYHeadRot());
+            this.yawIndex = 0;
+        }
+        this.yawHistory[this.yawIndex] = this.owner.getYHeadRot();
+        this.yawIndex = (this.yawIndex + 1) % this.yawHistory.length;
+
         boolean alongside = this.runningAlongside();
         if (alongside != this.wasAlongside) {
             this.wasAlongside = alongside;
@@ -167,9 +179,18 @@ public class PetFollowOwnerGoal extends Goal {
                 if (++this.alongsideLagTicks >= 15) {
                     this.alongsideLagTicks = 0;
                     if (this.pet.ownerInViewCone()) {
-                        // Watched: no teleporting - full burst so it visibly sprints into place.
+                        // Watched: glide OFF camera first - full-burst run to just behind the
+                        // player. Once it leaves the view cone, the unwatched branch performs
+                        // the leap entrance. The whole maneuver is visible motion, no pops.
                         this.smoothedBoost = MAX_ALONGSIDE_BOOST - 1.0;
                         this.updateAlongsideBoost();
+                        Vec3 behind = this.behindCameraPoint();
+                        this.pet.getNavigation().moveTo(
+                                behind.x,
+                                this.owner.getY() + this.pet.followYOffset(),
+                                behind.z,
+                                this.speedModifier * AbstractPet.speedMultiplier.getAsDouble());
+                        this.timeToRecalcPath = this.adjustedTickDelay(5);
                     } else {
                         this.leapEntrance();
                         return;
@@ -223,12 +244,7 @@ public class PetFollowOwnerGoal extends Goal {
             anchor = this.alongsideAnchor();
         }
 
-        Vec3 forward = Vec3.directionFromRotation(0.0F, this.owner.getYHeadRot());
-        forward = new Vec3(forward.x, 0.0, forward.z).normalize();
-        Vec3 right = new Vec3(-forward.z, 0.0, forward.x);
-        Vec3 behind = this.owner.position()
-                .subtract(forward.scale(2.2))
-                .add(right.scale(0.9 * this.alongsideSide));
+        Vec3 behind = this.behindCameraPoint();
 
         boolean placed = false;
         if (this.pet.followYOffset() > 0.0F) {
@@ -263,14 +279,30 @@ public class PetFollowOwnerGoal extends Goal {
         this.timeToRecalcPath = this.adjustedTickDelay(5);
     }
 
+    /** A point just behind the camera, slightly to the formation side - off screen. */
+    private Vec3 behindCameraPoint() {
+        Vec3 forward = Vec3.directionFromRotation(0.0F, this.owner.getYHeadRot());
+        forward = new Vec3(forward.x, 0.0, forward.z).normalize();
+        Vec3 right = new Vec3(-forward.z, 0.0, forward.x);
+        return this.owner.position()
+                .subtract(forward.scale(2.2))
+                .add(right.scale(0.9 * this.alongsideSide));
+    }
+
     /**
      * The formation point: well ahead of the camera (so the pet sits comfortably on
      * screen, not at the bottom edge) and offset to whichever side the pet is already
      * on - it may switch sides naturally if it drifts across, with hysteresis so it
      * doesn't flicker between them.
      */
+    /** The owner's head yaw from ~0.4s ago (reaction delay - see yawHistory). */
+    private float delayedHeadYaw() {
+        if (this.yawIndex < 0) return this.owner.getYHeadRot();
+        return this.yawHistory[this.yawIndex]; // oldest slot (about to be overwritten)
+    }
+
     private Vec3 alongsideAnchor() {
-        Vec3 forward = Vec3.directionFromRotation(0.0F, this.owner.getYHeadRot());
+        Vec3 forward = Vec3.directionFromRotation(0.0F, this.delayedHeadYaw());
         forward = new Vec3(forward.x, 0.0, forward.z).normalize();
         Vec3 right = new Vec3(-forward.z, 0.0, forward.x);
 
