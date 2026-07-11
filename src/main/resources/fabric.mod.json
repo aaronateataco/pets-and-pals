@@ -25,9 +25,6 @@
     "client": [
       "io.github.aaronateataco.petsandpals.PetsClientInitializer",
       "io.github.aaronateataco.petsandpals.Central"
-    ],
-    "modmenu": [
-      "io.github.aaronateataco.petsandpals.PetsConfigScreen"
     ]
   },
   "mixins": [
@@ -42,8 +39,7 @@
     "minecraft": ">=26.3-",
     "java": ">=25",
     "cloth-config": "*",
-    "fabric-api": "*",
-    "modmenu": "*"
+    "fabric-api": "*"
   },
   "custom": {
     "modmenu": {
@@ -53,6 +49,7 @@
     }
   },
   "suggests": {
-    "yet_another_config_lib_v3": "*"
+    "yet_another_config_lib_v3": "*",
+    "modmenu": "*"
   }
 }

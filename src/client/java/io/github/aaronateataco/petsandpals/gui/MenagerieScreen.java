@@ -168,7 +168,7 @@ public class MenagerieScreen extends Screen {
         if (net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("yet_another_config_lib_v3"))
         this.addRenderableWidget(Button.builder(Component.literal("Advanced settings..."), b -> {
             if (this.minecraft != null) {
-                this.minecraft.gui.setScreen(PetsConfigScreen.getInstance().getAdvancedConfigScreenFactory().create(this));
+                this.minecraft.gui.setScreen(PetsConfigScreen.getInstance().getAdvancedConfigScreenFactory().apply(this));
             }
         }).bounds(panelX, y, PANEL_WIDTH, 20).build());
 
