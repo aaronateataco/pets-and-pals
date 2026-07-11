@@ -6,6 +6,7 @@
 - New "Cushion: None" option for a bare deck, and poplar as a 13th raft wood
 - The cushion color you pick now actually applies to the raft (it was stuck on red)
 - Stairs no longer trip sprinting pets - shallow drops read as slopes, not cliffs
+- Pets no longer hop onto carpets and other flat blocks they can simply walk over
 - Pits deeper than 3 blocks now count as cliffs; pets stop at the edge instead of diving in
 - If the pet can't catch up mid-sprint it now re-enters from behind the camera instead of lagging behind until you stop and sprint again
 

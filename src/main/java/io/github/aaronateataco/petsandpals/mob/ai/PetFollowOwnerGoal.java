@@ -170,9 +170,9 @@ public class PetFollowOwnerGoal extends Goal {
                         double nx = sdx / len, nz = sdz / len;
                         BlockPos ahead = BlockPos.containing(
                                 this.pet.getX() + nx * 0.9, this.pet.getY() + 0.1, this.pet.getZ() + nz * 0.9);
-                        // step-up: hop blocks before bumping them
-                        boolean blocked = !this.pet.level().getBlockState(ahead)
-                                .getCollisionShape(this.pet.level(), ahead).isEmpty();
+                        // step-up: hop blocks before bumping them (carpets and other
+                        // sub-step shapes don't count, cats were hopping onto rugs)
+                        boolean blocked = this.blocksPath(ahead);
                         boolean headroom = this.pet.level().getBlockState(ahead.above())
                                 .getCollisionShape(this.pet.level(), ahead.above()).isEmpty();
                         BlockPos frontFloor = ahead.below();
@@ -291,8 +291,7 @@ public class PetFollowOwnerGoal extends Goal {
             if (len > 0.01) {
                 BlockPos ahead = BlockPos.containing(
                         this.pet.getX() + dx / len * 0.9, this.pet.getY() + 0.1, this.pet.getZ() + dz / len * 0.9);
-                boolean blocked = !this.pet.level().getBlockState(ahead)
-                        .getCollisionShape(this.pet.level(), ahead).isEmpty();
+                boolean blocked = this.blocksPath(ahead);
                 boolean headroom = this.pet.level().getBlockState(ahead.above())
                         .getCollisionShape(this.pet.level(), ahead.above()).isEmpty();
                 if ((blocked && headroom) || this.pet.horizontalCollision) {
@@ -304,6 +303,13 @@ public class PetFollowOwnerGoal extends Goal {
                 }
             }
         }
+    }
+
+    /** Anything the pet can't just walk onto: taller than step height (carpets, plates don't count). */
+    private boolean blocksPath(BlockPos pos) {
+        net.minecraft.world.phys.shapes.VoxelShape shape =
+                this.pet.level().getBlockState(pos).getCollisionShape(this.pet.level(), pos);
+        return !shape.isEmpty() && shape.max(Direction.Axis.Y) > 0.5;
     }
 
     /** Blocks of air below foot level at (x, z), capped at 5. */
