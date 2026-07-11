@@ -1,9 +1,8 @@
 package io.github.aaronateataco.petsandpals.enums;
 
-import dev.isxander.yacl3.api.NameableEnum;
 import net.minecraft.network.chat.Component;
 
-public enum WolfSkins implements NameableEnum {
+public enum WolfSkins {
     ashen,
     black,
     chestnut,
@@ -14,7 +13,6 @@ public enum WolfSkins implements NameableEnum {
     striped,
     woods;
 
-    @Override
     public Component getDisplayName() {
         return Component.literal(String.valueOf(this).replace("_", " "));
     }

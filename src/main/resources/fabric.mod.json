@@ -43,7 +43,6 @@
     "java": ">=25",
     "cloth-config": "*",
     "fabric-api": "*",
-    "yet_another_config_lib_v3": "*",
     "modmenu": "*"
   },
   "custom": {
@@ -52,5 +51,8 @@
         "modmenu.modrinth": "https://modrinth.com/mod/pets-and-pals"
       }
     }
+  },
+  "suggests": {
+    "yet_another_config_lib_v3": "*"
   }
 }

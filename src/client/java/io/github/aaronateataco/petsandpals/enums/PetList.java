@@ -1,9 +1,8 @@
 package io.github.aaronateataco.petsandpals.enums;
 
-import dev.isxander.yacl3.api.NameableEnum;
 import net.minecraft.network.chat.Component;
 
-public enum PetList implements NameableEnum {
+public enum PetList {
     allay,
     parched,
     sulfur_cube,
@@ -105,7 +104,6 @@ public enum PetList implements NameableEnum {
     zombie,
     zombie_villager;
 
-    @Override
     public Component getDisplayName() {
         return Component.literal(String.valueOf(this).replace("_", " "));
     }

@@ -1,9 +1,8 @@
 package io.github.aaronateataco.petsandpals.enums;
 
-import dev.isxander.yacl3.api.NameableEnum;
 import net.minecraft.network.chat.Component;
 
-public enum RabbitSkins implements NameableEnum {
+public enum RabbitSkins {
     black,
     brown,
     gold,
@@ -13,7 +12,6 @@ public enum RabbitSkins implements NameableEnum {
     toast,
     white;
 
-    @Override
     public Component getDisplayName() {
         return Component.literal(String.valueOf(this).replace("_", " "));
     }
