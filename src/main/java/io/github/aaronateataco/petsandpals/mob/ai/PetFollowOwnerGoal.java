@@ -244,12 +244,48 @@ public class PetFollowOwnerGoal extends Goal {
         }
         double boost = Mth.clamp(1.0 + (distance - this.stopDistance) * 0.09, 1.0, MAX_CATCH_UP_BOOST);
         double speed = this.speedModifier * AbstractPet.speedMultiplier.getAsDouble() * boost;
-        this.pet.getNavigation().moveTo(
-                this.owner.getX(),
-                this.owner.getY() + this.pet.followYOffset(),
-                this.owner.getZ(),
-                speed
-        );
+        boolean pathed;
+        try {
+            pathed = this.pet.getNavigation().moveTo(
+                    this.owner.getX(),
+                    this.owner.getY() + this.pet.followYOffset(),
+                    this.owner.getZ(),
+                    speed);
+        } catch (Exception e) {
+            // some snapshots have server-only casts inside client pathfinding
+            pathed = false;
+        }
+        if (!pathed || this.pet.getNavigation().isDone()) {
+            // pathfinding unavailable (or no path): steer straight at the owner with the
+            // same probe-and-hop driving the sprint mode uses
+            this.steerDirectly(this.owner.getX(), this.owner.getY() + this.pet.followYOffset(),
+                    this.owner.getZ(), speed);
+        }
+    }
+
+    // direct move-control steering with water and step/gap handling
+    private void steerDirectly(double tx, double ty, double tz, double speed) {
+        this.pet.getMoveControl().setWantedPosition(tx, ty, tz, speed);
+        if (this.pet.followYOffset() > 0.0F) return;
+        if (this.pet.isInWater()) {
+            this.pet.setDeltaMovement(this.pet.getDeltaMovement().add(0.0, 0.05, 0.0));
+            this.pet.getJumpControl().jump();
+        } else if (this.pet.onGround()) {
+            double dx = tx - this.pet.getX();
+            double dz = tz - this.pet.getZ();
+            double len = Math.sqrt(dx * dx + dz * dz);
+            if (len > 0.01) {
+                BlockPos ahead = BlockPos.containing(
+                        this.pet.getX() + dx / len * 0.9, this.pet.getY() + 0.1, this.pet.getZ() + dz / len * 0.9);
+                boolean blocked = !this.pet.level().getBlockState(ahead)
+                        .getCollisionShape(this.pet.level(), ahead).isEmpty();
+                boolean headroom = this.pet.level().getBlockState(ahead.above())
+                        .getCollisionShape(this.pet.level(), ahead.above()).isEmpty();
+                if ((blocked && headroom) || this.pet.horizontalCollision) {
+                    this.pet.getJumpControl().jump();
+                }
+            }
+        }
     }
 
     /** Entrance: place the pet behind the camera and burst it into frame. */
