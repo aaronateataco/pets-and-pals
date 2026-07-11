@@ -149,24 +149,26 @@ public class PetFollowOwnerGoal extends Goal {
             Vec3 anchor = this.alongsideAnchor();
             double lagSqr = this.pet.distanceToSqr(anchor.x, anchor.y + this.pet.followYOffset(), anchor.z);
             if (lagSqr > 12.25) {
-                // The entrance timer runs regardless of whether the pet is on camera.
                 if (++this.alongsideLagTicks >= 15) {
                     this.alongsideLagTicks = 0;
                     if (this.pet.ownerInViewCone()) {
-                        // visible: run off camera behind the player first, the unwatched
-                        // branch does the actual entrance once it leaves the view
+                        // being watched: just burst, no teleporting on screen
                         this.smoothedBoost = MAX_ALONGSIDE_BOOST - 1.0;
                         this.updateAlongsideBoost();
-                        Vec3 behind = this.behindCameraPoint();
-                        this.pet.getNavigation().moveTo(
-                                behind.x,
-                                this.owner.getY() + this.pet.followYOffset(),
-                                behind.z,
-                                this.speedModifier * AbstractPet.speedMultiplier.getAsDouble());
-                        this.timeToRecalcPath = this.adjustedTickDelay(5);
                     } else {
-                        this.leapEntrance();
-                        return;
+                        // guaranteed arrival: place it straight into formation, running -
+                        // pathing its way in at sprint speed proved too unreliable to be seen
+                        double anchorY = this.owner.getY() + this.pet.followYOffset();
+                        boolean placed = this.pet.tryRepositionTo(anchor.x, anchorY, anchor.z)
+                                || this.placeOnGroundNear(anchor);
+                        if (!placed) {
+                            this.leapEntrance();
+                            return;
+                        }
+                        this.smoothedBoost = MAX_ALONGSIDE_BOOST - 1.0;
+                        this.updateAlongsideBoost();
+                        io.github.aaronateataco.petsandpals.PetsInitializer.LOGGER.info(
+                                "[Pets&Pals] alongside entrance placed at formation");
                     }
                 }
             } else {
@@ -241,6 +243,21 @@ public class PetFollowOwnerGoal extends Goal {
                 anchor.z + lead.z,
                 this.speedModifier * AbstractPet.speedMultiplier.getAsDouble());
         this.timeToRecalcPath = this.adjustedTickDelay(5);
+    }
+
+    /** Ground-scan placement near a point, for walkers. */
+    private boolean placeOnGroundNear(Vec3 point) {
+        for (int dy = 2; dy >= -3; dy--) {
+            BlockPos pos = BlockPos.containing(point.x, this.owner.getY() + dy, point.z);
+            BlockPos below = pos.below();
+            if (!this.pet.level().getBlockState(below).isFaceSturdy(this.pet.level(), below, Direction.UP)) {
+                continue;
+            }
+            if (this.pet.tryRepositionTo(point.x, pos.getY(), point.z)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /** Just behind the camera, slightly toward the formation side. */

@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.12.2
+- Fixed the sprint run-alongside only working while staring at your pet: it now reliably arrives in formation whenever you sprint, watched or not
+- Brief sprint interruptions (wall bumps, brushing entities) no longer cancel run-alongside
+- Raft now sits properly on top of the water
+- Raft trails the boat with towed physics - it swings wide in turns and settles like it's on a rope
+- Pets have little moods on the raft: they sit down, stand back up, and look around while you row
+
 ## 0.12.1
 - Fixed broken raft texture mapping that could crash resource reloads with MoreCulling installed
 - All releases are now marked alpha while the mod is in heavy development

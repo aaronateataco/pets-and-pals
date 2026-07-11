@@ -80,6 +80,7 @@ public abstract class AbstractPet extends TamableAnimal {
     private boolean perched = false;
     private int combatPerchTimer = 0;
     private int ownerSprintTicks = 0;
+    private int sprintGraceTicks = 0;
     private boolean orbMode = false;
     private boolean rafted = false;
     private int outOfViewTicks = 0;
@@ -162,10 +163,17 @@ public abstract class AbstractPet extends TamableAnimal {
         // combat tuck: perch behind the shoulder while the owner is fighting
         if (this.usesGoalMovement() && this.level().isClientSide() && this.isAlive() && !this.isPassenger()
                 && !this.orbMode && !this.rafted) {
-            // sprint tracking lives here so goal restarts can't reset it
+            // sprint tracking lives here so goal restarts can't reset it; one-tick sprint
+            // flickers (wall bumps, entity contact) get a short grace instead of a reset
             LivingEntity sprintOwner = this.getOwner();
-            this.ownerSprintTicks = (sprintOwner != null && sprintOwner.isSprinting())
-                    ? this.ownerSprintTicks + 1 : 0;
+            if (sprintOwner != null && sprintOwner.isSprinting()) {
+                this.ownerSprintTicks++;
+                this.sprintGraceTicks = 8;
+            } else if (this.sprintGraceTicks > 0) {
+                this.sprintGraceTicks--;
+            } else {
+                this.ownerSprintTicks = 0;
+            }
             if (this.ownerSprintTicks == 21) {
                 io.github.aaronateataco.petsandpals.PetsInitializer.LOGGER.info(
                         "[Pets&Pals] sprint threshold reached (firstPerson={})",
