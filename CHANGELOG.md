@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.12.0
+- New: pet raft! When you get in a boat, a little wooden raft (model by aaronateataco) floats alongside and your pet rides it until you hop out
+
 ## 0.11.1
 - Releases now include proper changelogs on GitHub and Modrinth
 - Marked as client-side only on Modrinth

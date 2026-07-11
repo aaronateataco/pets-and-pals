@@ -81,6 +81,7 @@ public abstract class AbstractPet extends TamableAnimal {
     private int combatPerchTimer = 0;
     private int ownerSprintTicks = 0;
     private boolean orbMode = false;
+    private boolean rafted = false;
     private int outOfViewTicks = 0;
     private int stuckScore = 0;
     private double lastTrackedDistanceSqr = 0.0;
@@ -160,7 +161,7 @@ public abstract class AbstractPet extends TamableAnimal {
     public void tick() {
         // combat tuck: perch behind the shoulder while the owner is fighting
         if (this.usesGoalMovement() && this.level().isClientSide() && this.isAlive() && !this.isPassenger()
-                && !this.orbMode) {
+                && !this.orbMode && !this.rafted) {
             // sprint tracking lives here so goal restarts can't reset it
             LivingEntity sprintOwner = this.getOwner();
             this.ownerSprintTicks = (sprintOwner != null && sprintOwner.isSprinting())
@@ -178,6 +179,14 @@ public abstract class AbstractPet extends TamableAnimal {
             if (this.combatPerchTimer > 0) this.combatPerchTimer--;
             if (shouldPerch != this.perched) {
                 this.setPerched(shouldPerch);
+            }
+
+            // pet raft: when the owner boards a boat, a raft floats alongside for the pet
+            if (!this.perched && this.getOwner() instanceof Player boatOwner
+                    && boatOwner.getVehicle() instanceof net.minecraft.world.entity.vehicle.boat.AbstractBoat boat
+                    && boatOwner.level() == this.level()) {
+                this.setRafted(true);
+                clientEntitySpawner.accept(PetRaft.create(this.level(), this, boat));
             }
 
             // keep-the-pet-close tracking. Rule: never reposition while the player is
@@ -220,7 +229,7 @@ public abstract class AbstractPet extends TamableAnimal {
         // serverAiStep is server-only in vanilla, so drive the AI ourselves.
         // Runs before super.tick() so travel() sees fresh inputs this tick.
         if (this.usesGoalMovement() && this.level().isClientSide() && this.isAlive()
-                && !this.isPassenger() && !this.perched && !this.orbMode) {
+                && !this.isPassenger() && !this.perched && !this.orbMode && !this.rafted) {
             this.getSensing().tick();
             this.goalSelector.tick();
             this.getNavigation().tick();
@@ -265,6 +274,19 @@ public abstract class AbstractPet extends TamableAnimal {
     /** How many consecutive ticks the owner has been sprinting. */
     public int ownerSprintTicks() {
         return this.ownerSprintTicks;
+    }
+
+    /** True while standing on the boat-side raft (see PetRaft). */
+    public boolean isRafted() {
+        return this.rafted;
+    }
+
+    public void setRafted(boolean rafted) {
+        this.rafted = rafted;
+        this.getNavigation().stop();
+        if (!rafted) {
+            this.setDeltaMovement(Vec3.ZERO);
+        }
     }
 
     /** Ghost form: used when there's nowhere valid to reposition (see PetOrb). */
