@@ -176,9 +176,15 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
         double nextX = this.getX() + toOwner.x / Math.max(0.001, distance) * step;
         double nextZ = this.getZ() + toOwner.z / Math.max(0.001, distance) * step;
         double surface = this.waterSurfaceY(nextX, this.getY(), nextZ);
-        if (surface == Double.MIN_VALUE || distance < 2.0) {
-            this.release();
+        if (surface == Double.MIN_VALUE) {
+            this.release(); // reached shore
             return;
+        }
+        if (distance < 2.5) {
+            nextX = this.getX(); // hold position beside a swimming owner
+            nextZ = this.getZ();
+            surface = this.waterSurfaceY(nextX, this.getY(), nextZ);
+            if (surface == Double.MIN_VALUE) { this.release(); return; }
         }
         this.setPos(nextX, surface - 0.01 + 0.02 * Math.sin(this.tickCount * 0.09), nextZ);
         this.pet.setPos(this.getX(), this.getY() + 0.07, this.getZ());

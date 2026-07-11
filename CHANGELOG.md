@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.14.5
+- Fixed the raft spawning a duplicate every tick while boating (the glitchy pile-up of rafts fighting over your pet)
+- Ferry rafts now wait beside a swimming owner instead of dropping the pet back into the water
+
 ## 0.14.1
 - Land pets no longer run or jump off cliffs while sprinting with you - they stop at edges with no safe landing
 - Ferry rafts: if a land pet has to cross water to reach you, a raft blips in under it and carries it across at full speed, dropping it at the far shore
