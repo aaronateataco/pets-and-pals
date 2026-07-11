@@ -61,3 +61,4 @@ jobs:
           changelog-file: changelog-section.md
           version-type: alpha
           loaders: fabric
+          game-versions: 26.3-snapshot-3
