@@ -1,13 +1,8 @@
 {
   "credit": "model by aaronateataco",
-  "texture_size": [
-    32,
-    32
-  ],
   "textures": {
     "planks": "minecraft:block/spruce_planks",
-    "raft": "pets-and-pals:block/pet_raft",
-    "particle": "pets-and-pals:block/pet_raft"
+    "particle": "minecraft:block/spruce_planks"
   },
   "elements": [
     {
@@ -24,57 +19,57 @@
       "faces": {
         "north": {
           "uv": [
-            0.0,
-            7.0,
-            7.0,
-            7.5
+            1,
+            15,
+            15,
+            16
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         },
         "east": {
           "uv": [
-            7.0,
-            0.0,
-            14.0,
-            0.5
+            1,
+            15,
+            15,
+            16
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         },
         "south": {
           "uv": [
-            7.0,
-            0.5,
-            14.0,
-            1.0
+            1,
+            15,
+            15,
+            16
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         },
         "west": {
           "uv": [
-            7.0,
-            1.0,
-            14.0,
-            1.5
+            1,
+            15,
+            15,
+            16
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         },
         "up": {
           "uv": [
-            7.0,
-            7.0,
-            0.0,
-            0.0
+            1,
+            1,
+            15,
+            15
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         },
         "down": {
           "uv": [
-            0.0,
-            0.0,
-            7.0,
-            7.0
+            1,
+            1,
+            15,
+            15
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         }
       }
     },
@@ -92,57 +87,57 @@
       "faces": {
         "north": {
           "uv": [
-            0.5,
-            0.0,
-            7.5,
-            1.5
+            1,
+            13,
+            15,
+            16
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         },
         "east": {
           "uv": [
-            0.5,
-            0.0,
-            1.0,
-            1.5
+            0,
+            13,
+            1,
+            16
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         },
         "south": {
           "uv": [
-            0.5,
-            0.0,
-            7.5,
-            1.5
+            1,
+            13,
+            15,
+            16
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         },
         "west": {
           "uv": [
-            0.0,
-            0.0,
-            0.5,
-            1.5
+            0,
+            13,
+            1,
+            16
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         },
         "up": {
           "uv": [
-            0.5,
-            0.0,
-            7.5,
-            0.5
+            1,
+            0,
+            15,
+            1
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         },
         "down": {
           "uv": [
-            0.5,
-            0.5,
-            7.5,
-            1.0
+            1,
+            0,
+            15,
+            1
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         }
       }
     },
@@ -160,57 +155,57 @@
       "faces": {
         "north": {
           "uv": [
-            0.5,
-            0.0,
-            7.5,
-            1.5
+            1,
+            13,
+            15,
+            16
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         },
         "east": {
           "uv": [
-            0.5,
-            0.0,
-            1.0,
-            1.5
+            15,
+            13,
+            16,
+            16
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         },
         "south": {
           "uv": [
-            0.5,
-            0.0,
-            7.5,
-            1.5
+            1,
+            13,
+            15,
+            16
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         },
         "west": {
           "uv": [
-            0.0,
-            0.0,
-            0.5,
-            1.5
+            15,
+            13,
+            16,
+            16
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         },
         "up": {
           "uv": [
-            0.5,
-            0.0,
-            7.5,
-            0.5
+            1,
+            15,
+            15,
+            16
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         },
         "down": {
           "uv": [
-            0.5,
-            0.5,
-            7.5,
-            1.0
+            1,
+            15,
+            15,
+            16
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         }
       }
     },
@@ -226,59 +221,59 @@
         16
       ],
       "faces": {
+        "north": {
+          "uv": [
+            0,
+            13,
+            1,
+            16
+          ],
+          "texture": "#planks"
+        },
         "east": {
           "uv": [
-            0.0,
-            0.0,
-            8.0,
-            1.5
+            0,
+            13,
+            16,
+            16
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         },
         "south": {
           "uv": [
-            0.5,
-            0.0,
-            1.0,
-            1.5
+            0,
+            13,
+            1,
+            16
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         },
         "west": {
           "uv": [
-            0.0,
-            0.0,
-            8.0,
-            1.5
+            0,
+            13,
+            16,
+            16
           ],
-          "texture": "#raft"
-        },
-        "north": {
-          "uv": [
-            0.0,
-            0.0,
-            0.5,
-            1.5
-          ],
-          "texture": "#raft"
+          "texture": "#planks"
         },
         "up": {
           "uv": [
-            0.0,
-            0.0,
-            8.0,
-            0.5
+            0,
+            0,
+            1,
+            16
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         },
         "down": {
           "uv": [
-            0.0,
-            0.5,
-            8.0,
-            1.0
+            0,
+            0,
+            1,
+            16
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         }
       }
     },
@@ -294,59 +289,59 @@
         16
       ],
       "faces": {
+        "north": {
+          "uv": [
+            15,
+            13,
+            16,
+            16
+          ],
+          "texture": "#planks"
+        },
         "east": {
           "uv": [
-            0.0,
-            0.0,
-            8.0,
-            1.5
+            0,
+            13,
+            16,
+            16
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         },
         "south": {
           "uv": [
-            0.5,
-            0.0,
-            1.0,
-            1.5
+            15,
+            13,
+            16,
+            16
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         },
         "west": {
           "uv": [
-            0.0,
-            0.0,
-            8.0,
-            1.5
+            0,
+            13,
+            16,
+            16
           ],
-          "texture": "#raft"
-        },
-        "north": {
-          "uv": [
-            0.0,
-            0.0,
-            0.5,
-            1.5
-          ],
-          "texture": "#raft"
+          "texture": "#planks"
         },
         "up": {
           "uv": [
-            0.0,
-            0.0,
-            8.0,
-            0.5
+            15,
+            0,
+            16,
+            16
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         },
         "down": {
           "uv": [
-            0.0,
-            0.5,
-            8.0,
-            1.0
+            15,
+            0,
+            16,
+            16
           ],
-          "texture": "#raft"
+          "texture": "#planks"
         }
       }
     }

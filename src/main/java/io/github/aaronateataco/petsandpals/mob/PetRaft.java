@@ -15,10 +15,11 @@ import org.jetbrains.annotations.NotNull;
  * Purely visual (renders the pet_raft block, no collision); the pet stands on deck and
  * hops off when the owner leaves the boat.
  */
-public class PetRaft extends FallingBlockEntity {
+public class PetRaft extends FallingBlockEntity implements net.minecraft.world.entity.Leashable {
 
     private AbstractPet pet;
     private Vec3 velocity = Vec3.ZERO;
+    private net.minecraft.world.entity.Leashable.LeashData leashData;
     private int idleTimer = 40;
     private int idleAction = 0; // 0 stand, 1 sit, 2 look left, 3 look right
 
@@ -35,7 +36,18 @@ public class PetRaft extends FallingBlockEntity {
         raft.pet = pet;
         Vec3 side = sideAnchor(boat);
         raft.setPos(side.x, side.y, side.z);
+        raft.setLeashedTo(boat, false);
         return raft;
+    }
+
+    @Override
+    public net.minecraft.world.entity.Leashable.LeashData getLeashData() {
+        return this.leashData;
+    }
+
+    @Override
+    public void setLeashData(net.minecraft.world.entity.Leashable.@NotNull LeashData leashData) {
+        this.leashData = leashData;
     }
 
     private static Vec3 sideAnchor(AbstractBoat boat) {
@@ -60,9 +72,9 @@ public class PetRaft extends FallingBlockEntity {
 
         // towed-feel physics: spring toward the anchor with damping so the raft
         // swings wide in turns and settles, instead of gliding on rails
-        Vec3 anchor = sideAnchor(boat).add(0.0, 0.03 * Math.sin(this.tickCount * 0.09), 0.0);
-        // sit on top of the water: boats float sunken, the raft base is a flat box
-        anchor = new Vec3(anchor.x, boat.getY() + 0.45, anchor.z);
+        Vec3 anchor = sideAnchor(boat);
+        double surface = this.waterSurfaceY(anchor.x, boat.getY(), anchor.z);
+        anchor = new Vec3(anchor.x, surface - 0.01 + 0.02 * Math.sin(this.tickCount * 0.09), anchor.z);
         Vec3 delta = anchor.subtract(this.position());
         if (delta.length() > 12.0) {
             this.snapTo(anchor.x, anchor.y, anchor.z, 0.0F, 0.0F);
@@ -73,8 +85,8 @@ public class PetRaft extends FallingBlockEntity {
             this.setPos(next.x, next.y, next.z);
         }
 
-        // pet rides the deck
-        this.pet.setPos(this.getX(), this.getY() + 0.19, this.getZ());
+        // pet rides the deck (hull is 1px, deck top is +0.0625)
+        this.pet.setPos(this.getX(), this.getY() + 0.07, this.getZ());
         this.pet.setDeltaMovement(Vec3.ZERO);
         this.pet.fallDistance = 0;
         this.tickDeckIdle(boat);
@@ -97,6 +109,18 @@ public class PetRaft extends FallingBlockEntity {
         };
         // ease the head toward its target so glances look natural
         this.pet.setYHeadRot(Mth.approachDegrees(this.pet.getYHeadRot(), headYaw, 4.0F));
+    }
+
+    // actual water surface at this column, so the hull sits ON the water
+    private double waterSurfaceY(double x, double aroundY, double z) {
+        for (int dy = 2; dy >= -2; dy--) {
+            net.minecraft.core.BlockPos pos = net.minecraft.core.BlockPos.containing(x, aroundY + dy, z);
+            net.minecraft.world.level.material.FluidState fluid = this.level().getFluidState(pos);
+            if (!fluid.isEmpty() && this.level().getFluidState(pos.above()).isEmpty()) {
+                return pos.getY() + fluid.getHeight(this.level(), pos);
+            }
+        }
+        return aroundY + 0.45;
     }
 
     private void release() {
