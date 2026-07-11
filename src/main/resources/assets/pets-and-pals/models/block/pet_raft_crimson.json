@@ -2,7 +2,8 @@
   "credit": "model by aaronateataco",
   "textures": {
     "planks": "minecraft:block/crimson_planks",
-    "particle": "minecraft:block/crimson_planks"
+    "particle": "minecraft:block/crimson_planks",
+    "cushion": "minecraft:block/cushion"
   },
   "elements": [
     {
@@ -342,6 +343,74 @@
             16
           ],
           "texture": "#planks"
+        }
+      }
+    },
+    {
+      "from": [
+        2,
+        1,
+        2
+      ],
+      "to": [
+        14,
+        1.25,
+        14
+      ],
+      "faces": {
+        "north": {
+          "uv": [
+            2,
+            14.75,
+            14,
+            15
+          ],
+          "texture": "#cushion"
+        },
+        "east": {
+          "uv": [
+            2,
+            14.75,
+            14,
+            15
+          ],
+          "texture": "#cushion"
+        },
+        "south": {
+          "uv": [
+            2,
+            14.75,
+            14,
+            15
+          ],
+          "texture": "#cushion"
+        },
+        "west": {
+          "uv": [
+            2,
+            14.75,
+            14,
+            15
+          ],
+          "texture": "#cushion"
+        },
+        "up": {
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ],
+          "texture": "#cushion"
+        },
+        "down": {
+          "uv": [
+            2,
+            2,
+            14,
+            14
+          ],
+          "texture": "#cushion"
         }
       }
     }

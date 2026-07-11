@@ -1,6 +1,7 @@
 # Changelog
 
 ## 0.14.0
+- New: 26.3-snapshot-3 version! The raft upgrades to the Mk2 model with the new cushion on deck (all 12 wood styles included)
 - Raft wood is now customizable: 12 plank styles (oak through warped) selectable in the Menagerie, using the game's own textures so resource packs restyle them
 - Realistic tow physics: the raft trails BEHIND your boat on a taut-rope model - it drifts with water drag, gets yanked when the rope tightens, and swings wide through turns
 - Rafts are locked to water: they can never slide onto land

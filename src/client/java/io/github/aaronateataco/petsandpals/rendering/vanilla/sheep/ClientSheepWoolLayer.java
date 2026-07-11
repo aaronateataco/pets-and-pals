@@ -74,10 +74,6 @@ public class ClientSheepWoolLayer extends RenderLayer<@NotNull SheepRenderState,
                 RenderTypes.entityCutout(SHEEP_WOOL_LOCATION.model()),
                 i,
                 LivingEntityRenderer.getOverlayCoords(sheepRenderState, 0.0F),
-                woolColor,
-                null,
-                sheepRenderState.outlineColor,
-                null
-        );
+                -1);
     }
 }
