@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.12.1
+- Fixed broken raft texture mapping that could crash resource reloads with MoreCulling installed
+- All releases are now marked alpha while the mod is in heavy development
+- Added the Mk2 raft model (with the new cushion) ready for 26.3-snapshot-3+
+
 ## 0.12.0
 - New: pet raft! When you get in a boat, a little wooden raft (model by aaronateataco) floats alongside and your pet rides it until you hop out
 

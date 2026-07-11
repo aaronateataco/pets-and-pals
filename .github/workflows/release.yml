@@ -45,6 +45,7 @@ jobs:
         with:
           files: release/*.jar
           body_path: changelog-section.md
+          prerelease: true
       # Auto-publishes the same jar to Modrinth when the repo has the secrets set:
       #   MODRINTH_TOKEN - a Modrinth personal access token (user settings -> PATs,
       #                    needs the "create versions" scope)
@@ -58,4 +59,5 @@ jobs:
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           files: release/*.jar
           changelog-file: changelog-section.md
+          version-type: alpha
           loaders: fabric
