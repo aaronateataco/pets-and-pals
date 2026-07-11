@@ -2043,6 +2043,14 @@ public class Central implements ClientModInitializer {
 
             refreshPetNames();
 
+            // dev hook: drop a .pnp_autoshot file in the game dir to capture timed
+            // screenshots (used for gallery shots in automated test runs)
+            if (this.i % 80 == 0 && client.level != null
+                    && java.nio.file.Files.exists(client.gameDirectory.toPath().resolve(".pnp_autoshot"))) {
+                net.minecraft.client.Screenshot.grab(client.gameDirectory,
+                        client.getMainRenderTarget(), component -> {});
+            }
+
         }));
     }
 
