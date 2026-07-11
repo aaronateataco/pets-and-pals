@@ -195,6 +195,15 @@ public abstract class AbstractPet extends TamableAnimal {
                 this.setPerched(shouldPerch);
             }
 
+            // ferry: a land pet swimming after a distant owner gets a raft popped in
+            if (!this.perched && !this.rafted && !this.orbMode && this.followYOffset() <= 0.0F
+                    && this.isInWater() && this.getOwner() instanceof Player swimOwner
+                    && swimOwner.level() == this.level() && this.distanceToSqr(swimOwner) > 16.0) {
+                this.setRafted(true);
+                this.transitionEffects();
+                clientEntitySpawner.accept(PetRaft.createFerry(this.level(), this));
+            }
+
             // pet raft: when the owner boards a boat, a raft floats alongside for the pet
             if (!this.perched && this.getOwner() instanceof Player boatOwner
                     && boatOwner.getVehicle() instanceof net.minecraft.world.entity.vehicle.boat.AbstractBoat boat

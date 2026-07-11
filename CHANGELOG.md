@@ -1,8 +1,15 @@
 # Changelog
 
+<<<<<<< HEAD
 ## 0.14.2 (26.3 snapshot only)
 - Cushion colors! All 16 dyes on the Mk2 raft, with a favorite-cushion picker in the Menagerie - real snapshot cushion textures, so packs restyle them
 - Fixed the cushion texture path (the snapshot ships cushions as entities; their textures are now merged into the block atlas)
+=======
+## 0.14.1
+- Land pets no longer run or jump off cliffs while sprinting with you - they stop at edges with no safe landing
+- Ferry rafts: if a land pet has to cross water to reach you, a raft blips in under it and carries it across at full speed, dropping it at the far shore
+- The boat-side raft now matches your boat's wood automatically; your chosen style is used for ferries
+>>>>>>> f8f7113 (Cliff guard, ferry rafts for water crossings, boat-matched raft wood)
 
 ## 0.14.0
 - New: 26.3-snapshot-3 version! The raft upgrades to the Mk2 model with the new cushion on deck (all 12 wood styles included)
