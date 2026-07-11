@@ -155,22 +155,43 @@ public class PetFollowOwnerGoal extends Goal {
             this.pet.getMoveControl().setWantedPosition(
                     steer.x + steerLead.x, steerY, steer.z + steerLead.z,
                     this.speedModifier * AbstractPet.speedMultiplier.getAsDouble());
-            if (this.pet.followYOffset() <= 0.0F && this.pet.onGround()) {
-                // pre-planned jumps: hop when a block edge is coming up, don't wait to bump it
-                double sdx = steer.x - this.pet.getX();
-                double sdz = steer.z - this.pet.getZ();
-                double len = Math.sqrt(sdx * sdx + sdz * sdz);
-                if (len > 0.01) {
-                    BlockPos ahead = BlockPos.containing(
-                            this.pet.getX() + sdx / len * 0.9,
-                            this.pet.getY() + 0.1,
-                            this.pet.getZ() + sdz / len * 0.9);
-                    boolean blocked = !this.pet.level().getBlockState(ahead)
-                            .getCollisionShape(this.pet.level(), ahead).isEmpty();
-                    boolean headroom = this.pet.level().getBlockState(ahead.above())
-                            .getCollisionShape(this.pet.level(), ahead.above()).isEmpty();
-                    if ((blocked && headroom) || this.pet.horizontalCollision) {
-                        this.pet.getJumpControl().jump();
+            if (this.pet.followYOffset() <= 0.0F) {
+                if (this.pet.isInWater()) {
+                    // don't wallow: swim hard at the surface and keep pace
+                    this.pet.setDeltaMovement(this.pet.getDeltaMovement().add(0.0, 0.05, 0.0));
+                    this.pet.getJumpControl().jump();
+                } else if (this.pet.onGround()) {
+                    double sdx = steer.x - this.pet.getX();
+                    double sdz = steer.z - this.pet.getZ();
+                    double len = Math.sqrt(sdx * sdx + sdz * sdz);
+                    if (len > 0.01) {
+                        double nx = sdx / len, nz = sdz / len;
+                        BlockPos ahead = BlockPos.containing(
+                                this.pet.getX() + nx * 0.9, this.pet.getY() + 0.1, this.pet.getZ() + nz * 0.9);
+                        // step-up: hop blocks before bumping them
+                        boolean blocked = !this.pet.level().getBlockState(ahead)
+                                .getCollisionShape(this.pet.level(), ahead).isEmpty();
+                        boolean headroom = this.pet.level().getBlockState(ahead.above())
+                                .getCollisionShape(this.pet.level(), ahead.above()).isEmpty();
+                        // parkour: leap gaps when the floor ahead is missing but there's a
+                        // landing within a couple blocks
+                        BlockPos frontFloor = ahead.below();
+                        boolean gap = this.pet.level().getBlockState(ahead)
+                                .getCollisionShape(this.pet.level(), ahead).isEmpty()
+                                && this.pet.level().getBlockState(frontFloor)
+                                .getCollisionShape(this.pet.level(), frontFloor).isEmpty();
+                        boolean landing = false;
+                        if (gap) {
+                            for (int d = 2; d <= 3 && !landing; d++) {
+                                BlockPos land = BlockPos.containing(
+                                        this.pet.getX() + nx * d, this.pet.getY() - 0.9, this.pet.getZ() + nz * d);
+                                landing = !this.pet.level().getBlockState(land)
+                                        .getCollisionShape(this.pet.level(), land).isEmpty();
+                            }
+                        }
+                        if ((blocked && headroom) || (gap && landing) || this.pet.horizontalCollision) {
+                            this.pet.getJumpControl().jump();
+                        }
                     }
                 }
             }

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.13.1
+- Sprinting pets now swim properly at the water surface instead of wallowing when the route crosses water
+- Parkour: sprinting pets leap gaps when there's a landing within a few blocks, and hop steps before bumping into them
+
 ## 0.13.0
 - The raft is now tied to your boat with a real lead - and it sits properly on the water surface (actual fluid height, not a guess)
 - Raft uses the game's own spruce plank texture, so resource packs restyle it automatically; hitbox now matches its flat shape and pets stand right on the deck
