@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.14.6
+- Fixed pets endlessly teleporting instead of walking on 26.3 snapshots: the snapshot broke client-side pathfinding, so pets now steer directly at you (with step-hopping and surface swimming) whenever pathfinding is unavailable
+
 ## 0.14.5
 - Fixed the raft spawning a duplicate every tick while boating (the glitchy pile-up of rafts fighting over your pet)
 - Ferry rafts now wait beside a swimming owner instead of dropping the pet back into the water
