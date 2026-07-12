@@ -58,14 +58,17 @@ public class PetOrb extends Entity {
             return;
         }
 
-        // floats at the owner's hip normally, or in the run-alongside spot while sprinting
+        // floats at the owner's hip normally, or tucked behind the shoulder while
+        // sprinting - combat withdrawal means getting the pet out of the way, not
+        // parking it in front of the camera at running speed
         double bob = Math.sin(this.tickCount * 0.15) * 0.08;
         Vec3 anchor;
         if (owner.isSprinting() && AbstractPet.firstPersonView.getAsBoolean()) {
-            Vec3 forward = Vec3.directionFromRotation(0.0F, owner.getYHeadRot());
-            forward = new Vec3(forward.x, 0.0, forward.z).normalize();
-            Vec3 fRight = new Vec3(-forward.z, 0.0, forward.x);
-            anchor = owner.position().add(forward.scale(2.6)).add(fRight.scale(1.2))
+            // body yaw, not head yaw - a camera glance shouldn't swing the orb into view
+            float rad = owner.yBodyRot * ((float) Math.PI / 180.0F);
+            Vec3 back = new Vec3(Mth.sin(rad), 0.0, -Mth.cos(rad));
+            Vec3 right = new Vec3(-Mth.cos(rad), 0.0, -Mth.sin(rad));
+            anchor = owner.position().add(back.scale(1.4)).add(right.scale(0.9))
                     .add(0.0, 1.2 + bob, 0.0);
         } else {
             float rad = owner.yBodyRot * ((float) Math.PI / 180.0F);
