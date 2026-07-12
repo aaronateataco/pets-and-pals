@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.28.0
+- Fixed the raft riding noticeably lower in the water than the boat towing it - it was copying the boat's own position directly, which sits at the bottom of the boat's hitbox rather than the waterline; now it reads the actual water surface like the ferry raft always has
+- Fixed the ferry raft occasionally stranding a pet in open water even after you'd already reached dry land - it now waits until the raft itself has also reached shore (or is basically at your feet) before letting go, instead of releasing early and leaving the pet to flail
+- Menagerie: fixed the golden dandelion icon overlapping the Cancel button on the naming page for baby pets, and shrank the grey backdrop panel so it doesn't loom over as much space below it
+- Fixed "Advanced settings..." doing nothing: it was hard-coded to build its Pet Species dropdown around "racoon," a pet removed from the roster back in 0.17.0, which threw on every single open
+- Menagerie: added a "Skin" button next to Name Tag that cycles through your active pet's skins right there, instead of needing Advanced Settings or the /petskin command
+
 ## 0.27.0
 - The tow rope now actually anchors at the back of the boat and the front of the raft instead of both centers - it used to draw straight through the middle of both hulls
 - Fixed pets bouncing between swimming and re-summoning a ferry raft over multi-part crossings (a lake with an island, back-to-back rivers) - the raft used to let go the moment it found any dry patch ahead, even if that wasn't actually where you were; now it only lets the pet off once you're the one on dry land

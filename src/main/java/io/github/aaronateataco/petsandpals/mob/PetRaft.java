@@ -153,7 +153,14 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
         double attachDistance = ROPE_LENGTH + (this.scale - 1.0) * 0.6;
         Vec3 target = boat.position().subtract(back.scale(attachDistance));
         double bob = 0.02 * Math.sin(this.tickCount * 0.09);
-        Vec3 targetPos = new Vec3(target.x, boat.getY() + bob + this.riseIn(), target.z);
+        // boat.getY() sits at the bottom of the boat's own hitbox, which rides lower
+        // than the actual water surface (the boat's renderer floats its hull visually
+        // above that point) - copying it straight onto the raft's block-bottom origin
+        // sank the raft noticeably below the boat's own waterline. Anchor to the real
+        // water surface instead, same as the ferry raft already does.
+        double surface = this.waterSurfaceY(target.x, boat.getY(), target.z);
+        double baseY = surface == Double.MIN_VALUE ? boat.getY() : surface - 0.01;
+        Vec3 targetPos = new Vec3(target.x, baseY + bob + this.riseIn(), target.z);
         Vec3 nextPos = this.position().lerp(targetPos, 0.55);
         this.velocity = nextPos.subtract(this.position());
         this.setPos(nextPos.x, nextPos.y, nextPos.z);
@@ -223,8 +230,16 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
         // rafts then swims" loop. Owner-grounded is the only signal that actually
         // means the crossing is done.
         if (!owner.isInWater() && distance < 4.0) {
-            this.release();
-            return;
+            // don't let go until the raft itself has actually reached dry ground too
+            // (or is basically at the owner's feet) - releasing while it's still over
+            // open water stranded the pet mid-lake with no swim goal to get it out,
+            // which showed up as the stuck/out-of-view rescue logic teleporting it
+            // around erratically trying to recover
+            double raftSurface = this.waterSurfaceY(this.getX(), this.getY(), this.getZ());
+            if (raftSurface == Double.MIN_VALUE || distance < 1.5) {
+                this.release();
+                return;
+            }
         }
 
         // same feel as the tow rope: thrust toward the owner, water drag, so the
