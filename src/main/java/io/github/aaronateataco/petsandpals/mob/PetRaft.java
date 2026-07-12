@@ -144,21 +144,25 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
             return;
         }
 
-        // rigidly attached right behind the boat's stern - a velocity/rope simulation
-        // can never perfectly track a moving, turning, accelerating vehicle, and every
-        // spring/drag tuning pass still left it drifting, lagging, or floating loose
-        // somewhere. This can't desync: the position is a direct copy off the boat's
-        // own transform every tick, not something simulated independently.
+        // spring toward a target recomputed fresh off the boat's own transform every
+        // tick - not simulated independently with accumulated velocity, so it can't
+        // drift or desync the way the old rope model did, but still has some physical
+        // give/chase to it instead of teleport-following exactly frame to frame
         float rad = boat.getYRot() * ((float) Math.PI / 180.0F);
         Vec3 back = new Vec3(-Mth.sin(rad), 0.0, Mth.cos(rad));
         double attachDistance = ROPE_LENGTH + (this.scale - 1.0) * 0.6;
         Vec3 target = boat.position().subtract(back.scale(attachDistance));
         double bob = 0.02 * Math.sin(this.tickCount * 0.09);
-        this.setPos(target.x, boat.getY() + bob + this.riseIn(), target.z);
-        // rotation still eases in, so a sharp turn doesn't snap the hull instantly -
-        // position is always exact, only the visual orientation has any lag at all
-        this.setYRot(Mth.approachDegrees(this.getYRot(), boat.getYRot(), 12.0F));
-        this.velocity = Vec3.ZERO;
+        Vec3 targetPos = new Vec3(target.x, boat.getY() + bob + this.riseIn(), target.z);
+        Vec3 nextPos = this.position().lerp(targetPos, 0.55);
+        this.velocity = nextPos.subtract(this.position());
+        this.setPos(nextPos.x, nextPos.y, nextPos.z);
+        // hull leans into its motion a little, then settles to match the boat's
+        // heading - eased either way, so a sharp turn doesn't snap it instantly
+        float targetYaw = this.velocity.horizontalDistanceSqr() > 1.0e-5
+                ? (float) Math.toDegrees(Mth.atan2(this.velocity.z, this.velocity.x)) - 90.0F
+                : boat.getYRot();
+        this.setYRot(Mth.approachDegrees(this.getYRot(), targetYaw, 14.0F));
 
         // pet rides the deck (hull is 1px, deck top is +0.0625)
         this.pet.setPos(this.getX(), this.getY() + 0.07, this.getZ());
