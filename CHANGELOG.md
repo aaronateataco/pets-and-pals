@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.15.1
+- Animation polish pass: the nether star now grows in when the pet tucks away and shrinks out before the pet reforms, instead of popping
+- The raft floats up out of the water when it appears instead of blinking into place
+- The pet on a ferry raft turns smoothly with the hull instead of snapping toward the destination
+- Hopping onto the boat raft now gets the same sparkle transition as the ferry
+
 ## 0.15.0
 - Land pets no longer float behind your shoulder during combat - they tuck into the nether star instead, and it stays a star until the fight is over. Flyers keep the shoulder hover
 - Flying pets no longer get a raft when you board a boat - they just fly along

@@ -232,6 +232,7 @@ public abstract class AbstractPet extends TamableAnimal {
                     && boatOwner.getVehicle() instanceof net.minecraft.world.entity.vehicle.boat.AbstractBoat boat
                     && boatOwner.level() == this.level()) {
                 this.setRafted(true);
+                this.transitionEffects();
                 clientEntitySpawner.accept(PetRaft.create(this.level(), this, boat));
             }
 

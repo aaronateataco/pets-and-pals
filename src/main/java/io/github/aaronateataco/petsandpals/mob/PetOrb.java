@@ -27,6 +27,9 @@ import org.jetbrains.annotations.NotNull;
 public class PetOrb extends Entity {
 
     private AbstractPet pet;
+    // countdown for the shrink-out before the pet reforms; -1 = not shrinking
+    private int shrinkTicks = -1;
+    private Vec3 pendingSpot;
 
     public PetOrb(EntityType<? extends @NotNull PetOrb> type, Level level) {
         super(type, level);
@@ -90,14 +93,33 @@ public class PetOrb extends Entity {
                     this.getX(), this.getY() + 0.25, this.getZ(), 0.0, 0.0, 0.0);
         }
 
+        // already shrinking toward reform
+        if (this.shrinkTicks >= 0) {
+            if (--this.shrinkTicks < 0) {
+                this.materializeAt(this.pendingSpot);
+            }
+            return;
+        }
+
         // near the owner: look for a spot to reform (never mid-fight)
         if (this.tickCount > 15 && this.tickCount % 8 == 0 && distance < 5.0
                 && !this.pet.isCombatTucked()) {
             Vec3 spot = this.findMaterializeSpot(owner);
             if (spot != null) {
-                this.materializeAt(spot);
+                // shrink out over a few ticks instead of vanishing on the spot
+                this.pendingSpot = spot;
+                this.shrinkTicks = 4;
             }
         }
+    }
+
+    /** Star size for the renderer: grows in on spawn, shrinks out before reforming. */
+    public float renderScale(float partialTick) {
+        float appear = Mth.clamp((this.tickCount + partialTick) / 5.0F, 0.0F, 1.0F);
+        if (this.shrinkTicks >= 0) {
+            return appear * Mth.clamp((this.shrinkTicks - partialTick) / 4.0F, 0.0F, 1.0F);
+        }
+        return appear;
     }
 
     private void materializeAt(Vec3 spot) {
