@@ -4,14 +4,6 @@ import io.github.aaronateataco.petsandpals.mob.PetDwelling;
 import io.github.aaronateataco.petsandpals.mob.PetOrb;
 import io.github.aaronateataco.petsandpals.mob.PetRaft;
 import io.github.aaronateataco.petsandpals.mob.PetRaftBlock;
-import io.github.aaronateataco.petsandpals.mob.aprilfools.*;
-import io.github.aaronateataco.petsandpals.mob.custom.aprilfools.Head;
-import io.github.aaronateataco.petsandpals.mob.custom.aquatic.DumboOctopus;
-import io.github.aaronateataco.petsandpals.mob.custom.aquatic.Koi;
-import io.github.aaronateataco.petsandpals.mob.custom.aquatic.Stingray;
-import io.github.aaronateataco.petsandpals.mob.custom.first.Duck;
-import io.github.aaronateataco.petsandpals.mob.custom.first.Penguin;
-import io.github.aaronateataco.petsandpals.mob.custom.first.Racoon;
 import io.github.aaronateataco.petsandpals.mob.vanilla.boss.ClientEnderDragon;
 import io.github.aaronateataco.petsandpals.mob.vanilla.boss.ClientWither;
 import io.github.aaronateataco.petsandpals.mob.vanilla.hostile.*;
@@ -43,8 +35,6 @@ public class PetsInitializer implements ModInitializer {
     public static final String MOD_ID = "pets-and-pals";
 
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-    private static final ResourceKey<@NotNull EntityType<?>> RACOON_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "racoon"));
     private static final ResourceKey<@NotNull EntityType<?>> PET_ORB_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "pet_orb"));
     /** The pet's floating nether-star ghost form (see {@code PetOrb}). */
@@ -82,13 +72,6 @@ public class PetsInitializer implements ModInitializer {
             EntityType.Builder.of(PetDwelling::new, MobCategory.MISC)
                     .sized(0.98f, 0.98f)
                     .build(PET_DWELLING_KEY));
-    public static final EntityType<@NotNull Racoon> RACOON = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.fromNamespaceAndPath(MOD_ID, "racoon"),
-            EntityType.Builder.of(Racoon::new, MobCategory.CREATURE)
-                    .sized(1f, 1f)
-                    .eyeHeight(1)
-                    .build(RACOON_KEY));
     private static final ResourceKey<@NotNull EntityType<?>> ALLAY_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientallay"));
     public static final EntityType<@NotNull ClientAllay> ALLAY = Registry.register(
@@ -143,25 +126,6 @@ public class PetsInitializer implements ModInitializer {
                     .sized(1.7f, 2.375f)
                     .eyeHeight(2.375f)
                     .build(CAMEL_KEY)
-    );
-    private static final ResourceKey<@NotNull EntityType<?>> DUCK_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "duck"));
-    public static final EntityType<@NotNull Duck> DUCK = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.fromNamespaceAndPath(MOD_ID, "duck"),
-            EntityType.Builder.of(Duck::new, MobCategory.CREATURE)
-                    .sized(0.4f, 0.7f)
-                    .eyeHeight(1)
-                    .build(DUCK_KEY));
-    private static final ResourceKey<@NotNull EntityType<?>> PENGUIN_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "penguin"));
-    public static final EntityType<@NotNull Penguin> PENGUIN = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.fromNamespaceAndPath(MOD_ID, "penguin"),
-            EntityType.Builder.of(Penguin::new, MobCategory.AMBIENT)
-                    .sized(1f, 1.5f)
-                    .eyeHeight(1f)
-                    .build(PENGUIN_KEY)
     );
     private static final ResourceKey<@NotNull EntityType<?>> SHEEP_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientsheep"));
@@ -945,224 +909,6 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(3f)
                     .build(WITHER_KEY)
     );
-    private static final ResourceKey<@NotNull EntityType<?>> ANGRY_GHAST_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientwither"));
-    public static final EntityType<@NotNull AngryGhast> ANGRY_GHAST = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.withDefaultNamespace("angry_ghast"),
-            EntityType.Builder.of(AngryGhast::new, MobCategory.AMBIENT)
-                    .noSummon()
-                    .sized(4f, 4f)
-                    .eyeHeight(4f)
-                    .build(ANGRY_GHAST_KEY)
-    );
-    private static final ResourceKey<@NotNull EntityType<?>> BATATO_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "batato"));
-    public static final EntityType<@NotNull Batato> BATATO = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.withDefaultNamespace("batato"),
-            EntityType.Builder.of(Batato::new, MobCategory.AMBIENT)
-                    .noSummon()
-                    .sized(0.5f, 0.9f)
-                    .eyeHeight(0.9f)
-                    .build(BATATO_KEY)
-    );
-    private static final ResourceKey<@NotNull EntityType<?>> DIAMOND_CHICKEN_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "diamond_chicken"));
-    public static final EntityType<@NotNull DiamondChicken> DIAMOND_CHICKEN = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.withDefaultNamespace("diamond_chicken"),
-            EntityType.Builder.of(DiamondChicken::new, MobCategory.AMBIENT)
-                    .noSummon()
-                    .sized(0.4f, 0.7f)
-                    .eyeHeight(0.7f)
-                    .build(DIAMOND_CHICKEN_KEY)
-    );
-    private static final ResourceKey<@NotNull EntityType<?>> LOVE_GOLEM_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "love_golem"));
-    public static final EntityType<@NotNull LoveGolem> LOVE_GOLEM = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.withDefaultNamespace("love_golem"),
-            EntityType.Builder.of(LoveGolem::new, MobCategory.AMBIENT)
-                    .noSummon()
-                    .sized(1.4f, 2.7f)
-                    .eyeHeight(3f)
-                    .build(LOVE_GOLEM_KEY)
-    );
-    private static final ResourceKey<@NotNull EntityType<?>> MEGA_SPUD_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "mega_spud"));
-    public static final EntityType<@NotNull MegaSpud> MEGA_SPUD = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.withDefaultNamespace("mega_spud"),
-            EntityType.Builder.of(MegaSpud::new, MobCategory.AMBIENT)
-                    .noSummon()
-                    .sized(9f, 12f)
-                    .eyeHeight(12f)
-                    .build(MEGA_SPUD_KEY)
-    );
-    private static final ResourceKey<@NotNull EntityType<?>> MOON_COW_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "moon_cow"));
-    public static final EntityType<@NotNull MoonCow> MOON_COW = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.withDefaultNamespace("moon_cow"),
-            EntityType.Builder.of(MoonCow::new, MobCategory.AMBIENT)
-                    .noSummon()
-                    .sized(0.9f, 1.4f)
-                    .eyeHeight(1.4f)
-                    .build(MOON_COW_KEY)
-    );
-    private static final ResourceKey<@NotNull EntityType<?>> NERD_CREEPER_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "nerd_creeper"));
-    public static final EntityType<@NotNull NerdCreeper> NERD_CREEPER = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.withDefaultNamespace("nerd_creeper"),
-            EntityType.Builder.of(NerdCreeper::new, MobCategory.AMBIENT)
-                    .noSummon()
-                    .sized(0.6f, 1.7f)
-                    .eyeHeight(1.7f)
-                    .build(NERD_CREEPER_KEY)
-    );
-    private static final ResourceKey<@NotNull EntityType<?>> PINK_WITHER_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "pink_wither"));
-    public static final EntityType<@NotNull PinkWither> PINK_WITHER = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.withDefaultNamespace("pink_wither"),
-            EntityType.Builder.of(PinkWither::new, MobCategory.AMBIENT)
-                    .noSummon()
-                    .sized(2f, 3f)
-                    .eyeHeight(3f)
-                    .build(PINK_WITHER_KEY)
-    );
-    private static final ResourceKey<@NotNull EntityType<?>> PLAGUEWHALE_SLAB_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "plaguewhale_slab"));
-    public static final EntityType<@NotNull PlaguewhaleSlab> PLAGUEWHALE_SLAB = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.fromNamespaceAndPath(MOD_ID, "plaguewhale_slab"),
-            EntityType.Builder.of(PlaguewhaleSlab::new, MobCategory.AMBIENT)
-                    .noSummon()
-                    .sized(1.9975f, 1.9975f)
-                    .eyeHeight(2f)
-                    .build(PLAGUEWHALE_SLAB_KEY)
-    );
-    private static final ResourceKey<@NotNull EntityType<?>> POISONOUS_POTATO_ZOMBIE_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "poisonous_potato_zombie"));
-    public static final EntityType<@NotNull PoisonousPotatoZombie> POISONOUS_POTATO_ZOMBIE = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.withDefaultNamespace("poisonous_potato_zombie"),
-            EntityType.Builder.of(PoisonousPotatoZombie::new, MobCategory.AMBIENT)
-                    .noSummon()
-                    .sized(0.6f, 1.95f)
-                    .eyeHeight(1.95f)
-                    .build(POISONOUS_POTATO_ZOMBIE_KEY)
-    );
-    private static final ResourceKey<@NotNull EntityType<?>> RAY_TRACING_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "ray_tracing"));
-    public static final EntityType<@NotNull RayTracing> RAY_TRACING = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.withDefaultNamespace("ray_tracing"),
-            EntityType.Builder.of(RayTracing::new, MobCategory.AMBIENT)
-                    .noSummon()
-                    .sized(0.6f, 1.95f)
-                    .eyeHeight(1.95f)
-                    .build(RAY_TRACING_KEY)
-    );
-    private static final ResourceKey<@NotNull EntityType<?>> REDSTONE_BUG_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "redstone_bug"));
-    public static final EntityType<@NotNull RedstoneBug> REDSTONE_BUG = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.withDefaultNamespace("redstone_bug"),
-            EntityType.Builder.of(RedstoneBug::new, MobCategory.AMBIENT)
-                    .noSummon()
-                    .sized(0.4f, 0.3f)
-                    .eyeHeight(0.3f)
-                    .build(REDSTONE_BUG_KEY)
-    );
-    private static final ResourceKey<@NotNull EntityType<?>> SMILING_CREEPER_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "smiling_creeper"));
-    public static final EntityType<@NotNull SmilingCreeper> SMILING_CREEPER = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.withDefaultNamespace("smiling_creeper"),
-            EntityType.Builder.of(SmilingCreeper::new, MobCategory.AMBIENT)
-                    .noSummon()
-                    .sized(0.6f, 1.7f)
-                    .eyeHeight(1.7f)
-                    .build(SMILING_CREEPER_KEY)
-    );
-    private static final ResourceKey<@NotNull EntityType<?>> TOXIFIN_SLAB_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "toxifin_slab"));
-    public static final EntityType<@NotNull ToxifinSlab> TOXIFIN_SLAB = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.withDefaultNamespace("toxifin_slab"),
-            EntityType.Builder.of(ToxifinSlab::new, MobCategory.AMBIENT)
-                    .noSummon()
-                    .sized(0.85f, 0.85f)
-                    .eyeHeight(0.85f)
-                    .build(TOXIFIN_SLAB_KEY)
-    );
-    private static final ResourceKey<@NotNull EntityType<?>> POTATO_HUSK_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "potatohusk"));
-    public static final EntityType<@NotNull PotatoHusk> POTATO_HUSK = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.withDefaultNamespace("potato_husk"),
-            EntityType.Builder.of(PotatoHusk::new, MobCategory.AMBIENT)
-                    .noSummon()
-                    .sized(0.6f, 1.95f)
-                    .eyeHeight(1.95f)
-                    .build(POTATO_HUSK_KEY)
-    );
-    private static final ResourceKey<@NotNull EntityType<?>> HEAD_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "head"));
-    public static final EntityType<@NotNull Head> HEAD = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.fromNamespaceAndPath(MOD_ID, "head"),
-            EntityType.Builder.of(Head::new, MobCategory.CREATURE)
-                    .sized(0.5f, 0.5f)
-                    .eyeHeight(0.5f)
-                    .build(HEAD_KEY));
-    private static final ResourceKey<@NotNull EntityType<?>> TRAITOR_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "traitor"));
-    public static final EntityType<@NotNull Traitor> TRAITOR = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.fromNamespaceAndPath(MOD_ID, "traitor"),
-            EntityType.Builder.of(Traitor::new, MobCategory.CREATURE)
-                    .noSummon()
-                    .sized(0.6f, 1.95f)
-                    .eyeHeight(1.95f)
-                    .build(TRAITOR_KEY));
-
-    private static final ResourceKey<@NotNull EntityType<?>> DUMBO_OCTOPUS_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "dumbo_octopus"));
-    public static final EntityType<@NotNull DumboOctopus> DUMBO_OCTOPUS = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.fromNamespaceAndPath(MOD_ID, "dumbo_octopus"),
-            EntityType.Builder.of(DumboOctopus::new, MobCategory.WATER_AMBIENT)
-                    .sized(0.5f, 0.5f)
-                    .eyeHeight(0.5f)
-                    .build(DUMBO_OCTOPUS_KEY)
-    );
-
-    private static final ResourceKey<@NotNull EntityType<?>> KOI_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "koi"));
-    public static final EntityType<@NotNull Koi> KOI = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.fromNamespaceAndPath(MOD_ID, "koi"),
-            EntityType.Builder.of(Koi::new, MobCategory.WATER_AMBIENT)
-                    .sized(0.6f, 0.6f)
-                    .eyeHeight(0.6f)
-                    .build(KOI_KEY)
-    );
-
-    private static final ResourceKey<@NotNull EntityType<?>> STINGRAY_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "stingray"));
-    public static final EntityType<@NotNull Stingray> STINGRAY = Registry.register(
-            BuiltInRegistries.ENTITY_TYPE,
-            Identifier.fromNamespaceAndPath(MOD_ID, "stringray"),
-            EntityType.Builder.of(Stingray::new, MobCategory.WATER_AMBIENT)
-                    .sized(1.0f, 0.4f)
-                    .eyeHeight(0.4f)
-                    .build(STINGRAY_KEY)
-    );
-
     private static final ResourceKey<@NotNull EntityType<?>> SULPHUR_CUBE_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "sulphur_cube"));
     public static final EntityType<@NotNull ClientSulfurCube> SULPHUR_CUBE = Registry.register(
@@ -1181,9 +927,6 @@ public class PetsInitializer implements ModInitializer {
     @Override
     public void onInitialize() {
 
-        FabricDefaultAttributeRegistry.register(RACOON, Racoon.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(DUCK, Duck.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(PENGUIN, Penguin.createAttributes().build());
         FabricDefaultAttributeRegistry.register(SHEEP, ClientSheep.createAttributes().build());
         FabricDefaultAttributeRegistry.register(CAT, ClientCat.createAttributes().build());
         FabricDefaultAttributeRegistry.register(ALLAY, ClientAllay.createAttributes().build());
@@ -1260,26 +1003,6 @@ public class PetsInitializer implements ModInitializer {
         FabricDefaultAttributeRegistry.register(WITHER_SKELETON, ClientWitherSkeleton.createAttributes().build());
         FabricDefaultAttributeRegistry.register(ENDER_DRAGON, ClientEnderDragon.createAttributes().build());
         FabricDefaultAttributeRegistry.register(WITHER, ClientWither.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(ANGRY_GHAST, AngryGhast.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(BATATO, Batato.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(DIAMOND_CHICKEN, DiamondChicken.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(LOVE_GOLEM, LoveGolem.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(MEGA_SPUD, MegaSpud.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(MOON_COW, MoonCow.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(NERD_CREEPER, NerdCreeper.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(PINK_WITHER, PinkWither.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(PLAGUEWHALE_SLAB, PlaguewhaleSlab.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(POISONOUS_POTATO_ZOMBIE, PoisonousPotatoZombie.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(RAY_TRACING, RayTracing.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(REDSTONE_BUG, RedstoneBug.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(SMILING_CREEPER, SmilingCreeper.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(TOXIFIN_SLAB, ToxifinSlab.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(POTATO_HUSK, PotatoHusk.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(HEAD, Head.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(TRAITOR, Traitor.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(DUMBO_OCTOPUS, DumboOctopus.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(KOI, Koi.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(STINGRAY, Stingray.createAttributes().build());
         FabricDefaultAttributeRegistry.register(SULPHUR_CUBE, ClientSulfurCube.createAttributes().build());
 
         PetsSounds.initialize();
