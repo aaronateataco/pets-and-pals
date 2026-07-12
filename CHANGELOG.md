@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.26.0
+- LeadPhysics is only required on this branch's counterparts that actually have a build for it (checked the Modrinth API directly - it only publishes for 26.1.x, nothing for 26.2 or the 26.3 snapshot). Dropped as a hard requirement on those two so the mod isn't permanently unable to launch there
+- Added native rope sag for the raft's tow line on every branch, LeadPhysics or not - vanilla's own leash renderer already supports a sagging curve, it just needed turning on
+
 ## 0.25.0
 - LeadPhysics is now a required dependency - Pets&Pals won't launch without it installed alongside it
 
