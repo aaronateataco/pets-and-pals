@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.15.0
+- Land pets no longer float behind your shoulder during combat - they tuck into the nether star instead, and it stays a star until the fight is over. Flyers keep the shoulder hover
+- Flying pets no longer get a raft when you board a boat - they just fly along
+- The raft now handles like a towed boat: the leashed bow swings around to face the rope when it goes taut, the hull turns heavily with its speed through the water, and it drifts around to face its motion when the rope slackens
+- The raft sizes itself to its passenger - a fox gets the classic raft, bigger pets get a bigger deck (and a slightly longer tow rope)
+- The pet on deck now turns with the hull instead of staying glued to the boat's heading
+
 ## 0.14.10
 - Blazes now bounce: new air-hopping movement style (slow drift down, hops along the ground while following) instead of flying with the allay crowd
 - The Menagerie shows where each pet comes from - Vanilla or a Pets&Pals addition - next to the selected pet

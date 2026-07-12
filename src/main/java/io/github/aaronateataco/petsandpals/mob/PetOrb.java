@@ -90,8 +90,9 @@ public class PetOrb extends Entity {
                     this.getX(), this.getY() + 0.25, this.getZ(), 0.0, 0.0, 0.0);
         }
 
-        // near the owner: look for a spot to reform
-        if (this.tickCount > 15 && this.tickCount % 8 == 0 && distance < 5.0) {
+        // near the owner: look for a spot to reform (never mid-fight)
+        if (this.tickCount > 15 && this.tickCount % 8 == 0 && distance < 5.0
+                && !this.pet.isCombatTucked()) {
             Vec3 spot = this.findMaterializeSpot(owner);
             if (spot != null) {
                 this.materializeAt(spot);
