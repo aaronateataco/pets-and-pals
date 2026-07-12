@@ -28,6 +28,7 @@ public class PetOrbRenderer extends EntityRenderer<@NotNull PetOrb, PetOrbRender
 
     public static class PetOrbRenderState extends EntityRenderState {
         public float spin;
+        public float scale = 1.0F;
     }
 
     @Override
@@ -39,6 +40,7 @@ public class PetOrbRenderer extends EntityRenderer<@NotNull PetOrb, PetOrbRender
     public void extractRenderState(@NotNull PetOrb orb, @NotNull PetOrbRenderState state, float partialTick) {
         super.extractRenderState(orb, state, partialTick);
         state.spin = (orb.tickCount + partialTick) * 6.0F;
+        state.scale = orb.renderScale(partialTick);
     }
 
     @Override
@@ -47,8 +49,12 @@ public class PetOrbRenderer extends EntityRenderer<@NotNull PetOrb, PetOrbRender
         super.submit(state, poseStack, collector, camera);
         RenderType renderType = RenderTypes.entityTranslucentEmissive(TEXTURE);
 
+        if (state.scale <= 0.0F) {
+            return;
+        }
         poseStack.pushPose();
         poseStack.translate(0.0F, 0.25F, 0.0F);
+        poseStack.scale(state.scale, state.scale, state.scale);
         poseStack.mulPose(Axis.YP.rotationDegrees(state.spin));
 
         // vertical plane
