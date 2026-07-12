@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.21.0
+- Pets no longer cast a shadow - the catch-up/reposition logic made it visibly snap around underneath them
+- Smoothed the sprint-alongside steering lead, which was amplifying the sprinting owner's small per-tick velocity noise into a visible first-person twitch
+
 ## 0.20.0
 - Sulfur cube backported as a pet on this version (26.1.2) - it's a real vanilla mob starting in 26.2 that doesn't exist here yet, so the geometry and textures were pulled straight from the newer client jar rather than approximated. Registered under the mod's own id so it can't collide with other backporting mods, and never spawnable via vanilla creative/summon - pets only
 - Sulfur cube: 10 of the real mob's archetypes (bouncy, fast flat, fast sliding, high resistance, light, slow bouncy, slow flat, slow sliding, sticky, regular) are selectable with `/petskin` as a jump/speed flavor - explosive and hot were left out since those would just hurt the owner
