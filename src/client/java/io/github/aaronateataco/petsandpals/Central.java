@@ -656,24 +656,6 @@ public class Central implements ClientModInitializer {
     }
 
     /**
-     * Adds the custom resourcepack required for the head into the resource pack respository.
-     * More about this custom pack can be seen in {@link HeadSkin}.
-     */
-    public static void checkForHeadResourcePack() {
-        Minecraft client = Minecraft.getInstance();
-        Options options = client.options;
-        List<String> resourcePacks = new ArrayList<>(options.resourcePacks);
-
-        /*if (!resourcePacks.contains("file/headpack") && Objects.equals(CONFIG.activePet, "head")) {
-            resourcePacks.add("file/headpack");
-            client.getResourcePackRepository().addPack("file/headpack");
-            options.save();
-            client.reloadResourcePacks();
-            //client.player.sendSystemMessage(Component.literal("§b[Pets&Pals] §aSorry for the interruption, the head pet requires a custom resource pack to work correctly and we loaded a pack for you. This will not affect anything except the head texture."));
-        }*/
-    }
-
-    /**
      * Used to re-assign the logo, edition texts, and splashes in {@link SplashManagerMixin} and {@link TitleScreenRenderingMixin}.
      *
      * @param bl: Whether to re-assign the logo or use the default ones.
@@ -1380,19 +1362,6 @@ public class Central implements ClientModInitializer {
                                 case "invulnerable" -> CONFIG.witherSkin = "invulnerable";
                                 case null, default -> isValid = false;
                             }
-                        } else if (Objects.equals(CONFIG.activePet, "head")) {
-                            CONFIG.headSkin = skin.toLowerCase();
-                        } else if (Objects.equals(CONFIG.activePet, "traitor")) {
-                            switch (skin) {
-                                case "desert" -> CONFIG.traitorSkin = "desert";
-                                case "jungle" -> CONFIG.traitorSkin = "jungle";
-                                case "plains" -> CONFIG.traitorSkin = "plains";
-                                case "savanna" -> CONFIG.traitorSkin = "savanna";
-                                case "snow", "snowy" -> CONFIG.traitorSkin = "snow";
-                                case "swamp" -> CONFIG.traitorSkin = "swamp";
-                                case "taiga" -> CONFIG.traitorSkin = "taiga";
-                                case null, default -> isValid = false;
-                            }
                         }
                     }
 
@@ -1990,35 +1959,32 @@ public class Central implements ClientModInitializer {
     }
 
     void createPetsList() {
-        String[] stuffs = new String[]{"allay", "angry ghast", "armadillo",
-                "axolotl", "bat", "batato", "bee", "blaze", "bogged",
+        String[] stuffs = new String[]{"allay", "armadillo",
+                "axolotl", "bat", "bee", "blaze", "bogged",
                 "breeze", "camel", "cat", "cave spider", "chicken",
                  "cod",  "copper golem", "cow",
-                "creaking", "creeper", "diamond chicken",
-                "dolphin", "donkey", "drowned", "duck", "dumbo octopus",
+                "creaking", "creeper",
+                "dolphin", "donkey", "drowned",
                 "elder guardian", "ender dragon", "enderman", "endermite", "evoker",
                 "fox",  "frog",
                  "ghast", "goat", "guardian",
-                "happy ghast", "head", "hoglin",  "horse",
+                "happy ghast", "hoglin",  "horse",
                 "husk",  "iron golem",
-                "koi", "llama",
-                 "love golem", "magma cube", "mega spud",
-                "moon cow", "mooshroom",
-                 "nautilus", "nerd creeper",
-                "panda", "parched", "parrot",  "penguin", "phantom",
+                "llama",
+                 "magma cube",
+                "mooshroom",
+                 "nautilus",
+                "panda", "parched", "parrot", "phantom",
                "pig", "piglin", "pillager",
-                "pink wither", "plaguewhale slab", "poisonous potato zombie", "polar bear",
-                "potato husk", "pufferfish", "rabbit",
-                "racoon",
+                "polar bear",
+                "pufferfish", "rabbit",
                 "ravager",
-                "ray tracing",
-                "redstone bug",
                 "salmon",
                 "sheep",
                 "shulker",
-                "silverfish", "skeleton", "slime", "smiling creeper", "sniffer", "snow golem",
-                 "spider", "squid", "stingray",  "stray", "strider",  "tadpole", "toxifin slab",
-                "traitor", "turtle",
+                "silverfish", "skeleton", "slime", "sniffer", "snow golem",
+                 "spider", "squid",  "stray", "strider",  "tadpole",
+                "turtle",
                  "vex", "villager", "vindicator", "wandering trader", "warden", "witch", "wither",
                 "wither skeleton", "wolf", "zombie", "zombie villager"};
         PETS_LIST.addAll(List.of(stuffs));
