@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.24.0
+- Raft tow has physical give again instead of an instant position lock - it eases toward its spot behind the boat with a spring, not a rope/drag simulation, so it still can't drift or desync the way the old model could
+- Added [LeadPhysics](https://modrinth.com/mod/leadphysics) as a recommended (not required) companion mod - it replaces vanilla's straight leash line with a sagging rope curve for any leashed entity, including the raft's tow line
+
 ## 0.23.0
 - Replaced the rope/spring raft-tow simulation with a rigid attachment: the raft's position is copied directly off the boat's own transform every tick (offset behind the stern), instead of being simulated independently with velocity and drag. It can no longer drift, lag behind, or float loose - only the visual yaw still eases in on sharp turns
 - Fixed land pets zigzagging diagonally left-right instead of running in a straight line - the predictive lead point (added for normal, non-sprint following) read the owner's raw per-tick velocity, which has enough natural noise to flip the predicted direction by a few degrees every tick
