@@ -229,17 +229,11 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
         // walked a few steps, hit water again, and got re-rafted - the "swims then
         // rafts then swims" loop. Owner-grounded is the only signal that actually
         // means the crossing is done.
+        // (release() itself makes sure the pet never ends up stuck sitting in open
+        // water if the raft lets go a step or two short of the actual shore)
         if (!owner.isInWater() && distance < 4.0) {
-            // don't let go until the raft itself has actually reached dry ground too
-            // (or is basically at the owner's feet) - releasing while it's still over
-            // open water stranded the pet mid-lake with no swim goal to get it out,
-            // which showed up as the stuck/out-of-view rescue logic teleporting it
-            // around erratically trying to recover
-            double raftSurface = this.waterSurfaceY(this.getX(), this.getY(), this.getZ());
-            if (raftSurface == Double.MIN_VALUE || distance < 1.5) {
-                this.release();
-                return;
-            }
+            this.release();
+            return;
         }
 
         // same feel as the tow rope: thrust toward the owner, water drag, so the
@@ -287,6 +281,16 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
     private void release() {
         if (this.pet != null && !this.pet.isRemoved()) {
             this.pet.setInSittingPose(false);
+            // the ferry can let go while still a step or two short of the actual
+            // shoreline (see tickFerry) - a land pet has no swim goal, so being set
+            // down still over water left it stuck bobbing in place rather than
+            // walking the rest of the way. repositionToOwner() already knows how to
+            // find the nearest dry, non-underwater spot near the owner (the same
+            // rescue logic used when a pet gets stuck out of view), so reuse it
+            // instead of leaving the pet to fend for itself in the water.
+            if (this.ferry && this.pet.isInWater()) {
+                this.pet.repositionToOwner();
+            }
             this.pet.setRafted(false);
         }
         this.discard();
