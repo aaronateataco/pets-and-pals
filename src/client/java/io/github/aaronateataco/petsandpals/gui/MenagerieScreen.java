@@ -56,6 +56,13 @@ public class MenagerieScreen extends Screen {
     private Button prevButton;
     private Button nextButton;
     private PetList selected;
+    private Button summonButton;
+    private int previewX;
+    private int previewY;
+    private int previewW;
+    private int previewH;
+    private int gridTop = GRID_TOP;
+    private int gridLeft = 12;
     private int page = 0;
     private int columns = 3;
     private int rows = 6;
@@ -114,23 +121,22 @@ public class MenagerieScreen extends Screen {
 
     @Override
     protected void init() {
-        int gridAreaWidth = this.width - PANEL_WIDTH - 24;
-        this.columns = Math.max(2, gridAreaWidth / (CELL_WIDTH + CELL_GAP));
-        this.rows = Math.max(3, (this.height - GRID_TOP - 40) / (CELL_HEIGHT + CELL_GAP));
+        int leftWidth = this.width - PANEL_WIDTH - 24;
 
-        this.searchBox = new EditBox(this.font, 12, 26, Math.min(220, gridAreaWidth - 4), 18,
-                Component.literal("Search"));
-        this.searchBox.setValue(this.query);
-        this.searchBox.setResponder(text -> {
-            this.query = text;
-            this.page = 0;
-            this.applyFilter();
-            this.rebuildGrid();
-        });
-        this.addRenderableWidget(this.searchBox);
+        // the pet takes center stage: big preview up top, arrows to flip through
+        this.previewW = Math.min(210, leftWidth - 64);
+        this.previewH = Math.max(96, Math.min(120, this.height / 4));
+        this.previewX = 12 + (leftWidth - this.previewW) / 2;
+        this.previewY = 22;
+        int arrowY = this.previewY + this.previewH / 2 - 10;
+        this.addRenderableWidget(Button.builder(Component.literal("<"), b -> this.cycleSelected(-1))
+                .bounds(this.previewX - 26, arrowY, 20, 20).build());
+        this.addRenderableWidget(Button.builder(Component.literal(">"), b -> this.cycleSelected(1))
+                .bounds(this.previewX + this.previewW + 6, arrowY, 20, 20).build());
 
-        // element tabs
-        int tabX = this.searchBox.getX() + this.searchBox.getWidth() + 6;
+        // element toggles sit under the preview, search under those
+        int tabY = this.previewY + this.previewH + 24;
+        int tabX = 12 + (leftWidth - 4 * 36 + 2) / 2;
         for (Element el : Element.values()) {
             Element tabElement = el;
             Button tab = Button.builder(Component.literal(switch (el) {
@@ -140,7 +146,7 @@ public class MenagerieScreen extends Screen {
                 this.page = 0;
                 this.applyFilter();
                 this.rebuildGrid();
-            }).bounds(tabX, 26, 34, 18).build();
+            }).bounds(tabX, tabY, 34, 18).build();
             // sky/sea catalogs open up alongside the rest of the roster
             if ((el == Element.SKY || el == Element.SEA) && !this.testingCatalog) {
                 tab.active = false;
@@ -150,6 +156,23 @@ public class MenagerieScreen extends Screen {
             tabX += 36;
             this.addRenderableWidget(tab);
         }
+
+        int searchWidth = Math.min(220, leftWidth - 8);
+        this.searchBox = new EditBox(this.font, 12 + (leftWidth - searchWidth) / 2, tabY + 22,
+                searchWidth, 18, Component.literal("Search"));
+        this.searchBox.setValue(this.query);
+        this.searchBox.setResponder(text -> {
+            this.query = text;
+            this.page = 0;
+            this.applyFilter();
+            this.rebuildGrid();
+        });
+        this.addRenderableWidget(this.searchBox);
+
+        this.gridTop = tabY + 46;
+        this.columns = Math.max(2, leftWidth / (CELL_WIDTH + CELL_GAP));
+        this.rows = Math.max(2, (this.height - this.gridTop - 34) / (CELL_HEIGHT + CELL_GAP));
+        this.gridLeft = 12 + (leftWidth - (this.columns * (CELL_WIDTH + CELL_GAP) - CELL_GAP)) / 2;
 
         int pageY = this.height - 28;
         this.prevButton = this.addRenderableWidget(Button.builder(Component.literal("<"), b -> {
@@ -163,8 +186,9 @@ public class MenagerieScreen extends Screen {
 
         int panelX = this.width - PANEL_WIDTH - 6;
         int y = GRID_TOP + PREVIEW_HEIGHT + 4;
-        this.addRenderableWidget(Button.builder(Component.literal("Summon"), b -> this.summonSelected())
+        this.summonButton = this.addRenderableWidget(Button.builder(Component.literal("Summon"), b -> this.summonSelected())
                 .bounds(panelX, y, PANEL_WIDTH, 20).build());
+        this.updateSummonState();
         y += 24;
         this.addRenderableWidget(Button.builder(this.petToggleLabel(), b -> {
             CONFIG.petOn = !Boolean.TRUE.equals(CONFIG.petOn);
@@ -236,6 +260,26 @@ public class MenagerieScreen extends Screen {
         return previewPets().get(this.selected.name().toLowerCase(Locale.ROOT));
     }
 
+    private boolean unlocked(PetList species) {
+        return this.testingCatalog || PUBLIC_PETS.contains(species.name());
+    }
+
+    /** Arrow buttons: browse the roster without summoning anything. */
+    private void cycleSelected(int direction) {
+        if (this.filtered.isEmpty()) return;
+        int i = this.filtered.indexOf(this.selected);
+        this.selected = this.filtered.get(Math.floorMod(i + direction, this.filtered.size()));
+        this.page = Math.max(0, this.filtered.indexOf(this.selected)) / this.pageSize();
+        this.rebuildGrid();
+        this.updateSummonState();
+    }
+
+    private void updateSummonState() {
+        if (this.summonButton != null) {
+            this.summonButton.active = this.selected != null && this.unlocked(this.selected);
+        }
+    }
+
     private int pageSize() {
         return this.columns * this.rows;
     }
@@ -292,8 +336,8 @@ public class MenagerieScreen extends Screen {
             PetList species = this.filtered.get(start + i);
             int col = i % this.columns;
             int row = i / this.columns;
-            int x = 12 + col * (CELL_WIDTH + CELL_GAP);
-            int y = GRID_TOP + row * (CELL_HEIGHT + CELL_GAP);
+            int x = this.gridLeft + col * (CELL_WIDTH + CELL_GAP);
+            int y = this.gridTop + row * (CELL_HEIGHT + CELL_GAP);
             boolean isActive = species.name().equals(CONFIG.activePet);
             boolean isPublic = PUBLIC_PETS.contains(species.name());
             boolean unlocked = isPublic || this.testingCatalog;
@@ -305,6 +349,7 @@ public class MenagerieScreen extends Screen {
                 this.selected = species;
                 this.applySelected();
                 this.rebuildGrid();
+                this.updateSummonState();
             }).bounds(x, y, CELL_WIDTH, CELL_HEIGHT).build();
             cell.active = unlocked && species != this.selected;
             if (!unlocked) {
@@ -322,7 +367,7 @@ public class MenagerieScreen extends Screen {
 
     // clicking a species applies it right away
     private void applySelected() {
-        if (this.selected == null) return;
+        if (this.selected == null || !this.unlocked(this.selected)) return;
         CONFIG.activePet = this.selected.name();
         this.saveConfig();
         if (this.minecraft != null && this.minecraft.level != null && Boolean.TRUE.equals(CONFIG.petOn)) {
@@ -333,7 +378,7 @@ public class MenagerieScreen extends Screen {
     }
 
     private void summonSelected() {
-        if (this.selected == null) return;
+        if (this.selected == null || !this.unlocked(this.selected)) return;
         CONFIG.activePet = this.selected.name();
         CONFIG.petOn = true;
         this.saveConfig();
@@ -358,18 +403,23 @@ public class MenagerieScreen extends Screen {
                         + "  (" + this.filtered.size() + " pets)"),
                 62, this.height - 22, 0xFFAAAAAA);
 
-        int panelX = this.width - PANEL_WIDTH - 6;
+        int boxLeft = this.previewX;
+        int boxTop = this.previewY;
+        int boxRight = this.previewX + this.previewW;
+        int boxBottom = this.previewY + this.previewH;
+
+        // name + origin centered under the stage
         if (this.selected != null) {
-            graphics.text(this.font, Component.literal("Selected:"), panelX, 28, 0xFFAAAAAA);
-            graphics.text(this.font, this.selected.getDisplayName(), panelX, 38, 0xFFFFFFFF);
-            graphics.text(this.font, Component.literal(originOf(this.selected)),
-                    panelX + 70, 28, 0xFF777777);
+            String name = this.selected.getDisplayName().getString();
+            String origin = originOf(this.selected);
+            int nameWidth = this.font.width(name);
+            int cx = boxLeft + this.previewW / 2;
+            graphics.text(this.font, Component.literal(name), cx - nameWidth / 2, boxBottom + 4, 0xFFFFFFFF);
+            graphics.text(this.font, Component.literal(origin),
+                    cx - this.font.width(origin) / 2, boxBottom + 14, 0xFF777777);
         }
 
-        int boxTop = GRID_TOP;
-        int boxBottom = GRID_TOP + PREVIEW_HEIGHT;
-
-        // hovering the raft/cushion buttons swaps the preview to the raft itself
+        // hovering the raft/cushion buttons swaps the stage to the raft itself
         boolean raftHover = (this.raftWoodButton != null && this.raftWoodButton.isHovered())
                 || (this.cushionButton != null && this.cushionButton.isHovered());
         if (raftHover) {
@@ -388,37 +438,37 @@ public class MenagerieScreen extends Screen {
                 org.joml.Quaternionf tilt = new org.joml.Quaternionf().rotateX(-0.5F);
                 org.joml.Quaternionf pose = new org.joml.Quaternionf().rotateZ((float) Math.PI)
                         .mul(tilt).rotateY(spin);
-                graphics.entity(state, 52.0F,
+                graphics.entity(state, this.previewH * 0.62F,
                         new org.joml.Vector3f(0.0F, 0.35F, 0.0F), pose, tilt,
-                        panelX, boxTop, panelX + PANEL_WIDTH, boxBottom);
-                graphics.text(this.font, this.raftWoodLabel(), panelX, boxBottom - 10, 0xFFAAAAAA);
+                        boxLeft, boxTop, boxRight, boxBottom);
+                graphics.text(this.font, this.raftWoodLabel(), boxLeft + 4, boxBottom - 10, 0xFFAAAAAA);
                 return;
             }
-            graphics.text(this.font, Component.literal("Raft preview needs"), panelX, boxTop + 30, 0xFF888888);
-            graphics.text(this.font, Component.literal("a loaded world"), panelX, boxTop + 42, 0xFF888888);
+            graphics.text(this.font, Component.literal("Raft preview needs a loaded world"),
+                    boxLeft + 4, boxTop + this.previewH / 2, 0xFF888888);
             return;
         }
 
-        // live preview: pet next to the player at one shared scale
+        // center stage: the pet big, the player alongside at the same scale for size
         AbstractPet pet = this.selectedPreview();
         LivingEntity player = this.minecraft != null ? this.minecraft.player : null;
         if (pet != null && player != null && !pet.isRemoved()) {
             float tallest = Math.max(player.getBbHeight(), pet.getBbHeight());
-            int scale = Math.max(8, (int) ((PREVIEW_HEIGHT - 20) / tallest));
-            int half = PANEL_WIDTH / 2;
+            int scale = Math.max(10, (int) ((this.previewH - 16) / tallest));
+            int petPane = boxLeft + (int) (this.previewW * 0.62);
             InventoryScreen.extractEntityInInventoryFollowsMouse(graphics,
-                    panelX, boxTop, panelX + half - 2, boxBottom,
+                    boxLeft, boxTop, petPane, boxBottom,
                     scale, 0.0625F, mouseX, mouseY, pet);
             InventoryScreen.extractEntityInInventoryFollowsMouse(graphics,
-                    panelX + half + 2, boxTop, panelX + PANEL_WIDTH, boxBottom,
+                    petPane + 4, boxTop, boxRight, boxBottom,
                     scale, 0.0625F, mouseX, mouseY, player);
             graphics.text(this.font, Component.literal(String.format(Locale.ROOT, "%.1fm", pet.getBbHeight())),
-                    panelX + 6, boxBottom - 10, 0xFFAAAAAA);
+                    boxLeft + 4, boxBottom - 10, 0xFFAAAAAA);
             graphics.text(this.font, Component.literal(String.format(Locale.ROOT, "%.1fm", player.getBbHeight())),
-                    panelX + half + 8, boxBottom - 10, 0xFFAAAAAA);
+                    petPane + 8, boxBottom - 10, 0xFFAAAAAA);
         } else {
-            graphics.text(this.font, Component.literal("Previews need"), panelX, boxTop + 30, 0xFF888888);
-            graphics.text(this.font, Component.literal("a loaded world"), panelX, boxTop + 42, 0xFF888888);
+            graphics.text(this.font, Component.literal("Previews need a loaded world"),
+                    boxLeft + 4, boxTop + this.previewH / 2, 0xFF888888);
         }
     }
 
