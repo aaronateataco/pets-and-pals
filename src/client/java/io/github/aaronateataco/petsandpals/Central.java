@@ -1784,6 +1784,10 @@ public class Central implements ClientModInitializer {
                 }
             }
 
+            if (this.i % 20 == 0) {
+                checkBabyGrowth();
+            }
+
             refreshPetNames();
 
             // dev hook: drop a .pnp_autoshot file in the game dir to capture timed
@@ -1917,6 +1921,32 @@ public class Central implements ClientModInitializer {
             case "sulfur_cube" -> CONFIG.sulfurCubeName = name;
         }
         AutoConfig.getConfigHolder(PetsConfig.class).save();
+    }
+
+    /** How long a baby pet stays a baby before growing up, absent a golden dandelion. */
+    private static final long BABY_GROW_MILLIS = 20 * 60 * 1000L;
+
+    /** Sets the active pet's baby/adult state and (re)starts or clears the growth timer. */
+    public static void setPetBaby(boolean baby) {
+        CONFIG.isBaby = baby;
+        CONFIG.babyLocked = false;
+        CONFIG.babyGrowAt = baby ? System.currentTimeMillis() + BABY_GROW_MILLIS : 0L;
+        AutoConfig.getConfigHolder(PetsConfig.class).save();
+    }
+
+    /** Golden dandelion applied: the current baby pet stops growing up until toggled off. */
+    public static void applyGoldenDandelion() {
+        if (!CONFIG.isBaby) return;
+        CONFIG.babyLocked = true;
+        AutoConfig.getConfigHolder(PetsConfig.class).save();
+    }
+
+    /** Grows up a pet whose timer has run out, unless a golden dandelion is locking it. */
+    private static void checkBabyGrowth() {
+        if (!CONFIG.isBaby || CONFIG.babyLocked || CONFIG.babyGrowAt == 0L) return;
+        if (System.currentTimeMillis() >= CONFIG.babyGrowAt) {
+            setPetBaby(false);
+        }
     }
 
     /**
