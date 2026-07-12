@@ -49,6 +49,8 @@ public class ClientCopperGolemRenderer extends PetRenderer<@NotNull ClientCopper
             copperGolemTexturePath = "textures/entity/copper_golem/copper_golem_oxidized.png";
         } else if (Objects.equals(CONFIG.copperGolemSkin, "weathered")) {
             copperGolemTexturePath = "textures/entity/copper_golem/copper_golem_weathered.png";
+        } else {
+            copperGolemTexturePath = "textures/entity/copper_golem/copper_golem.png";
         }
         return Identifier.withDefaultNamespace(copperGolemTexturePath);
     }
