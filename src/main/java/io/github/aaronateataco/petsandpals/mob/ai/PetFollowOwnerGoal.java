@@ -440,9 +440,24 @@ public class PetFollowOwnerGoal extends Goal {
         return this.yawHistory[this.yawIndex]; // oldest slot (about to be overwritten)
     }
 
+    /** Forward direction for the formation anchor - blends in the owner's own
+     *  smoothed movement direction so ordinary camera micro-movement while sprinting
+     *  in a straight line doesn't swing the whole anchor (and the pet with it) side
+     *  to side. The anchor used to be driven entirely by head yaw, which never
+     *  holds perfectly still even when walking dead straight; same class of jitter
+     *  already fixed for predictedOwnerTarget() by leaning on movement over look. */
+    private Vec3 anchorForward() {
+        Vec3 headForward = Vec3.directionFromRotation(0.0F, this.delayedHeadYaw());
+        headForward = new Vec3(headForward.x, 0.0, headForward.z).normalize();
+        if (this.smoothedOwnerVelocity != null && this.smoothedOwnerVelocity.lengthSqr() > 0.0025) {
+            Vec3 moveForward = this.smoothedOwnerVelocity.normalize();
+            return moveForward.scale(0.75).add(headForward.scale(0.25)).normalize();
+        }
+        return headForward;
+    }
+
     private Vec3 alongsideAnchor() {
-        Vec3 forward = Vec3.directionFromRotation(0.0F, this.delayedHeadYaw());
-        forward = new Vec3(forward.x, 0.0, forward.z).normalize();
+        Vec3 forward = this.anchorForward();
         Vec3 right = new Vec3(-forward.z, 0.0, forward.x);
 
         Vec3 toPet = this.pet.position().subtract(this.owner.position());
