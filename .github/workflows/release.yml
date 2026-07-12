@@ -51,14 +51,43 @@ jobs:
       #                    needs the "create versions" scope)
       #   MODRINTH_ID    - the project id/slug (create the project on Modrinth first)
       # Without the secrets this step just skips, so releases keep working either way.
+      # mc-publish can't resolve "26.3-snapshot-3" as a game version even when told
+      # explicitly (fails with "at least one game version should be specified"), so
+      # this branch uploads straight through Modrinth's API instead.
       - name: publish to modrinth
         if: ${{ env.MODRINTH_TOKEN != '' }}
-        uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          modrinth-id: ${{ secrets.MODRINTH_ID }}
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-          files: release/*.jar
-          changelog-file: changelog-section.md
-          version-type: alpha
-          loaders: fabric
-          game-versions: 26.3-snapshot-3
+        env:
+          MODRINTH_ID: ${{ secrets.MODRINTH_ID }}
+        run: |
+          JAR=$(ls release/*.jar | grep -v -e sources -e javadoc | head -n1)
+          FILENAME=$(basename "$JAR")
+          GAME_VERSION=$(grep '^minecraft_version=' gradle.properties | cut -d= -f2)
+          VERSION_NUMBER="${GITHUB_REF_NAME#v}"
+          jq -n \
+            --arg name "$VERSION_NUMBER" \
+            --arg version_number "$VERSION_NUMBER" \
+            --rawfile changelog changelog-section.md \
+            --arg game_version "$GAME_VERSION" \
+            --arg project_id "$MODRINTH_ID" \
+            --arg filename "$FILENAME" \
+            '{
+              name: $name,
+              version_number: $version_number,
+              changelog: $changelog,
+              dependencies: [
+                {project_id: "9s6osm5g", version_id: null, file_name: null, dependency_type: "required"},
+                {project_id: "P7dR8mSH", version_id: null, file_name: null, dependency_type: "required"}
+              ],
+              game_versions: [$game_version],
+              version_type: "alpha",
+              loaders: ["fabric"],
+              featured: true,
+              status: "listed",
+              requested_status: "listed",
+              project_id: $project_id,
+              file_parts: [$filename]
+            }' > modrinth-data.json
+          curl -sf -H "Authorization: $MODRINTH_TOKEN" \
+            -F "data=<modrinth-data.json;type=application/json" \
+            -F "$FILENAME=@$JAR;type=application/java-archive" \
+            "https://api.modrinth.com/v2/version"
