@@ -92,6 +92,7 @@ public abstract class AbstractPet extends TamableAnimal {
     private int outOfViewTicks = 0;
     private int stuckScore = 0;
     private double lastTrackedDistanceSqr = 0.0;
+    private boolean openArea = false;
 
     protected AbstractPet(EntityType<? extends @NotNull TamableAnimal> type, Level level) {
         super(type, level);
@@ -141,6 +142,19 @@ public abstract class AbstractPet extends TamableAnimal {
 
     /** True for goal/navigation-driven pets; custom mobs with their own tick logic return false. */
     protected boolean usesGoalMovement() {
+        return false;
+    }
+
+    // the pet is a companion, not an obstacle - it should never shove the owner off
+    // course or block a doorway/boat, so it doesn't push or get pushed by anything.
+    // canBeCollidedWith matters too: boats push away anything where either is true
+    @Override
+    public boolean isPushable() {
+        return false;
+    }
+
+    @Override
+    public boolean canBeCollidedWith(@org.jetbrains.annotations.NotNull net.minecraft.world.entity.Entity entity) {
         return false;
     }
 
@@ -241,12 +255,19 @@ public abstract class AbstractPet extends TamableAnimal {
             if (!this.perched) {
                 LivingEntity trackedOwner = this.getOwner();
                 if (trackedOwner != null && trackedOwner.level() == this.level()) {
+                    if (this.tickCount % 20 == 0) {
+                        this.openArea = this.level().canSeeSky(this.blockPosition());
+                    }
                     // flyer ceiling: sink back down if too far above the owner
                     if (this.followYOffset() > 0.0F && this.getY() > trackedOwner.getY() + 3.5) {
                         this.setDeltaMovement(this.getDeltaMovement().add(0.0, -0.04, 0.0));
                     }
                     double distSqr = this.distanceToSqr(trackedOwner);
-                    if (distSqr > 20.0 * 20.0) {
+                    // open sky (fields, beaches) means no walls to get lost behind or tight
+                    // gaps to get stuck in, so the pet can range farther before being reeled
+                    // in - under a roof/underground it stays on the original short leash
+                    double hardLeash = this.openArea ? 36.0 : 20.0;
+                    if (distSqr > hardLeash * hardLeash) {
                         // hard leash - past this the pet is a speck and risks chunk unload
                         this.repositionToOwner();
                         this.outOfViewTicks = 0;
@@ -255,7 +276,7 @@ public abstract class AbstractPet extends TamableAnimal {
                         this.outOfViewTicks = 0;
                         this.stuckScore = 0;
                     } else {
-                        double farRing = this.stopDistance() + 2.0;
+                        double farRing = this.stopDistance() + (this.openArea ? 10.0 : 2.0);
                         if (distSqr > farRing * farRing) this.outOfViewTicks++;
                         else this.outOfViewTicks = 0;
                         if (this.tickCount % 20 == 0) {
@@ -263,7 +284,8 @@ public abstract class AbstractPet extends TamableAnimal {
                             else this.stuckScore = 0;
                             this.lastTrackedDistanceSqr = distSqr;
                         }
-                        if (this.outOfViewTicks >= 40 || this.stuckScore >= 3) {
+                        int outOfViewLimit = this.openArea ? 100 : 40;
+                        if (this.outOfViewTicks >= outOfViewLimit || this.stuckScore >= 3) {
                             this.repositionToOwner();
                             this.outOfViewTicks = 0;
                             this.stuckScore = 0;

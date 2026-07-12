@@ -135,21 +135,6 @@ public class PetFollowOwnerGoal extends Goal {
         }
 
         if (alongside) {
-            // look ahead while running, glance at the owner every few seconds
-            if (this.glanceTicks > 0) {
-                this.glanceTicks--;
-                this.pet.getLookControl().setLookAt(this.owner, 10.0F, (float) this.pet.getMaxHeadXRot());
-            } else {
-                Vec3 ahead = this.pet.position().add(this.pet.getDeltaMovement().scale(4.0)).add(0.0, this.pet.getEyeHeight(), 0.0);
-                this.pet.getLookControl().setLookAt(ahead.x, ahead.y, ahead.z);
-                if (--this.glanceCooldown <= 0) {
-                    this.glanceTicks = 20 + this.pet.getRandom().nextInt(15);
-                    this.glanceCooldown = 70 + this.pet.getRandom().nextInt(70);
-                }
-            }
-            // smooth the speed boost every tick or the pace visibly steps
-            this.updateAlongsideBoost();
-
             // direct steering: while pacing the owner, skip pathfinding entirely and
             // drive straight at the (moving) formation point - paths to a target moving
             // at sprint speed rarely completed, which made the whole feature flaky.
@@ -169,6 +154,26 @@ public class PetFollowOwnerGoal extends Goal {
                     ? rawOwnerVelocity : this.smoothedOwnerVelocity.lerp(rawOwnerVelocity, 0.3);
             Vec3 steerLead = this.smoothedOwnerVelocity.scale(leadScale);
             double steerY = this.owner.getY() + this.pet.followYOffset();
+
+            // look ahead while running, glance at the owner every few seconds - uses the
+            // already-smoothed steer target, not the pet's own raw delta movement, which
+            // jittered every tick (jump-bob, edge nudges) and made the head visibly twitch
+            if (this.glanceTicks > 0) {
+                this.glanceTicks--;
+                this.pet.getLookControl().setLookAt(this.owner, 10.0F, (float) this.pet.getMaxHeadXRot());
+            } else {
+                Vec3 aheadDir = new Vec3(steer.x + steerLead.x - this.pet.getX(), 0.0, steer.z + steerLead.z - this.pet.getZ());
+                Vec3 ahead = aheadDir.lengthSqr() > 0.01
+                        ? this.pet.position().add(aheadDir.normalize().scale(4.0)).add(0.0, this.pet.getEyeHeight(), 0.0)
+                        : this.pet.position().add(0.0, this.pet.getEyeHeight(), 0.0);
+                this.pet.getLookControl().setLookAt(ahead.x, ahead.y, ahead.z);
+                if (--this.glanceCooldown <= 0) {
+                    this.glanceTicks = 20 + this.pet.getRandom().nextInt(15);
+                    this.glanceCooldown = 70 + this.pet.getRandom().nextInt(70);
+                }
+            }
+            // smooth the speed boost every tick or the pace visibly steps
+            this.updateAlongsideBoost();
             this.pet.getMoveControl().setWantedPosition(
                     steer.x + steerLead.x, steerY, steer.z + steerLead.z,
                     this.speedModifier * AbstractPet.speedMultiplier.getAsDouble());

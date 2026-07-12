@@ -145,9 +145,9 @@ public class MenagerieScreen extends Screen {
         this.previewX = 12 + (leftWidth - this.previewW) / 2;
         this.previewY = 22;
         int arrowY = this.previewY + this.previewH / 2 - 10;
-        this.addRenderableWidget(Button.builder(Component.literal("<"), b -> this.cycleSelected(-1))
+        this.track(Button.builder(Component.literal("<"), b -> this.cycleSelected(-1))
                 .bounds(this.previewX - 26, arrowY, 20, 20).build());
-        this.addRenderableWidget(Button.builder(Component.literal(">"), b -> this.cycleSelected(1))
+        this.track(Button.builder(Component.literal(">"), b -> this.cycleSelected(1))
                 .bounds(this.previewX + this.previewW + 6, arrowY, 20, 20).build());
 
         // element toggles sit under the preview, search under those
@@ -247,8 +247,15 @@ public class MenagerieScreen extends Screen {
         y += 28;
         if (net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("yet_another_config_lib_v3"))
         this.track(Button.builder(Component.literal("Advanced settings..."), b -> {
-            if (this.minecraft != null) {
+            if (this.minecraft == null) return;
+            try {
                 this.minecraft.gui.setScreen(PetsConfigScreen.getInstance().getAdvancedConfigScreenFactory().create(this));
+            } catch (Exception e) {
+                // building the YACL screen can throw if the active pet's skin enum is
+                // mismatched (see PetsConfigScreen's enumClass) - log instead of silently
+                // doing nothing, which just looked like a dead button
+                io.github.aaronateataco.petsandpals.PetsInitializer.LOGGER.error(
+                        "[Pets&Pals] Advanced settings screen failed to open for active pet '{}'", CONFIG.activePet, e);
             }
         }).bounds(panelX, y, PANEL_WIDTH, 20).build());
 
