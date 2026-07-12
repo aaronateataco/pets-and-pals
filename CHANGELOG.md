@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.32.0
+- Fixed the sprint-alongside pet's whole body swaying left-right even while you're running in a dead-straight line: the formation point it steers at was aimed entirely off your head yaw (look direction), which never holds perfectly still - even a straight sprint has natural camera micro-movement. It's now aimed mostly off your actual movement direction instead, with only a little pull from where you're looking, the same balance already used for the normal (non-sprint) follow lead
+
 ## 0.31.0
 - Tropical fish is now an actual, summonable pet - the mob class and its 10 named skins (cichlid, clownfish, cotton candy betta, goatfish, parrotfish, queen angelfish, red lipped blenny, tomato clownfish, triggerfish, yellowtail parrotfish) already existed in the code but were never wired into the catalog, commands, or a renderer, so it was completely unreachable. Its skins reuse vanilla's own small/large body plus tinted pattern-overlay rendering, matched against the real predefined variants vanilla itself spawns tropical fish as
 - Fixed two typos in the tropical fish skin list ("chichlid" -> "cichlid", "cotten candy betta" -> "cotton candy betta")
