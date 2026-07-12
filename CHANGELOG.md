@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.21.0
+- Pets no longer cast a shadow - the catch-up/reposition logic made it visibly snap around underneath them
+- Smoothed the sprint-alongside steering lead, which was amplifying the sprinting owner's small per-tick velocity noise into a visible first-person twitch
+
 ## 0.20.0
 - Fixed the raft trailing behind boats with a wide gap of open water instead of sitting close behind - also fixed it stalling out over uneven water (waterfalls, locks) where it could misread as "no water" and stop following entirely
 
