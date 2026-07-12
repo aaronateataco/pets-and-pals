@@ -32,6 +32,19 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
         this.noPhysics = true;
     }
 
+    // AbstractBoat actively pushes away anything nearby where canBeCollidedWith() or
+    // isPushable() is true, every tick - the raft was fighting that push against its own
+    // tow physics the entire time, which is a big part of why the tow looked broken
+    @Override
+    public boolean isPushable() {
+        return false;
+    }
+
+    @Override
+    public boolean canBeCollidedWith(@NotNull net.minecraft.world.entity.Entity entity) {
+        return false;
+    }
+
     public static PetRaft create(Level level, AbstractPet pet, AbstractBoat boat) {
         PetRaft raft = new PetRaft(PetsInitializer.PET_RAFT, level);
         raft.blockState = PetsInitializer.PET_RAFT_BLOCK.defaultBlockState()
