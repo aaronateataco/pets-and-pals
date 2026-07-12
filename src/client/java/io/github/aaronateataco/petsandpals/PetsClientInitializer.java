@@ -77,6 +77,7 @@ import io.github.aaronateataco.petsandpals.rendering.vanilla.strider.ClientStrid
 import io.github.aaronateataco.petsandpals.rendering.vanilla.sulfur_cube.ClientSulfurCubeRenderer;
 import io.github.aaronateataco.petsandpals.rendering.vanilla.sulfur_cube.PetSulfurCubeModel;
 import io.github.aaronateataco.petsandpals.rendering.vanilla.tadpole.ClientTadpoleRenderer;
+import io.github.aaronateataco.petsandpals.rendering.vanilla.tropicalfish.ClientTropicalFishRenderer;
 import io.github.aaronateataco.petsandpals.rendering.vanilla.turtle.ClientTurtleRenderer;
 import io.github.aaronateataco.petsandpals.rendering.vanilla.vex.ClientVexRenderer;
 import io.github.aaronateataco.petsandpals.rendering.vanilla.villager.ClientVillagerRenderer;
@@ -202,6 +203,7 @@ public class PetsClientInitializer implements ClientModInitializer {
         EntityRenderers.register(PetsInitializer.SQUID, ClientSquidRenderer::new);
         EntityRenderers.register(PetsInitializer.STRIDER, ClientStriderRenderer::new);
         EntityRenderers.register(PetsInitializer.TADPOLE, ClientTadpoleRenderer::new);
+        EntityRenderers.register(PetsInitializer.TROPICAL_FISH, ClientTropicalFishRenderer::new);
         EntityRenderers.register(PetsInitializer.TURTLE, ClientTurtleRenderer::new);
         EntityRenderers.register(PetsInitializer.VILLAGER, ClientVillagerRenderer::new);
         EntityRenderers.register(PetsInitializer.WANDERING_TRADER, ClientWanderingTraderRenderer::new);

@@ -93,6 +93,9 @@ public class Central implements ClientModInitializer {
     private static final List<String> CREEPER_SKINS = List.of("normal", "charged");
     private static final List<String> SHULKER_SKINS = List.of("normal", "black", "blue", "brown", "cyan", "gray", "green", "light blue", "light gray", "lime", "magenta", "orange", "pink", "purple", "red", "white", "yellow");
     private static final List<String> WITHER_SKINS = List.of("normal", "invulnerable");
+    private static final List<String> TROPICAL_FISH_SKINS = List.of("cichlid", "clownfish", "cotton candy betta",
+            "goatfish", "parrotfish", "queen angelfish", "red lipped blenny", "tomato clownfish", "triggerfish",
+            "yellowtail parrotfish");
     private static final List<String> HEAD_SKINS = List.of("Use any player's name here.");
     private static final List<String> TRAITOR_SKINS = List.of("desert", "jungle", "plains", "savanna", "snowy", "swamp", "taiga");
     private static final List<String> DUMBO_OCTOPUS_SKINS = List.of("yellow", "red", "blue", "green", "orange", "pink");
@@ -124,6 +127,7 @@ public class Central implements ClientModInitializer {
     public static ClientSquid squid;
     public static ClientStrider strider;
     public static ClientTadpole tadpole;
+    public static ClientTropicalFish tropicalFish;
     public static ClientTurtle turtle;
     public static ClientVillager villager;
     public static ClientWanderingTrader wanderingTrader;
@@ -219,6 +223,7 @@ public class Central implements ClientModInitializer {
         Utils.despawnEntity(squid);
         Utils.despawnEntity(strider);
         Utils.despawnEntity(tadpole);
+        Utils.despawnEntity(tropicalFish);
         Utils.despawnEntity(turtle);
         Utils.despawnEntity(villager);
         Utils.despawnEntity(wanderingTrader);
@@ -311,6 +316,7 @@ public class Central implements ClientModInitializer {
         squid = new ClientSquid(PetsInitializer.SQUID, world);
         strider = new ClientStrider(PetsInitializer.STRIDER, world);
         tadpole = new ClientTadpole(PetsInitializer.TADPOLE, world);
+        tropicalFish = new ClientTropicalFish(PetsInitializer.TROPICAL_FISH, world);
         turtle = new ClientTurtle(PetsInitializer.TURTLE, world);
         villager = new ClientVillager(PetsInitializer.VILLAGER, world);
         wanderingTrader = new ClientWanderingTrader(PetsInitializer.WANDERING_TRADER, world);
@@ -413,6 +419,8 @@ public class Central implements ClientModInitializer {
                 Utils.summonPet(strider, CONFIG.striderName);
             } else if (Objects.equals(CONFIG.activePet, "tadpole")) {
                 Utils.summonPet(tadpole, CONFIG.tadpoleName);
+            } else if (Objects.equals(CONFIG.activePet, "tropical_fish")) {
+                Utils.summonPet(tropicalFish, CONFIG.tropicalFishName);
             } else if (Objects.equals(CONFIG.activePet, "turtle")) {
                 Utils.summonPet(turtle, CONFIG.turtleName);
             } else if (Objects.equals(CONFIG.activePet, "villager")) {
@@ -551,6 +559,7 @@ public class Central implements ClientModInitializer {
         Utils.checkName("squid", squid, CONFIG.squidName);
         Utils.checkName("strider", strider, CONFIG.striderName);
         Utils.checkName("tadpole", tadpole, CONFIG.tadpoleName);
+        Utils.checkName("tropical_fish", tropicalFish, CONFIG.tropicalFishName);
         Utils.checkName("turtle", turtle, CONFIG.turtleName);
         Utils.checkName("villager", villager, CONFIG.villagerName);
         Utils.checkName("wandering_trader", wanderingTrader, CONFIG.wanderingTraderName);
@@ -634,6 +643,7 @@ public class Central implements ClientModInitializer {
             case "zombie_villager" -> VILLAGER_SKINS;
             case "shulker" -> SHULKER_SKINS;
             case "wither" -> WITHER_SKINS;
+            case "tropical_fish" -> TROPICAL_FISH_SKINS;
             case null, default -> EMPTY_LIST;
         };
 
@@ -1130,6 +1140,20 @@ public class Central implements ClientModInitializer {
                                 default:
                                     isValid = false;
                             }
+                        } else if (Objects.equals(CONFIG.activePet, "tropical_fish")) {
+                            switch (skin) {
+                                case "cichlid" -> CONFIG.tropicalFishSkin = "cichlid";
+                                case "clownfish" -> CONFIG.tropicalFishSkin = "clownfish";
+                                case "cotton_candy_betta", "cotton candy betta" -> CONFIG.tropicalFishSkin = "cotton_candy_betta";
+                                case "goatfish" -> CONFIG.tropicalFishSkin = "goatfish";
+                                case "parrotfish" -> CONFIG.tropicalFishSkin = "parrotfish";
+                                case "queen_angelfish", "queen angelfish" -> CONFIG.tropicalFishSkin = "queen_angelfish";
+                                case "red_lipped_blenny", "red lipped blenny" -> CONFIG.tropicalFishSkin = "red_lipped_blenny";
+                                case "tomato_clownfish", "tomato clownfish" -> CONFIG.tropicalFishSkin = "tomato_clownfish";
+                                case "triggerfish" -> CONFIG.tropicalFishSkin = "triggerfish";
+                                case "yellowtail_parrotfish", "yellowtail parrotfish" -> CONFIG.tropicalFishSkin = "yellowtail_parrotfish";
+                                case null, default -> isValid = false;
+                            }
                         } else if (Objects.equals(CONFIG.activePet, "llama")) {
                             switch (skin) {
                                 case "brown":
@@ -1454,6 +1478,8 @@ public class Central implements ClientModInitializer {
         CONFIG.striderSkin = Utils.checkNullString(CONFIG.striderSkin, "warm");
 
         CONFIG.tadpoleName = Utils.checkNullString(CONFIG.tadpoleName);
+        CONFIG.tropicalFishName = Utils.checkNullString(CONFIG.tropicalFishName);
+        CONFIG.tropicalFishSkin = Utils.checkNullString(CONFIG.tropicalFishSkin, "clownfish");
         CONFIG.turtleName = Utils.checkNullString(CONFIG.turtleName);
 
         CONFIG.villagerName = Utils.checkNullString(CONFIG.villagerName);
@@ -1650,6 +1676,8 @@ public class Central implements ClientModInitializer {
                 Utils.setActivePet(strider, "strider");
             } else if (Objects.equals(species, "tadpole")) {
                 Utils.setActivePet(tadpole, "tadpole");
+            } else if (Objects.equals(species, "tropical_fish") || Objects.equals(species, "tropical fish")) {
+                Utils.setActivePet(tropicalFish, "tropical_fish");
             } else if (Objects.equals(species, "turtle")) {
                 Utils.setActivePet(turtle, "turtle");
             } else if (Objects.equals(species, "villager")) {
@@ -2027,6 +2055,7 @@ public class Central implements ClientModInitializer {
                 "shulker",
                 "silverfish", "skeleton", "slime", "sniffer", "snow golem",
                  "spider", "squid",  "stray", "strider", "sulfur cube", "tadpole",
+                "tropical fish",
                 "turtle",
                  "vex", "villager", "vindicator", "wandering trader", "warden", "witch", "wither",
                 "wither skeleton", "wolf", "zombie", "zombie villager"};
