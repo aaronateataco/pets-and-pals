@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.20.0
+- Sulfur cube backported as a pet on this version (26.1.2) - it's a real vanilla mob starting in 26.2 that doesn't exist here yet, so the geometry and textures were pulled straight from the newer client jar rather than approximated. Registered under the mod's own id so it can't collide with other backporting mods, and never spawnable via vanilla creative/summon - pets only
+- Sulfur cube: 10 of the real mob's archetypes (bouncy, fast flat, fast sliding, high resistance, light, slow bouncy, slow flat, slow sliding, sticky, regular) are selectable with `/petskin` as a jump/speed flavor - explosive and hot were left out since those would just hurt the owner
+- Fixed the raft trailing behind boats with a wide gap of open water instead of sitting close behind - also fixed it stalling out over uneven water (waterfalls, locks) where it could misread as "no water" and stop following entirely
+
 ## 0.19.0
 - Removed the legacy custom title screen/splash text toggle (a petsmod holdover) - Pets&Pals no longer touches the vanilla main menu logo
 - Fixed the "Advanced settings..." button doing nothing useful on the snapshot branch (it was reopening the Menagerie itself instead of the real config screen)
