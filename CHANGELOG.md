@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.18.0
+- Fixed sprint run-alongside only catching up when you happened to be looking at the pet: the "watched" catch-up path used to wait almost twice as long as the "unwatched" one, so glancing at the pet actually stalled it. Catch-up is now uniform and camera-independent - if the pet falls behind while you're sprinting, it lands back in formation within half a second no matter where your camera's pointed
+- Menagerie: renaming your pet is now its own page - hit "Name Tag...", type a name, then drag the tag icon onto your pet to apply it. The tag settles onto the pet with a little swing on the way down
+- Closing the Menagerie now fades to black instead of cutting instantly
+
 ## 0.17.0
 - Removed the original mod's non-vanilla pets for now: duck, raccoon, penguin, koi, stingray, dumbo octopus, floating head, and every April Fools joke mob (ray tracing, smiling creeper, nerd creeper, mega spud, moon cow, batato, and the rest). The catalog is entirely vanilla-backed while these get reworked properly
 - Fixed the default pet on a fresh install (was "duck", now a valid vanilla pet)

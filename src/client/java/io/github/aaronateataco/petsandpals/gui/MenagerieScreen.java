@@ -69,6 +69,19 @@ public class MenagerieScreen extends Screen {
     private String query = "";
     private Element element = Element.ALL;
 
+    // anvil naming page: type a name, then drag the tag onto the pet to apply it
+    private final List<net.minecraft.client.gui.components.AbstractWidget> catalogWidgets = new ArrayList<>();
+    private boolean naming = false;
+    private EditBox nameBox;
+    private Button nameTagButton;
+    private Button namingCancelButton;
+    private int tagRestX, tagRestY;
+    private boolean draggingTag = false;
+    private double dragMouseX, dragMouseY;
+    private float dangleSeconds = -1.0F;
+    private String dangleName;
+    private float closeFade = -1.0F;
+
     // element categories
     private enum Element { ALL, LAND, SKY, SEA }
 
@@ -153,7 +166,7 @@ public class MenagerieScreen extends Screen {
                         Component.literal("Coming soon")));
             }
             tabX += 36;
-            this.addRenderableWidget(tab);
+            this.track(tab);
         }
 
         int searchWidth = Math.min(220, leftWidth - 8);
@@ -166,7 +179,7 @@ public class MenagerieScreen extends Screen {
             this.applyFilter();
             this.rebuildGrid();
         });
-        this.addRenderableWidget(this.searchBox);
+        this.track(this.searchBox);
 
         this.gridTop = tabY + 46;
         this.columns = Math.max(2, leftWidth / (CELL_WIDTH + CELL_GAP));
@@ -174,35 +187,38 @@ public class MenagerieScreen extends Screen {
         this.gridLeft = 12 + (leftWidth - (this.columns * (CELL_WIDTH + CELL_GAP) - CELL_GAP)) / 2;
 
         int pageY = this.height - 28;
-        this.prevButton = this.addRenderableWidget(Button.builder(Component.literal("<"), b -> {
+        this.prevButton = this.track(Button.builder(Component.literal("<"), b -> {
             if (this.page > 0) this.page--;
             this.rebuildGrid();
         }).bounds(12, pageY, 20, 20).build());
-        this.nextButton = this.addRenderableWidget(Button.builder(Component.literal(">"), b -> {
+        this.nextButton = this.track(Button.builder(Component.literal(">"), b -> {
             if ((this.page + 1) * this.pageSize() < this.filtered.size()) this.page++;
             this.rebuildGrid();
         }).bounds(36, pageY, 20, 20).build());
 
         int panelX = this.width - PANEL_WIDTH - 6;
         int y = GRID_TOP + PREVIEW_HEIGHT + 4;
-        this.summonButton = this.addRenderableWidget(Button.builder(Component.literal("Summon"), b -> this.summonSelected())
+        this.summonButton = this.track(Button.builder(Component.literal("Summon"), b -> this.summonSelected())
                 .bounds(panelX, y, PANEL_WIDTH, 20).build());
         this.updateSummonState();
         y += 24;
-        this.addRenderableWidget(Button.builder(this.petToggleLabel(), b -> {
+        this.track(Button.builder(this.petToggleLabel(), b -> {
             CONFIG.petOn = !Boolean.TRUE.equals(CONFIG.petOn);
             if (CONFIG.petOn) Central.summonPet();
             else Central.despawnPet();
             b.setMessage(this.petToggleLabel());
         }).bounds(panelX, y, PANEL_WIDTH, 20).build());
         y += 24;
-        this.addRenderableWidget(new PercentSlider(panelX, y, PANEL_WIDTH, 20, "Speed", 0.25, 3.0,
+        this.nameTagButton = this.track(Button.builder(Component.literal("Name Tag..."), b -> this.enterNaming())
+                .bounds(panelX, y, PANEL_WIDTH, 20).build());
+        y += 24;
+        this.track(new PercentSlider(panelX, y, PANEL_WIDTH, 20, "Speed", 0.25, 3.0,
                 CONFIG.petSpeed, value -> CONFIG.petSpeed = (float) value));
         y += 24;
-        this.addRenderableWidget(new PercentSlider(panelX, y, PANEL_WIDTH, 20, "Volume", 0.0, 1.0,
+        this.track(new PercentSlider(panelX, y, PANEL_WIDTH, 20, "Volume", 0.0, 1.0,
                 CONFIG.petVolume == null ? 1.0f : CONFIG.petVolume, value -> CONFIG.petVolume = (float) value));
         y += 24;
-        this.raftWoodButton = this.addRenderableWidget(Button.builder(this.raftWoodLabel(), b -> {
+        this.raftWoodButton = this.track(Button.builder(this.raftWoodLabel(), b -> {
             String[] woods = io.github.aaronateataco.petsandpals.mob.PetRaftBlock.WOODS;
             int i = java.util.Arrays.asList(woods).indexOf(CONFIG.raftWood);
             CONFIG.raftWood = woods[(i + 1) % woods.length];
@@ -210,7 +226,7 @@ public class MenagerieScreen extends Screen {
             b.setMessage(this.raftWoodLabel());
         }).bounds(panelX, y, PANEL_WIDTH, 20).build());
         y += 24;
-        this.cushionButton = this.addRenderableWidget(Button.builder(this.cushionLabel(), b -> {
+        this.cushionButton = this.track(Button.builder(this.cushionLabel(), b -> {
             // cycles through the 16 dyes plus a bare deck
             List<String> options = new ArrayList<>(List.of(io.github.aaronateataco.petsandpals.mob.PetRaftBlock.DYES));
             options.add("none");
@@ -221,7 +237,7 @@ public class MenagerieScreen extends Screen {
         }).bounds(panelX, y, PANEL_WIDTH, 20).build());
         y += 28;
         if (net.fabricmc.loader.api.FabricLoader.getInstance().isModLoaded("yet_another_config_lib_v3"))
-        this.addRenderableWidget(Button.builder(Component.literal("Advanced settings..."), b -> {
+        this.track(Button.builder(Component.literal("Advanced settings..."), b -> {
             if (this.minecraft != null) {
                 this.minecraft.gui.setScreen(PetsConfigScreen.getInstance().getAdvancedConfigScreenFactory().apply(this));
             }
@@ -230,8 +246,123 @@ public class MenagerieScreen extends Screen {
         this.addRenderableWidget(Button.builder(Component.literal("Done"), b -> this.onClose())
                 .bounds(panelX, this.height - 28, PANEL_WIDTH, 20).build());
 
+        // anvil naming page: a name tag icon the player drags onto the pet stage
+        this.tagRestX = 12 + leftWidth / 2 - 80;
+        this.tagRestY = tabY;
+        this.nameBox = new EditBox(this.font, this.tagRestX + 26, tabY, Math.min(160, leftWidth - 100), 18,
+                Component.literal("Name"));
+        this.nameBox.setMaxLength(32);
+        this.nameBox.visible = false;
+        this.addRenderableWidget(this.nameBox);
+        this.namingCancelButton = Button.builder(Component.literal("Cancel"), b -> this.exitNaming())
+                .bounds(this.tagRestX, tabY + 28, 106, 20).build();
+        this.namingCancelButton.visible = false;
+        this.addRenderableWidget(this.namingCancelButton);
+
         this.applyFilter();
         this.rebuildGrid();
+        this.applyNamingVisibility();
+    }
+
+    /** Registers a widget as catalog-only: hidden while the naming page is open. */
+    private <T extends net.minecraft.client.gui.components.AbstractWidget> T track(T widget) {
+        this.catalogWidgets.add(widget);
+        return this.addRenderableWidget(widget);
+    }
+
+    private void enterNaming() {
+        if (this.selected == null || !this.selected.name().equals(CONFIG.activePet)) return;
+        this.naming = true;
+        AbstractPet pet = this.selectedPreview();
+        this.nameBox.setValue(pet != null ? pet.getPlainTextName() : "");
+        this.setFocused(this.nameBox);
+        this.applyNamingVisibility();
+    }
+
+    private void exitNaming() {
+        this.naming = false;
+        this.draggingTag = false;
+        this.applyNamingVisibility();
+    }
+
+    private void applyNamingVisibility() {
+        for (net.minecraft.client.gui.components.AbstractWidget w : this.catalogWidgets) {
+            w.visible = !this.naming;
+        }
+        for (Button w : this.gridWidgets) {
+            w.visible = !this.naming;
+        }
+        this.nameBox.visible = this.naming;
+        this.namingCancelButton.visible = this.naming;
+    }
+
+    // --- drag-the-nametag-onto-the-pet interaction ---
+
+    private static final int TAG_ICON_SIZE = 16;
+
+    private int tagDrawX() {
+        return this.draggingTag ? (int) (this.dragMouseX - TAG_ICON_SIZE / 2.0) : this.tagRestX;
+    }
+
+    private int tagDrawY() {
+        return this.draggingTag ? (int) (this.dragMouseY - TAG_ICON_SIZE / 2.0) : this.tagRestY;
+    }
+
+    private boolean overTagIcon(double mouseX, double mouseY) {
+        int x = this.tagRestX;
+        int y = this.tagRestY;
+        return mouseX >= x && mouseX < x + TAG_ICON_SIZE && mouseY >= y && mouseY < y + TAG_ICON_SIZE;
+    }
+
+    private boolean overPetStage(double mouseX, double mouseY) {
+        return mouseX >= this.previewX && mouseX < this.previewX + this.previewW
+                && mouseY >= this.previewY && mouseY < this.previewY + this.previewH;
+    }
+
+    @Override
+    public boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent event, boolean doubleClick) {
+        if (this.naming && event.button() == 0 && this.overTagIcon(event.x(), event.y())) {
+            this.draggingTag = true;
+            this.dragMouseX = event.x();
+            this.dragMouseY = event.y();
+            return true;
+        }
+        return super.mouseClicked(event, doubleClick);
+    }
+
+    @Override
+    public boolean mouseDragged(net.minecraft.client.input.MouseButtonEvent event, double dragX, double dragY) {
+        if (this.draggingTag) {
+            this.dragMouseX = event.x();
+            this.dragMouseY = event.y();
+            return true;
+        }
+        return super.mouseDragged(event, dragX, dragY);
+    }
+
+    @Override
+    public boolean mouseReleased(net.minecraft.client.input.MouseButtonEvent event) {
+        if (this.draggingTag) {
+            this.draggingTag = false;
+            if (this.overPetStage(event.x(), event.y())) {
+                this.applyNameTag();
+            }
+            return true;
+        }
+        return super.mouseReleased(event);
+    }
+
+    /** Writes the typed name and kicks off the settling dangle animation. */
+    private void applyNameTag() {
+        String name = this.nameBox.getValue().trim();
+        // naming only ever targets the pet currently out, matching the "Name Tag..."
+        // button's own enable check - this can't silently switch the active pet
+        if (name.isEmpty() || this.selected == null || !this.selected.name().equals(CONFIG.activePet)) return;
+        Central.setActivePetName(name);
+        Central.refreshPetNames();
+        this.dangleName = name;
+        this.dangleSeconds = 0.0F;
+        this.exitNaming();
     }
 
     /** Maps species ids to Central's pre-built pet instances for the preview. */
@@ -276,6 +407,11 @@ public class MenagerieScreen extends Screen {
     private void updateSummonState() {
         if (this.summonButton != null) {
             this.summonButton.active = this.selected != null && this.unlocked(this.selected);
+        }
+        if (this.nameTagButton != null) {
+            // naming only applies to the pet you actually have out
+            this.nameTagButton.active = this.selected != null
+                    && this.selected.name().equals(CONFIG.activePet);
         }
     }
 
@@ -387,6 +523,7 @@ public class MenagerieScreen extends Screen {
             Central.refreshChatSuggestor(this.minecraft);
         }
         this.rebuildGrid();
+        this.updateSummonState();
     }
 
     private void saveConfig() {
@@ -397,10 +534,14 @@ public class MenagerieScreen extends Screen {
     public void extractRenderState(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
         graphics.text(this.font, this.title, this.width / 2 - this.font.width(this.title) / 2, 10, 0xFFFFFFFF);
-        graphics.text(this.font, Component.literal("Page " + (this.page + 1) + "/"
-                        + (Math.max(0, (this.filtered.size() - 1) / this.pageSize()) + 1)
-                        + "  (" + this.filtered.size() + " pets)"),
-                62, this.height - 22, 0xFFAAAAAA);
+        if (this.naming) {
+            this.renderNamingPage(graphics, mouseX, mouseY);
+        } else {
+            graphics.text(this.font, Component.literal("Page " + (this.page + 1) + "/"
+                            + (Math.max(0, (this.filtered.size() - 1) / this.pageSize()) + 1)
+                            + "  (" + this.filtered.size() + " pets)"),
+                    62, this.height - 22, 0xFFAAAAAA);
+        }
 
         int boxLeft = this.previewX;
         int boxTop = this.previewY;
@@ -441,10 +582,12 @@ public class MenagerieScreen extends Screen {
                         new org.joml.Vector3f(0.0F, 0.35F, 0.0F), pose, tilt,
                         boxLeft, boxTop, boxRight, boxBottom);
                 graphics.text(this.font, this.raftWoodLabel(), boxLeft + 4, boxBottom - 10, 0xFFAAAAAA);
+                this.renderOverlays(graphics, partialTick);
                 return;
             }
             graphics.text(this.font, Component.literal("Raft preview needs a loaded world"),
                     boxLeft + 4, boxTop + this.previewH / 2, 0xFF888888);
+            this.renderOverlays(graphics, partialTick);
             return;
         }
 
@@ -469,10 +612,90 @@ public class MenagerieScreen extends Screen {
             graphics.text(this.font, Component.literal("Previews need a loaded world"),
                     boxLeft + 4, boxTop + this.previewH / 2, 0xFF888888);
         }
+        this.renderOverlays(graphics, partialTick);
+    }
+
+    /** Anvil naming page: type a name, then drag the tag icon onto the pet stage. */
+    private void renderNamingPage(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        int panelLeft = this.tagRestX - 6;
+        int panelTop = this.tagRestY - 6;
+        int panelRight = this.nameBox.getX() + this.nameBox.getWidth() + 6;
+        int panelBottom = this.tagRestY + TAG_ICON_SIZE + 44;
+        graphics.fill(panelLeft, panelTop, panelRight, panelBottom, 0xC0101010);
+        graphics.outline(panelLeft, panelTop, panelRight, panelBottom, 0xFF555555);
+        graphics.text(this.font, Component.literal("Name your pet"), panelLeft + 4, panelTop - 10, 0xFFFFFFFF);
+
+        // the tag icon itself is drawn last (see renderOverlays) so it stays on
+        // top while being dragged across the rest of the screen
+        boolean overStage = this.overPetStage(mouseX, mouseY);
+        graphics.text(this.font,
+                Component.literal(this.draggingTag
+                        ? (overStage ? "Release to attach!" : "Drag onto your pet")
+                        : "Drag the tag onto your pet to apply the name"),
+                panelLeft + 4, this.tagRestY + TAG_ICON_SIZE + 6,
+                overStage && this.draggingTag ? 0xFF55FF55 : 0xFFAAAAAA);
+
+        if (this.draggingTag && this.overPetStage(this.dragMouseX, this.dragMouseY)) {
+            graphics.outline(this.previewX, this.previewY,
+                    this.previewX + this.previewW, this.previewY + this.previewH, 0xFF55FF55);
+        }
+    }
+
+    /** Draws whatever floats above the normal layout: the dragged tag, the settling
+     *  dangle animation, and the close fade - always last so nothing else covers them. */
+    private void renderOverlays(@NotNull GuiGraphicsExtractor graphics, float partialTick) {
+        if (this.naming) {
+            graphics.item(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.NAME_TAG),
+                    this.tagDrawX(), this.tagDrawY());
+        }
+
+        if (this.dangleSeconds >= 0.0F && this.dangleName != null) {
+            // a light spring-damper swing settling under the pet's head
+            float t = this.dangleSeconds;
+            float decay = (float) Math.exp(-t * 3.0);
+            float swing = (float) Math.sin(t * 14.0) * 6.0F * decay;
+            int cx = this.previewX + (int) (this.previewW * 0.31);
+            int ty = this.previewY + this.previewH - 4;
+            graphics.pose().pushMatrix();
+            graphics.pose().rotateAbout((float) Math.toRadians(swing), cx, ty);
+            String tag = this.dangleName;
+            graphics.text(this.font, Component.literal(tag), cx - this.font.width(tag) / 2, ty, 0xFFFFFF55);
+            graphics.pose().popMatrix();
+        }
+
+        if (this.closeFade >= 0.0F) {
+            int alpha = (int) (Mth.clamp(this.closeFade, 0.0F, 1.0F) * 255.0F) << 24;
+            graphics.fill(0, 0, this.width, this.height, alpha);
+        }
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (this.dangleSeconds >= 0.0F) {
+            this.dangleSeconds += 1.0F / 20.0F;
+            if (this.dangleSeconds > 1.5F) {
+                this.dangleSeconds = -1.0F;
+                this.dangleName = null;
+            }
+        }
+        if (this.closeFade >= 0.0F) {
+            this.closeFade += 1.0F / 8.0F;
+            if (this.closeFade >= 1.0F) {
+                this.finishClose();
+            }
+        }
     }
 
     @Override
     public void onClose() {
+        // fade to black first, then actually swap screens - see finishClose()
+        if (this.closeFade < 0.0F) {
+            this.closeFade = 0.0F;
+        }
+    }
+
+    private void finishClose() {
         this.saveConfig();
         AbstractPet.speedMultiplier = () -> CONFIG.petSpeed;
         if (this.minecraft != null) {
