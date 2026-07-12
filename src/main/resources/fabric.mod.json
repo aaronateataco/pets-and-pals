@@ -44,9 +44,7 @@
     "cloth-config": "*",
     "fabric-api": "*",
     "yet_another_config_lib_v3": "*",
-    "modmenu": "*"
-  },
-  "recommends": {
+    "modmenu": "*",
     "leadphysics": "*"
   },
   "custom": {
