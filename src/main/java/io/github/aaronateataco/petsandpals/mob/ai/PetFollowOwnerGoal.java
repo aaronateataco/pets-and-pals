@@ -251,12 +251,13 @@ public class PetFollowOwnerGoal extends Goal {
         }
         double boost = Mth.clamp(1.0 + (distance - this.stopDistance) * 0.09, 1.0, MAX_CATCH_UP_BOOST);
         double speed = this.speedModifier * AbstractPet.speedMultiplier.getAsDouble() * boost;
+        Vec3 target = this.predictedOwnerTarget(distance);
         boolean pathed;
         try {
             pathed = this.pet.getNavigation().moveTo(
-                    this.owner.getX(),
-                    this.owner.getY() + this.pet.followYOffset(),
-                    this.owner.getZ(),
+                    target.x,
+                    target.y + this.pet.followYOffset(),
+                    target.z,
                     speed);
         } catch (Exception e) {
             // some snapshots have server-only casts inside client pathfinding
@@ -265,9 +266,30 @@ public class PetFollowOwnerGoal extends Goal {
         if (!pathed || this.pet.getNavigation().isDone()) {
             // pathfinding unavailable (or no path): steer straight at the owner with the
             // same probe-and-hop driving the sprint mode uses
-            this.steerDirectly(this.owner.getX(), this.owner.getY() + this.pet.followYOffset(),
-                    this.owner.getZ(), speed);
+            this.steerDirectly(target.x, target.y + this.pet.followYOffset(), target.z, speed);
         }
+    }
+
+    /** Leads the owner's position using travel direction and crosshair, so long
+     *  catch-up paths route toward where the owner is heading instead of always
+     *  chasing wherever they already were half a second ago. */
+    private Vec3 predictedOwnerTarget(double distance) {
+        if (distance < this.startDistance + 2.0) {
+            return this.owner.position(); // close range: don't overshoot past them
+        }
+        Vec3 vel = new Vec3(this.owner.getDeltaMovement().x, 0.0, this.owner.getDeltaMovement().z);
+        double speed = vel.length();
+        if (speed <= 0.02) {
+            return this.owner.position(); // standing still: nothing to predict
+        }
+        // mostly actual travel direction (handles strafing/backpedaling correctly),
+        // blended with a bit of crosshair direction so the pet starts curving
+        // toward a turn before the owner's velocity has caught up to it
+        Vec3 look = Vec3.directionFromRotation(0.0F, this.owner.getYRot());
+        look = new Vec3(look.x, 0.0, look.z).normalize();
+        Vec3 direction = vel.normalize().scale(0.75).add(look.scale(0.25)).normalize();
+        double leadDistance = Mth.clamp(distance * 0.5, 0.0, 6.0);
+        return this.owner.position().add(direction.scale(leadDistance));
     }
 
     // direct move-control steering with water and step/gap handling
