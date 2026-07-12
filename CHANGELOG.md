@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.22.0
+- Fixed the boat actively pushing the raft away every tick, fighting directly against its own tow physics - this was the real cause behind the raft never settling in close behind the boat
+- Fixed the tow rope floating up in the air above the raft instead of meeting the boat at deck level (it was anchored at an inherited "eye height" that doesn't match the raft's actual thin deck)
+- Pets and the raft no longer physically collide with you, other entities, or boats - having them around should never get in your way
+- Pets can range farther before being reeled back in while standing somewhere with open sky (fields, beaches) - the tight leash is now specific to tight indoor/underground spaces
+- Fixed a second source of first-person sprint-alongside twitch: the head's look-ahead point used the pet's own raw, unsmoothed velocity
+- Menagerie: browse arrows now hide during the naming page instead of floating over it; "Advanced settings" logs an error instead of silently doing nothing if it fails to open
+
 ## 0.21.0
 - Pets no longer cast a shadow - the catch-up/reposition logic made it visibly snap around underneath them
 - Smoothed the sprint-alongside steering lead, which was amplifying the sprinting owner's small per-tick velocity noise into a visible first-person twitch
