@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.25.0
+- LeadPhysics is now a required dependency - Pets&Pals won't launch without it installed alongside it
+
 ## 0.24.0
 - Raft tow has physical give again instead of an instant position lock - it eases toward its spot behind the boat with a spring, not a rope/drag simulation, so it still can't drift or desync the way the old model could
 - Added [LeadPhysics](https://modrinth.com/mod/leadphysics) as a recommended (not required) companion mod - it replaces vanilla's straight leash line with a sagging rope curve for any leashed entity, including the raft's tow line
