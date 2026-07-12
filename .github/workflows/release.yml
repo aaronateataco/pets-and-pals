@@ -63,12 +63,18 @@ jobs:
           FILENAME=$(basename "$JAR")
           GAME_VERSION=$(grep '^minecraft_version=' gradle.properties | cut -d= -f2)
           VERSION_NUMBER="${GITHUB_REF_NAME#v}"
+          # the real failure this whole time: MODRINTH_ID holds the project's slug
+          # ("pets-and-pals"), which mc-publish (used on the other branches) resolves
+          # flexibly, but this raw API call needs the actual base62 project id or it
+          # 400s with "invalid character '-' in base62 encoding" - resolve it properly
+          # instead of trusting the secret's exact format
+          RESOLVED_PROJECT_ID=$(curl -sf -H "Authorization: $MODRINTH_TOKEN" "https://api.modrinth.com/v2/project/$MODRINTH_ID" | jq -r '.id')
           jq -n \
             --arg name "$VERSION_NUMBER" \
             --arg version_number "$VERSION_NUMBER" \
             --rawfile changelog changelog-section.md \
             --arg game_version "$GAME_VERSION" \
-            --arg project_id "$MODRINTH_ID" \
+            --arg project_id "$RESOLVED_PROJECT_ID" \
             --arg filename "$FILENAME" \
             '{
               name: $name,
@@ -87,13 +93,6 @@ jobs:
               project_id: $project_id,
               file_parts: [$filename]
             }' > modrinth-data.json
-          # this endpoint has flaked a few releases in a row with no useful error
-          # body visible (curl -f just gives exit 22) - manual retries with the
-          # identical request succeeded instantly from outside this runner, and a
-          # bare "curl/x.y" User-Agent is a common reason APIs quietly reject or
-          # throttle requests, so that's included now too. Not using -f anymore so
-          # a future failure actually prints the real response body instead of
-          # just an exit code.
           HTTP_STATUS=$(curl -s -o response.json -w "%{http_code}" --retry 3 --retry-delay 5 --retry-all-errors \
             -H "Authorization: $MODRINTH_TOKEN" \
             -H "User-Agent: aaronateataco/pets-and-pals/CI (+https://github.com/aaronateataco/pets-and-pals)" \
