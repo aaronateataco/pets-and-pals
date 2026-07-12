@@ -20,7 +20,7 @@ public class ClientWitchRenderer extends PetRenderer<@NotNull ClientWitch, @NotN
 
     @Override
     public @NotNull Identifier getTextureLocation(WitchRenderState livingEntityRenderState) {
-        return Identifier.withDefaultNamespace("textures/entity/witch.png");
+        return Identifier.withDefaultNamespace("textures/entity/witch/witch.png");
     }
 
     @Override
