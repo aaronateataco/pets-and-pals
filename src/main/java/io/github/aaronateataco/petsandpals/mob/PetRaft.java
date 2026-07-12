@@ -215,6 +215,18 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
         Vec3 toOwner = new Vec3(owner.getX() - this.getX(), 0.0, owner.getZ() - this.getZ());
         double distance = toOwner.length();
 
+        // let go once the owner themself is on dry land and the raft's caught up -
+        // used to release the moment the raft's OWN next step found any dry patch,
+        // which could be a mid-lake island or the near bank of a second river rather
+        // than where the owner actually was. That dumped the pet mid-crossing, it
+        // walked a few steps, hit water again, and got re-rafted - the "swims then
+        // rafts then swims" loop. Owner-grounded is the only signal that actually
+        // means the crossing is done.
+        if (!owner.isInWater() && distance < 4.0) {
+            this.release();
+            return;
+        }
+
         // same feel as the tow rope: thrust toward the owner, water drag, so the
         // hull coasts and eases to a stop instead of braking dead at the mark
         if (distance > 2.5) {
@@ -230,11 +242,10 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
         double nextZ = this.getZ() + this.velocity.z;
         double surface = this.waterSurfaceY(nextX, this.getY(), nextZ);
         if (surface == Double.MIN_VALUE) {
-            if (distance > 2.0) {
-                this.release(); // reached the shore the owner is on
-                return;
-            }
-            // owner swimming right here: bleed off against the bank and hold
+            // no water under the raft's own path (mid-lake island, rocks) - hold in
+            // place and wait rather than beaching somewhere that isn't actually
+            // where the owner is; if the raft itself is stranded on dry ground, let
+            // go here since there's nothing left to ferry across
             this.velocity = this.velocity.scale(0.3);
             nextX = this.getX();
             nextZ = this.getZ();

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.27.0
+- The tow rope now actually anchors at the back of the boat and the front of the raft instead of both centers - it used to draw straight through the middle of both hulls
+- Fixed pets bouncing between swimming and re-summoning a ferry raft over multi-part crossings (a lake with an island, back-to-back rivers) - the raft used to let go the moment it found any dry patch ahead, even if that wasn't actually where you were; now it only lets the pet off once you're the one on dry land
+
 ## 0.26.0
 - LeadPhysics is only required on this branch's counterparts that actually have a build for it (checked the Modrinth API directly - it only publishes for 26.1.x, nothing for 26.2 or the 26.3 snapshot). Dropped as a hard requirement on those two so the mod isn't permanently unable to launch there
 - Added native rope sag for the raft's tow line on every branch, LeadPhysics or not - vanilla's own leash renderer already supports a sagging curve, it just needed turning on
