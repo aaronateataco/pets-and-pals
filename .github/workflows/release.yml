@@ -87,13 +87,22 @@ jobs:
               project_id: $project_id,
               file_parts: [$filename]
             }' > modrinth-data.json
-          # this endpoint has flaked a couple of releases in a row with no useful
-          # error body (curl exit 22, HTTP error) that then succeeds immediately on
-          # a plain manual retry with the exact same request - looks like a transient
-          # network hiccup on this step specifically, so just retry automatically
-          # instead of needing a manual re-upload every time it happens
-          curl -sf --retry 3 --retry-delay 5 --retry-all-errors \
+          # this endpoint has flaked a few releases in a row with no useful error
+          # body visible (curl -f just gives exit 22) - manual retries with the
+          # identical request succeeded instantly from outside this runner, and a
+          # bare "curl/x.y" User-Agent is a common reason APIs quietly reject or
+          # throttle requests, so that's included now too. Not using -f anymore so
+          # a future failure actually prints the real response body instead of
+          # just an exit code.
+          HTTP_STATUS=$(curl -s -o response.json -w "%{http_code}" --retry 3 --retry-delay 5 --retry-all-errors \
             -H "Authorization: $MODRINTH_TOKEN" \
+            -H "User-Agent: aaronateataco/pets-and-pals/CI (+https://github.com/aaronateataco/pets-and-pals)" \
             -F "data=<modrinth-data.json;type=application/json" \
             -F "$FILENAME=@$JAR;type=application/java-archive" \
-            "https://api.modrinth.com/v2/version"
+            "https://api.modrinth.com/v2/version")
+          echo "HTTP status: $HTTP_STATUS"
+          cat response.json
+          if [ "$HTTP_STATUS" -ge 400 ]; then
+            echo "::error::Modrinth upload failed with HTTP $HTTP_STATUS"
+            exit 1
+          fi
