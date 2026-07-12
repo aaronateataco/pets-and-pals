@@ -164,6 +164,10 @@ public class PetsConfig implements ConfigData {
     public String headName;
 
     public boolean isBaby;
+    /** Epoch millis when the current baby pet grows up; 0 means not tracked (adult, or pre-existing config). */
+    public long babyGrowAt;
+    /** Golden dandelion applied: baby stays a baby, ignoring {@link #babyGrowAt}. */
+    public boolean babyLocked;
 
     public String sulfurCubeName;
     public String sulfurCubeSkin;

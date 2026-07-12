@@ -81,6 +81,10 @@ public class MenagerieScreen extends Screen {
     private float dangleSeconds = -1.0F;
     private String dangleName;
     private float closeFade = -1.0F;
+    private Button babyToggleButton;
+    private int dandelionRestX, dandelionRestY;
+    private boolean draggingDandelion = false;
+    private float lockFlashSeconds = -1.0F;
 
     // element categories
     private enum Element { ALL, LAND, SKY, SEA }
@@ -212,6 +216,11 @@ public class MenagerieScreen extends Screen {
         this.nameTagButton = this.track(Button.builder(Component.literal("Name Tag..."), b -> this.enterNaming())
                 .bounds(panelX, y, PANEL_WIDTH, 20).build());
         y += 24;
+        this.babyToggleButton = this.track(Button.builder(this.babyToggleLabel(), b -> {
+            Central.setPetBaby(!CONFIG.isBaby);
+            b.setMessage(this.babyToggleLabel());
+        }).bounds(panelX, y, PANEL_WIDTH, 20).build());
+        y += 24;
         this.track(new PercentSlider(panelX, y, PANEL_WIDTH, 20, "Speed", 0.25, 3.0,
                 CONFIG.petSpeed, value -> CONFIG.petSpeed = (float) value));
         y += 24;
@@ -249,6 +258,8 @@ public class MenagerieScreen extends Screen {
         // anvil naming page: a name tag icon the player drags onto the pet stage
         this.tagRestX = 12 + leftWidth / 2 - 80;
         this.tagRestY = tabY;
+        this.dandelionRestX = this.tagRestX;
+        this.dandelionRestY = this.tagRestY + 40;
         this.nameBox = new EditBox(this.font, this.tagRestX + 26, tabY, Math.min(160, leftWidth - 100), 18,
                 Component.literal("Name"));
         this.nameBox.setMaxLength(32);
@@ -282,6 +293,7 @@ public class MenagerieScreen extends Screen {
     private void exitNaming() {
         this.naming = false;
         this.draggingTag = false;
+        this.draggingDandelion = false;
         this.applyNamingVisibility();
     }
 
@@ -319,10 +331,40 @@ public class MenagerieScreen extends Screen {
                 && mouseY >= this.previewY && mouseY < this.previewY + this.previewH;
     }
 
+    // --- drag-a-golden-dandelion-onto-the-pet interaction (baby lock) ---
+
+    private int dandelionDrawX() {
+        return this.draggingDandelion ? (int) (this.dragMouseX - TAG_ICON_SIZE / 2.0) : this.dandelionRestX;
+    }
+
+    private int dandelionDrawY() {
+        return this.draggingDandelion ? (int) (this.dragMouseY - TAG_ICON_SIZE / 2.0) : this.dandelionRestY;
+    }
+
+    private boolean overDandelionIcon(double mouseX, double mouseY) {
+        int x = this.dandelionRestX;
+        int y = this.dandelionRestY;
+        return mouseX >= x && mouseX < x + TAG_ICON_SIZE && mouseY >= y && mouseY < y + TAG_ICON_SIZE;
+    }
+
+    /** Locks the baby pet's age and kicks off a small confirmation flash. */
+    private void applyGoldenDandelion() {
+        if (!CONFIG.isBaby || CONFIG.babyLocked) return;
+        Central.applyGoldenDandelion();
+        this.lockFlashSeconds = 0.0F;
+    }
+
     @Override
     public boolean mouseClicked(net.minecraft.client.input.MouseButtonEvent event, boolean doubleClick) {
         if (this.naming && event.button() == 0 && this.overTagIcon(event.x(), event.y())) {
             this.draggingTag = true;
+            this.dragMouseX = event.x();
+            this.dragMouseY = event.y();
+            return true;
+        }
+        if (this.naming && CONFIG.isBaby && !CONFIG.babyLocked && event.button() == 0
+                && this.overDandelionIcon(event.x(), event.y())) {
+            this.draggingDandelion = true;
             this.dragMouseX = event.x();
             this.dragMouseY = event.y();
             return true;
@@ -332,7 +374,7 @@ public class MenagerieScreen extends Screen {
 
     @Override
     public boolean mouseDragged(net.minecraft.client.input.MouseButtonEvent event, double dragX, double dragY) {
-        if (this.draggingTag) {
+        if (this.draggingTag || this.draggingDandelion) {
             this.dragMouseX = event.x();
             this.dragMouseY = event.y();
             return true;
@@ -346,6 +388,13 @@ public class MenagerieScreen extends Screen {
             this.draggingTag = false;
             if (this.overPetStage(event.x(), event.y())) {
                 this.applyNameTag();
+            }
+            return true;
+        }
+        if (this.draggingDandelion) {
+            this.draggingDandelion = false;
+            if (this.overPetStage(event.x(), event.y())) {
+                this.applyGoldenDandelion();
             }
             return true;
         }
@@ -452,6 +501,10 @@ public class MenagerieScreen extends Screen {
 
     private Component petToggleLabel() {
         return Component.literal(Boolean.TRUE.equals(CONFIG.petOn) ? "Pet: ON" : "Pet: OFF");
+    }
+
+    private Component babyToggleLabel() {
+        return Component.literal(CONFIG.isBaby ? "Baby" : "Adult");
     }
 
     private void applyFilter() {
@@ -620,7 +673,7 @@ public class MenagerieScreen extends Screen {
         int panelLeft = this.tagRestX - 6;
         int panelTop = this.tagRestY - 6;
         int panelRight = this.nameBox.getX() + this.nameBox.getWidth() + 6;
-        int panelBottom = this.tagRestY + TAG_ICON_SIZE + 44;
+        int panelBottom = this.tagRestY + TAG_ICON_SIZE + 44 + (CONFIG.isBaby ? 40 : 0);
         graphics.fill(panelLeft, panelTop, panelRight, panelBottom, 0xC0101010);
         graphics.outline(panelLeft, panelTop, panelRight, panelBottom, 0xFF555555);
         graphics.text(this.font, Component.literal("Name your pet"), panelLeft + 4, panelTop - 10, 0xFFFFFFFF);
@@ -639,6 +692,23 @@ public class MenagerieScreen extends Screen {
             graphics.outline(this.previewX, this.previewY,
                     this.previewX + this.previewW, this.previewY + this.previewH, 0xFF55FF55);
         }
+
+        if (CONFIG.isBaby) {
+            String hint;
+            if (CONFIG.babyLocked) {
+                hint = "Golden dandelion applied - stays a baby";
+            } else if (this.draggingDandelion) {
+                hint = overStage ? "Release to lock!" : "Drag onto your pet";
+            } else {
+                hint = "Drag the golden dandelion onto your pet to keep it a baby";
+            }
+            graphics.text(this.font, Component.literal(hint), panelLeft + 4, this.dandelionRestY + TAG_ICON_SIZE + 6,
+                    overStage && this.draggingDandelion ? 0xFF55FF55 : 0xFFAAAAAA);
+            if (this.draggingDandelion && this.overPetStage(this.dragMouseX, this.dragMouseY)) {
+                graphics.outline(this.previewX, this.previewY,
+                        this.previewX + this.previewW, this.previewY + this.previewH, 0xFF55FF55);
+            }
+        }
     }
 
     /** Draws whatever floats above the normal layout: the dragged tag, the settling
@@ -647,6 +717,19 @@ public class MenagerieScreen extends Screen {
         if (this.naming) {
             graphics.item(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.NAME_TAG),
                     this.tagDrawX(), this.tagDrawY());
+            if (CONFIG.isBaby && !CONFIG.babyLocked) {
+                graphics.item(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.GOLDEN_DANDELION),
+                        this.dandelionDrawX(), this.dandelionDrawY());
+            }
+        }
+
+        if (this.lockFlashSeconds >= 0.0F) {
+            float alpha = Mth.clamp(1.0F - this.lockFlashSeconds / 1.5F, 0.0F, 1.0F);
+            int color = 0xFFFFFF55 | ((int) (alpha * 255.0F) << 24);
+            String msg = "Locked in as a baby!";
+            int cx = this.previewX + this.previewW / 2;
+            int ty = this.previewY + this.previewH - 4;
+            graphics.text(this.font, Component.literal(msg), cx - this.font.width(msg) / 2, ty, color);
         }
 
         if (this.dangleSeconds >= 0.0F && this.dangleName != null) {
@@ -677,6 +760,12 @@ public class MenagerieScreen extends Screen {
             if (this.dangleSeconds > 1.5F) {
                 this.dangleSeconds = -1.0F;
                 this.dangleName = null;
+            }
+        }
+        if (this.lockFlashSeconds >= 0.0F) {
+            this.lockFlashSeconds += 1.0F / 20.0F;
+            if (this.lockFlashSeconds > 1.5F) {
+                this.lockFlashSeconds = -1.0F;
             }
         }
         if (this.closeFade >= 0.0F) {
