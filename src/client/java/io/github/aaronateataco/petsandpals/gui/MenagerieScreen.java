@@ -57,6 +57,7 @@ public class MenagerieScreen extends Screen {
     private Button nextButton;
     private PetList selected;
     private Button summonButton;
+    private Button skinButton;
     private int previewX;
     private int previewY;
     private int previewW;
@@ -216,6 +217,11 @@ public class MenagerieScreen extends Screen {
         this.nameTagButton = this.track(Button.builder(Component.literal("Name Tag..."), b -> this.enterNaming())
                 .bounds(panelX, y, PANEL_WIDTH, 20).build());
         y += 24;
+        this.skinButton = this.track(Button.builder(this.skinLabel(), b -> {
+            this.cycleSkin();
+            b.setMessage(this.skinLabel());
+        }).bounds(panelX, y, PANEL_WIDTH, 20).build());
+        y += 24;
         this.babyToggleButton = this.track(Button.builder(this.babyToggleLabel(), b -> {
             Central.setPetBaby(!CONFIG.isBaby);
             b.setMessage(this.babyToggleLabel());
@@ -266,20 +272,26 @@ public class MenagerieScreen extends Screen {
         this.tagRestX = 12 + leftWidth / 2 - 80;
         this.tagRestY = tabY;
         this.dandelionRestX = this.tagRestX;
-        this.dandelionRestY = this.tagRestY + 40;
+        this.dandelionRestY = this.tagRestY + 36;
         this.nameBox = new EditBox(this.font, this.tagRestX + 26, tabY, Math.min(160, leftWidth - 100), 18,
                 Component.literal("Name"));
         this.nameBox.setMaxLength(32);
         this.nameBox.visible = false;
         this.addRenderableWidget(this.nameBox);
+        // parked below the dandelion row so it never sits under the dandelion icon -
+        // the old fixed offset (tabY + 28) landed right in the middle of where the
+        // dandelion icon and its hint text render for baby pets, so the icon covered
+        // half the button. Kept at this fixed spot regardless of baby/adult so it
+        // doesn't jump around if the age toggle changes without reopening this page.
         this.namingCancelButton = Button.builder(Component.literal("Cancel"), b -> this.exitNaming())
-                .bounds(this.tagRestX, tabY + 28, 106, 20).build();
+                .bounds(this.tagRestX, tabY + 80, 106, 20).build();
         this.namingCancelButton.visible = false;
         this.addRenderableWidget(this.namingCancelButton);
 
         this.applyFilter();
         this.rebuildGrid();
         this.applyNamingVisibility();
+        this.updateSummonState();
     }
 
     /** Registers a widget as catalog-only: hidden while the naming page is open. */
@@ -464,10 +476,19 @@ public class MenagerieScreen extends Screen {
         if (this.summonButton != null) {
             this.summonButton.active = this.selected != null && this.unlocked(this.selected);
         }
+        boolean isActivePet = this.selected != null && this.selected.name().equals(CONFIG.activePet);
         if (this.nameTagButton != null) {
             // naming only applies to the pet you actually have out
-            this.nameTagButton.active = this.selected != null
-                    && this.selected.name().equals(CONFIG.activePet);
+            this.nameTagButton.active = isActivePet;
+        }
+        if (this.skinButton != null) {
+            if (this.minecraft != null) {
+                // keeps /petskin's own chat suggestions in sync too - they used to go
+                // stale after switching species from this screen instead of the command
+                Central.updateSuggestions(this.minecraft);
+            }
+            this.skinButton.active = isActivePet && !this.availableSkins().isEmpty();
+            this.skinButton.setMessage(this.skinLabel());
         }
     }
 
@@ -485,6 +506,67 @@ public class MenagerieScreen extends Screen {
         String dye = CONFIG.cushionColor == null ? "red" : CONFIG.cushionColor;
         String pretty = dye.equals("none") ? "none" : dye.replace('_', ' ');
         return Component.literal("Cushion: " + Character.toUpperCase(pretty.charAt(0)) + pretty.substring(1));
+    }
+
+    // --- pet skin cycling ---
+    //
+    // Species skins live in per-species CONFIG fields (catSkin, foxSkin, ...) that
+    // only /petskin's giant per-species switch statement knows how to write safely -
+    // that command is flagged in its own comment as fragile ("re-created from
+    // bytecode"), so this reuses it wholesale via the same public path the chat
+    // input takes (ClientPacketListener#sendCommand, which Fabric's client-command
+    // mixin intercepts before it'd ever reach the server) instead of duplicating or
+    // touching that logic. Reading the *current* skin uses reflection against the
+    // matching CONFIG field, mirroring the same pattern already used by
+    // previewPets() above for a config-field lookup by convention rather than a
+    // hardcoded switch.
+
+    private static String skinFieldName(String species) {
+        StringBuilder sb = new StringBuilder();
+        boolean upperNext = false;
+        for (char c : species.toCharArray()) {
+            if (c == '_') {
+                upperNext = true;
+                continue;
+            }
+            sb.append(upperNext ? Character.toUpperCase(c) : c);
+            upperNext = false;
+        }
+        sb.append("Skin");
+        return sb.toString();
+    }
+
+    /** Every valid skin name for the active pet, or empty if it doesn't have any. */
+    private List<String> availableSkins() {
+        return Central.currentSuggestions.stream()
+                .filter(s -> !s.equals("baby") && !s.equals("adult"))
+                .toList();
+    }
+
+    /** The active pet's current skin, normalized to match the suggestion list's spacing. */
+    private String currentSkin() {
+        try {
+            Field field = PetsConfig.class.getField(skinFieldName(CONFIG.activePet));
+            Object value = field.get(CONFIG);
+            return value == null ? null : value.toString().replace('_', ' ');
+        } catch (ReflectiveOperationException e) {
+            return null;
+        }
+    }
+
+    private void cycleSkin() {
+        if (this.minecraft == null || this.minecraft.player == null) return;
+        List<String> skins = this.availableSkins();
+        if (skins.isEmpty()) return;
+        int i = skins.indexOf(this.currentSkin());
+        String next = skins.get((i + 1) % skins.size());
+        this.minecraft.player.connection.sendCommand("petskin " + next);
+    }
+
+    private Component skinLabel() {
+        String skin = this.currentSkin();
+        if (skin == null || skin.isEmpty()) return Component.literal("Skin: default");
+        return Component.literal("Skin: " + Character.toUpperCase(skin.charAt(0)) + skin.substring(1));
     }
 
     /** Throwaway raft entity used only to extract a render state for the preview. */
@@ -680,7 +762,7 @@ public class MenagerieScreen extends Screen {
         int panelLeft = this.tagRestX - 6;
         int panelTop = this.tagRestY - 6;
         int panelRight = this.nameBox.getX() + this.nameBox.getWidth() + 6;
-        int panelBottom = this.tagRestY + TAG_ICON_SIZE + 44 + (CONFIG.isBaby ? 40 : 0);
+        int panelBottom = this.tagRestY + 80 + 20 + 6; // clears the Cancel button, same spot either way
         graphics.fill(panelLeft, panelTop, panelRight, panelBottom, 0xC0101010);
         graphics.outline(panelLeft, panelTop, panelRight, panelBottom, 0xFF555555);
         graphics.text(this.font, Component.literal("Name your pet"), panelLeft + 4, panelTop - 10, 0xFFFFFFFF);

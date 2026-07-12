@@ -607,7 +607,7 @@ public class Central implements ClientModInitializer {
      *
      * @see ChatAccessor
      */
-    private static void updateSuggestions(Minecraft client) {
+    public static void updateSuggestions(Minecraft client) {
         List<String> skinSuggestions = switch (CONFIG.activePet) {
             case "cat" -> CAT_SKINS;
             case "axolotl" -> AXOLOTL_SKINS;
