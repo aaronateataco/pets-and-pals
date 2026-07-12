@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.16.0
+- Menagerie redesign, part one: your pet now takes center stage in a big live preview with < > arrows to flip through the roster, the Land/Sky/Sea toggles and search sit right below it, and the species grid is centered underneath. Name and origin show under the stage
+- The arrows browse without summoning - pick with the grid or hit Summon when you find the one
+- Summon grays itself out for pets that aren't unlocked yet
+
 ## 0.15.2
 - Ferry rafts now coast: when your pet is rafting after you (creative flight over water, swimming), the hull carries momentum and eases to a stop beside you instead of braking dead
 - Smoother first-person sprint formation: the running position is eased so camera wiggle doesn't zigzag the pet, and it stops overshooting the mark when it's already at your side
