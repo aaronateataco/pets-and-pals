@@ -20,6 +20,7 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
     private AbstractPet pet;
     private boolean ferry = false;
     private Vec3 velocity = Vec3.ZERO;
+    private float scale = 1.0F;
     private net.minecraft.world.entity.Leashable.LeashData leashData;
     private int idleTimer = 40;
     private int idleAction = 0; // 0 stand, 1 sit, 2 look left, 3 look right
@@ -37,10 +38,20 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
                 .setValue(PetRaftBlock.STYLE, styleFor(boat))
                 .setValue(PetRaftBlock.CUSHION, cushionValue());
         raft.pet = pet;
+        raft.scale = scaleFor(pet);
         Vec3 side = sideAnchor(boat);
         raft.setPos(side.x, side.y, side.z);
         raft.setLeashedTo(boat, false);
         return raft;
+    }
+
+    /** Raft grows with its passenger; the base deck fits a fox. */
+    private static float scaleFor(AbstractPet pet) {
+        return pet == null ? 1.0F : Mth.clamp(pet.getBbWidth() / 0.7F, 1.0F, 2.4F);
+    }
+
+    public float renderScale() {
+        return this.scale;
     }
 
     @Override
@@ -62,6 +73,7 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
                 .setValue(PetRaftBlock.STYLE, Math.floorMod(AbstractPet.raftStyle.getAsInt(), PetRaftBlock.WOODS.length))
                 .setValue(PetRaftBlock.CUSHION, cushionValue());
         raft.pet = pet;
+        raft.scale = scaleFor(pet);
         raft.ferry = true;
         raft.setPos(pet.getX(), pet.getY(), pet.getZ());
         return raft;
@@ -113,14 +125,16 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
         // and straightens out when cruising
         Vec3 toBoat = new Vec3(boat.getX() - this.getX(), 0.0, boat.getZ() - this.getZ());
         double ropeDistance = toBoat.length();
+        // bigger rafts ride a little farther back
+        double ropeLength = ROPE_LENGTH + (this.scale - 1.0) * 0.6;
         if (ropeDistance > 14.0) {
             Vec3 reset = sideAnchor(boat);
             double y0 = this.waterSurfaceY(reset.x, boat.getY(), reset.z);
-            this.snapTo(reset.x, y0 - 0.01, reset.z, 0.0F, 0.0F);
+            this.snapTo(reset.x, y0 - 0.01, reset.z, boat.getYRot(), 0.0F);
             this.velocity = Vec3.ZERO;
         } else {
-            if (ropeDistance > ROPE_LENGTH) {
-                this.velocity = this.velocity.add(toBoat.scale((ropeDistance - ROPE_LENGTH) * 0.12 / ropeDistance));
+            if (ropeDistance > ropeLength) {
+                this.velocity = this.velocity.add(toBoat.scale((ropeDistance - ropeLength) * 0.12 / ropeDistance));
             }
             this.velocity = this.velocity.scale(0.86);
             double nextX = this.getX() + this.velocity.x;
@@ -134,6 +148,19 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
                 double bob = 0.02 * Math.sin(this.tickCount * 0.09);
                 this.setPos(nextX, surface - 0.01 + bob, nextZ);
             }
+            // hull swings like a towed boat: the leashed bow leads toward the rope
+            // when it's taut, otherwise the hull drifts around to face its motion
+            float targetYaw;
+            if (ropeDistance > ropeLength * 0.9) {
+                targetYaw = (float) Math.toDegrees(Mth.atan2(toBoat.z, toBoat.x)) - 90.0F;
+            } else if (this.velocity.horizontalDistanceSqr() > 4.0e-4) {
+                targetYaw = (float) Math.toDegrees(Mth.atan2(this.velocity.z, this.velocity.x)) - 90.0F;
+            } else {
+                targetYaw = this.getYRot();
+            }
+            // turn rate follows speed so the hull feels heavy in the water
+            float turn = (float) Mth.clamp(2.0 + this.velocity.horizontalDistance() * 25.0, 2.0, 9.0);
+            this.setYRot(Mth.approachDegrees(this.getYRot(), targetYaw, turn));
         }
 
         // pet rides the deck (hull is 1px, deck top is +0.0625)
@@ -150,7 +177,8 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
             this.idleAction = this.pet.getRandom().nextInt(4);
             this.pet.setInSittingPose(this.idleAction == 1);
         }
-        float baseYaw = boat.getYRot();
+        // pet stands square on the deck, so it turns with the hull
+        float baseYaw = this.getYRot();
         this.pet.setYRot(baseYaw);
         this.pet.yBodyRot = baseYaw;
         float headYaw = switch (this.idleAction) {
@@ -197,6 +225,7 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
         this.pet.setDeltaMovement(Vec3.ZERO);
         this.pet.fallDistance = 0;
         float yaw = (float) (Math.toDegrees(Mth.atan2(toOwner.z, toOwner.x))) - 90.0F;
+        this.setYRot(Mth.approachDegrees(this.getYRot(), yaw, 6.0F));
         this.pet.setYRot(yaw);
         this.pet.yBodyRot = yaw;
         this.pet.setYHeadRot(yaw);

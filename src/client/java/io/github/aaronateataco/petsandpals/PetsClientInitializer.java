@@ -212,7 +212,7 @@ public class PetsClientInitializer implements ClientModInitializer {
         EntityRenderers.register(PetsInitializer.PET_ORB,
                 io.github.aaronateataco.petsandpals.rendering.PetOrbRenderer::new);
         EntityRenderers.register(PetsInitializer.PET_RAFT,
-                context -> (net.minecraft.client.renderer.entity.EntityRenderer) new net.minecraft.client.renderer.entity.FallingBlockRenderer(context));
+                context -> (net.minecraft.client.renderer.entity.EntityRenderer) new io.github.aaronateataco.petsandpals.rendering.PetRaftRenderer(context));
         // Vanilla falling-block renderer draws the spawn-animation ghost block for free.
         EntityRenderers.register(PetsInitializer.PET_DWELLING,
                 context -> (net.minecraft.client.renderer.entity.EntityRenderer) new net.minecraft.client.renderer.entity.FallingBlockRenderer(context));
