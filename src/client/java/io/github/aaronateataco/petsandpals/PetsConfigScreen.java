@@ -1,6 +1,6 @@
 package io.github.aaronateataco.petsandpals;
 
-import io.github.aaronateataco.petsandpals.enums.DuckSkins;
+import io.github.aaronateataco.petsandpals.enums.CatSkins;
 
 /**
  * Snapshot build: YACL has no 26.3 release yet, so the advanced YACL screen is
@@ -11,7 +11,7 @@ public class PetsConfigScreen {
 
     private static final PetsConfigScreen INSTANCE = new PetsConfigScreen();
 
-    public Class<? extends Enum<?>> enumClass = DuckSkins.class;
+    public Class<? extends Enum<?>> enumClass = CatSkins.class;
 
     public static PetsConfigScreen getInstance() {
         return INSTANCE;

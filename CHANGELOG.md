@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.17.0
+- Removed the original mod's non-vanilla pets for now: duck, raccoon, penguin, koi, stingray, dumbo octopus, floating head, and every April Fools joke mob (ray tracing, smiling creeper, nerd creeper, mega spud, moon cow, batato, and the rest). The catalog is entirely vanilla-backed while these get reworked properly
+- Fixed the default pet on a fresh install (was "duck", now a valid vanilla pet)
+
 ## 0.16.0
 - Menagerie redesign, part one: your pet now takes center stage in a big live preview with < > arrows to flip through the roster, the Land/Sky/Sea toggles and search sit right below it, and the species grid is centered underneath. Name and origin show under the stage
 - The arrows browse without summoning - pick with the grid or hit Summon when you find the one

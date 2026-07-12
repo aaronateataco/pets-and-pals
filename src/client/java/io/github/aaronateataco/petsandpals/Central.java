@@ -10,20 +10,11 @@ import io.github.aaronateataco.petsandpals.mixin.client.ChatAccessor;
 import io.github.aaronateataco.petsandpals.mixin.client.SplashManagerMixin;
 import io.github.aaronateataco.petsandpals.mixin.client.TitleScreenRenderingMixin;
 import io.github.aaronateataco.petsandpals.mob.AbstractPet;
-import io.github.aaronateataco.petsandpals.mob.aprilfools.*;
-import io.github.aaronateataco.petsandpals.mob.custom.aprilfools.Head;
-import io.github.aaronateataco.petsandpals.mob.custom.aquatic.DumboOctopus;
-import io.github.aaronateataco.petsandpals.mob.custom.aquatic.Koi;
-import io.github.aaronateataco.petsandpals.mob.custom.aquatic.Stingray;
-import io.github.aaronateataco.petsandpals.mob.custom.first.Duck;
-import io.github.aaronateataco.petsandpals.mob.custom.first.Penguin;
-import io.github.aaronateataco.petsandpals.mob.custom.first.Racoon;
 import io.github.aaronateataco.petsandpals.mob.vanilla.boss.ClientEnderDragon;
 import io.github.aaronateataco.petsandpals.mob.vanilla.boss.ClientWither;
 import io.github.aaronateataco.petsandpals.mob.vanilla.hostile.*;
 import io.github.aaronateataco.petsandpals.mob.vanilla.neutral.*;
 import io.github.aaronateataco.petsandpals.mob.vanilla.passive.*;
-import io.github.aaronateataco.petsandpals.rendering.custom.aprilfools.head.HeadSkin;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
@@ -113,9 +104,6 @@ public class Central implements ClientModInitializer {
     private static final List<String> EMPTY_LIST = List.of();
     public static PetsConfig CONFIG;
     public static int petSkin;
-    public static Duck duck;
-    public static Racoon racoon;
-    public static Penguin penguin;
     public static ClientSheep sheep;
     public static ClientCat cat;
     public static ClientAllay allay;
@@ -191,26 +179,6 @@ public class Central implements ClientModInitializer {
     public static ClientWitherSkeleton witherSkeleton;
     public static ClientEnderDragon enderDragon;
     public static ClientWither wither;
-    public static AngryGhast angryGhast;
-    public static Batato batato;
-    public static DiamondChicken diamondChicken;
-    public static LoveGolem loveGolem;
-    public static MegaSpud megaSpud;
-    public static MoonCow moonCow;
-    public static NerdCreeper nerdCreeper;
-    public static PinkWither pinkWither;
-    public static PlaguewhaleSlab plaguewhaleSlab;
-    public static PoisonousPotatoZombie poisonousPotatoZombie;
-    public static RayTracing rayTracing;
-    public static RedstoneBug redstoneBug;
-    public static SmilingCreeper smilingCreeper;
-    public static ToxifinSlab toxifinSlab;
-    public static PotatoHusk potatoHusk;
-    public static Head head;
-    public static Traitor traitor;
-    public static DumboOctopus dumboOctopus;
-    public static Koi koi;
-    public static Stingray stingray;
     private static ClientSulfurCube sulfurCube;
 
     private final SuggestionProvider<FabricClientCommandSource> SKINS = (context, builder) -> {
@@ -231,9 +199,6 @@ public class Central implements ClientModInitializer {
      * see {@link Utils#despawnEntity}
      */
     public static void despawnPet() {
-        Utils.despawnEntity(penguin);
-        Utils.despawnEntity(racoon);
-        Utils.despawnEntity(duck);
         Utils.despawnEntity(sheep);
         Utils.despawnEntity(cat);
         Utils.despawnEntity(allay);
@@ -309,26 +274,6 @@ public class Central implements ClientModInitializer {
         Utils.despawnEntity(witherSkeleton);
         Utils.despawnEntity(enderDragon);
         Utils.despawnEntity(wither);
-        Utils.despawnEntity(angryGhast);
-        Utils.despawnEntity(batato);
-        Utils.despawnEntity(diamondChicken);
-        Utils.despawnEntity(loveGolem);
-        Utils.despawnEntity(megaSpud);
-        Utils.despawnEntity(moonCow);
-        Utils.despawnEntity(nerdCreeper);
-        Utils.despawnEntity(pinkWither);
-        Utils.despawnEntity(plaguewhaleSlab);
-        Utils.despawnEntity(poisonousPotatoZombie);
-        Utils.despawnEntity(rayTracing);
-        Utils.despawnEntity(redstoneBug);
-        Utils.despawnEntity(smilingCreeper);
-        Utils.despawnEntity(toxifinSlab);
-        Utils.despawnEntity(potatoHusk);
-        Utils.despawnEntity(head);
-        Utils.despawnEntity(traitor);
-        Utils.despawnEntity(dumboOctopus);
-        Utils.despawnEntity(koi);
-        Utils.despawnEntity(stingray);
         Utils.despawnEntity(sulfurCube);
     }
 
@@ -347,9 +292,6 @@ public class Central implements ClientModInitializer {
         }
         Minecraft minecraft = Minecraft.getInstance();
         ClientLevel world = minecraft.level;
-        duck = new Duck(PetsInitializer.DUCK, world);
-        racoon = new Racoon(PetsInitializer.RACOON, world);
-        penguin = new Penguin(PetsInitializer.PENGUIN, world);
         sheep = new ClientSheep(PetsInitializer.SHEEP, world);
         cat = new ClientCat(PetsInitializer.CAT, world);
         allay = new ClientAllay(PetsInitializer.ALLAY, world);
@@ -425,36 +367,10 @@ public class Central implements ClientModInitializer {
         witherSkeleton = new ClientWitherSkeleton(PetsInitializer.WITHER_SKELETON, world);
         enderDragon = new ClientEnderDragon(PetsInitializer.ENDER_DRAGON, world);
         wither = new ClientWither(PetsInitializer.WITHER, world);
-        angryGhast = new AngryGhast(PetsInitializer.ANGRY_GHAST, world);
-        batato = new Batato(PetsInitializer.BATATO, world);
-        diamondChicken = new DiamondChicken(PetsInitializer.DIAMOND_CHICKEN, world);
-        loveGolem = new LoveGolem(PetsInitializer.LOVE_GOLEM, world);
-        megaSpud = new MegaSpud(PetsInitializer.MEGA_SPUD, world);
-        moonCow = new MoonCow(PetsInitializer.MOON_COW, world);
-        nerdCreeper = new NerdCreeper(PetsInitializer.NERD_CREEPER, world);
-        pinkWither = new PinkWither(PetsInitializer.PINK_WITHER, world);
-        plaguewhaleSlab = new PlaguewhaleSlab(PetsInitializer.PLAGUEWHALE_SLAB, world);
-        poisonousPotatoZombie = new PoisonousPotatoZombie(PetsInitializer.POISONOUS_POTATO_ZOMBIE, world);
-        rayTracing = new RayTracing(PetsInitializer.RAY_TRACING, world);
-        redstoneBug = new RedstoneBug(PetsInitializer.REDSTONE_BUG, world);
-        smilingCreeper = new SmilingCreeper(PetsInitializer.SMILING_CREEPER, world);
-        toxifinSlab = new ToxifinSlab(PetsInitializer.TOXIFIN_SLAB, world);
-        potatoHusk = new PotatoHusk(PetsInitializer.POTATO_HUSK, world);
-        head = new Head(PetsInitializer.HEAD, world);
-        traitor = new Traitor(PetsInitializer.TRAITOR, world);
-        dumboOctopus = new DumboOctopus(PetsInitializer.DUMBO_OCTOPUS, world);
-        koi = new Koi(PetsInitializer.KOI, world);
-        stingray = new Stingray(PetsInitializer.STINGRAY, world);
         sulfurCube = new ClientSulfurCube(PetsInitializer.SULPHUR_CUBE, world);
 
         if (world != null) {
-            if (Objects.equals(CONFIG.activePet, "duck")) {
-                Utils.summonPet(duck, CONFIG.duckName);
-            } else if (Objects.equals(CONFIG.activePet, "racoon")) {
-                Utils.summonPet(racoon, CONFIG.racoonName);
-            } else if (Objects.equals(CONFIG.activePet, "penguin")) {
-                Utils.summonPet(penguin, CONFIG.penguinName);
-            } else if (Objects.equals(CONFIG.activePet, "sheep")) {
+            if (Objects.equals(CONFIG.activePet, "sheep")) {
                 Utils.summonPet(sheep, CONFIG.sheepName);
             } else if (Objects.equals(CONFIG.activePet, "cat")) {
                 Utils.summonPet(cat, CONFIG.catName);
@@ -604,46 +520,6 @@ public class Central implements ClientModInitializer {
                 Utils.summonPet(enderDragon, CONFIG.enderDragonName);
             } else if (Objects.equals(CONFIG.activePet, "wither")) {
                 Utils.summonPet(wither, CONFIG.witherName);
-            } else if (Objects.equals(CONFIG.activePet, "angry_ghast")) {
-                Utils.summonPet(angryGhast, CONFIG.angryGhastName);
-            } else if (Objects.equals(CONFIG.activePet, "batato")) {
-                Utils.summonPet(batato, CONFIG.batatoName);
-            } else if (Objects.equals(CONFIG.activePet, "diamond_chicken")) {
-                Utils.summonPet(diamondChicken, CONFIG.diamondChickenName);
-            } else if (Objects.equals(CONFIG.activePet, "love_golem")) {
-                Utils.summonPet(loveGolem, CONFIG.loveGolemName);
-            } else if (Objects.equals(CONFIG.activePet, "mega_spud")) {
-                Utils.summonPet(megaSpud, CONFIG.megaSpudName);
-            } else if (Objects.equals(CONFIG.activePet, "moon_cow")) {
-                Utils.summonPet(moonCow, CONFIG.moonCowName);
-            } else if (Objects.equals(CONFIG.activePet, "nerd_creeper")) {
-                Utils.summonPet(nerdCreeper, CONFIG.nerdCreeperName);
-            } else if (Objects.equals(CONFIG.activePet, "pink_wither")) {
-                Utils.summonPet(pinkWither, CONFIG.pinkWitherName);
-            } else if (Objects.equals(CONFIG.activePet, "plaguewhale_slab")) {
-                Utils.summonPet(plaguewhaleSlab, CONFIG.plaguewhaleSlabName);
-            } else if (Objects.equals(CONFIG.activePet, "poisonous_potato_zombie")) {
-                Utils.summonPet(poisonousPotatoZombie, CONFIG.poisonousPotatoZombieName);
-            } else if (Objects.equals(CONFIG.activePet, "ray_tracing")) {
-                Utils.summonPet(rayTracing, CONFIG.rayTracingName);
-            } else if (Objects.equals(CONFIG.activePet, "redstone_bug")) {
-                Utils.summonPet(redstoneBug, CONFIG.redstoneBugName);
-            } else if (Objects.equals(CONFIG.activePet, "smiling_creeper")) {
-                Utils.summonPet(smilingCreeper, CONFIG.smilingCreeperName);
-            } else if (Objects.equals(CONFIG.activePet, "toxifin_slab")) {
-                Utils.summonPet(toxifinSlab, CONFIG.toxfinSlabName);
-            } else if (Objects.equals(CONFIG.activePet, "potato_husk")) {
-                Utils.summonPet(potatoHusk, CONFIG.potatoHuskName);
-            } else if (Objects.equals(CONFIG.activePet, "head")) {
-                Utils.summonPet(head, CONFIG.headName);
-            } else if (Objects.equals(CONFIG.activePet, "traitor")) {
-                Utils.summonPet(traitor, CONFIG.traitorName);
-            } else if (Objects.equals(CONFIG.activePet, "dumbo_octopus")) {
-                Utils.summonPet(dumboOctopus, CONFIG.dumboOctopusName);
-            } else if (Objects.equals(CONFIG.activePet, "koi")) {
-                Utils.summonPet(koi, CONFIG.koiName);
-            } else if (Objects.equals(CONFIG.activePet, "stingray")) {
-                Utils.summonPet(stingray, CONFIG.stingrayName);
             } else if (Objects.equals(CONFIG.activePet, "sulfur_cube")) {
                 Utils.summonPet(sulfurCube, CONFIG.sulfurCubeName);
             }
@@ -657,9 +533,6 @@ public class Central implements ClientModInitializer {
      */
     public static void refreshPetNames() {
         Utils.checkName("cat", cat, CONFIG.catName);
-        Utils.checkName("duck", duck, CONFIG.duckName);
-        Utils.checkName("racoon", racoon, CONFIG.racoonName);
-        Utils.checkName("penguin", penguin, CONFIG.penguinName);
         Utils.checkName("sheep", sheep, CONFIG.sheepName);
         Utils.checkName("allay", allay, CONFIG.allayName);
         Utils.checkName("armadillo", armadillo, CONFIG.armadilloName);
@@ -730,26 +603,6 @@ public class Central implements ClientModInitializer {
         Utils.checkName("wither_skeleton", witherSkeleton, CONFIG.witherSkeletonName);
         Utils.checkName("ender_dragon", enderDragon, CONFIG.enderDragonName);
         Utils.checkName("wither", wither, CONFIG.witherName);
-        Utils.checkName("angry_ghast", angryGhast, CONFIG.angryGhastName);
-        Utils.checkName("batato", batato, CONFIG.batatoName);
-        Utils.checkName("diamond_chicken", diamondChicken, CONFIG.diamondChickenName);
-        Utils.checkName("love_golem", loveGolem, CONFIG.loveGolemName);
-        Utils.checkName("mega_spud", megaSpud, CONFIG.megaSpudName);
-        Utils.checkName("moon_cow", moonCow, CONFIG.moonCowName);
-        Utils.checkName("nerd_creeper", nerdCreeper, CONFIG.nerdCreeperName);
-        Utils.checkName("pink_wither", pinkWither, CONFIG.pinkWitherName);
-        Utils.checkName("plaguewhale_slab", plaguewhaleSlab, CONFIG.plaguewhaleSlabName);
-        Utils.checkName("poisonous_potato_zombie", poisonousPotatoZombie, CONFIG.poisonousPotatoZombieName);
-        Utils.checkName("ray_tracing", rayTracing, CONFIG.rayTracingName);
-        Utils.checkName("redstone_bug", redstoneBug, CONFIG.redstoneBugName);
-        Utils.checkName("smiling_creeper", smilingCreeper, CONFIG.smilingCreeperName);
-        Utils.checkName("toxifin_slab", toxifinSlab, CONFIG.toxfinSlabName);
-        Utils.checkName("potato_husk", potatoHusk, CONFIG.potatoHuskName);
-        Utils.checkName("head", head, CONFIG.headName);
-        Utils.checkName("traitor", traitor, CONFIG.traitorName);
-        Utils.checkName("dumbo_octopus", dumboOctopus, CONFIG.dumboOctopusName);
-        Utils.checkName("koi", koi, CONFIG.koiName);
-        Utils.checkName("stingray", stingray, CONFIG.stingrayName);
         Utils.checkName("sulfur_cube", sulfurCube, CONFIG.sulfurCubeName);
     }
 
@@ -760,8 +613,6 @@ public class Central implements ClientModInitializer {
      */
     private static void updateSuggestions(Minecraft client) {
         List<String> skinSuggestions = switch (CONFIG.activePet) {
-            case "duck" -> DUCK_SKINS;
-            case "racoon" -> RACOON_SKINS;
             case "cat" -> CAT_SKINS;
             case "axolotl" -> AXOLOTL_SKINS;
             case "camel" -> CAMEL_SKINS;
@@ -788,9 +639,6 @@ public class Central implements ClientModInitializer {
             case "zombie_villager" -> VILLAGER_SKINS;
             case "shulker" -> SHULKER_SKINS;
             case "wither" -> WITHER_SKINS;
-            case "head" -> HEAD_SKINS;
-            case "traitor" -> TRAITOR_SKINS;
-            case "dumbo_octopus" -> DUMBO_OCTOPUS_SKINS;
             case "sulfur_cube" -> Utils.getAllBlocks();
             case null, default -> EMPTY_LIST;
         };
@@ -816,23 +664,6 @@ public class Central implements ClientModInitializer {
         }
     }
 
-    /**
-     * Adds the custom resourcepack required for the head into the resource pack respository.
-     * More about this custom pack can be seen in {@link HeadSkin}.
-     */
-    public static void checkForHeadResourcePack() {
-        Minecraft client = Minecraft.getInstance();
-        Options options = client.options;
-        List<String> resourcePacks = new ArrayList<>(options.resourcePacks);
-
-        /*if (!resourcePacks.contains("file/headpack") && Objects.equals(CONFIG.activePet, "head")) {
-            resourcePacks.add("file/headpack");
-            client.getResourcePackRepository().addPack("file/headpack");
-            options.save();
-            client.reloadResourcePacks();
-            //client.player.sendSystemMessage(Component.literal("§b[Pets&Pals] §aSorry for the interruption, the head pet requires a custom resource pack to work correctly and we loaded a pack for you. This will not affect anything except the head texture."));
-        }*/
-    }
 
     /**
      * Used to re-assign the logo, edition texts, and splashes in {@link SplashManagerMixin} and {@link TitleScreenRenderingMixin}.
@@ -928,30 +759,7 @@ public class Central implements ClientModInitializer {
                     } else if (Objects.equals(skin, "adult")) {
                         CONFIG.isBaby = false;
                     } else {
-                        if (Objects.equals(CONFIG.activePet, "duck")) {
-                            switch (skin) {
-                                case "mallard":
-                                    CONFIG.duckSkin = "mallard";
-                                    break;
-                                case "pekin":
-                                    CONFIG.duckSkin = "pekin";
-                                    break;
-                                case "rubber":
-                                    CONFIG.duckSkin = "rubber";
-                                    break;
-                                case "bronze": CONFIG.duckSkin = "bronze";
-                                break;
-                                case null:
-                                default:
-                                    isValid = false;
-                            }
-                        } else if (Objects.equals(CONFIG.activePet, "racoon")) {
-                            switch (skin) {
-                                case "normal" -> CONFIG.racoonSkin = "normal";
-                                case "albino" -> CONFIG.racoonSkin = "albino";
-                                case null, default -> isValid = false;
-                            }
-                        } else if (Objects.equals(CONFIG.activePet, "cat")) {
+                        if (Objects.equals(CONFIG.activePet, "cat")) {
                             switch (skin) {
                                 case "black":
                                     CONFIG.catSkin = "all_black";
@@ -1563,29 +1371,6 @@ public class Central implements ClientModInitializer {
                                 case "invulnerable" -> CONFIG.witherSkin = "invulnerable";
                                 case null, default -> isValid = false;
                             }
-                        } else if (Objects.equals(CONFIG.activePet, "head")) {
-                            CONFIG.headSkin = skin.toLowerCase();
-                        } else if (Objects.equals(CONFIG.activePet, "traitor")) {
-                            switch (skin) {
-                                case "desert" -> CONFIG.traitorSkin = "desert";
-                                case "jungle" -> CONFIG.traitorSkin = "jungle";
-                                case "plains" -> CONFIG.traitorSkin = "plains";
-                                case "savanna" -> CONFIG.traitorSkin = "savanna";
-                                case "snow", "snowy" -> CONFIG.traitorSkin = "snow";
-                                case "swamp" -> CONFIG.traitorSkin = "swamp";
-                                case "taiga" -> CONFIG.traitorSkin = "taiga";
-                                case null, default -> isValid = false;
-                            }
-                        } else if (Objects.equals(CONFIG.activePet, "dumbo_octopus")) {
-                            switch (skin) {
-                                case "yellow" -> CONFIG.dumboOctopusSkin = "yellow";
-                                case "red" -> CONFIG.dumboOctopusSkin = "red";
-                                case "blue" -> CONFIG.dumboOctopusSkin = "blue";
-                                case "green" -> CONFIG.dumboOctopusSkin = "green";
-                                case "orange" -> CONFIG.dumboOctopusSkin = "orange";
-                                case "pink" -> CONFIG.dumboOctopusSkin = "pink";
-                                case null, default -> isValid = false;
-                            }
                         } else if (Objects.equals("sulfur_cube", CONFIG.activePet)) {
                             CONFIG.sulfurCubeSkin = skin.replace(" ", "_").toLowerCase();
                         }
@@ -1611,7 +1396,7 @@ public class Central implements ClientModInitializer {
         if (CONFIG.petOn == null) {
             CONFIG.petOn = true;
         }
-        CONFIG.activePet = (CONFIG.activePet == null) ? "duck" : CONFIG.activePet;
+        CONFIG.activePet = (CONFIG.activePet == null) ? "fox" : CONFIG.activePet;
         if (CONFIG.customTitleEnabled == null) {
             CONFIG.customTitleEnabled = true;
         }
@@ -1825,13 +1610,7 @@ public class Central implements ClientModInitializer {
             boolean isValid = true;
             String species = StringArgumentType.getString(context, "species");
 
-            if (Objects.equals(species, "duck")) {
-                Utils.setActivePet(duck, "duck");
-            } else if (Objects.equals(species, "racoon")) {
-                Utils.setActivePet(racoon, "racoon");
-            } else if (Objects.equals(species, "penguin")) {
-                Utils.setActivePet(penguin, "penguin");
-            } else if (Objects.equals(species, "sheep")) {
+            if (Objects.equals(species, "sheep")) {
                 Utils.setActivePet(sheep, "sheep");
             } else if (Objects.equals(species, "cat")) {
                 Utils.setActivePet(cat, "cat");
@@ -1981,46 +1760,6 @@ public class Central implements ClientModInitializer {
                 Utils.setActivePet(wither, "wither");
             } else if (Objects.equals(species, "ender dragon") || Objects.equals(species, "ender_dragon")) {
                 Utils.setActivePet(enderDragon, "ender_dragon");
-            } else if (Objects.equals(species, "angry_ghast") || Objects.equals(species, "angry ghast")) {
-                Utils.setActivePet(angryGhast, "angry_ghast");
-            } else if (Objects.equals(species, "batato")) {
-                Utils.setActivePet(batato, "batato");
-            } else if (Objects.equals(species, "diamond_chicken") || Objects.equals(species, "diamond chicken")) {
-                Utils.setActivePet(diamondChicken, "diamond_chicken");
-            } else if (Objects.equals(species, "love_golem") || Objects.equals(species, "love golem")) {
-                Utils.setActivePet(loveGolem, "love_golem");
-            } else if (Objects.equals(species, "mega_spud") || Objects.equals(species, "mega spud")) {
-                Utils.setActivePet(megaSpud, "mega_spud");
-            } else if (Objects.equals(species, "moon_cow") || Objects.equals(species, "moon cow")) {
-                Utils.setActivePet(moonCow, "moon_cow");
-            } else if (Objects.equals(species, "nerd_creeper") || Objects.equals(species, "nerd creeper")) {
-                Utils.setActivePet(nerdCreeper, "nerd_creeper");
-            } else if (Objects.equals(species, "pink_wither") || Objects.equals(species, "pink wither")) {
-                Utils.setActivePet(pinkWither, "pink_wither");
-            } else if (Objects.equals(species, "plaguewhale_slab") || Objects.equals(species, "plaguewhale slab")) {
-                Utils.setActivePet(plaguewhaleSlab, "plaguewhale_slab");
-            } else if (Objects.equals(species, "poisonous_potato_zombie") || Objects.equals(species, "poisonous potato zombie")) {
-                Utils.setActivePet(poisonousPotatoZombie, "poisonous_potato_zombie");
-            } else if (Objects.equals(species, "ray_tracing") || Objects.equals(species, "ray tracing")) {
-                Utils.setActivePet(rayTracing, "ray_tracing");
-            } else if (Objects.equals(species, "redstone_bug") || Objects.equals(species, "redstone bug")) {
-                Utils.setActivePet(redstoneBug, "redstone_bug");
-            } else if (Objects.equals(species, "smiling_creeper") || Objects.equals(species, "smiling creeper")) {
-                Utils.setActivePet(smilingCreeper, "smiling_creeper");
-            } else if (Objects.equals(species, "toxifin_slab") || Objects.equals(species, "toxifin slab")) {
-                Utils.setActivePet(toxifinSlab, "toxifin_slab");
-            } else if (Objects.equals(species, "potato_husk") || Objects.equals(species, "potato husk")) {
-                Utils.setActivePet(potatoHusk, "potato_husk");
-            } else if (Objects.equals(species, "head")) {
-                Utils.setActivePet(head, "head");
-            } else if (Objects.equals(species, "traitor")) {
-                Utils.setActivePet(traitor, "traitor");
-            } else if (Objects.equals(species, "dumbo_octopus") || Objects.equals(species, "dumbo octopus")) {
-                Utils.setActivePet(dumboOctopus, "dumbo_octopus");
-            } else if (Objects.equals(species, "koi")) {
-                Utils.setActivePet(koi, "koi");
-            } else if (Objects.equals(species, "stingray")) {
-                Utils.setActivePet(stingray, "stingray");
             } else if (Objects.equals(species, "sulfur_cube") || Objects.equals(species, "sulfur cube")) {
                 Utils.setActivePet(sulfurCube, "sulfur_cube");
             } else {
@@ -2116,9 +1855,6 @@ public class Central implements ClientModInitializer {
             String name = StringArgumentType.getString(context, "name");
             if (!summonedEntity.isEmpty()) {
                 switch (CONFIG.activePet) {
-                    case "penguin" -> CONFIG.penguinName = name;
-                    case "duck" -> CONFIG.duckName = name;
-                    case "racoon" -> CONFIG.racoonName = name;
                     case "cat" -> CONFIG.catName = name;
                     case "sheep" -> CONFIG.sheepName = name;
                     case "allay" -> CONFIG.allayName = name;
@@ -2195,26 +1931,6 @@ public class Central implements ClientModInitializer {
                     case "wither_skeleton" -> CONFIG.witherSkeletonName = name;
                     case "ender_dragon" -> CONFIG.enderDragonName = name;
                     case "wither" -> CONFIG.witherName = name;
-                    case "angry_ghast" -> CONFIG.angryGhastName = name;
-                    case "batato" -> CONFIG.batatoName = name;
-                    case "diamond_chicken" -> CONFIG.diamondChickenName = name;
-                    case "love_golem" -> CONFIG.loveGolemName = name;
-                    case "mega_spud" -> CONFIG.megaSpudName = name;
-                    case "moon_cow" -> CONFIG.moonCowName = name;
-                    case "nerd_creeper" -> CONFIG.nerdCreeperName = name;
-                    case "pink_wither" -> CONFIG.pinkWitherName = name;
-                    case "plaguewhale_slab" -> CONFIG.plaguewhaleSlabName = name;
-                    case "poisonous_potato_zombie" -> CONFIG.poisonousPotatoZombieName = name;
-                    case "ray_tracing" -> CONFIG.rayTracingName = name;
-                    case "redstone_bug" -> CONFIG.redstoneBugName = name;
-                    case "smiling_creeper" -> CONFIG.smilingCreeperName = name;
-                    case "toxifin_slab" -> CONFIG.toxfinSlabName = name;
-                    case "potato_husk" -> CONFIG.potatoHuskName = name;
-                    case "head" -> CONFIG.headName = name;
-                    case "traitor" -> CONFIG.traitorName = name;
-                    case "dumbo_octopus" -> CONFIG.dumboOctopusName = name;
-                    case "koi" -> CONFIG.koiName = name;
-                    case "stingray" -> CONFIG.stingrayName = name;
                     case "sulfur_cube" -> CONFIG.sulfurCubeName = name;
                 }
                 AutoConfig.getConfigHolder(PetsConfig.class).save();
@@ -2258,35 +1974,32 @@ public class Central implements ClientModInitializer {
     }
 
     void createPetsList() {
-        String[] stuffs = new String[]{"allay", "angry ghast", "armadillo",
-                "axolotl", "bat", "batato", "bee", "blaze", "bogged",
+        String[] stuffs = new String[]{"allay", "armadillo",
+                "axolotl", "bat", "bee", "blaze", "bogged",
                 "breeze", "camel", "cat", "cave spider", "chicken",
                  "cod",  "copper golem", "cow",
-                "creaking", "creeper", "diamond chicken",
-                "dolphin", "donkey", "drowned", "duck", "dumbo octopus",
+                "creaking", "creeper",
+                "dolphin", "donkey", "drowned",
                 "elder guardian", "ender dragon", "enderman", "endermite", "evoker",
                 "fox",  "frog",
                  "ghast", "goat", "guardian",
-                "happy ghast", "head", "hoglin",  "horse",
+                "happy ghast", "hoglin",  "horse",
                 "husk",  "iron golem",
-                "koi", "llama",
-                 "love golem", "magma cube", "mega spud",
-                "moon cow", "mooshroom",
-                 "nautilus", "nerd creeper",
-                "panda", "parched", "parrot",  "penguin", "phantom",
+                "llama",
+                 "magma cube",
+                "mooshroom",
+                 "nautilus",
+                "panda", "parched", "parrot", "phantom",
                "pig", "piglin", "pillager",
-                "pink wither", "plaguewhale slab", "poisonous potato zombie", "polar bear",
-                "potato husk", "pufferfish", "rabbit",
-                "racoon",
+                "polar bear",
+                "pufferfish", "rabbit",
                 "ravager",
-                "ray tracing",
-                "redstone bug",
                 "salmon",
                 "sheep",
                 "shulker",
-                "silverfish", "skeleton", "slime", "smiling creeper", "sniffer", "snow golem",
-                 "spider", "squid", "stingray",  "stray", "strider",  "tadpole", "toxifin slab",
-                "traitor", "turtle",
+                "silverfish", "skeleton", "slime", "sniffer", "snow golem",
+                 "spider", "squid",  "stray", "strider",  "tadpole",
+                "turtle",
                  "vex", "villager", "vindicator", "wandering trader", "warden", "witch", "wither",
                 "wither skeleton", "wolf", "zombie", "zombie villager", "sulfur cube"};
         PETS_LIST.addAll(List.of(stuffs));

@@ -1,40 +1,5 @@
 package io.github.aaronateataco.petsandpals;
 
-import io.github.aaronateataco.petsandpals.rendering.aprilfools.angryghast.AngryGhastRenderer;
-import io.github.aaronateataco.petsandpals.rendering.aprilfools.batato.BatatoModel;
-import io.github.aaronateataco.petsandpals.rendering.aprilfools.batato.BatatoRenderer;
-import io.github.aaronateataco.petsandpals.rendering.aprilfools.diamondchicken.DiamondChickenRenderer;
-import io.github.aaronateataco.petsandpals.rendering.aprilfools.lovegolem.LoveGolemRenderer;
-import io.github.aaronateataco.petsandpals.rendering.aprilfools.megaspud.MegaSpudModel;
-import io.github.aaronateataco.petsandpals.rendering.aprilfools.megaspud.MegaSpudOuterLayer;
-import io.github.aaronateataco.petsandpals.rendering.aprilfools.megaspud.MegaSpudRenderer;
-import io.github.aaronateataco.petsandpals.rendering.aprilfools.mooncow.LegacyCowModel;
-import io.github.aaronateataco.petsandpals.rendering.aprilfools.mooncow.MoonCowRenderer;
-import io.github.aaronateataco.petsandpals.rendering.aprilfools.nerdcreeper.NerdCreeperRenderer;
-import io.github.aaronateataco.petsandpals.rendering.aprilfools.pinkwither.PinkWitherRenderer;
-import io.github.aaronateataco.petsandpals.rendering.aprilfools.plaguewhale.PlaguewhaleRenderer;
-import io.github.aaronateataco.petsandpals.rendering.aprilfools.poisonouspotatozombie.PoisonousPotatoZombieRenderer;
-import io.github.aaronateataco.petsandpals.rendering.aprilfools.potatohusk.PotatoHuskRenderer;
-import io.github.aaronateataco.petsandpals.rendering.aprilfools.raytracing.RayTracingRenderer;
-import io.github.aaronateataco.petsandpals.rendering.aprilfools.redstonebug.RedstoneBugRenderer;
-import io.github.aaronateataco.petsandpals.rendering.aprilfools.smilingcreeper.SmilingCreeperRenderer;
-import io.github.aaronateataco.petsandpals.rendering.aprilfools.toxifin.ToxifinRenderer;
-import io.github.aaronateataco.petsandpals.rendering.aprilfools.toxifin.ToxifinSlabModel;
-import io.github.aaronateataco.petsandpals.rendering.aprilfools.traitor.TraitorRenderer;
-import io.github.aaronateataco.petsandpals.rendering.custom.aprilfools.head.HeadModel;
-import io.github.aaronateataco.petsandpals.rendering.custom.aprilfools.head.HeadRenderer;
-import io.github.aaronateataco.petsandpals.rendering.custom.aquatic.dumbo_octopus.DumboOctopusModel;
-import io.github.aaronateataco.petsandpals.rendering.custom.aquatic.dumbo_octopus.DumboOctopusRenderer;
-import io.github.aaronateataco.petsandpals.rendering.custom.aquatic.koi.KoiModel;
-import io.github.aaronateataco.petsandpals.rendering.custom.aquatic.koi.KoiRenderer;
-import io.github.aaronateataco.petsandpals.rendering.custom.aquatic.stingray.StingrayModel;
-import io.github.aaronateataco.petsandpals.rendering.custom.aquatic.stingray.StingrayRenderer;
-import io.github.aaronateataco.petsandpals.rendering.custom.first.duck.DuckModel;
-import io.github.aaronateataco.petsandpals.rendering.custom.first.duck.DuckRenderer;
-import io.github.aaronateataco.petsandpals.rendering.custom.first.penguin.PenguinModel;
-import io.github.aaronateataco.petsandpals.rendering.custom.first.penguin.PenguinRenderer;
-import io.github.aaronateataco.petsandpals.rendering.custom.first.racoon.RacoonModel;
-import io.github.aaronateataco.petsandpals.rendering.custom.first.racoon.RacoonRenderer;
 import io.github.aaronateataco.petsandpals.rendering.vanilla.allay.ClientAllayRenderer;
 import io.github.aaronateataco.petsandpals.rendering.vanilla.armadillo.ClientArmadilloRenderer;
 import io.github.aaronateataco.petsandpals.rendering.vanilla.axolotl.ClientAxolotlRenderer;
@@ -207,8 +172,6 @@ public class PetsClientInitializer implements ClientModInitializer {
 
         this.createKeyBinding();
 
-        EntityRenderers.register(PetsInitializer.HEAD, HeadRenderer::new);
-        EntityRenderers.register(PetsInitializer.DUCK, DuckRenderer::new);
         EntityRenderers.register(PetsInitializer.PET_ORB,
                 io.github.aaronateataco.petsandpals.rendering.PetOrbRenderer::new);
         EntityRenderers.register(PetsInitializer.PET_RAFT,
@@ -216,8 +179,6 @@ public class PetsClientInitializer implements ClientModInitializer {
         // Vanilla falling-block renderer draws the spawn-animation ghost block for free.
         EntityRenderers.register(PetsInitializer.PET_DWELLING,
                 context -> (net.minecraft.client.renderer.entity.EntityRenderer) new net.minecraft.client.renderer.entity.FallingBlockRenderer(context));
-        EntityRenderers.register(PetsInitializer.RACOON, RacoonRenderer::new);
-        EntityRenderers.register(PetsInitializer.PENGUIN, PenguinRenderer::new);
         EntityRenderers.register(PetsInitializer.SHEEP, ClientSheepRenderer::new);
         EntityRenderers.register(PetsInitializer.CAT, ClientCatRenderer::new);
         EntityRenderers.register(PetsInitializer.ALLAY, ClientAllayRenderer::new);
@@ -293,32 +254,8 @@ public class PetsClientInitializer implements ClientModInitializer {
         EntityRenderers.register(PetsInitializer.ZOMBIE_VILLAGER, ClientZombieVillagerRenderer::new);
         EntityRenderers.register(PetsInitializer.ENDER_DRAGON, ClientEnderDragonRenderer::new);
         EntityRenderers.register(PetsInitializer.WITHER, ClientWitherRenderer::new);
-        EntityRenderers.register(PetsInitializer.BATATO, BatatoRenderer::new);
-        EntityRenderers.register(PetsInitializer.ANGRY_GHAST, AngryGhastRenderer::new);
-        EntityRenderers.register(PetsInitializer.BATATO, BatatoRenderer::new);
-        EntityRenderers.register(PetsInitializer.DIAMOND_CHICKEN, DiamondChickenRenderer::new);
-        EntityRenderers.register(PetsInitializer.LOVE_GOLEM, LoveGolemRenderer::new);
-        EntityRenderers.register(PetsInitializer.MEGA_SPUD, MegaSpudRenderer::new);
-        EntityRenderers.register(PetsInitializer.MOON_COW, MoonCowRenderer::new);
-        EntityRenderers.register(PetsInitializer.NERD_CREEPER, NerdCreeperRenderer::new);
-        EntityRenderers.register(PetsInitializer.PINK_WITHER, PinkWitherRenderer::new);
-        EntityRenderers.register(PetsInitializer.PLAGUEWHALE_SLAB, PlaguewhaleRenderer::new);
-        EntityRenderers.register(PetsInitializer.POISONOUS_POTATO_ZOMBIE, PoisonousPotatoZombieRenderer::new);
-        EntityRenderers.register(PetsInitializer.POTATO_HUSK, PotatoHuskRenderer::new);
-        EntityRenderers.register(PetsInitializer.RAY_TRACING, RayTracingRenderer::new);
-        EntityRenderers.register(PetsInitializer.REDSTONE_BUG, RedstoneBugRenderer::new);
-        EntityRenderers.register(PetsInitializer.SMILING_CREEPER, SmilingCreeperRenderer::new);
-        EntityRenderers.register(PetsInitializer.TOXIFIN_SLAB, ToxifinRenderer::new);
-        EntityRenderers.register(PetsInitializer.TRAITOR, TraitorRenderer::new);
-        EntityRenderers.register(PetsInitializer.DUMBO_OCTOPUS, DumboOctopusRenderer::new);
-        EntityRenderers.register(PetsInitializer.KOI, KoiRenderer::new);
-        EntityRenderers.register(PetsInitializer.STINGRAY, StingrayRenderer::new);
         EntityRenderers.register(PetsInitializer.SULPHUR_CUBE, ClientSulfurCubeRenderer::new);
 
-        ModelLayerRegistry.registerModelLayer(HeadModel.LAYER_LOCATION, HeadModel::getTexturedModelData);
-        ModelLayerRegistry.registerModelLayer(RacoonRenderer.RACOON_LOCATION, RacoonModel::getTexturedModelData);
-        ModelLayerRegistry.registerModelLayer(DuckModel.LAYER_LOCATION, DuckModel::getTexturedModelData);
-        ModelLayerRegistry.registerModelLayer(PenguinModel.PENGUIN_LOCATION, PenguinModel::getTexturedModelData);
         ModelLayerRegistry.registerModelLayer(ClientSheepRenderer.SHEEP_LOCATION, ClientSheepModel::createBodyLayer);
         ModelLayerRegistry.registerModelLayer(ClientSheepWoolLayer.SHEEP_WOOL_LOCATION, ClientSheepModel::createBodyLayer);
         ModelLayerRegistry.registerModelLayer(ClientCatRenderer.CAT_LOCATION, ClientCatRenderer::createCatBodyLayer);
@@ -395,26 +332,6 @@ public class PetsClientInitializer implements ClientModInitializer {
         ModelLayerRegistry.registerModelLayer(ClientZombieVillagerRenderer.ZOMBIE_VILLAGER_LOCATION, ClientZombieVillagerModel::createBodyLayer);
         ModelLayerRegistry.registerModelLayer(ClientEnderDragonRenderer.ENDER_DRAGON_LOCATION, EnderDragonModel::createBodyLayer);
         ModelLayerRegistry.registerModelLayer(ClientWitherRenderer.WITHER_LOCATION, ClientWitherRenderer::createBaseWitherLayer);
-        ModelLayerRegistry.registerModelLayer(AngryGhastRenderer.ANGRY_GHAST_LOCATION, GhastModel::createBodyLayer);
-        ModelLayerRegistry.registerModelLayer(BatatoRenderer.BATATO_LOCAITON, BatatoModel::createBodyLayer);
-        ModelLayerRegistry.registerModelLayer(DiamondChickenRenderer.DIAMOND_CHICKEN_LOCATION, ClientChickenModel::createBodyLayer);
-        ModelLayerRegistry.registerModelLayer(LoveGolemRenderer.LOVE_GOLEM_LOCATION, IronGolemModel::createBodyLayer);
-        ModelLayerRegistry.registerModelLayer(MegaSpudRenderer.MEGA_SPUD_LOCATION, MegaSpudModel::createInnerBodyLayer);
-        ModelLayerRegistry.registerModelLayer(MegaSpudOuterLayer.MEGA_SPUD_OUTER_LOCATION, MegaSpudModel::createOuterBodyLayer);
-        ModelLayerRegistry.registerModelLayer(MoonCowRenderer.MOON_COW_LOCATION, LegacyCowModel::createLegacyCowModel);
-        ModelLayerRegistry.registerModelLayer(NerdCreeperRenderer.NERD_CREEPER_LOCATION, ClientCreeperRenderer::createBaseCreeperLayer);
-        ModelLayerRegistry.registerModelLayer(PinkWitherRenderer.PINK_WITHER_LOCATION, ClientWitherRenderer::createBaseWitherLayer);
-        ModelLayerRegistry.registerModelLayer(PlaguewhaleRenderer.PLAGUEWHALE_LOCATION, ToxifinSlabModel::createBodyLayer);
-        ModelLayerRegistry.registerModelLayer(PoisonousPotatoZombieRenderer.POISONOUS_POTATO_ZOMBIE_LOCATION, ClientZombieRenderer::createBaseZombieLayer);
-        ModelLayerRegistry.registerModelLayer(PotatoHuskRenderer.POTATO_HUSK_LOCATION, ClientZombieRenderer::createBaseZombieLayer);
-        ModelLayerRegistry.registerModelLayer(RayTracingRenderer.RAY_TRACING_LOCATION, RayTracingRenderer::createBasePlayerBodyLayer);
-        ModelLayerRegistry.registerModelLayer(RedstoneBugRenderer.REDSTONE_BUG_LOCATION, SilverfishModel::createBodyLayer);
-        ModelLayerRegistry.registerModelLayer(SmilingCreeperRenderer.SMILING_CREEPER_LOCATION, ClientCreeperRenderer::createBaseCreeperLayer);
-        ModelLayerRegistry.registerModelLayer(ToxifinRenderer.TOXIFIN_LOCATION, ToxifinSlabModel::createBodyLayer);
-        ModelLayerRegistry.registerModelLayer(TraitorRenderer.TRAITOR_LOCATION, ClientEvokerModel::createBodyLayer);
-        ModelLayerRegistry.registerModelLayer(DumboOctopusRenderer.DUMBO_OCTOPUS_LOCATION, DumboOctopusModel::createBodyLayer);
-        ModelLayerRegistry.registerModelLayer(KoiRenderer.KOI_LOCATION, KoiModel::createBodyLayer);
-        ModelLayerRegistry.registerModelLayer(StingrayRenderer.STINGRAY_LOCATION, StingrayModel::createBodyLayer);
         ModelLayerRegistry.registerModelLayer(ClientSulfurCubeRenderer.SULFUR_CUBE_LOCATION, SulfurCubeModel::createOuterBodyLayer);
 
         ClientLifecycleEvents.CLIENT_STARTED.register((mc) -> {
