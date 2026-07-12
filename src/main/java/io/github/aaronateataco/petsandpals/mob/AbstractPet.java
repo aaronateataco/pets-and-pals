@@ -171,6 +171,16 @@ public abstract class AbstractPet extends TamableAnimal {
 
     @Override
     public void tick() {
+        // combat bookkeeping keeps running while tucked away in the star, or the
+        // timer would freeze and the pet never comes back out
+        if (this.orbMode && this.level().isClientSide() && this.isAlive()) {
+            if (this.combatPerchTimer > 0) this.combatPerchTimer--;
+            if (this.tickCount % 10 == 0 && this.getOwner() instanceof Player tuckOwner
+                    && this.ownerInCombat(tuckOwner)) {
+                this.combatPerchTimer = 70;
+            }
+        }
+
         // combat tuck: perch behind the shoulder while the owner is fighting
         if (this.usesGoalMovement() && this.level().isClientSide() && this.isAlive() && !this.isPassenger()
                 && !this.orbMode && !this.rafted) {
@@ -194,10 +204,16 @@ public abstract class AbstractPet extends TamableAnimal {
                     && this.ownerInCombat(ownerPlayer)) {
                 this.combatPerchTimer = 70;
             }
-            boolean shouldPerch = this.combatPerchTimer > 0;
+            boolean shouldTuck = this.combatPerchTimer > 0;
             if (this.combatPerchTimer > 0) this.combatPerchTimer--;
-            if (shouldPerch != this.perched) {
-                this.setPerched(shouldPerch);
+            if (this.followYOffset() > 0.0F) {
+                // flyers hover behind the shoulder
+                if (shouldTuck != this.perched) {
+                    this.setPerched(shouldTuck);
+                }
+            } else if (shouldTuck) {
+                // land pets can't float - tuck into the star instead
+                this.enterOrbMode();
             }
 
             // ferry: a land pet swimming after a distant owner gets a raft popped in
@@ -209,8 +225,9 @@ public abstract class AbstractPet extends TamableAnimal {
                 clientEntitySpawner.accept(PetRaft.createFerry(this.level(), this));
             }
 
-            // pet raft: when the owner boards a boat, a raft floats alongside for the pet
-            if (!this.perched && !this.rafted && !this.orbMode
+            // pet raft: when the owner boards a boat, a raft floats alongside for the
+            // pet - flyers don't need one, they just fly along
+            if (!this.perched && !this.rafted && !this.orbMode && this.followYOffset() <= 0.0F
                     && this.getOwner() instanceof Player boatOwner
                     && boatOwner.getVehicle() instanceof net.minecraft.world.entity.vehicle.boat.AbstractBoat boat
                     && boatOwner.level() == this.level()) {
@@ -333,6 +350,11 @@ public abstract class AbstractPet extends TamableAnimal {
     /** Ghost form: used when there's nowhere valid to reposition (see PetOrb). */
     public boolean isOrbMode() {
         return this.orbMode;
+    }
+
+    /** True while the owner is fighting; the orb won't reform the pet during this. */
+    public boolean isCombatTucked() {
+        return this.combatPerchTimer > 0;
     }
 
     public void enterOrbMode() {
