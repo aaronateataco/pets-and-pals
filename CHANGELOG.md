@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.23.0
+- Replaced the rope/spring raft-tow simulation with a rigid attachment: the raft's position is copied directly off the boat's own transform every tick (offset behind the stern), instead of being simulated independently with velocity and drag. It can no longer drift, lag behind, or float loose - only the visual yaw still eases in on sharp turns
+- Fixed land pets zigzagging diagonally left-right instead of running in a straight line - the predictive lead point (added for normal, non-sprint following) read the owner's raw per-tick velocity, which has enough natural noise to flip the predicted direction by a few degrees every tick
+
 ## 0.22.0
 - Fixed the boat actively pushing the raft away every tick, fighting directly against its own tow physics - this was the real cause behind the raft never settling in close behind the boat
 - Fixed the tow rope floating up in the air above the raft instead of meeting the boat at deck level (it was anchored at an inherited "eye height" that doesn't match the raft's actual thin deck)
