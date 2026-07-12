@@ -876,6 +876,17 @@ public class PetsInitializer implements ModInitializer {
                     .eyeHeight(1.95f)
                     .build(STRAY_KEY)
     );
+    private static final ResourceKey<@NotNull EntityType<?>> SULFUR_CUBE_KEY =
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientsulfurcube"));
+    public static final EntityType<@NotNull ClientSulfurCube> SULFUR_CUBE = Registry.register(
+            BuiltInRegistries.ENTITY_TYPE,
+            Identifier.fromNamespaceAndPath(MOD_ID, "clientsulfurcube"),
+            EntityType.Builder.of(ClientSulfurCube::new, MobCategory.AMBIENT)
+                    .noSummon()
+                    .sized(0.98f, 0.98f)
+                    .eyeHeight(0.6f)
+                    .build(SULFUR_CUBE_KEY)
+    );
     private static final ResourceKey<@NotNull EntityType<?>> WITHER_SKELETON_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientwitherskeleton"));
     public static final EntityType<@NotNull ClientWitherSkeleton> WITHER_SKELETON = Registry.register(
@@ -989,6 +1000,7 @@ public class PetsInitializer implements ModInitializer {
         FabricDefaultAttributeRegistry.register(BOGGED, ClientBogged.createAttributes().build());
         FabricDefaultAttributeRegistry.register(PARCHED, ClientParched.createAttributes().build());
         FabricDefaultAttributeRegistry.register(STRAY, ClientStray.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(SULFUR_CUBE, ClientSulfurCube.createAttributes().build());
         FabricDefaultAttributeRegistry.register(WITHER_SKELETON, ClientWitherSkeleton.createAttributes().build());
         FabricDefaultAttributeRegistry.register(ENDER_DRAGON, ClientEnderDragon.createAttributes().build());
         FabricDefaultAttributeRegistry.register(WITHER, ClientWither.createAttributes().build());

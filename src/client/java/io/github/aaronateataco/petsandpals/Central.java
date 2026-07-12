@@ -171,6 +171,7 @@ public class Central implements ClientModInitializer {
     public static ClientBogged bogged;
     public static ClientParched parched;
     public static ClientStray stray;
+    public static ClientSulfurCube sulfurCube;
     public static ClientWitherSkeleton witherSkeleton;
     public static ClientEnderDragon enderDragon;
     public static ClientWither wither;
@@ -265,6 +266,7 @@ public class Central implements ClientModInitializer {
         Utils.despawnEntity(bogged);
         Utils.despawnEntity(parched);
         Utils.despawnEntity(stray);
+        Utils.despawnEntity(sulfurCube);
         Utils.despawnEntity(witherSkeleton);
         Utils.despawnEntity(enderDragon);
         Utils.despawnEntity(wither);
@@ -357,6 +359,7 @@ public class Central implements ClientModInitializer {
         bogged = new ClientBogged(PetsInitializer.BOGGED, world);
         parched = new ClientParched(PetsInitializer.PARCHED, world);
         stray = new ClientStray(PetsInitializer.STRAY, world);
+        sulfurCube = new ClientSulfurCube(PetsInitializer.SULFUR_CUBE, world);
         witherSkeleton = new ClientWitherSkeleton(PetsInitializer.WITHER_SKELETON, world);
         enderDragon = new ClientEnderDragon(PetsInitializer.ENDER_DRAGON, world);
         wither = new ClientWither(PetsInitializer.WITHER, world);
@@ -506,6 +509,8 @@ public class Central implements ClientModInitializer {
                 Utils.summonPet(parched, CONFIG.parchedName);
             } else if (Objects.equals(CONFIG.activePet, "stray")) {
                 Utils.summonPet(stray, CONFIG.strayName);
+            } else if (Objects.equals(CONFIG.activePet, "sulfur_cube")) {
+                Utils.summonPet(sulfurCube, CONFIG.sulfurCubeName);
             } else if (Objects.equals(CONFIG.activePet, "wither_skeleton")) {
                 Utils.summonPet(witherSkeleton, CONFIG.witherSkeletonName);
             } else if (Objects.equals(CONFIG.activePet, "ender_dragon")) {
@@ -590,6 +595,7 @@ public class Central implements ClientModInitializer {
         Utils.checkName("bogged", bogged, CONFIG.boggedName);
         Utils.checkName("parched", parched, CONFIG.parchedName);
         Utils.checkName("stray", stray, CONFIG.strayName);
+        Utils.checkName("sulfur_cube", sulfurCube, CONFIG.sulfurCubeName);
         Utils.checkName("wither_skeleton", witherSkeleton, CONFIG.witherSkeletonName);
         Utils.checkName("ender_dragon", enderDragon, CONFIG.enderDragonName);
         Utils.checkName("wither", wither, CONFIG.witherName);
@@ -668,6 +674,7 @@ public class Central implements ClientModInitializer {
         if (CONFIG.petVolume == null) CONFIG.petVolume = 1.0f;
         AbstractPet.speedMultiplier = () -> CONFIG.petSpeed;
         AbstractPet.soundVolume = () -> CONFIG.petVolume;
+        ClientSulfurCube.archetype = () -> CONFIG.sulfurCubeSkin == null ? "regular" : CONFIG.sulfurCubeSkin;
         if (CONFIG.raftWood == null) CONFIG.raftWood = "spruce";
         // cushions are a backport here - bare deck by default, unlike 26.3+
         if (CONFIG.cushionColor == null) CONFIG.cushionColor = "none";
@@ -1256,6 +1263,20 @@ public class Central implements ClientModInitializer {
                                 case "large" -> CONFIG.slimeSkin = "large";
                                 case null, default -> isValid = false;
                             }
+                        } else if (Objects.equals(CONFIG.activePet, "sulfur_cube")) {
+                            switch (skin) {
+                                case "regular" -> CONFIG.sulfurCubeSkin = "regular";
+                                case "bouncy" -> CONFIG.sulfurCubeSkin = "bouncy";
+                                case "fast_flat", "fast flat" -> CONFIG.sulfurCubeSkin = "fast_flat";
+                                case "fast_sliding", "fast sliding" -> CONFIG.sulfurCubeSkin = "fast_sliding";
+                                case "high_resistance", "high resistance" -> CONFIG.sulfurCubeSkin = "high_resistance";
+                                case "light" -> CONFIG.sulfurCubeSkin = "light";
+                                case "slow_bouncy", "slow bouncy" -> CONFIG.sulfurCubeSkin = "slow_bouncy";
+                                case "slow_flat", "slow flat" -> CONFIG.sulfurCubeSkin = "slow_flat";
+                                case "slow_sliding", "slow sliding" -> CONFIG.sulfurCubeSkin = "slow_sliding";
+                                case "sticky" -> CONFIG.sulfurCubeSkin = "sticky";
+                                case null, default -> isValid = false;
+                            }
                         } else if (Objects.equals(CONFIG.activePet, "shulker")) {
                             switch (skin) {
                                 case "normal" -> CONFIG.shulkerSkin = "normal";
@@ -1504,6 +1525,8 @@ public class Central implements ClientModInitializer {
         CONFIG.slimeSkin = Utils.checkNullString(CONFIG.slimeSkin, "small");
 
         CONFIG.strayName = Utils.checkNullString(CONFIG.strayName);
+        CONFIG.sulfurCubeName = Utils.checkNullString(CONFIG.sulfurCubeName);
+        CONFIG.sulfurCubeSkin = Utils.checkNullString(CONFIG.sulfurCubeSkin, "regular");
         CONFIG.vexName = Utils.checkNullString(CONFIG.vexName);
         CONFIG.vindicatorName = Utils.checkNullString(CONFIG.vindicatorName);
         CONFIG.wardenName = Utils.checkNullString(CONFIG.wardenName);
@@ -1715,6 +1738,8 @@ public class Central implements ClientModInitializer {
                 Utils.setActivePet(parched, "parched");
             } else if (Objects.equals(species, "stray")) {
                 Utils.setActivePet(stray, "stray");
+            } else if (Objects.equals(species, "sulfur_cube") || Objects.equals(species, "sulfur cube")) {
+                Utils.setActivePet(sulfurCube, "sulfur_cube");
             } else if (Objects.equals(species, "wither_skeleton") || Objects.equals(species, "wither skeleton")) {
                 Utils.setActivePet(witherSkeleton, "wither_skeleton");
             } else if (Objects.equals(species, "wither")) {
@@ -1901,6 +1926,7 @@ public class Central implements ClientModInitializer {
             case "bogged" -> CONFIG.boggedName = name;
             case "parched" -> CONFIG.parchedName = name;
             case "stray" -> CONFIG.strayName = name;
+            case "sulfur_cube" -> CONFIG.sulfurCubeName = name;
             case "wither_skeleton" -> CONFIG.witherSkeletonName = name;
             case "ender_dragon" -> CONFIG.enderDragonName = name;
             case "wither" -> CONFIG.witherName = name;
@@ -1992,7 +2018,7 @@ public class Central implements ClientModInitializer {
                 "sheep",
                 "shulker",
                 "silverfish", "skeleton", "slime", "sniffer", "snow golem",
-                 "spider", "squid",  "stray", "strider",  "tadpole",
+                 "spider", "squid",  "stray", "strider", "sulfur cube", "tadpole",
                 "turtle",
                  "vex", "villager", "vindicator", "wandering trader", "warden", "witch", "wither",
                 "wither skeleton", "wolf", "zombie", "zombie villager"};

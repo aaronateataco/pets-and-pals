@@ -102,12 +102,19 @@ public class MenagerieScreen extends Screen {
             "squid", "cod", "salmon", "tropical_fish", "pufferfish", "tadpole", "axolotl",
             "dolphin", "nautilus", "guardian", "elder_guardian", "turtle");
 
-    /** Where a species comes from: vanilla if the base game registers the same id. */
+    // vanilla species from newer game versions, backported here as pets with the mod's
+    // own model/texture since this branch's registry doesn't have the real asset -
+    // still shown as Vanilla origin, since that's genuinely what they are
+    private static final java.util.Set<String> BACKPORTED_VANILLA = java.util.Set.of("sulfur_cube");
+
+    /** Where a species comes from: vanilla if the base game registers the same id (or it's
+     *  a newer-version vanilla species backported here - see {@link #BACKPORTED_VANILLA}). */
     private static String originOf(PetList species) {
         String name = species.name().toLowerCase(Locale.ROOT);
-        return net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE
+        boolean vanilla = net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE
                 .containsKey(net.minecraft.resources.Identifier.withDefaultNamespace(name))
-                ? "Vanilla" : "Pets&Pals";
+                || BACKPORTED_VANILLA.contains(name);
+        return vanilla ? "Vanilla" : "Pets&Pals";
     }
 
     private static Element elementOf(PetList species) {

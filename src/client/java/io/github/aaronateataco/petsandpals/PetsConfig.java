@@ -169,4 +169,8 @@ public class PetsConfig implements ConfigData {
     /** Golden dandelion applied: baby stays a baby, ignoring {@link #babyGrowAt}. */
     public boolean babyLocked;
 
+    public String sulfurCubeName;
+    /** One of the 12 real sulfur cube archetypes (minus explosive/hot - not pet-safe); flavors jump/speed. */
+    public String sulfurCubeSkin;
+
 }

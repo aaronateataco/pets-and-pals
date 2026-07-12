@@ -67,6 +67,7 @@ public enum PetList implements NameableEnum {
     squid,
     strider,
     stray,
+    sulfur_cube,
     wither_skeleton,
     tadpole,
     turtle,

@@ -74,6 +74,8 @@ import io.github.aaronateataco.petsandpals.rendering.vanilla.spider.ClientSpider
 import io.github.aaronateataco.petsandpals.rendering.vanilla.squid.ClientSquidRenderer;
 import io.github.aaronateataco.petsandpals.rendering.vanilla.stray.ClientStrayRenderer;
 import io.github.aaronateataco.petsandpals.rendering.vanilla.strider.ClientStriderRenderer;
+import io.github.aaronateataco.petsandpals.rendering.vanilla.sulfur_cube.ClientSulfurCubeRenderer;
+import io.github.aaronateataco.petsandpals.rendering.vanilla.sulfur_cube.PetSulfurCubeModel;
 import io.github.aaronateataco.petsandpals.rendering.vanilla.tadpole.ClientTadpoleRenderer;
 import io.github.aaronateataco.petsandpals.rendering.vanilla.turtle.ClientTurtleRenderer;
 import io.github.aaronateataco.petsandpals.rendering.vanilla.vex.ClientVexRenderer;
@@ -242,6 +244,7 @@ public class PetsClientInitializer implements ClientModInitializer {
         EntityRenderers.register(PetsInitializer.SKELETON, ClientSkeletonRenderer::new);
         EntityRenderers.register(PetsInitializer.SLIME, ClientSlimeRenderer::new);
         EntityRenderers.register(PetsInitializer.STRAY, ClientStrayRenderer::new);
+        EntityRenderers.register(PetsInitializer.SULFUR_CUBE, ClientSulfurCubeRenderer::new);
         EntityRenderers.register(PetsInitializer.VEX, ClientVexRenderer::new);
         EntityRenderers.register(PetsInitializer.VINDICATOR, ClientVindicatorRenderer::new);
         EntityRenderers.register(PetsInitializer.WARDEN, ClientWardenRenderer::new);
@@ -275,6 +278,8 @@ public class PetsClientInitializer implements ClientModInitializer {
         ModelLayerRegistry.registerModelLayer(ClientSnifferRenderer.SNIFFER_LOCATION, SnifferModel::createBodyLayer);
         ModelLayerRegistry.registerModelLayer(ClientSnowGolemRenderer.SNOW_GOLEM, SnowGolemModel::createBodyLayer);
         ModelLayerRegistry.registerModelLayer(ClientSquidRenderer.SQUID_LOCATION, SquidModel::createBodyLayer);
+        ModelLayerRegistry.registerModelLayer(ClientSulfurCubeRenderer.SULFUR_CUBE_OUTER_LOCATION, PetSulfurCubeModel::createOuterBodyLayer);
+        ModelLayerRegistry.registerModelLayer(ClientSulfurCubeRenderer.SULFUR_CUBE_INNER_LOCATION, PetSulfurCubeModel::createInnerBodyLayer);
         ModelLayerRegistry.registerModelLayer(ClientStriderRenderer.STRIDER_LOCATION, AdultStriderModel::createBodyLayer);
         ModelLayerRegistry.registerModelLayer(ClientTadpoleRenderer.TADPOLE_LOCATION, TadpoleModel::createBodyLayer);
         ModelLayerRegistry.registerModelLayer(ClientTurtleRenderer.TURTLE_LOCATION, AdultTurtleModel::createBodyLayer);
