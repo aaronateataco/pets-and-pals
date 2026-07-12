@@ -5,8 +5,7 @@ import me.shedaniel.autoconfig.annotation.Config;
 
 /**
  * Stores all the values that are serialized into a JSON config located at {@code ./minecraft/config/petsconfig.json}
- * These values include whether the pet is on, whether the pet is a baby,
- * whether the custom title is enabled, and the names
+ * These values include whether the pet is on, whether the pet is a baby, and the names
  * and skins for each pet. For the actual rendering of the config screen, see {@link PetsConfigScreen}.
  *
  * @see io.github.aaronateataco.petsandpals.Central
@@ -16,7 +15,6 @@ import me.shedaniel.autoconfig.annotation.Config;
 @Config(name = "petsconfig")
 public class PetsConfig implements ConfigData {
     public Boolean petOn;
-    public Boolean customTitleEnabled;
     public String activePet;
     public float petSpeed = 1.0f;
     public Float petVolume = 1.0f;

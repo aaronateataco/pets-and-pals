@@ -1,8 +1,6 @@
 package io.github.aaronateataco.petsandpals;
 
 import io.github.aaronateataco.petsandpals.enums.*;
-import io.github.aaronateataco.petsandpals.mixin.client.SplashManagerMixin;
-import io.github.aaronateataco.petsandpals.mixin.client.TitleScreenRenderingMixin;
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
 import dev.isxander.yacl3.api.*;
@@ -58,13 +56,6 @@ public class PetsConfigScreen implements ModMenuApi {
      * {@code Option}, this will not generate a {@code ClassCastException}.
      * <p> {@code Baby?}: Uses a {@code TickBoxControllerBuilder} to let the user decide
      * whether their pet is a baby or not.
-     * <p> {@code Custom Title Enabled}: Controls whether the game will use the custom Pets&Pals title, edition, and splash text.
-     * Please note that the splash text is only initialized once, during the game launch, so
-     * it will require a restart to change, but everything else will adjust instantly. (Note: a restart
-     * is not forced upon the user, as it is only splash text and won't impact gameplay severely.)
-     *
-     * @see SplashManagerMixin
-     * @see TitleScreenRenderingMixin
      */
     /** The Menagerie catalog is the mod's front door; YACL remains as "Advanced settings". */
     @Override
@@ -912,15 +903,6 @@ public class PetsConfigScreen implements ModMenuApi {
                                                     false,
                                                     () -> CONFIG.isBaby,
                                                     newVal -> CONFIG.isBaby = newVal
-                                            ).controller(TickBoxControllerBuilder::create)
-                                            .build())
-                                    .option(Option.<Boolean>createBuilder()
-                                            .name(Component.literal("Custom Title Enabled"))
-                                            .description(OptionDescription.of(Component.literal("Toggle whether the custom title and splashes are enabled. Due to the way that splashes are loaded they will reload the next time you load the game, but the title screen will reload instantly.")))
-                                            .binding(
-                                                    true,
-                                                    () -> CONFIG.customTitleEnabled,
-                                                    newVal -> CONFIG.customTitleEnabled = newVal
                                             ).controller(TickBoxControllerBuilder::create)
                                             .build())
                                     .build())
