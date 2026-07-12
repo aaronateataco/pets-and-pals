@@ -39,6 +39,16 @@ public class PetRaftRenderer extends FallingBlockRenderer {
             raftState.scale = raft.renderScale();
             raftState.yaw = Mth.rotLerp(partialTick, raft.yRotO, raft.getYRot());
         }
+        // vanilla's own leash renderer already supports a sagging rope curve (see
+        // LeashFeatureRenderer's slack handling), it's just never turned on here - no
+        // need for a dedicated physics mod just to get a rope that isn't a straight
+        // line. If LeadPhysics (or similar) is also installed, its own render hook
+        // takes over from here same as it would for any other leashed entity.
+        if (state.leashStates != null) {
+            for (net.minecraft.client.renderer.entity.state.EntityRenderState.LeashState leashState : state.leashStates) {
+                leashState.slack = true;
+            }
+        }
     }
 
     @Override
