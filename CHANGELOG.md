@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.19.0
+- Removed the legacy custom title screen/splash text toggle (a petsmod holdover) - Pets&Pals no longer touches the vanilla main menu logo
+- Fixed the "Advanced settings..." button doing nothing useful on the snapshot branch (it was reopening the Menagerie itself instead of the real config screen)
+- Menagerie: added a Baby/Adult toggle and a golden dandelion you can drag onto your pet (same gesture as the name tag) to keep a baby pet from growing up
+- Pets now lead their path toward where you're heading (blend of travel direction and where you're looking) instead of always chasing your exact position from half a second ago
+- Fixed the combat-withdrawal nether star floating in front of you while sprinting instead of tucking behind your shoulder
+- Smoothed the boat-tow raft physics to match the ferry's glide - it was noticeably twitchier despite using the same momentum model
+
 ## 0.18.0
 - Fixed sprint run-alongside only catching up when you happened to be looking at the pet: the "watched" catch-up path used to wait almost twice as long as the "unwatched" one, so glancing at the pet actually stalled it. Catch-up is now uniform and camera-independent - if the pet falls behind while you're sprinting, it lands back in formation within half a second no matter where your camera's pointed
 - Menagerie: renaming your pet is now its own page - hit "Name Tag...", type a name, then drag the tag icon onto your pet to apply it. The tag settles onto the pet with a little swing on the way down
