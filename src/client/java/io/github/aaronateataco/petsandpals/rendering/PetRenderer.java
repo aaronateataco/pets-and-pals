@@ -18,6 +18,13 @@ public abstract class PetRenderer<D extends Mob, U extends LivingEntityRenderSta
         super(context, model, shadow);
     }
 
+    // pets don't cast a shadow - the constant reposition/teleport-to-catch-up logic
+    // made shadows visibly snap around under the pet, which looked worse than none
+    @Override
+    protected float getShadowRadius(U state) {
+        return 0.0F;
+    }
+
     @Override
     public void extractRenderState(D entity, U state, float f) {
         super.extractRenderState(entity, state, f);
