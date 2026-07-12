@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.30.0
+- Fixed 3 of the shulker's 16 skin colors (blue, gray, green) silently rendering as the default undyed shulker - the texture renderer's switch was missing those cases even though they were selectable. Also added "blue" to the /petskin command's shulker list, which was missing it entirely
+- Fixed opening Advanced Settings while a wolf is your active pet throwing an error and doing nothing: unlike every other pet, wolfSkin was never given a default, so a wolf that never had its skin explicitly set crashed the settings screen the instant it built its species dropdown
+
 ## 0.29.0
 - Fixed pets getting stuck bobbing offshore on the ferry raft instead of actually reaching land: 0.28.0's fix for stranding in deep water accidentally required the raft to reach a spot it structurally never settles on (it always tracks the water surface, never dry ground), so it could hold forever a couple blocks short of the owner. It now lets go as soon as you're on land like before, but if the pet's still sitting in water when it does, it gets moved to the nearest dry spot next to you instead of being left to fend for itself
 
