@@ -27,8 +27,11 @@ public class ClientShulkerRenderer extends PetRenderer<@NotNull ClientShulker, @
         switch (CONFIG.shulkerSkin) {
             case "normal" -> shulkerFile = "shulker.png";
             case "black" -> shulkerFile = "shulker_black.png";
+            case "blue" -> shulkerFile = "shulker_blue.png";
             case "brown" -> shulkerFile = "shulker_brown.png";
             case "cyan" -> shulkerFile = "shulker_cyan.png";
+            case "gray" -> shulkerFile = "shulker_gray.png";
+            case "green" -> shulkerFile = "shulker_green.png";
             case "light_blue" -> shulkerFile = "shulker_light_blue.png";
             case "light_gray" -> shulkerFile = "shulker_light_gray.png";
             case "lime" -> shulkerFile = "shulker_lime.png";
