@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.33.0
+- Fixed parrot's 4th color doing nothing when selected: every other file (the /petskin command, Advanced Settings, the skin enum) calls it "cyan," but the renderer only recognized "yellow" (vanilla's real internal name for that variant) - selecting it left the parrot's texture unchanged instead of switching
+- Fixed parrot's "gray" skin pointing at a texture file that doesn't exist - vanilla spells this one "grey" for parrots specifically, unlike every other gray texture in the game
+- Continued the same audit that caught the shulker/wolf bugs across the renderers that use if/else chains instead of switch statements (bee, chicken, copper golem, squid, strider): none had a fallback branch, so an unrecognized or corrupted skin value left the texture path unset instead of falling back to a default like the switch-based renderers already do
+
 ## 0.32.0
 - Fixed the sprint-alongside pet's whole body swaying left-right even while you're running in a dead-straight line: the formation point it steers at was aimed entirely off your head yaw (look direction), which never holds perfectly still - even a straight sprint has natural camera micro-movement. It's now aimed mostly off your actual movement direction instead, with only a little pull from where you're looking, the same balance already used for the normal (non-sprint) follow lead
 

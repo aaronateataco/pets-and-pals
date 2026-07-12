@@ -29,6 +29,8 @@ public class ClientSquidRenderer extends PetRenderer<@NotNull ClientSquid, @NotN
             squidTexturePath = "textures/entity/squid/squid.png";
         } else if (Objects.equals(CONFIG.squidSkin, "glow_squid")) {
             squidTexturePath = "textures/entity/squid/glow_squid.png";
+        } else {
+            squidTexturePath = "textures/entity/squid/squid.png";
         }
         return Identifier.withDefaultNamespace(squidTexturePath);
     }

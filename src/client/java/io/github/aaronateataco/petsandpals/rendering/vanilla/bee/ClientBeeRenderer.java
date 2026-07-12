@@ -36,6 +36,11 @@ public class ClientBeeRenderer extends PetRenderer<@NotNull ClientBee, @NotNull 
             beeTexturePath = "textures/entity/bee/bee.png";
         } else if (Objects.equals(CONFIG.beeSkin, "angry")) {
             beeTexturePath = "textures/entity/bee/bee_angry.png";
+        } else {
+            // an unrecognized/corrupted config value left this null before, which
+            // crashed Identifier.withDefaultNamespace(null) instead of just falling
+            // back to a default texture like every switch-based renderer already does
+            beeTexturePath = "textures/entity/bee/bee.png";
         }
         return Identifier.withDefaultNamespace(beeTexturePath);
     }

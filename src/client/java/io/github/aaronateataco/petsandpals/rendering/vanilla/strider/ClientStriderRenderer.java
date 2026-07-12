@@ -41,6 +41,8 @@ public class ClientStriderRenderer extends PetRenderer<@NotNull ClientStrider, @
             striderTexturePath = "textures/entity/strider/strider.png";
         } else if (Objects.equals(CONFIG.striderSkin, "cold")) {
             striderTexturePath = "textures/entity/strider/strider_cold.png";
+        } else {
+            striderTexturePath = "textures/entity/strider/strider.png";
         }
         return Identifier.withDefaultNamespace(striderTexturePath);
     }
