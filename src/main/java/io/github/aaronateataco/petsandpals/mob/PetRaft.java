@@ -45,6 +45,15 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
         return false;
     }
 
+    // default Leashable.getLeashOffset() anchors at getEyeHeight() - inherited from
+    // FallingBlockEntity's normal ~1-block hitbox, nowhere near the raft's actual thin
+    // deck. That's the rope floating up over the raft instead of meeting it at hull
+    // level. Anchor it right at the deck surface instead.
+    @Override
+    public @NotNull Vec3 getLeashOffset() {
+        return new Vec3(0.0, 0.1, 0.0);
+    }
+
     public static PetRaft create(Level level, AbstractPet pet, AbstractBoat boat) {
         PetRaft raft = new PetRaft(PetsInitializer.PET_RAFT, level);
         raft.blockState = PetsInitializer.PET_RAFT_BLOCK.defaultBlockState()
