@@ -45,6 +45,7 @@ public class PetFollowOwnerGoal extends Goal {
     private int glanceCooldown;
     private int alongsideLagTicks;
     private Vec3 smoothedAnchor;
+    private Vec3 smoothedOwnerVelocity;
     // owner yaw from ~0.4s ago, so direction changes register with a small delay
     private final float[] yawHistory = new float[8];
     private int yawIndex = -1;
@@ -101,6 +102,7 @@ public class PetFollowOwnerGoal extends Goal {
         this.glanceTicks = 0;
         this.glanceCooldown = 40;
         this.smoothedAnchor = null;
+        this.smoothedOwnerVelocity = null;
     }
 
     @Override
@@ -159,7 +161,13 @@ public class PetFollowOwnerGoal extends Goal {
             double steerLag = Math.hypot(steer.x - this.pet.getX(), steer.z - this.pet.getZ());
             // shorter lead when already in formation, or the pet overshoots and jitters
             double leadScale = Mth.clamp(2.0 + steerLag * 2.0, 2.0, 5.0);
-            Vec3 steerLead = new Vec3(this.owner.getDeltaMovement().x, 0.0, this.owner.getDeltaMovement().z).scale(leadScale);
+            // smoothed, not raw, owner velocity - sprint has small per-tick noise
+            // (bobbing, edge collisions) that a 2-5x lead multiplier turned visible
+            // in first person, where the pet is close enough that it read as a twitch
+            Vec3 rawOwnerVelocity = new Vec3(this.owner.getDeltaMovement().x, 0.0, this.owner.getDeltaMovement().z);
+            this.smoothedOwnerVelocity = this.smoothedOwnerVelocity == null
+                    ? rawOwnerVelocity : this.smoothedOwnerVelocity.lerp(rawOwnerVelocity, 0.3);
+            Vec3 steerLead = this.smoothedOwnerVelocity.scale(leadScale);
             double steerY = this.owner.getY() + this.pet.followYOffset();
             this.pet.getMoveControl().setWantedPosition(
                     steer.x + steerLead.x, steerY, steer.z + steerLead.z,
