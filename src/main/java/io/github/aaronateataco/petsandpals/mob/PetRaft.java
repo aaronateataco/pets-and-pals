@@ -144,52 +144,21 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
             return;
         }
 
-        // rope physics: the raft is pulled only when the rope to the boat goes taut,
-        // drifts with water drag otherwise - it trails behind, swings wide in turns,
-        // and straightens out when cruising
-        Vec3 toBoat = new Vec3(boat.getX() - this.getX(), 0.0, boat.getZ() - this.getZ());
-        double ropeDistance = toBoat.length();
-        // bigger rafts ride a little farther back
-        double ropeLength = ROPE_LENGTH + (this.scale - 1.0) * 0.6;
-        if (ropeDistance > 14.0) {
-            Vec3 reset = sideAnchor(boat);
-            double y0 = this.waterSurfaceY(reset.x, boat.getY(), reset.z);
-            this.snapTo(reset.x, y0 - 0.01, reset.z, boat.getYRot(), 0.0F);
-            this.velocity = Vec3.ZERO;
-        } else {
-            if (ropeDistance > ropeLength) {
-                this.velocity = this.velocity.add(toBoat.scale((ropeDistance - ropeLength) * 0.12 / ropeDistance));
-            }
-            // same drag as the ferry glide (0.9) - this used to be noticeably twitchier
-            // than the ferry despite towing the same kind of hull
-            this.velocity = this.velocity.scale(0.9);
-            double nextX = this.getX() + this.velocity.x;
-            double nextZ = this.getZ() + this.velocity.z;
-            // locked to water: never slides onto land - if the next column has no water,
-            // stay put and bleed the motion off. Searches around the raft's own Y, not
-            // the boat's - over uneven water (waterfalls, locks) those can differ by more
-            // than the search range, which read as "no water" and stalled the tow entirely
-            double surface = this.waterSurfaceY(nextX, this.getY(), nextZ);
-            if (surface == Double.MIN_VALUE) {
-                this.velocity = this.velocity.scale(0.3);
-            } else {
-                double bob = 0.02 * Math.sin(this.tickCount * 0.09);
-                this.setPos(nextX, surface - 0.01 + bob + this.riseIn(), nextZ);
-            }
-            // hull swings like a towed boat: the leashed bow leads toward the rope
-            // when it's taut, otherwise the hull drifts around to face its motion
-            float targetYaw;
-            if (ropeDistance > ropeLength * 0.9) {
-                targetYaw = (float) Math.toDegrees(Mth.atan2(toBoat.z, toBoat.x)) - 90.0F;
-            } else if (this.velocity.horizontalDistanceSqr() > 4.0e-4) {
-                targetYaw = (float) Math.toDegrees(Mth.atan2(this.velocity.z, this.velocity.x)) - 90.0F;
-            } else {
-                targetYaw = this.getYRot();
-            }
-            // turn rate follows speed so the hull feels heavy in the water
-            float turn = (float) Mth.clamp(2.0 + this.velocity.horizontalDistance() * 25.0, 2.0, 9.0);
-            this.setYRot(Mth.approachDegrees(this.getYRot(), targetYaw, turn));
-        }
+        // rigidly attached right behind the boat's stern - a velocity/rope simulation
+        // can never perfectly track a moving, turning, accelerating vehicle, and every
+        // spring/drag tuning pass still left it drifting, lagging, or floating loose
+        // somewhere. This can't desync: the position is a direct copy off the boat's
+        // own transform every tick, not something simulated independently.
+        float rad = boat.getYRot() * ((float) Math.PI / 180.0F);
+        Vec3 back = new Vec3(-Mth.sin(rad), 0.0, Mth.cos(rad));
+        double attachDistance = ROPE_LENGTH + (this.scale - 1.0) * 0.6;
+        Vec3 target = boat.position().subtract(back.scale(attachDistance));
+        double bob = 0.02 * Math.sin(this.tickCount * 0.09);
+        this.setPos(target.x, boat.getY() + bob + this.riseIn(), target.z);
+        // rotation still eases in, so a sharp turn doesn't snap the hull instantly -
+        // position is always exact, only the visual orientation has any lag at all
+        this.setYRot(Mth.approachDegrees(this.getYRot(), boat.getYRot(), 12.0F));
+        this.velocity = Vec3.ZERO;
 
         // pet rides the deck (hull is 1px, deck top is +0.0625)
         this.pet.setPos(this.getX(), this.getY() + 0.07, this.getZ());

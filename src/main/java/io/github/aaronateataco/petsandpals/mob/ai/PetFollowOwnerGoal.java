@@ -121,6 +121,15 @@ public class PetFollowOwnerGoal extends Goal {
         this.yawHistory[this.yawIndex] = this.owner.getYHeadRot();
         this.yawIndex = (this.yawIndex + 1) % this.yawHistory.length;
 
+        // smoothed every tick regardless of mode - both the alongside steering lead and
+        // the normal-follow predicted target used to read the owner's raw per-tick
+        // velocity directly, which has enough natural noise (bobbing, edge collisions)
+        // to make the pet's heading oscillate between two nearby directions instead of
+        // holding a straight line, especially visible as a side-to-side diagonal zigzag
+        Vec3 rawOwnerVel = new Vec3(this.owner.getDeltaMovement().x, 0.0, this.owner.getDeltaMovement().z);
+        this.smoothedOwnerVelocity = this.smoothedOwnerVelocity == null
+                ? rawOwnerVel : this.smoothedOwnerVelocity.lerp(rawOwnerVel, 0.3);
+
         boolean alongside = this.runningAlongside();
         if (alongside != this.wasAlongside) {
             this.wasAlongside = alongside;
@@ -146,12 +155,6 @@ public class PetFollowOwnerGoal extends Goal {
             double steerLag = Math.hypot(steer.x - this.pet.getX(), steer.z - this.pet.getZ());
             // shorter lead when already in formation, or the pet overshoots and jitters
             double leadScale = Mth.clamp(2.0 + steerLag * 2.0, 2.0, 5.0);
-            // smoothed, not raw, owner velocity - sprint has small per-tick noise
-            // (bobbing, edge collisions) that a 2-5x lead multiplier turned visible
-            // in first person, where the pet is close enough that it read as a twitch
-            Vec3 rawOwnerVelocity = new Vec3(this.owner.getDeltaMovement().x, 0.0, this.owner.getDeltaMovement().z);
-            this.smoothedOwnerVelocity = this.smoothedOwnerVelocity == null
-                    ? rawOwnerVelocity : this.smoothedOwnerVelocity.lerp(rawOwnerVelocity, 0.3);
             Vec3 steerLead = this.smoothedOwnerVelocity.scale(leadScale);
             double steerY = this.owner.getY() + this.pet.followYOffset();
 
@@ -290,7 +293,11 @@ public class PetFollowOwnerGoal extends Goal {
         if (distance < this.startDistance + 2.0) {
             return this.owner.position(); // close range: don't overshoot past them
         }
-        Vec3 vel = new Vec3(this.owner.getDeltaMovement().x, 0.0, this.owner.getDeltaMovement().z);
+        // smoothed velocity, not raw - the raw value has enough per-tick noise
+        // (bobbing, edge collisions) to flip the predicted direction back and forth
+        // by a few degrees every tick, which showed up as the pet's heading zigzagging
+        // diagonally left-right instead of holding a straight line while following
+        Vec3 vel = this.smoothedOwnerVelocity;
         double speed = vel.length();
         if (speed <= 0.02) {
             return this.owner.position(); // standing still: nothing to predict
