@@ -64,7 +64,9 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
         this.leashData = leashData;
     }
 
-    private static final double ROPE_LENGTH = 2.8;
+    // boat + raft are each roughly 1-1.4 blocks long; 2.8 center-to-center left a wide
+    // gap of open water between their edges that read as "not connected" to the boat
+    private static final double ROPE_LENGTH = 1.6;
 
     /** Ferry: pops in when a land pet must cross water to reach you - no boat involved. */
     public static PetRaft createFerry(Level level, AbstractPet pet) {
@@ -142,8 +144,10 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
             double nextX = this.getX() + this.velocity.x;
             double nextZ = this.getZ() + this.velocity.z;
             // locked to water: never slides onto land - if the next column has no water,
-            // stay put and bleed the motion off
-            double surface = this.waterSurfaceY(nextX, boat.getY(), nextZ);
+            // stay put and bleed the motion off. Searches around the raft's own Y, not
+            // the boat's - over uneven water (waterfalls, locks) those can differ by more
+            // than the search range, which read as "no water" and stalled the tow entirely
+            double surface = this.waterSurfaceY(nextX, this.getY(), nextZ);
             if (surface == Double.MIN_VALUE) {
                 this.velocity = this.velocity.scale(0.3);
             } else {
