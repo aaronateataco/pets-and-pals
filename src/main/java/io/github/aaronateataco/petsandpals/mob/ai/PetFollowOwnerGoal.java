@@ -45,6 +45,7 @@ public class PetFollowOwnerGoal extends Goal {
     private int glanceCooldown;
     private int alongsideLagTicks;
     private int lagBursts;
+    private Vec3 smoothedAnchor;
     // owner yaw from ~0.4s ago, so direction changes register with a small delay
     private final float[] yawHistory = new float[8];
     private int yawIndex = -1;
@@ -101,6 +102,7 @@ public class PetFollowOwnerGoal extends Goal {
         this.glanceTicks = 0;
         this.glanceCooldown = 40;
         this.lagBursts = 0;
+        this.smoothedAnchor = null;
     }
 
     @Override
@@ -150,9 +152,16 @@ public class PetFollowOwnerGoal extends Goal {
 
             // direct steering: while pacing the owner, skip pathfinding entirely and
             // drive straight at the (moving) formation point - paths to a target moving
-            // at sprint speed rarely completed, which made the whole feature flaky
-            Vec3 steer = this.alongsideAnchor();
-            Vec3 steerLead = new Vec3(this.owner.getDeltaMovement().x, 0.0, this.owner.getDeltaMovement().z).scale(5.0);
+            // at sprint speed rarely completed, which made the whole feature flaky.
+            // the point itself is eased so camera wiggle doesn't zigzag the pet
+            Vec3 rawAnchor = this.alongsideAnchor();
+            this.smoothedAnchor = this.smoothedAnchor == null
+                    ? rawAnchor : this.smoothedAnchor.lerp(rawAnchor, 0.25);
+            Vec3 steer = this.smoothedAnchor;
+            double steerLag = Math.hypot(steer.x - this.pet.getX(), steer.z - this.pet.getZ());
+            // shorter lead when already in formation, or the pet overshoots and jitters
+            double leadScale = Mth.clamp(2.0 + steerLag * 2.0, 2.0, 5.0);
+            Vec3 steerLead = new Vec3(this.owner.getDeltaMovement().x, 0.0, this.owner.getDeltaMovement().z).scale(leadScale);
             double steerY = this.owner.getY() + this.pet.followYOffset();
             this.pet.getMoveControl().setWantedPosition(
                     steer.x + steerLead.x, steerY, steer.z + steerLead.z,
