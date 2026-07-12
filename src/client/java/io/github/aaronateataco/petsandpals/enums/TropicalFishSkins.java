@@ -4,9 +4,9 @@ import dev.isxander.yacl3.api.NameableEnum;
 import net.minecraft.network.chat.Component;
 
 public enum TropicalFishSkins implements NameableEnum {
-    chichlid,
+    cichlid,
     clownfish,
-    cotten_candy_betta,
+    cotton_candy_betta,
     goatfish,
     parrotfish,
     queen_angelfish,

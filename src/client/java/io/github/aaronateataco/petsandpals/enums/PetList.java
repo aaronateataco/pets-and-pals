@@ -70,6 +70,7 @@ public enum PetList implements NameableEnum {
     stray,
     wither_skeleton,
     tadpole,
+    tropical_fish,
     turtle,
     vex,
     villager,

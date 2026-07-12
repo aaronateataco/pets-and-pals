@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.31.0
+- Tropical fish is now an actual, summonable pet - the mob class and its 10 named skins (cichlid, clownfish, cotton candy betta, goatfish, parrotfish, queen angelfish, red lipped blenny, tomato clownfish, triggerfish, yellowtail parrotfish) already existed in the code but were never wired into the catalog, commands, or a renderer, so it was completely unreachable. Its skins reuse vanilla's own small/large body plus tinted pattern-overlay rendering, matched against the real predefined variants vanilla itself spawns tropical fish as
+- Fixed two typos in the tropical fish skin list ("chichlid" -> "cichlid", "cotten candy betta" -> "cotton candy betta")
+
 ## 0.30.0
 - Fixed 3 of the shulker's 16 skin colors (blue, gray, green) silently rendering as the default undyed shulker - the texture renderer's switch was missing those cases even though they were selectable. Also added "blue" to the /petskin command's shulker list, which was missing it entirely
 - Fixed opening Advanced Settings while a wolf is your active pet throwing an error and doing nothing: unlike every other pet, wolfSkin was never given a default, so a wolf that never had its skin explicitly set crashed the settings screen the instant it built its species dropdown
