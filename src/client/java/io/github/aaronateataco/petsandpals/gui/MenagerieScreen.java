@@ -99,7 +99,10 @@ public class MenagerieScreen extends Screen {
         this.parent = parent;
         this.testingCatalog = java.nio.file.Files.exists(
                 net.minecraft.client.Minecraft.getInstance().gameDirectory.toPath().resolve(".pnp_testing"));
+        // catalog carries the vanilla-backed roster only; the old mod's custom
+        // species (racoon, potato crew, nerd creeper...) are shelved for now
         this.allSpecies = new ArrayList<>(List.of(PetList.values()));
+        this.allSpecies.removeIf(p -> !"Vanilla".equals(originOf(p)));
         this.allSpecies.sort(Comparator.comparing(p -> p.getDisplayName().getString()));
         this.filtered = this.allSpecies;
         try {
@@ -275,7 +278,6 @@ public class MenagerieScreen extends Screen {
     private void applyFilter() {
         String q = this.query.trim().toLowerCase(Locale.ROOT);
         this.filtered = this.allSpecies.stream()
-                .filter(p -> !p.name().equals("mega_spud"))
                 .filter(p -> this.element == Element.ALL || elementOf(p) == this.element)
                 .filter(p -> q.isEmpty() || p.getDisplayName().getString().toLowerCase(Locale.ROOT).contains(q))
                 .toList();

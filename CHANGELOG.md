@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.15.2
+- Ferry rafts now coast: when your pet is rafting after you (creative flight over water, swimming), the hull carries momentum and eases to a stop beside you instead of braking dead
+- Smoother first-person sprint formation: the running position is eased so camera wiggle doesn't zigzag the pet, and it stops overshooting the mark when it's already at your side
+- Shelved the original mod's custom species for now (racoon, duck, penguin, the potato crew, nerd creeper and friends) - the catalog is vanilla-backed pets only while the roster gets polished
+
 ## 0.15.1
 - Animation polish pass: the nether star now grows in when the pet tucks away and shrinks out before the pet reforms, instead of popping
 - The raft floats up out of the water when it appears instead of blinking into place

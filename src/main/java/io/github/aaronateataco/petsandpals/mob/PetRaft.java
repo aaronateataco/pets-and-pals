@@ -213,16 +213,29 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
     private void tickFerry(LivingEntity owner) {
         Vec3 toOwner = new Vec3(owner.getX() - this.getX(), 0.0, owner.getZ() - this.getZ());
         double distance = toOwner.length();
-        double step = Math.min(0.28, distance);
-        double nextX = this.getX() + toOwner.x / Math.max(0.001, distance) * step;
-        double nextZ = this.getZ() + toOwner.z / Math.max(0.001, distance) * step;
+
+        // same feel as the tow rope: thrust toward the owner, water drag, so the
+        // hull coasts and eases to a stop instead of braking dead at the mark
+        if (distance > 2.5) {
+            this.velocity = this.velocity.add(toOwner.scale(0.042 / Math.max(0.001, distance)));
+        }
+        this.velocity = this.velocity.scale(0.9);
+        double speed = this.velocity.horizontalDistance();
+        if (speed > 0.38) {
+            this.velocity = this.velocity.scale(0.38 / speed);
+        }
+
+        double nextX = this.getX() + this.velocity.x;
+        double nextZ = this.getZ() + this.velocity.z;
         double surface = this.waterSurfaceY(nextX, this.getY(), nextZ);
         if (surface == Double.MIN_VALUE) {
-            this.release(); // reached shore
-            return;
-        }
-        if (distance < 2.5) {
-            nextX = this.getX(); // hold position beside a swimming owner
+            if (distance > 2.0) {
+                this.release(); // reached the shore the owner is on
+                return;
+            }
+            // owner swimming right here: bleed off against the bank and hold
+            this.velocity = this.velocity.scale(0.3);
+            nextX = this.getX();
             nextZ = this.getZ();
             surface = this.waterSurfaceY(nextX, this.getY(), nextZ);
             if (surface == Double.MIN_VALUE) { this.release(); return; }
@@ -231,8 +244,13 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
         this.pet.setPos(this.getX(), this.getY() + 0.07, this.getZ());
         this.pet.setDeltaMovement(Vec3.ZERO);
         this.pet.fallDistance = 0;
-        float yaw = (float) (Math.toDegrees(Mth.atan2(toOwner.z, toOwner.x))) - 90.0F;
-        this.setYRot(Mth.approachDegrees(this.getYRot(), yaw, 6.0F));
+
+        // bow follows the motion while under way, holds its line while coasting
+        if (speed > 0.02) {
+            float yaw = (float) Math.toDegrees(Mth.atan2(this.velocity.z, this.velocity.x)) - 90.0F;
+            float turn = (float) Mth.clamp(2.0 + speed * 25.0, 2.0, 9.0);
+            this.setYRot(Mth.approachDegrees(this.getYRot(), yaw, turn));
+        }
         // pet turns with the hull, not straight at the target
         this.pet.setYRot(this.getYRot());
         this.pet.yBodyRot = this.getYRot();
