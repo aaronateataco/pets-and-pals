@@ -44,7 +44,6 @@ public class PetFollowOwnerGoal extends Goal {
     private int glanceTicks;
     private int glanceCooldown;
     private int alongsideLagTicks;
-    private int lagBursts;
     private Vec3 smoothedAnchor;
     // owner yaw from ~0.4s ago, so direction changes register with a small delay
     private final float[] yawHistory = new float[8];
@@ -101,7 +100,6 @@ public class PetFollowOwnerGoal extends Goal {
         this.smoothedBoost = 0.35;
         this.glanceTicks = 0;
         this.glanceCooldown = 40;
-        this.lagBursts = 0;
         this.smoothedAnchor = null;
     }
 
@@ -216,40 +214,26 @@ public class PetFollowOwnerGoal extends Goal {
             Vec3 anchor = this.alongsideAnchor();
             double lagSqr = this.pet.distanceToSqr(anchor.x, anchor.y + this.pet.followYOffset(), anchor.z);
             if (lagSqr > 12.25) {
-                if (++this.alongsideLagTicks >= 15) {
+                // burst every tick the pet is lagging - visible catch-up while it's
+                // still in reach, whether or not the owner happens to be looking at it
+                this.smoothedBoost = MAX_ALONGSIDE_BOOST - 1.0;
+                this.updateAlongsideBoost();
+                // guaranteed arrival: after a short beat of lagging, place it straight
+                // into formation regardless of camera direction - the pet being WITH
+                // the player matters more than hiding the catch-up, and this must not
+                // depend on the owner happening to be looking at it
+                if (++this.alongsideLagTicks >= 10) {
                     this.alongsideLagTicks = 0;
-                    if (this.pet.ownerInViewCone()) {
-                        // being watched: burst first - but if that keeps failing mid-sprint,
-                        // re-enter from behind the camera (off screen even while watched)
-                        // instead of lagging forever until the sprint restarts
-                        if (++this.lagBursts >= 2) {
-                            this.lagBursts = 0;
-                            this.leapEntrance();
-                            io.github.aaronateataco.petsandpals.PetsInitializer.LOGGER.info(
-                                    "[Pets&Pals] alongside re-entry from behind camera (watched)");
-                            return;
-                        }
-                        this.smoothedBoost = MAX_ALONGSIDE_BOOST - 1.0;
-                        this.updateAlongsideBoost();
-                    } else {
-                        // guaranteed arrival: place it straight into formation, running -
-                        // pathing its way in at sprint speed proved too unreliable to be seen
-                        double anchorY = this.owner.getY() + this.pet.followYOffset();
-                        boolean placed = this.pet.tryRepositionTo(anchor.x, anchorY, anchor.z)
-                                || this.placeOnGroundNear(anchor);
-                        if (!placed) {
-                            this.leapEntrance();
-                            return;
-                        }
-                        this.smoothedBoost = MAX_ALONGSIDE_BOOST - 1.0;
-                        this.updateAlongsideBoost();
-                        io.github.aaronateataco.petsandpals.PetsInitializer.LOGGER.info(
-                                "[Pets&Pals] alongside entrance placed at formation");
+                    double anchorY = this.owner.getY() + this.pet.followYOffset();
+                    boolean placed = this.pet.tryRepositionTo(anchor.x, anchorY, anchor.z)
+                            || this.placeOnGroundNear(anchor);
+                    if (!placed) {
+                        this.leapEntrance();
+                        return;
                     }
                 }
             } else {
                 this.alongsideLagTicks = 0;
-                this.lagBursts = 0;
             }
         } else {
             this.pet.getLookControl().setLookAt(this.owner, 10.0F, (float) this.pet.getMaxHeadXRot());
