@@ -121,7 +121,14 @@ public class PetsConfigScreen implements ModMenuApi {
                                             .name(Component.literal("Pet Species"))
                                             .description(OptionDescription.of(Component.literal("The species of your pet. MAKE SURE to save this after it has changed before you change any other values, as they will edit the previous pet.")))
                                             .binding(
-                                                    PetList.valueOf("racoon"),
+                                                    // this is only YACL's reset-to-default value, never actually
+                                                    // shown in normal use (the getter below always wins) - it used
+                                                    // to be "racoon", which was pulled from the roster in 0.17.0.
+                                                    // Since it's evaluated eagerly right here (not lazily inside a
+                                                    // lambda), the missing enum constant threw every single time
+                                                    // this screen was built, which is why "Advanced settings" has
+                                                    // looked like a dead button ever since
+                                                    PetList.fox,
                                                     () -> {
                                                         boolean hasPrintedMessage = false;
                                                         try {
