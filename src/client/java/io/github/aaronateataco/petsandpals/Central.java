@@ -91,7 +91,7 @@ public class Central implements ClientModInitializer {
     private static final List<String> SLIME_LIKE_SKINS = List.of("small", "medium", "large");
     private static final List<String> RACOON_SKINS = List.of("normal", "albino");
     private static final List<String> CREEPER_SKINS = List.of("normal", "charged");
-    private static final List<String> SHULKER_SKINS = List.of("normal", "black", "brown", "cyan", "gray", "green", "light blue", "light gray", "lime", "magenta", "orange", "pink", "purple", "red", "white", "yellow");
+    private static final List<String> SHULKER_SKINS = List.of("normal", "black", "blue", "brown", "cyan", "gray", "green", "light blue", "light gray", "lime", "magenta", "orange", "pink", "purple", "red", "white", "yellow");
     private static final List<String> WITHER_SKINS = List.of("normal", "invulnerable");
     private static final List<String> HEAD_SKINS = List.of("Use any player's name here.");
     private static final List<String> TRAITOR_SKINS = List.of("desert", "jungle", "plains", "savanna", "snowy", "swamp", "taiga");
@@ -1281,6 +1281,7 @@ public class Central implements ClientModInitializer {
                             switch (skin) {
                                 case "normal" -> CONFIG.shulkerSkin = "normal";
                                 case "black" -> CONFIG.shulkerSkin = "black";
+                                case "blue" -> CONFIG.shulkerSkin = "blue";
                                 case "brown" -> CONFIG.shulkerSkin = "brown";
                                 case "cyan" -> CONFIG.shulkerSkin = "cyan";
                                 case "gray" -> CONFIG.shulkerSkin = "gray";
@@ -1489,6 +1490,12 @@ public class Central implements ClientModInitializer {
         CONFIG.pufferFishName = Utils.checkNullString(CONFIG.pufferFishName);
         CONFIG.spiderName = Utils.checkNullString(CONFIG.spiderName);
         CONFIG.wolfName = Utils.checkNullString(CONFIG.wolfName);
+        // missing here alongside every other skin field - Advanced Settings' getter
+        // does CONFIG.wolfSkin.replaceAll(...) unconditionally, so a fresh config (or
+        // any wolf that never had /petskin used on it) NPE'd the instant you opened
+        // Advanced Settings with a wolf out, silently caught as "the button does
+        // nothing" by the screen's own error handling
+        CONFIG.wolfSkin = Utils.checkNullString(CONFIG.wolfSkin, "pale");
         CONFIG.blazeName = Utils.checkNullString(CONFIG.blazeName);
         CONFIG.boggedName = Utils.checkNullString(CONFIG.boggedName);
         CONFIG.breezeName = Utils.checkNullString(CONFIG.breezeName);
@@ -1518,6 +1525,7 @@ public class Central implements ClientModInitializer {
         CONFIG.pillagerName = Utils.checkNullString(CONFIG.pillagerName);
         CONFIG.ravagerName = Utils.checkNullString(CONFIG.ravagerName);
         CONFIG.shulkerName = Utils.checkNullString(CONFIG.shulkerName);
+        CONFIG.shulkerSkin = Utils.checkNullString(CONFIG.shulkerSkin, "normal");
         CONFIG.silverfishName = Utils.checkNullString(CONFIG.silverfishName);
         CONFIG.skeletonName = Utils.checkNullString(CONFIG.skeletonName);
 
