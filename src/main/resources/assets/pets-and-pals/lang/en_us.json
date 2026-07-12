@@ -1,12 +1,3 @@
 {
-  "entity.pets-and-pals.duck": "Duck",
-  "entity.pets-and-pals.penguin": "Penguin",
-  "entity.pets-and-pals.racoon": "Racoon",
-  "entity.pets-and-pals.dumbo_octopus": "Dumbo Octopus",
-  "entity.pets-and-pals.koi": "Koi Fish",
-  "entity.pets-and-pals.stingray": "Stingray",
-  "entity.pets-and-pals.head": "Floating Head",
-  "sound.pets-and-pals.duck_ambient": "Duck Quacks",
-  "sound.pets-and-pals.penguin_ambient": "Penguin Chirps",
   "key.category.pets-and-pals.petsandpals.keymapping": "Pets&Pals"
 }

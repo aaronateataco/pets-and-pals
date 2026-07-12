@@ -79,12 +79,11 @@ public class MenagerieScreen extends Screen {
     private final boolean testingCatalog;
 
     private static final java.util.Set<String> SKY_PETS = java.util.Set.of(
-            "allay", "bat", "bee", "blaze", "breeze", "ghast", "happy_ghast", "angry_ghast",
-            "parrot", "phantom", "vex", "wither", "pink_wither", "ender_dragon");
+            "allay", "bat", "bee", "blaze", "breeze", "ghast", "happy_ghast",
+            "parrot", "phantom", "vex", "wither", "ender_dragon");
     private static final java.util.Set<String> SEA_PETS = java.util.Set.of(
             "squid", "cod", "salmon", "tropical_fish", "pufferfish", "tadpole", "axolotl",
-            "dolphin", "nautilus", "guardian", "elder_guardian", "koi", "stingray",
-            "dumbo_octopus", "turtle", "plaguewhale_slab", "toxifin_slab");
+            "dolphin", "nautilus", "guardian", "elder_guardian", "turtle");
 
     /** Where a species comes from: vanilla if the base game registers the same id. */
     private static String originOf(PetList species) {

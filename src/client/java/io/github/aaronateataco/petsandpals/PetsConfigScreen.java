@@ -29,7 +29,7 @@ public class PetsConfigScreen implements ModMenuApi {
      * of the enums that store the petskins, in turn allowing the PetSkins option below to
      * carry and assign different values based on what the user's currently active pet is.
      */
-    public Class<? extends Enum<?>> enumClass = DuckSkins.class;
+    public Class<? extends Enum<?>> enumClass = CatSkins.class;
 
     /**
      * Returns this class for easy access to the non-static methods
@@ -162,9 +162,6 @@ public class PetsConfigScreen implements ModMenuApi {
                                                     "",
                                                     () ->
                                                             switch (CONFIG.activePet) {
-                                                                case "penguin" -> CONFIG.penguinName;
-                                                                case "racoon" -> CONFIG.racoonName;
-                                                                case "duck" -> CONFIG.duckName;
                                                                 case "cat" -> CONFIG.catName;
                                                                 case "sheep" -> CONFIG.sheepName;
                                                                 case "allay" -> CONFIG.allayName;
@@ -232,33 +229,10 @@ public class PetsConfigScreen implements ModMenuApi {
                                                                 case "witch" -> CONFIG.witchName;
                                                                 case "zombie" -> CONFIG.zombieName;
                                                                 case "zombie_villager" -> CONFIG.zombieVillagerName;
-                                                                case "angry_ghast" -> CONFIG.angryGhastName;
-                                                                case "batato" -> CONFIG.batatoName;
-                                                                case "diamond_chicken" -> CONFIG.diamondChickenName;
-                                                                case "love_golem" -> CONFIG.loveGolemName;
-                                                                case "mega_spud" -> CONFIG.megaSpudName;
-                                                                case "moon_cow" -> CONFIG.moonCowName;
-                                                                case "nerd_creeper" -> CONFIG.nerdCreeperName;
-                                                                case "pink_wither" -> CONFIG.pinkWitherName;
-                                                                case "plaguewhale_slab" -> CONFIG.plaguewhaleSlabName;
-                                                                case "poisonous_potato_zombie" ->
-                                                                        CONFIG.poisonousPotatoZombieName;
-                                                                case "ray_tracing" -> CONFIG.rayTracingName;
-                                                                case "redstone_bug" -> CONFIG.redstoneBugName;
-                                                                case "smiling_creeper" -> CONFIG.smilingCreeperName;
-                                                                case "toxifin_slab" -> CONFIG.toxfinSlabName;
-                                                                case "potato_husk" -> CONFIG.potatoHuskName;
-                                                                case "head" -> CONFIG.headName;
-                                                                case "dumbo_octopus" -> CONFIG.dumboOctopusName;
-                                                                case "koi" -> CONFIG.koiName;
-                                                                case "stingray" -> CONFIG.stingrayName;
                                                                 default -> "";
                                                             },
                                                     name -> {
                                                         switch (activePet) {
-                                                            case "penguin" -> CONFIG.penguinName = name;
-                                                            case "racoon" -> CONFIG.racoonName = name;
-                                                            case "duck" -> CONFIG.duckName = name;
                                                             case "cat" -> CONFIG.catName = name;
                                                             case "allay" -> CONFIG.allayName = name;
                                                             case "armadillo" -> CONFIG.armadilloName = name;
@@ -328,27 +302,6 @@ public class PetsConfigScreen implements ModMenuApi {
                                                             case "zombie_villager" -> CONFIG.zombieVillagerName = name;
                                                             case "ender_dragon" -> CONFIG.enderDragonName = name;
                                                             case "wither" -> CONFIG.witherName = name;
-                                                            case "angry_ghast" -> CONFIG.angryGhastName = name;
-                                                            case "batato" -> CONFIG.batatoName = name;
-                                                            case "diamond_chicken" -> CONFIG.diamondChickenName = name;
-                                                            case "love_golem" -> CONFIG.loveGolemName = name;
-                                                            case "mega_spud" -> CONFIG.megaSpudName = name;
-                                                            case "moon_cow" -> CONFIG.moonCowName = name;
-                                                            case "nerd_creeper" -> CONFIG.nerdCreeperName = name;
-                                                            case "pink_wither" -> CONFIG.pinkWitherName = name;
-                                                            case "plaguewhale_slab" ->
-                                                                    CONFIG.plaguewhaleSlabName = name;
-                                                            case "poisonous_potato_zombie" ->
-                                                                    CONFIG.poisonousPotatoZombieName = name;
-                                                            case "ray_tracing" -> CONFIG.rayTracingName = name;
-                                                            case "redstone_bug" -> CONFIG.redstoneBugName = name;
-                                                            case "smiling_creeper" -> CONFIG.smilingCreeperName = name;
-                                                            case "toxifin_slab" -> CONFIG.toxfinSlabName = name;
-                                                            case "potato_husk" -> CONFIG.potatoHuskName = name;
-                                                            case "head" -> CONFIG.headName = name;
-                                                            case "dumbo_octopus" -> CONFIG.dumboOctopusName = name;
-                                                            case "koi" -> CONFIG.koiName = name;
-                                                            case "stingray" -> CONFIG.stingrayName = name;
                                                         }
                                                         Central.refreshPetNames();
                                                         //throw new IllegalArgumentException();
@@ -364,12 +317,8 @@ public class PetsConfigScreen implements ModMenuApi {
                                                 boolean hasPrintedMessage = false;
                                                 try {
                                                     return switch (CONFIG.activePet) {
-                                                        case "duck" ->
-                                                                DuckSkins.valueOf(CONFIG.duckSkin.replaceAll(" ", "_"));
                                                         case "cat" ->
                                                                 CatSkins.valueOf(CONFIG.catSkin.replaceAll(" ", "_"));
-                                                        case "racoon" ->
-                                                                RacoonSkins.valueOf(CONFIG.racoonSkin.replaceAll(" ", "_"));
                                                         case "sheep" ->
                                                                 SheepSkins.valueOf(CONFIG.sheepSkin.replaceAll(" ", "_"));
                                                         case "axolotl" ->
@@ -378,7 +327,7 @@ public class PetsConfigScreen implements ModMenuApi {
                                                                 CamelSkins.valueOf(CONFIG.camelSkin.replaceAll(" ", "_"));
                                                         case "chicken" ->
                                                                 ChickenSkins.valueOf(CONFIG.chickenSkin.replaceAll(" ", "_"));
-                                                        case "creeper", "nerd_creeper", "smiling_creeper" ->
+                                                        case "creeper" ->
                                                                 CreeperSkins.valueOf(CONFIG.creeperSkin.replaceAll(" ", "_"));
                                                         case "copper_golem" ->
                                                                 CopperGolemSkins.valueOf(CONFIG.copperGolemSkin.replaceAll(" ", "_"));
@@ -430,8 +379,6 @@ public class PetsConfigScreen implements ModMenuApi {
                                                                 ZombieVillagerSkins.valueOf(CONFIG.zombieVillagerSkin.replaceAll(" ", "_"));
                                                         case "wither" ->
                                                                 WitherSkins.valueOf(CONFIG.witherSkin.replaceAll(" ", "_"));
-                                                        case "dumbo_octopus" ->
-                                                                DumboOctopusSkins.valueOf(CONFIG.dumboOctopusSkin.replaceAll(" ", "_"));
                                                         case null, default ->
                                                                 PetList.valueOf(CONFIG.activePet.replaceAll(" ", "_"));
                                                     };
@@ -451,24 +398,6 @@ public class PetsConfigScreen implements ModMenuApi {
                                                 /**Do NOT replace this with dynamic checking! It will cause a mismatch
                                                  * between the enums and crash. Use manual checking instead.*/
                                                 switch (CONFIG.activePet) {
-                                                    case "duck" -> {
-                                                        if (Objects.equals(val, "mallard")) {
-                                                            CONFIG.duckSkin = "mallard";
-                                                        } else if (Objects.equals(val, "pekin")) {
-                                                            CONFIG.duckSkin = "pekin";
-                                                        } else if (Objects.equals(val, "rubber")) {
-                                                            CONFIG.duckSkin = "rubber";
-                                                        } else if (Objects.equals(val, "bronze")) {
-                                                            CONFIG.duckSkin = "bronze";
-                                                        }
-                                                    }
-                                                    case "racoon" -> {
-                                                        if (Objects.equals(val, "normal")) {
-                                                            CONFIG.racoonSkin = "normal";
-                                                        } else if (Objects.equals(val, "albino")) {
-                                                            CONFIG.racoonSkin = "albino";
-                                                        }
-                                                    }
                                                     case "sheep" -> {
                                                         if (Objects.equals(val, "white")) {
                                                             CONFIG.sheepSkin = "white";
@@ -919,21 +848,6 @@ public class PetsConfigScreen implements ModMenuApi {
                                                             CONFIG.witherSkin = "invulnerable";
                                                         }
                                                     }
-                                                    case "dumbo_octopus" -> {
-                                                        if (Objects.equals(val, "yellow")) {
-                                                            CONFIG.dumboOctopusSkin = "yellow";
-                                                        } else if (Objects.equals(val, "red")) {
-                                                            CONFIG.dumboOctopusSkin = "red";
-                                                        } else if (Objects.equals(val, "blue")) {
-                                                            CONFIG.dumboOctopusSkin = "blue";
-                                                        } else if (Objects.equals(val, "green")) {
-                                                            CONFIG.dumboOctopusSkin = "green";
-                                                        } else if (Objects.equals(val, "orange")) {
-                                                            CONFIG.dumboOctopusSkin = "orange";
-                                                        } else if (Objects.equals(val, "pink")) {
-                                                            CONFIG.dumboOctopusSkin = "pink";
-                                                        }
-                                                    }
                                                     case null, default -> {
                                                         try {
 
@@ -945,16 +859,13 @@ public class PetsConfigScreen implements ModMenuApi {
                                             })
                                             .controller(opt -> {
                                                 switch (CONFIG.activePet) {
-                                                    case "duck" -> enumClass = DuckSkins.class;
-                                                    case "racoon" -> enumClass = RacoonSkins.class;
                                                     case "strider" -> enumClass = StriderSkins.class;
                                                     case "sheep" -> enumClass = SheepSkins.class;
                                                     case "cat" -> enumClass = CatSkins.class;
                                                     case "axolotl" -> enumClass = AxolotlSkins.class;
                                                     case "camel" -> enumClass = CamelSkins.class;
                                                     case "chicken" -> enumClass = ChickenSkins.class;
-                                                    case "creeper", "nerd_creeper", "smiling_creeper" ->
-                                                            enumClass = CreeperSkins.class;
+                                                    case "creeper" -> enumClass = CreeperSkins.class;
                                                     case "copper_golem" -> enumClass = CopperGolemSkins.class;
                                                     case "cow" -> enumClass = CowSkins.class;
                                                     case "frog" -> enumClass = FrogSkins.class;
@@ -979,7 +890,6 @@ public class PetsConfigScreen implements ModMenuApi {
                                                     case "zombie_villager" -> enumClass = ZombieVillagerSkins.class;
                                                     case "shulker" -> enumClass = ShulkerSkins.class;
                                                     case "wither" -> enumClass = WitherSkins.class;
-                                                    case "dumbo_octopus" -> enumClass = DumboOctopusSkins.class;
                                                     case null, default -> {
                                                         return EnumControllerBuilder.create((Option) opt).enumClass(PetList.class).formatValue(new ValueFormatter() {
                                                             @Override
