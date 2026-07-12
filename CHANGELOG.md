@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.14.10
+- Blazes now bounce: new air-hopping movement style (slow drift down, hops along the ground while following) instead of flying with the allay crowd
+- The Menagerie shows where each pet comes from - Vanilla or a Pets&Pals addition - next to the selected pet
+- Sky and Sea tabs are marked coming soon on public builds while those rosters get polished
+
 ## 0.14.9
 - Fixed the raft cushion showing the whole cushion texture sheet instead of its proper faces (the cushion texture is an entity-style unwrap, not a flat tile)
 - Public builds now unlock the polished pets first: Copper Golem, Fox, Cat (all 12 skins, including ocelot) and Bee - the rest of the catalog shows greyed out as "coming soon" while each species gets the full movement treatment

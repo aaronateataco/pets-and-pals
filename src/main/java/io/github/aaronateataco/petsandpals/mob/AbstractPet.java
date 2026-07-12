@@ -144,6 +144,11 @@ public abstract class AbstractPet extends TamableAnimal {
         return false;
     }
 
+    /** Bouncy floaters like the blaze: slow fall, hops along the ground while moving. */
+    protected boolean airHops() {
+        return false;
+    }
+
     /** Client-side pets need this true or vanilla skips all their AI. */
     @Override
     public boolean isEffectiveAi() {
@@ -260,6 +265,18 @@ public abstract class AbstractPet extends TamableAnimal {
             this.getMoveControl().tick();
             this.getLookControl().tick();
             this.getJumpControl().tick();
+
+            // air hoppers (blaze) bounce along instead of walking: hop whenever
+            // moving on the ground, drift down slowly like the real mob
+            if (this.airHops()) {
+                Vec3 motion = this.getDeltaMovement();
+                if (!this.onGround() && motion.y < 0.0) {
+                    this.setDeltaMovement(motion.multiply(1.0, 0.6, 1.0));
+                }
+                if (this.onGround() && this.getMoveControl().hasWanted()) {
+                    this.getJumpControl().jump();
+                }
+            }
         }
 
         super.tick();

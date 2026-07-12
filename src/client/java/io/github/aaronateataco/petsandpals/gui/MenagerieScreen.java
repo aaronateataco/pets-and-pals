@@ -79,6 +79,14 @@ public class MenagerieScreen extends Screen {
             "dolphin", "nautilus", "guardian", "elder_guardian", "koi", "stingray",
             "dumbo_octopus", "turtle", "plaguewhale_slab", "toxifin_slab");
 
+    /** Where a species comes from: vanilla if the base game registers the same id. */
+    private static String originOf(PetList species) {
+        String name = species.name().toLowerCase(Locale.ROOT);
+        return net.minecraft.core.registries.BuiltInRegistries.ENTITY_TYPE
+                .containsKey(net.minecraft.resources.Identifier.withDefaultNamespace(name))
+                ? "Vanilla" : "Pets&Pals";
+    }
+
     private static Element elementOf(PetList species) {
         String name = species.name().toLowerCase(Locale.ROOT);
         if (SEA_PETS.contains(name)) return Element.SEA;
@@ -130,6 +138,12 @@ public class MenagerieScreen extends Screen {
                 this.applyFilter();
                 this.rebuildGrid();
             }).bounds(tabX, 26, 34, 18).build();
+            // sky/sea catalogs open up alongside the rest of the roster
+            if ((el == Element.SKY || el == Element.SEA) && !this.testingCatalog) {
+                tab.active = false;
+                tab.setTooltip(net.minecraft.client.gui.components.Tooltip.create(
+                        Component.literal("Coming soon")));
+            }
             tabX += 36;
             this.addRenderableWidget(tab);
         }
@@ -346,6 +360,8 @@ public class MenagerieScreen extends Screen {
         if (this.selected != null) {
             graphics.text(this.font, Component.literal("Selected:"), panelX, 28, 0xFFAAAAAA);
             graphics.text(this.font, this.selected.getDisplayName(), panelX, 38, 0xFFFFFFFF);
+            graphics.text(this.font, Component.literal(originOf(this.selected)),
+                    panelX + 70, 28, 0xFF777777);
         }
 
         int boxTop = GRID_TOP;
