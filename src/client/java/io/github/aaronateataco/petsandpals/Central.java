@@ -7,8 +7,6 @@
 package io.github.aaronateataco.petsandpals;
 
 import io.github.aaronateataco.petsandpals.mixin.client.ChatAccessor;
-import io.github.aaronateataco.petsandpals.mixin.client.SplashManagerMixin;
-import io.github.aaronateataco.petsandpals.mixin.client.TitleScreenRenderingMixin;
 import io.github.aaronateataco.petsandpals.mob.AbstractPet;
 import io.github.aaronateataco.petsandpals.mob.vanilla.boss.ClientEnderDragon;
 import io.github.aaronateataco.petsandpals.mob.vanilla.boss.ClientWither;
@@ -29,7 +27,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
-import net.minecraft.client.gui.components.LogoRenderer;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -37,7 +34,6 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.client.multiplayer.ClientSuggestionProvider;
 import net.minecraft.client.renderer.Panorama;
 import net.minecraft.client.renderer.state.gui.PanoramaRenderState;
-import net.minecraft.client.resources.SplashManager;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.synchronization.SuggestionProviders;
 import net.minecraft.network.chat.Component;
@@ -664,25 +660,6 @@ public class Central implements ClientModInitializer {
         }
     }
 
-
-    /**
-     * Used to re-assign the logo, edition texts, and splashes in {@link SplashManagerMixin} and {@link TitleScreenRenderingMixin}.
-     *
-     * @param bl: Whether to re-assign the logo or use the default ones.
-     */
-    public static void reassignLogo(Boolean bl) {
-        if (bl) {
-            LogoRenderer.MINECRAFT_LOGO = Identifier.fromNamespaceAndPath(MOD_ID, "textures/title/petsmod.png");
-            LogoRenderer.EASTER_EGG_LOGO = Identifier.fromNamespaceAndPath(MOD_ID, "textures/title/modpets.png");
-            LogoRenderer.MINECRAFT_EDITION = Identifier.fromNamespaceAndPath(MOD_ID, "textures/title/version.png");
-            SplashManager.SPLASHES_LOCATION = Identifier.fromNamespaceAndPath(MOD_ID, "texts/splashes.txt");
-        } else {
-            LogoRenderer.MINECRAFT_LOGO = Identifier.withDefaultNamespace("textures/gui/title/minecraft.png");
-            LogoRenderer.EASTER_EGG_LOGO = Identifier.withDefaultNamespace("textures/gui/title/minceraft.png");
-            LogoRenderer.MINECRAFT_EDITION = Identifier.withDefaultNamespace("textures/gui/title/edition.png");
-            SplashManager.SPLASHES_LOCATION = Identifier.withDefaultNamespace("texts/splashes.txt");
-        }
-    }
 
     /**
      * Required call to {@link ClientModInitializer#onInitializeClient()} that calls the initial code.
@@ -1397,9 +1374,6 @@ public class Central implements ClientModInitializer {
             CONFIG.petOn = true;
         }
         CONFIG.activePet = (CONFIG.activePet == null) ? "fox" : CONFIG.activePet;
-        if (CONFIG.customTitleEnabled == null) {
-            CONFIG.customTitleEnabled = true;
-        }
         CONFIG.duckName = Utils.checkNullString(CONFIG.duckName);
         CONFIG.duckSkin = Utils.checkNullString(CONFIG.duckSkin, "mallard");
 
