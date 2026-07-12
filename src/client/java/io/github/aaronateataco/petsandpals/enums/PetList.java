@@ -69,6 +69,7 @@ public enum PetList {
     stray,
     wither_skeleton,
     tadpole,
+    tropical_fish,
     turtle,
     vex,
     villager,

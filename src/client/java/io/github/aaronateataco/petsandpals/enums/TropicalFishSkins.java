@@ -3,9 +3,9 @@ package io.github.aaronateataco.petsandpals.enums;
 import net.minecraft.network.chat.Component;
 
 public enum TropicalFishSkins {
-    chichlid,
+    cichlid,
     clownfish,
-    cotten_candy_betta,
+    cotton_candy_betta,
     goatfish,
     parrotfish,
     queen_angelfish,
