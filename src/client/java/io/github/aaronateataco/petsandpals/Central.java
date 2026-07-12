@@ -2026,6 +2026,16 @@ public class Central implements ClientModInitializer {
             List var10001 = summonedEntity;
             Objects.requireNonNull(var10001);
             client.execute(var10001::clear);
+
+            // first-ever join with pets on and no confirmed adoption yet - offer the
+            // starter pet screen. Re-offered on every join until the server actually
+            // confirms an adoption (see AdoptionScreen), not just on the first click,
+            // so a player who was offline at first launch gets asked again once
+            // they're actually online.
+            if (Boolean.TRUE.equals(CONFIG.petOn) && !Boolean.TRUE.equals(CONFIG.hasAdoptedStarterPet)) {
+                client.execute(() -> client.setScreen(
+                        new io.github.aaronateataco.petsandpals.gui.AdoptionScreen(client.screen)));
+            }
         });
     }
 

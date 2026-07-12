@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.35.0
+- Added the first piece of the cloud adoption system (Phase 1): on your first join with pets on, you'll be asked to adopt a starter pet (a fox, for now) if you're online. It syncs to a small cloud backend so the adoption is confirmed server-side; if you're offline, you can play with a fox right away and it'll properly adopt next time you're connected. Once adopted, everything works fully offline as before - only the adoption itself needs a connection
+- Not yet included (later phases): a real species picker beyond fox, the bond-time-with-your-pet stat, and cloud sync of anything beyond the initial adoption
+
 ## 0.34.0
 - Fixed the witch pet having no working texture at all - it was pointing at "textures/entity/witch.png", which doesn't exist; vanilla moved witch's texture into its own subfolder and this was never updated to match
 - Fixed rabbit skin selection doing nothing: the texture switch was checking CONFIG.activePet (always just the literal word "rabbit") instead of CONFIG.rabbitSkin, so no skin name ever matched and every rabbit rendered as the same brown fallback regardless of what you picked

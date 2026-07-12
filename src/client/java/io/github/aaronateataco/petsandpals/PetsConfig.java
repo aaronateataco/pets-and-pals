@@ -16,6 +16,8 @@ import me.shedaniel.autoconfig.annotation.Config;
 public class PetsConfig implements ConfigData {
     public Boolean petOn;
     public String activePet;
+    /** True once the server has confirmed a starter-pet adoption for this UUID; gates AdoptionScreen. */
+    public Boolean hasAdoptedStarterPet;
     public float petSpeed = 1.0f;
     public Float petVolume = 1.0f;
     public String raftWood = "spruce";
