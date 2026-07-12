@@ -39,9 +39,7 @@
     "minecraft": ">=26.3-",
     "java": ">=25",
     "cloth-config": "*",
-    "fabric-api": "*"
-  },
-  "recommends": {
+    "fabric-api": "*",
     "leadphysics": "*"
   },
   "custom": {
