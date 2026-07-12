@@ -1,0 +1,12 @@
+{
+  "name": "pets-and-pals-api",
+  "main": "worker.js",
+  "compatibility_date": "2025-01-01",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "pets-and-pals",
+      "database_id": "07969e68-f337-4308-be93-c96c189e4459"
+    }
+  ]
+}
