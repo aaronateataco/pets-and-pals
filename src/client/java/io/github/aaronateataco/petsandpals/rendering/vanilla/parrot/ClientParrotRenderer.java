@@ -31,10 +31,21 @@ public class ClientParrotRenderer extends PetRenderer<@NotNull ClientParrot, @No
             parrotTexturePath = "textures/entity/parrot/parrot_blue.png";
         } else if (Objects.equals(CONFIG.parrotSkin, "green")) {
             parrotTexturePath = "textures/entity/parrot/parrot_green.png";
-        } else if (Objects.equals(CONFIG.parrotSkin, "yellow")) {
+        } else if (Objects.equals(CONFIG.parrotSkin, "cyan")) {
+            // "cyan" is the name used everywhere else (the /petskin command, Advanced
+            // Settings, ParrotSkins enum) for vanilla's 5th parrot color - it was
+            // never actually vanilla's own name for it (vanilla calls this variant
+            // "yellow", texture parrot_yellow_blue.png), but every other file agrees
+            // on "cyan" so this renderer was the one out of step, silently doing
+            // nothing when that skin was selected
             parrotTexturePath = "textures/entity/parrot/parrot_yellow_blue.png";
         } else if (Objects.equals(CONFIG.parrotSkin, "gray")) {
-            parrotTexturePath = "textures/entity/parrot/parrot_gray.png";
+            // the real file is spelled the British way ("grey"), unlike every other
+            // vanilla "gray" texture in the game - this was pointing at a file that
+            // doesn't exist
+            parrotTexturePath = "textures/entity/parrot/parrot_grey.png";
+        } else {
+            parrotTexturePath = "textures/entity/parrot/parrot_red_blue.png";
         }
         return Identifier.withDefaultNamespace(parrotTexturePath);
 
