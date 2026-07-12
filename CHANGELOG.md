@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.20.0
+- Fixed the raft trailing behind boats with a wide gap of open water instead of sitting close behind - also fixed it stalling out over uneven water (waterfalls, locks) where it could misread as "no water" and stop following entirely
+
 ## 0.19.0
 - Removed the legacy custom title screen/splash text toggle (a petsmod holdover) - Pets&Pals no longer touches the vanilla main menu logo
 - Fixed the "Advanced settings..." button doing nothing useful on the snapshot branch (it was reopening the Menagerie itself instead of the real config screen)
