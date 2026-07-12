@@ -136,7 +136,9 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
             if (ropeDistance > ropeLength) {
                 this.velocity = this.velocity.add(toBoat.scale((ropeDistance - ropeLength) * 0.12 / ropeDistance));
             }
-            this.velocity = this.velocity.scale(0.86);
+            // same drag as the ferry glide (0.9) - this used to be noticeably twitchier
+            // than the ferry despite towing the same kind of hull
+            this.velocity = this.velocity.scale(0.9);
             double nextX = this.getX() + this.velocity.x;
             double nextZ = this.getZ() + this.velocity.z;
             // locked to water: never slides onto land - if the next column has no water,
