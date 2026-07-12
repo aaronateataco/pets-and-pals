@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.29.0
+- Fixed pets getting stuck bobbing offshore on the ferry raft instead of actually reaching land: 0.28.0's fix for stranding in deep water accidentally required the raft to reach a spot it structurally never settles on (it always tracks the water surface, never dry ground), so it could hold forever a couple blocks short of the owner. It now lets go as soon as you're on land like before, but if the pet's still sitting in water when it does, it gets moved to the nearest dry spot next to you instead of being left to fend for itself
+
 ## 0.28.0
 - Fixed the raft riding noticeably lower in the water than the boat towing it - it was copying the boat's own position directly, which sits at the bottom of the boat's hitbox rather than the waterline; now it reads the actual water surface like the ferry raft always has
 - Fixed the ferry raft occasionally stranding a pet in open water even after you'd already reached dry land - it now waits until the raft itself has also reached shore (or is basically at your feet) before letting go, instead of releasing early and leaving the pet to flail
