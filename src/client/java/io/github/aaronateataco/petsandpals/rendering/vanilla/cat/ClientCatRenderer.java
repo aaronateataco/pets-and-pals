@@ -46,7 +46,7 @@ public class ClientCatRenderer extends PetRenderer<@NotNull ClientCat, @NotNull 
                     Identifier.withDefaultNamespace("textures/entity/cat/cat_british_shorthair.png");
             case "calico" -> Identifier.withDefaultNamespace("textures/entity/cat/cat_calico.png");
             case "jellie" -> Identifier.withDefaultNamespace("textures/entity/cat/cat_jellie.png");
-            case "ocelot" -> Identifier.withDefaultNamespace("textures/entity/cat/cat_ocelot.png");
+            case "ocelot" -> Identifier.withDefaultNamespace("textures/entity/cat/ocelot.png");
             case "persian" -> Identifier.withDefaultNamespace("textures/entity/cat/cat_persian.png");
             case "ragdoll" -> Identifier.withDefaultNamespace("textures/entity/cat/cat_ragdoll.png");
             case "red" -> Identifier.withDefaultNamespace("textures/entity/cat/cat_red.png");

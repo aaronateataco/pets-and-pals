@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.34.0
+- Fixed the witch pet having no working texture at all - it was pointing at "textures/entity/witch.png", which doesn't exist; vanilla moved witch's texture into its own subfolder and this was never updated to match
+- Fixed rabbit skin selection doing nothing: the texture switch was checking CONFIG.activePet (always just the literal word "rabbit") instead of CONFIG.rabbitSkin, so no skin name ever matched and every rabbit rendered as the same brown fallback regardless of what you picked
+- Fixed the "brown" rabbit skin's own texture path (missing the "rabbit_" prefix every other file in that folder has) and horse's "dark brown" skin, which was quietly rendering as plain "brown" instead of its own distinct texture
+- Fixed the cat "ocelot" skin pointing at a texture file that doesn't exist (extra "cat_" prefix that the real file doesn't have)
+- Cross-checked every hardcoded vanilla texture path across all renderers against the actual files shipped in the game - this batch is everything that didn't match
+
 ## 0.33.0
 - Fixed parrot's 4th color doing nothing when selected: every other file (the /petskin command, Advanced Settings, the skin enum) calls it "cyan," but the renderer only recognized "yellow" (vanilla's real internal name for that variant) - selecting it left the parrot's texture unchanged instead of switching
 - Fixed parrot's "gray" skin pointing at a texture file that doesn't exist - vanilla spells this one "grey" for parrots specifically, unlike every other gray texture in the game

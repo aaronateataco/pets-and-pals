@@ -41,7 +41,7 @@ public class ClientHorseRenderer extends PetRenderer<@NotNull ClientHorse, @NotN
             case "brown" -> horseTextureLocation = "textures/entity/horse/horse_brown.png";
             case "chestnut" -> horseTextureLocation = "textures/entity/horse/horse_chestnut.png";
             case "creamy" -> horseTextureLocation = "textures/entity/horse/horse_creamy.png";
-            case "dark_brown" -> horseTextureLocation = "textures/entity/horse/horse_brown.png";
+            case "dark_brown" -> horseTextureLocation = "textures/entity/horse/horse_darkbrown.png";
             case "gray" -> horseTextureLocation = "textures/entity/horse/horse_gray.png";
             case "white" -> horseTextureLocation = "textures/entity/horse/horse_white.png";
             case "skeleton" -> horseTextureLocation = "textures/entity/horse/horse_skeleton.png";
