@@ -146,7 +146,7 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
                 this.velocity = this.velocity.scale(0.3);
             } else {
                 double bob = 0.02 * Math.sin(this.tickCount * 0.09);
-                this.setPos(nextX, surface - 0.01 + bob, nextZ);
+                this.setPos(nextX, surface - 0.01 + bob + this.riseIn(), nextZ);
             }
             // hull swings like a towed boat: the leashed bow leads toward the rope
             // when it's taut, otherwise the hull drifts around to face its motion
@@ -190,6 +190,13 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
         this.pet.setYHeadRot(Mth.approachDegrees(this.pet.getYHeadRot(), headYaw, 4.0F));
     }
 
+    // spawn entrance: the raft floats up out of the water instead of popping in
+    private double riseIn() {
+        if (this.tickCount >= 8) return 0.0;
+        double t = this.tickCount / 8.0;
+        return -0.35 * (1.0 - t) * (1.0 - t);
+    }
+
     // actual water surface at this column; MIN_VALUE when there's no water (land)
     private double waterSurfaceY(double x, double aroundY, double z) {
         for (int dy = 2; dy >= -2; dy--) {
@@ -220,15 +227,16 @@ public class PetRaft extends FallingBlockEntity implements net.minecraft.world.e
             surface = this.waterSurfaceY(nextX, this.getY(), nextZ);
             if (surface == Double.MIN_VALUE) { this.release(); return; }
         }
-        this.setPos(nextX, surface - 0.01 + 0.02 * Math.sin(this.tickCount * 0.09), nextZ);
+        this.setPos(nextX, surface - 0.01 + 0.02 * Math.sin(this.tickCount * 0.09) + this.riseIn(), nextZ);
         this.pet.setPos(this.getX(), this.getY() + 0.07, this.getZ());
         this.pet.setDeltaMovement(Vec3.ZERO);
         this.pet.fallDistance = 0;
         float yaw = (float) (Math.toDegrees(Mth.atan2(toOwner.z, toOwner.x))) - 90.0F;
         this.setYRot(Mth.approachDegrees(this.getYRot(), yaw, 6.0F));
-        this.pet.setYRot(yaw);
-        this.pet.yBodyRot = yaw;
-        this.pet.setYHeadRot(yaw);
+        // pet turns with the hull, not straight at the target
+        this.pet.setYRot(this.getYRot());
+        this.pet.yBodyRot = this.getYRot();
+        this.pet.setYHeadRot(this.getYRot());
     }
 
     private void release() {
