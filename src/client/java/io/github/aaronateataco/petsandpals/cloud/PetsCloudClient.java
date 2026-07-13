@@ -3,6 +3,7 @@ package io.github.aaronateataco.petsandpals.cloud;
 import com.google.gson.Gson;
 import io.github.aaronateataco.petsandpals.cloud.dto.AdoptAdditionalResponse;
 import io.github.aaronateataco.petsandpals.cloud.dto.AdoptResponse;
+import io.github.aaronateataco.petsandpals.cloud.dto.BondClaimResponse;
 import io.github.aaronateataco.petsandpals.cloud.dto.CheckoutResponse;
 import io.github.aaronateataco.petsandpals.cloud.dto.CurrencyBalanceResponse;
 import io.github.aaronateataco.petsandpals.cloud.dto.OwnedPetsResponse;
@@ -86,6 +87,24 @@ public final class PetsCloudClient {
                 .build();
 
         return CompletableFuture.supplyAsync(() -> send(request, OwnedPetsResponse.class), EXECUTOR);
+    }
+
+    /** Claims passive bond-time Paw Coins accrued since the last claim - server-clock
+     *  based (see worker.js's handleBondClaim), so calling this often is harmless:
+     *  it just returns creditedCoins=0 until enough real time has actually passed. */
+    public static CompletableFuture<BondClaimResponse> claimBondReward(UUID uuid, String secret) {
+        Map<String, String> body = new HashMap<>();
+        body.put("uuid", uuid.toString());
+        body.put("secret", secret);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/v1/bond/claim"))
+                .timeout(REQUEST_TIMEOUT)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(GSON.toJson(body)))
+                .build();
+
+        return CompletableFuture.supplyAsync(() -> send(request, BondClaimResponse.class), EXECUTOR);
     }
 
     /** Adopts a species beyond the player's starter pet - server-gated by a 3-day

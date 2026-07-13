@@ -75,6 +75,7 @@ public class MenagerieScreen extends Screen {
     private int previewH;
     private int gridTop = GRID_TOP;
     private int gridLeft = 12;
+    private int contentLeft = 12;
     private int page = 0;
     private int columns = 3;
     private int rows = 6;
@@ -109,13 +110,17 @@ public class MenagerieScreen extends Screen {
     private Button buyCoinsButton;
     private Button adoptCancelButton;
     private int adoptPanelLeft, adoptPanelTop, adoptPanelW, adoptPanelH;
+    private float bondRewardFlashSeconds = -1.0F;
+    private String bondRewardMessage;
 
     // element categories
     private enum Element { ALL, LAND, SKY, SEA }
 
-    // each tab's pixel-art icon position, filled in during init()'s tab-building loop
-    private final Map<Element, Integer> tabIconX = new java.util.EnumMap<>(Element.class);
-    private int tabIconY;
+    // each tab's pixel-art icon Y position, filled in during init()'s tab-building
+    // loop - tabs run down the left edge as a vertical strip now (shop-style side
+    // rail), so the icon X is shared across all of them but Y varies per tab
+    private final Map<Element, Integer> tabIconY = new java.util.EnumMap<>(Element.class);
+    private int tabIconX;
     private static final Map<Element, Identifier> CATEGORY_ICONS = new java.util.EnumMap<>(Element.class);
     static {
         CATEGORY_ICONS.put(Element.ALL, Identifier.fromNamespaceAndPath(PetsInitializer.MOD_ID, "theme/category/all"));
@@ -160,7 +165,7 @@ public class MenagerieScreen extends Screen {
     }
 
     public MenagerieScreen(Screen parent) {
-        super(Component.literal("Menagerie"));
+        super(Component.literal("Shop"));
         this.parent = parent;
         this.testingCatalog = java.nio.file.Files.exists(
                 net.minecraft.client.Minecraft.getInstance().gameDirectory.toPath().resolve(".pnp_testing"));
@@ -179,12 +184,49 @@ public class MenagerieScreen extends Screen {
 
     @Override
     protected void init() {
-        int leftWidth = this.width - PANEL_WIDTH - 24;
+        // category tabs run down the left edge as a vertical strip (icon-only,
+        // tooltip for the label - Essential/Bedrock-Marketplace-style side rail)
+        // instead of the old horizontal row under the preview. Everything else in
+        // the left column anchors off contentLeft instead of a bare screen margin,
+        // so it shifts right to make room for the strip.
+        int tabStripX = 6;
+        int tabSize = 28;
+        int contentLeft = tabStripX + tabSize + 10;
+        this.contentLeft = contentLeft;
+        int leftWidth = this.width - PANEL_WIDTH - 24 - contentLeft;
+
+        int tabTop = 22;
+        this.tabIconY.clear();
+        int ty = tabTop;
+        for (Element el : Element.values()) {
+            Element tabElement = el;
+            ThemedButton tab = ThemedButton.of(tabStripX, ty, tabSize, tabSize, Component.empty(), b -> {
+                this.element = tabElement;
+                this.page = 0;
+                this.applyFilter();
+                this.rebuildGrid();
+            });
+            String label = switch (el) {
+                case ALL -> "All"; case LAND -> "Land"; case SKY -> "Sky"; case SEA -> "Sea";
+            };
+            // sky/sea catalogs open up alongside the rest of the roster
+            if ((el == Element.SKY || el == Element.SEA) && !this.testingCatalog) {
+                tab.active = false;
+                tab.setTooltip(net.minecraft.client.gui.components.Tooltip.create(
+                        Component.literal(label + " - Coming soon")));
+            } else {
+                tab.setTooltip(net.minecraft.client.gui.components.Tooltip.create(Component.literal(label)));
+            }
+            this.tabIconY.put(el, ty + tabSize / 2 - 5);
+            ty += tabSize + 4;
+            this.track(tab);
+        }
+        this.tabIconX = tabStripX + tabSize / 2 - 5;
 
         // the pet takes center stage: big preview up top, arrows to flip through
         this.previewW = Math.min(210, leftWidth - 64);
         this.previewH = Math.max(96, Math.min(120, this.height / 4));
-        this.previewX = 12 + (leftWidth - this.previewW) / 2;
+        this.previewX = contentLeft + (leftWidth - this.previewW) / 2;
         this.previewY = 22;
         int arrowY = this.previewY + this.previewH / 2 - 10;
         this.track(ThemedButton.of(this.previewX - 26, arrowY, 20, 20,
@@ -192,37 +234,9 @@ public class MenagerieScreen extends Screen {
         this.track(ThemedButton.of(this.previewX + this.previewW + 6, arrowY, 20, 20,
                 Component.literal(">"), b -> this.cycleSelected(1)));
 
-        // element toggles sit under the preview, search under those - each carries a
-        // small pixel-art category icon (see gen_category_icons.py), drawn separately
-        // in extractRenderState since ThemedButton only ever draws a background+label
-        int tabW = 46;
-        int tabY = this.previewY + this.previewH + 24;
-        int tabX = 12 + (leftWidth - Element.values().length * tabW + 2) / 2;
-        this.tabIconX.clear();
-        for (Element el : Element.values()) {
-            Element tabElement = el;
-            ThemedButton tab = ThemedButton.of(tabX, tabY, tabW, 18, Component.literal(switch (el) {
-                case ALL -> "All"; case LAND -> "Land"; case SKY -> "Sky"; case SEA -> "Sea";
-            }), b -> {
-                this.element = tabElement;
-                this.page = 0;
-                this.applyFilter();
-                this.rebuildGrid();
-            });
-            // sky/sea catalogs open up alongside the rest of the roster
-            if ((el == Element.SKY || el == Element.SEA) && !this.testingCatalog) {
-                tab.active = false;
-                tab.setTooltip(net.minecraft.client.gui.components.Tooltip.create(
-                        Component.literal("Coming soon")));
-            }
-            this.tabIconX.put(el, tabX + 3);
-            this.tabIconY = tabY + 4;
-            tabX += tabW + 2;
-            this.track(tab);
-        }
-
+        int searchY = this.previewY + this.previewH + 24;
         int searchWidth = Math.min(220, leftWidth - 8);
-        this.searchBox = new EditBox(this.font, 12 + (leftWidth - searchWidth) / 2, tabY + 22,
+        this.searchBox = new EditBox(this.font, contentLeft + (leftWidth - searchWidth) / 2, searchY,
                 searchWidth, 18, Component.literal("Search"));
         this.searchBox.setValue(this.query);
         this.searchBox.setResponder(text -> {
@@ -233,17 +247,17 @@ public class MenagerieScreen extends Screen {
         });
         this.track(this.searchBox);
 
-        this.gridTop = tabY + 46;
+        this.gridTop = searchY + 24;
         this.columns = Math.max(2, leftWidth / (CELL_WIDTH + CELL_GAP));
         this.rows = Math.max(2, (this.height - this.gridTop - 34) / (CELL_HEIGHT + CELL_GAP));
-        this.gridLeft = 12 + (leftWidth - (this.columns * (CELL_WIDTH + CELL_GAP) - CELL_GAP)) / 2;
+        this.gridLeft = contentLeft + (leftWidth - (this.columns * (CELL_WIDTH + CELL_GAP) - CELL_GAP)) / 2;
 
         int pageY = this.height - 28;
-        this.prevButton = this.track(ThemedButton.of(12, pageY, 20, 20, Component.literal("<"), b -> {
+        this.prevButton = this.track(ThemedButton.of(contentLeft, pageY, 20, 20, Component.literal("<"), b -> {
             if (this.page > 0) this.page--;
             this.rebuildGrid();
         }));
-        this.nextButton = this.track(ThemedButton.of(36, pageY, 20, 20, Component.literal(">"), b -> {
+        this.nextButton = this.track(ThemedButton.of(contentLeft + 24, pageY, 20, 20, Component.literal(">"), b -> {
             if ((this.page + 1) * this.pageSize() < this.filtered.size()) this.page++;
             this.rebuildGrid();
         }));
@@ -342,21 +356,21 @@ public class MenagerieScreen extends Screen {
         this.closeAdoptPrompt();
 
         // anvil naming page: a name tag icon the player drags onto the pet stage
-        this.tagRestX = 12 + leftWidth / 2 - 80;
-        this.tagRestY = tabY;
+        this.tagRestX = contentLeft + leftWidth / 2 - 80;
+        this.tagRestY = searchY;
         this.dandelionRestX = this.tagRestX;
         this.dandelionRestY = this.tagRestY + 36;
-        this.nameBox = new EditBox(this.font, this.tagRestX + 26, tabY, Math.min(160, leftWidth - 100), 18,
+        this.nameBox = new EditBox(this.font, this.tagRestX + 26, searchY, Math.min(160, leftWidth - 100), 18,
                 Component.literal("Name"));
         this.nameBox.setMaxLength(32);
         this.nameBox.visible = false;
         this.addRenderableWidget(this.nameBox);
         // parked below the dandelion row so it never sits under the dandelion icon -
-        // the old fixed offset (tabY + 28) landed right in the middle of where the
+        // the old fixed offset (searchY + 28) landed right in the middle of where the
         // dandelion icon and its hint text render for baby pets, so the icon covered
         // half the button. Kept at this fixed spot regardless of baby/adult so it
         // doesn't jump around if the age toggle changes without reopening this page.
-        this.namingCancelButton = ThemedButton.of(this.tagRestX, tabY + 80, 106, 20,
+        this.namingCancelButton = ThemedButton.of(this.tagRestX, searchY + 80, 106, 20,
                 Component.literal("Cancel"), b -> this.exitNaming());
         this.namingCancelButton.visible = false;
         this.addRenderableWidget(this.namingCancelButton);
@@ -367,6 +381,25 @@ public class MenagerieScreen extends Screen {
         this.updateSummonState();
         this.refreshOwnedPets();
         this.refreshCurrencyBalance();
+        this.claimBondReward();
+    }
+
+    /** Claims passive bond-time Paw Coins once per Shop open - free, no payment or
+     *  ad content, just a reward for playing (see worker.js's handleBondClaim). */
+    private void claimBondReward() {
+        if (this.minecraft == null || this.minecraft.player == null) return;
+        UUID uuid = this.minecraft.player.getUUID();
+        String secret = PlayerKeystore.loadSecret(uuid);
+        if (secret == null) return; // never adopted online yet - nothing to claim against
+        PetsCloudClient.claimBondReward(uuid, secret).thenAccept(resp -> Minecraft.getInstance().execute(() -> {
+            if (resp == null || resp.error != null || resp.balance == null) return;
+            CONFIG.currencyBalanceCache = resp.balance;
+            this.refreshAdoptPromptState();
+            if (resp.creditedCoins != null && resp.creditedCoins > 0) {
+                this.bondRewardMessage = "+" + resp.creditedCoins + " Paw Coins earned!";
+                this.bondRewardFlashSeconds = 0.0F;
+            }
+        }));
     }
 
     /** Registers a widget as catalog-only: hidden while the naming page is open. */
@@ -922,15 +955,32 @@ public class MenagerieScreen extends Screen {
             graphics.text(this.font, Component.literal("Page " + (this.page + 1) + "/"
                             + (Math.max(0, (this.filtered.size() - 1) / this.pageSize()) + 1)
                             + "  (" + this.filtered.size() + " pets)"),
-                    62, this.height - 22, Theme.TEXT_SECONDARY);
+                    this.contentLeft + 50, this.height - 22, Theme.TEXT_SECONDARY);
         }
 
         for (Element el : Element.values()) {
             Identifier icon = CATEGORY_ICONS.get(el);
-            Integer x = this.tabIconX.get(el);
-            if (icon != null && x != null) {
-                graphics.blitSprite(RenderPipelines.GUI_TEXTURED, icon, x, this.tabIconY, 10, 10);
+            Integer y = this.tabIconY.get(el);
+            if (icon != null && y != null) {
+                graphics.blitSprite(RenderPipelines.GUI_TEXTURED, icon, this.tabIconX, y, 10, 10);
             }
+        }
+
+        // equip panel header + persistent currency readout - the right-side buttons
+        // (Summon/Skin/Baby/Speed/...) are the "equipping" section; this just labels
+        // it as one and shows the Paw Coin balance the adopt prompt already spends
+        int equipPanelX = this.width - PANEL_WIDTH - 6;
+        int equipHeaderY = GRID_TOP + PREVIEW_HEIGHT - 24;
+        graphics.text(this.font, Component.literal("Equip"), equipPanelX, equipHeaderY, Theme.TEXT_HEADER);
+        String coins = "Paw Coins: " + CONFIG.currencyBalanceCache;
+        graphics.text(this.font, Component.literal(coins),
+                equipPanelX + PANEL_WIDTH - this.font.width(coins), equipHeaderY, Theme.TEXT_SECONDARY);
+        if (this.bondRewardFlashSeconds >= 0.0F && this.bondRewardMessage != null) {
+            float alpha = Mth.clamp(1.0F - this.bondRewardFlashSeconds / 3.0F, 0.0F, 1.0F);
+            int color = 0xFF6CD242 | ((int) (alpha * 255.0F) << 24);
+            graphics.text(this.font, Component.literal(this.bondRewardMessage),
+                    equipPanelX + PANEL_WIDTH - this.font.width(this.bondRewardMessage),
+                    equipHeaderY + 10, color);
         }
 
         if (this.adoptPromptSpecies != null) {
@@ -1136,6 +1186,13 @@ public class MenagerieScreen extends Screen {
             this.closeFade += 1.0F / 8.0F;
             if (this.closeFade >= 1.0F) {
                 this.finishClose();
+            }
+        }
+        if (this.bondRewardFlashSeconds >= 0.0F) {
+            this.bondRewardFlashSeconds += 1.0F / 20.0F;
+            if (this.bondRewardFlashSeconds > 3.0F) {
+                this.bondRewardFlashSeconds = -1.0F;
+                this.bondRewardMessage = null;
             }
         }
     }

@@ -18,6 +18,7 @@ import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -90,6 +91,17 @@ public class AdoptionScreen extends Screen {
     private int sideCellY;
     private int nameY, statusY;
     private int arrowY, leftArrowX, rightArrowX;
+
+    // drag-the-nametag-onto-your-pet, ported from MenagerieScreen's naming page -
+    // only meaningful for the actually-adoptable centered species (fox in Phase 1),
+    // same gate the variant row / Continue button already use
+    private static final int TAG_ICON_SIZE = 16;
+    private EditBox nameBox;
+    private int tagRestX, tagRestY;
+    private boolean draggingTag = false;
+    private double dragMouseX, dragMouseY;
+    private float dangleSeconds = -1.0F;
+    private String dangleName;
 
     public AdoptionScreen(Screen parent) {
         super(Component.literal("Choose your first pet"));
@@ -172,6 +184,16 @@ public class AdoptionScreen extends Screen {
                     Central.setPetBaby(!CONFIG.isBaby);
                     b.setMessage(this.babyToggleLabel());
                 }));
+
+        // naming row: type a name, then drag the tag onto the pet stage above it -
+        // centered below the baby/continue row rather than beside the glass panel,
+        // so it doesn't get cramped on narrower windows
+        int namingY = this.statusY + 44;
+        this.nameBox = this.addRenderableWidget(new EditBox(this.font, this.width / 2 - 60, namingY, 90, 16,
+                Component.literal("Name")));
+        this.nameBox.setMaxLength(32);
+        this.tagRestX = this.width / 2 + 38;
+        this.tagRestY = namingY - 2;
 
         if (!this.adoptionStarted) {
             this.adoptionStarted = true;
@@ -380,7 +402,46 @@ public class AdoptionScreen extends Screen {
         // always matches what's actually centered
         this.continueButton.visible = adoptable && this.state != State.CONNECTING;
 
+        // naming row: only meaningful once you're actually naming the species you're
+        // adopting, same gate the variant row already uses
+        this.nameBox.visible = adoptable;
+        if (adoptable) {
+            boolean overStage = this.overStage(mouseX, mouseY);
+            String hint = this.draggingTag
+                    ? (overStage ? "Release to name your pet!" : "Drag onto your pet")
+                    : "Type a name, then drag the tag onto your pet";
+            graphics.text(this.font, Component.literal(hint),
+                    this.width / 2 - this.font.width(hint) / 2, this.tagRestY + TAG_ICON_SIZE + 4,
+                    overStage && this.draggingTag ? 0xFF55FF55 : Theme.TEXT_SECONDARY);
+            if (this.draggingTag && this.overStage(this.dragMouseX, this.dragMouseY)) {
+                graphics.outline(this.stageX, this.stageY,
+                        this.stageX + CENTER_CELL, this.stageY + CENTER_CELL, 0xFF55FF55);
+            }
+        }
+
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
+
+        // drawn last (after the widgets super() just queued) so the dragged icon
+        // stays visibly on top while crossing over the nameBox/buttons, same
+        // reasoning already documented above for why super() itself runs last here
+        if (adoptable) {
+            graphics.item(new net.minecraft.world.item.ItemStack(net.minecraft.world.item.Items.NAME_TAG),
+                    this.tagDrawX(), this.tagDrawY());
+        }
+        if (this.dangleSeconds >= 0.0F && this.dangleName != null) {
+            // a light spring-damper swing settling under the pet's head, same
+            // physics as MenagerieScreen's own dangle animation
+            float t = this.dangleSeconds;
+            float decay = (float) Math.exp(-t * 3.0);
+            float swing = (float) Math.sin(t * 14.0) * 6.0F * decay;
+            int cx = this.stageX + CENTER_CELL / 2;
+            int ty = this.stageY + CENTER_CELL - 4;
+            graphics.pose().pushMatrix();
+            graphics.pose().rotateAbout((float) Math.toRadians(swing), cx, ty);
+            String tag = this.dangleName;
+            graphics.text(this.font, Component.literal(tag), cx - this.font.width(tag) / 2, ty, 0xFFFFFF55);
+            graphics.pose().popMatrix();
+        }
     }
 
     /** A smaller, option-less neighbor peeking in from one side of the carousel;
@@ -421,6 +482,40 @@ public class AdoptionScreen extends Screen {
                 && mouseY >= this.arrowY && mouseY < this.arrowY + ARROW_SIZE;
     }
 
+    // --- drag-the-nametag-onto-the-pet interaction ---
+
+    private boolean overStage(double mouseX, double mouseY) {
+        return mouseX >= this.stageX && mouseX < this.stageX + CENTER_CELL
+                && mouseY >= this.stageY && mouseY < this.stageY + CENTER_CELL;
+    }
+
+    private int tagDrawX() {
+        return this.draggingTag ? (int) (this.dragMouseX - TAG_ICON_SIZE / 2.0) : this.tagRestX;
+    }
+
+    private int tagDrawY() {
+        return this.draggingTag ? (int) (this.dragMouseY - TAG_ICON_SIZE / 2.0) : this.tagRestY;
+    }
+
+    private boolean overTagIcon(double mouseX, double mouseY) {
+        return mouseX >= this.tagRestX && mouseX < this.tagRestX + TAG_ICON_SIZE
+                && mouseY >= this.tagRestY && mouseY < this.tagRestY + TAG_ICON_SIZE;
+    }
+
+    /** Writes the typed name straight into the fox's own config field - this screen
+     *  only ever adopts a fox (see ADOPTABLE_SPECIES), and CONFIG.activePet isn't
+     *  guaranteed to already be "fox" yet at naming time (it's set once adoption
+     *  actually completes), so this can't go through Central.setActivePetName's
+     *  CONFIG.activePet-keyed switch the way MenagerieScreen's naming page does. */
+    private void applyNameTag() {
+        String name = this.nameBox.getValue().trim();
+        if (name.isEmpty()) return;
+        CONFIG.foxName = name;
+        Central.refreshPetNames();
+        this.dangleName = name;
+        this.dangleSeconds = 0.0F;
+    }
+
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         if (event.button() == 0) {
@@ -432,6 +527,12 @@ public class AdoptionScreen extends Screen {
                 this.cycleCentered(1);
                 return true;
             }
+            if (this.centered().name().equals(ADOPTABLE_SPECIES) && this.overTagIcon(event.x(), event.y())) {
+                this.draggingTag = true;
+                this.dragMouseX = event.x();
+                this.dragMouseY = event.y();
+                return true;
+            }
         }
         if (this.variantRow != null && this.variantRow.mouseClicked(event.x(), event.y(), event.button())) {
             return true;
@@ -440,11 +541,45 @@ public class AdoptionScreen extends Screen {
     }
 
     @Override
+    public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
+        if (this.draggingTag) {
+            this.dragMouseX = event.x();
+            this.dragMouseY = event.y();
+            return true;
+        }
+        return super.mouseDragged(event, dragX, dragY);
+    }
+
+    @Override
+    public boolean mouseReleased(MouseButtonEvent event) {
+        if (this.draggingTag) {
+            this.draggingTag = false;
+            if (this.overStage(event.x(), event.y())) {
+                this.applyNameTag();
+            }
+            return true;
+        }
+        return super.mouseReleased(event);
+    }
+
+    @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (this.variantRow != null && this.variantRow.mouseScrolled(mouseX, mouseY, scrollY)) {
             return true;
         }
         return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (this.dangleSeconds >= 0.0F) {
+            this.dangleSeconds += 1.0F / 20.0F;
+            if (this.dangleSeconds > 1.5F) {
+                this.dangleSeconds = -1.0F;
+                this.dangleName = null;
+            }
+        }
     }
 
     @Override

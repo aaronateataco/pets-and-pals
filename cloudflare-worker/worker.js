@@ -21,6 +21,12 @@ const VALID_SPECIES = new Set(["fox"]);
 const THREE_DAYS_MS = 3 * 24 * 60 * 60 * 1000;
 const SKIP_COOLDOWN_COST = 500;
 
+// bond-time free currency: earn Paw Coins passively just for playing, no payment or
+// third-party ad content required - see migrations/0003_bond_time_currency.sql
+const BOND_COINS_PER_HOUR = 10;
+const MAX_BOND_CLAIM_WINDOW_MS = 4 * 60 * 60 * 1000; // caps a single claim after a long absence,
+                                                       // and rate-limits rapid re-claiming
+
 // Ad-hoc Stripe Checkout line items (Stripe's price_data, not pre-created Dashboard
 // Price objects) - keeps setup to just the two secrets below, no manual product
 // catalog step in the Stripe Dashboard. Adjust freely; nothing else depends on
@@ -62,6 +68,10 @@ export default {
 
     if (request.method === "POST" && pathname === "/v1/currency/checkout") {
       return handleCreateCheckout(request, env);
+    }
+
+    if (request.method === "POST" && pathname === "/v1/bond/claim") {
+      return handleBondClaim(request, env);
     }
 
     if (request.method === "POST" && pathname === "/v1/stripe/webhook") {
@@ -305,6 +315,53 @@ async function handleCurrencyBalance(rawUuid, request, env) {
     `SELECT COALESCE(SUM(amount), 0) AS balance FROM currency_ledger WHERE owner_uuid = ?1`
   ).bind(uuid).first();
   return json({ uuid, balance: row.balance });
+}
+
+async function handleBondClaim(request, env) {
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: "invalid_json" }, 400);
+  }
+  const uuid = typeof body.uuid === "string" ? body.uuid.trim().toLowerCase() : null;
+  const secret = typeof body.secret === "string" ? body.secret : null;
+  if (!(await authenticate(uuid, secret, env))) {
+    return json({ error: "invalid_credentials" }, 401);
+  }
+
+  const now = Date.now();
+  const player = await env.DB.prepare(
+    `SELECT last_bond_claim_at FROM players WHERE uuid = ?1`
+  ).bind(uuid).first();
+  // first-ever claim (column still NULL): baseline to now, not created_at - a
+  // brand-new player shouldn't get a payout for time before they even existed
+  const lastClaim = player.last_bond_claim_at ?? now;
+  const elapsedMs = Math.min(now - lastClaim, MAX_BOND_CLAIM_WINDOW_MS);
+  const coins = Math.floor((elapsedMs / (60 * 60 * 1000)) * BOND_COINS_PER_HOUR);
+
+  if (coins <= 0) {
+    // deliberately do NOT update last_bond_claim_at here - a client polling more
+    // often than the accrual rate would otherwise perpetually reset the clock
+    // before enough elapsed time ever crosses the 1-coin threshold
+    const balRow = await env.DB.prepare(
+      `SELECT COALESCE(SUM(amount), 0) AS balance FROM currency_ledger WHERE owner_uuid = ?1`
+    ).bind(uuid).first();
+    return json({ creditedCoins: 0, balance: balRow.balance });
+  }
+
+  await env.DB.batch([
+    env.DB.prepare(
+      `INSERT INTO currency_ledger (owner_uuid, amount, reason, created_at) VALUES (?1, ?2, 'bond_time', ?3)`
+    ).bind(uuid, coins, now),
+    env.DB.prepare(
+      `UPDATE players SET last_bond_claim_at = ?2 WHERE uuid = ?1`
+    ).bind(uuid, now),
+  ]);
+  const balRow = await env.DB.prepare(
+    `SELECT COALESCE(SUM(amount), 0) AS balance FROM currency_ledger WHERE owner_uuid = ?1`
+  ).bind(uuid).first();
+  return json({ creditedCoins: coins, balance: balRow.balance });
 }
 
 // --- Stripe: checkout session creation + webhook ---
