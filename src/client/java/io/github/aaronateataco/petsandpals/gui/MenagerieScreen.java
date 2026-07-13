@@ -118,17 +118,28 @@ public class MenagerieScreen extends Screen {
     // element categories
     private enum Element { ALL, LAND, SKY, SEA }
 
-    // each tab's pixel-art icon Y position, filled in during init()'s tab-building
-    // loop - tabs run down the left edge as a vertical strip now (shop-style side
-    // rail), so the icon X is shared across all of them but Y varies per tab
+    // each tab's icon/text Y position, filled in during init()'s tab-building loop -
+    // tabs run down the left edge as a vertical strip (shop-style side rail), so the
+    // icon/text X is shared across all of them but Y varies per tab
     private final Map<Element, Integer> tabIconY = new java.util.EnumMap<>(Element.class);
     private int tabIconX;
+    private int tabTextX;
     private static final Map<Element, Identifier> CATEGORY_ICONS = new java.util.EnumMap<>(Element.class);
     static {
         CATEGORY_ICONS.put(Element.ALL, Identifier.fromNamespaceAndPath(PetsInitializer.MOD_ID, "theme/category/all"));
         CATEGORY_ICONS.put(Element.LAND, Identifier.fromNamespaceAndPath(PetsInitializer.MOD_ID, "theme/category/land"));
         CATEGORY_ICONS.put(Element.SKY, Identifier.fromNamespaceAndPath(PetsInitializer.MOD_ID, "theme/category/sky"));
         CATEGORY_ICONS.put(Element.SEA, Identifier.fromNamespaceAndPath(PetsInitializer.MOD_ID, "theme/category/sea"));
+    }
+    // color-coded per category, like the concept art - kept square (not rounded)
+    // per an explicit decision to match the rest of this theme's chrome rather than
+    // the concept's rounded pills
+    private static final Map<Element, Integer> CATEGORY_COLOR = new java.util.EnumMap<>(Element.class);
+    static {
+        CATEGORY_COLOR.put(Element.ALL, 0xFF585C68);
+        CATEGORY_COLOR.put(Element.LAND, 0xFF8A5A2E);
+        CATEGORY_COLOR.put(Element.SKY, 0xFF4A90C4);
+        CATEGORY_COLOR.put(Element.SEA, 0xFF2E9B8F);
     }
 
     // public builds only unlock the polished pets for now; a .pnp_testing file in
@@ -186,14 +197,16 @@ public class MenagerieScreen extends Screen {
 
     @Override
     protected void init() {
-        // category tabs run down the left edge as a vertical strip (icon-only,
-        // tooltip for the label - Essential/Bedrock-Marketplace-style side rail)
-        // instead of the old horizontal row under the preview. Everything else in
-        // the left column anchors off contentLeft instead of a bare screen margin,
-        // so it shifts right to make room for the strip.
+        // category tabs run down the left edge as a wide, color-coded strip (icon +
+        // visible text, not icon-only) - each category gets its own flat color
+        // (see CATEGORY_COLOR) instead of blending into the shared grey chrome, the
+        // way the concept art color-codes land/sky/sea. Everything else in the left
+        // column anchors off contentLeft instead of a bare screen margin, so it
+        // shifts right to make room for the strip.
         int tabStripX = 6;
-        int tabSize = 28;
-        int contentLeft = tabStripX + tabSize + 10;
+        int tabWidth = 100;
+        int tabHeight = 30;
+        int contentLeft = tabStripX + tabWidth + 10;
         this.contentLeft = contentLeft;
         int leftWidth = this.width - PANEL_WIDTH - 24 - contentLeft;
 
@@ -202,12 +215,12 @@ public class MenagerieScreen extends Screen {
         int ty = tabTop;
         for (Element el : Element.values()) {
             Element tabElement = el;
-            ThemedButton tab = ThemedButton.of(tabStripX, ty, tabSize, tabSize, Component.empty(), b -> {
+            ThemedButton tab = ThemedButton.of(tabStripX, ty, tabWidth, tabHeight, Component.empty(), b -> {
                 this.element = tabElement;
                 this.page = 0;
                 this.applyFilter();
                 this.rebuildGrid();
-            });
+            }).withBackgroundColor(CATEGORY_COLOR.get(el));
             String label = switch (el) {
                 case ALL -> "All"; case LAND -> "Land"; case SKY -> "Sky"; case SEA -> "Sea";
             };
@@ -216,14 +229,13 @@ public class MenagerieScreen extends Screen {
                 tab.active = false;
                 tab.setTooltip(net.minecraft.client.gui.components.Tooltip.create(
                         Component.literal(label + " - Coming soon")));
-            } else {
-                tab.setTooltip(net.minecraft.client.gui.components.Tooltip.create(Component.literal(label)));
             }
-            this.tabIconY.put(el, ty + tabSize / 2 - 5);
-            ty += tabSize + 4;
+            this.tabIconY.put(el, ty + tabHeight / 2 - 5);
+            ty += tabHeight + 6;
             this.track(tab);
         }
-        this.tabIconX = tabStripX + tabSize / 2 - 5;
+        this.tabIconX = tabStripX + 8;
+        this.tabTextX = this.tabIconX + 14;
 
         // the pet takes center stage: big preview up top, arrows to flip through
         this.previewW = Math.min(210, leftWidth - 64);
@@ -937,7 +949,11 @@ public class MenagerieScreen extends Screen {
             boolean isOwned = this.owned(species);
             String label = (isActive ? "✔ " : "") + species.getDisplayName().getString();
             if (this.testingCatalog && !isPublic) {
-                label = "⚗ " + label;
+                // plain ASCII, not a Unicode symbol - Minecraft's default font has no
+                // glyph for the alembic character (U+2697) this used to be, which
+                // rendered as an ugly fallback/tofu box on basically every non-public
+                // species in the grid (visible in an actual screenshot, not a guess)
+                label = "T " + label;
             } else if (unlocked && !isActive && !isOwned) {
                 label = "$ " + label; // needs adopting - clicking opens the adopt prompt, not an instant switch
             }
@@ -1006,6 +1022,14 @@ public class MenagerieScreen extends Screen {
         if (this.adoptPromptSpecies != null) {
             Theme.drawInset(graphics, this.adoptPanelLeft, this.adoptPanelTop, this.adoptPanelW, this.adoptPanelH);
         }
+        if (this.searchBox != null && this.searchBox.visible) {
+            // vanilla EditBox's own border reads as near-invisible against this
+            // theme's dark backdrop, making it look like a stray black rectangle -
+            // give it an explicit themed background so it reads as an intentional
+            // input field instead
+            Theme.drawInset(graphics, this.searchBox.getX() - 2, this.searchBox.getY() - 2,
+                    this.searchBox.getWidth() + 4, this.searchBox.getHeight() + 4);
+        }
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
         graphics.text(this.font, this.title, this.width / 2 - this.font.width(this.title) / 2, 10, Theme.TEXT_HEADER);
         if (this.naming) {
@@ -1022,6 +1046,10 @@ public class MenagerieScreen extends Screen {
             Integer y = this.tabIconY.get(el);
             if (icon != null && y != null) {
                 graphics.blitSprite(RenderPipelines.GUI_TEXTURED, icon, this.tabIconX, y, 10, 10);
+                String label = switch (el) {
+                    case ALL -> "All"; case LAND -> "Land"; case SKY -> "Sky"; case SEA -> "Sea";
+                };
+                graphics.text(this.font, Component.literal(label), this.tabTextX, y, 0xFFFFFFFF);
             }
         }
 

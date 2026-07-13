@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.38.2
+- Fixed the Shop's search box rendering as a plain black bar - vanilla's own EditBox border is nearly invisible against this theme's dark background, so it now gets an explicit themed panel behind it
+- Fixed almost every non-public species in the catalog grid showing a broken/fallback glyph instead of a testing-only marker - traced to a Unicode alembic character (⚗) with no glyph in Minecraft's default font, replaced with plain text
+- Recolored the category tabs to match reference concept art: Land/Sky/Sea each get their own distinct color (earthy orange, sky blue, teal) instead of all looking identical, tabs widened to show the category name alongside the icon instead of icon-only+tooltip. Kept the corners square rather than the concept's rounded pills, per an explicit decision to match the rest of the theme's existing chrome
+
 ## 0.38.1
 - Added a "Reset Progress" button to the Shop for wiping a test account's cloud adoptions/currency/bond-claim clock and running through the whole flow again from scratch. Testing-only (same `.pnp_testing` gate the rest of the dev catalog uses) - never visible in a normal build. Requires two clicks to actually fire. Verified live against production with two synthetic test accounts side by side to confirm a reset only ever touches the account it was called for
 
