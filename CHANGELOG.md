@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.39.0
+- Made the Shop an actual overlay instead of a solid-looking wall: the live game world now renders behind it (it was never rendering at all before - same root cause and fix as the adoption screen's black-background bug from earlier this session, just never applied here), the dim is much lighter, and everything is grouped into one bounded panel with real margin around it instead of every button floating loose across the entire screen. No existing button moved - the panel bounds were computed from the layout that was already there, not a redo of the ~40 already-tuned positions
+
 ## 0.38.2
 - Fixed the Shop's search box rendering as a plain black bar - vanilla's own EditBox border is nearly invisible against this theme's dark background, so it now gets an explicit themed panel behind it
 - Fixed almost every non-public species in the catalog grid showing a broken/fallback glyph instead of a testing-only marker - traced to a Unicode alembic character (⚗) with no glyph in Minecraft's default font, replaced with plain text

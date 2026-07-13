@@ -114,6 +114,7 @@ public class MenagerieScreen extends Screen {
     private String bondRewardMessage;
     private Button resetProgressButton;
     private boolean resetArmed = false;
+    private int leftPanelLeft, leftPanelTop, leftPanelRight, leftPanelBottom;
 
     // element categories
     private enum Element { ALL, LAND, SKY, SEA }
@@ -193,6 +194,16 @@ public class MenagerieScreen extends Screen {
         } catch (Exception e) {
             this.selected = PetList.values()[0];
         }
+    }
+
+    @Override
+    public boolean isPauseScreen() {
+        // an overlay on the live game, not a menu blocking it - same fix already
+        // applied to AdoptionScreen this session: Screen's default (true) also stops
+        // GameRenderer from rendering the level scene at all while this screen is
+        // open, not just freezing a visible frame - so with the default, the world
+        // was never actually visible behind the dim at all, just solid black
+        return false;
     }
 
     @Override
@@ -403,6 +414,20 @@ public class MenagerieScreen extends Screen {
                 Component.literal("Cancel"), b -> this.exitNaming());
         this.namingCancelButton.visible = false;
         this.addRenderableWidget(this.namingCancelButton);
+
+        // group all the existing (already-positioned) content into one bounded
+        // panel rather than leaving every button floating loose over a full-screen
+        // dim - bounds computed from geometry already in scope above, not
+        // re-derived, so none of the ~40 already-tuned button positions move.
+        // One panel, not two: the live gap between the grid and the right-side
+        // button column is only ~20px to begin with (baked into leftWidth's own
+        // formula), well under the inset sprite's 12px nine-slice border on each
+        // side - two separate panels that close would have their borders visibly
+        // collide rather than reading as a clean gap.
+        this.leftPanelLeft = 2;
+        this.leftPanelTop = Math.min(tabTop - 10, GRID_TOP + PREVIEW_HEIGHT - 34);
+        this.leftPanelRight = this.width - 2;
+        this.leftPanelBottom = this.height - 4;
 
         this.applyFilter();
         this.rebuildGrid();
@@ -1013,12 +1038,19 @@ public class MenagerieScreen extends Screen {
 
     @Override
     public void extractRenderState(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        // dim first, widgets (super) after: render commands paint in queue order, so
-        // queuing widgets before this dim would let it paint directly over them -
-        // same fix as AdoptionScreen's Continue button needed. Just a translucent
-        // tint, not a collective panel - only the preview stage below gets its own
-        // individual box.
-        graphics.fill(0, 0, this.width, this.height, 0x730B0B0D);
+        // background/panels first, widgets (super) after: render commands paint in
+        // queue order, so queuing widgets before this dim would let it paint
+        // directly over them - same fix as AdoptionScreen's Continue button needed.
+        //
+        // a light dim (not the old near-opaque tint) plus isPauseScreen() above -
+        // the live world is meant to actually show through now, overlay-style,
+        // rather than the screen reading as a solid dark wall with the game
+        // nowhere in evidence behind it. The panel below gives all the buttons a
+        // visible boundary without needing to touch any of their existing,
+        // already-tuned positions.
+        graphics.fill(0, 0, this.width, this.height, 0x400B0B0D);
+        Theme.drawInset(graphics, this.leftPanelLeft, this.leftPanelTop,
+                this.leftPanelRight - this.leftPanelLeft, this.leftPanelBottom - this.leftPanelTop);
         if (this.adoptPromptSpecies != null) {
             Theme.drawInset(graphics, this.adoptPanelLeft, this.adoptPanelTop, this.adoptPanelW, this.adoptPanelH);
         }
