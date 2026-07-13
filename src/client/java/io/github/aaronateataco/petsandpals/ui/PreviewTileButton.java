@@ -50,7 +50,15 @@ public class PreviewTileButton extends ThemedButton {
         }
         if (this.preview != null && !this.preview.isRemoved()) {
             int size = this.getWidth();
-            int scale = Math.max(8, (int) (size * PREVIEW_FILL_RATIO / Math.max(0.3F, this.preview.getBbHeight())));
+            // scale against whichever of height/width is more constraining, not
+            // height alone - a square tile sized only off height lets wide, short
+            // mobs (ravager, most quadrupeds, boats-on-legs like strider) overflow
+            // the tile's sides instead of just its top/bottom. AdoptionScreen's own
+            // preview cells get away with height-only scaling because its roster is
+            // small and hand-picked (fox/cat/bee/copper golem); a full 77-species
+            // grid runs into real body-shape outliers that trick exposes
+            float largestDimension = Math.max(this.preview.getBbHeight(), this.preview.getBbWidth());
+            int scale = Math.max(8, (int) (size * PREVIEW_FILL_RATIO / Math.max(0.3F, largestDimension)));
             InventoryScreen.extractEntityInInventoryFollowsMouse(graphics,
                     this.getX(), this.getY(), this.getX() + size, this.getY() + size,
                     scale, 0.0625F, this.getX() + size / 2, this.getY() + size, this.preview);

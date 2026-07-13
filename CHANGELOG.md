@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.40.1
+- Fixed wide/short species (ravager, most quadrupeds, and similar body shapes) overflowing the sides of their grid preview tile - the fill-scale calculation only accounted for the entity's height, not its width, which AdoptionScreen's own small hand-picked preview roster never happened to expose but a full 77-species grid does
+
 ## 0.40.0
 - Fixed baby sheep always rendering full-size adult wool instead of scaled-down baby wool - a `babyModel` was built and never actually used
 - Resized the Shop's left category tabs to read closer to the reference concept art (100x30 -> 120x38)
