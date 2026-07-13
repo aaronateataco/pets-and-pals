@@ -31,9 +31,13 @@ public class ClientFoxRenderer extends PetRenderer<@NotNull ClientFox, @NotNull 
 
     @Override
     public @NotNull Identifier getTextureLocation(FoxRenderState livingEntityRenderState) {
-        if (Objects.equals(CONFIG.foxSkin, "red")) {
+        // prefer the skin baked into this render state at extraction time over the
+        // live CONFIG value - see ClientFoxRenderState's javadoc for why
+        String skin = livingEntityRenderState instanceof ClientFoxRenderState cfrs && cfrs.skinOverride != null
+                ? cfrs.skinOverride : CONFIG.foxSkin;
+        if (Objects.equals(skin, "red")) {
             foxTexturePath = "textures/entity/fox/fox.png";
-        } else if (Objects.equals(CONFIG.foxSkin, "snow")) {
+        } else if (Objects.equals(skin, "snow")) {
             foxTexturePath = "textures/entity/fox/fox_snow.png";
         } else {
             foxTexturePath = "textures/entity/fox/fox.png";
@@ -43,12 +47,15 @@ public class ClientFoxRenderer extends PetRenderer<@NotNull ClientFox, @NotNull 
 
     @Override
     public FoxRenderState createRenderState() {
-        return new FoxRenderState();
+        return new ClientFoxRenderState();
     }
 
     @Override
     public void extractRenderState(ClientFox fox, FoxRenderState state, float f) {
         super.extractRenderState(fox, state, f);
         state.isSleeping = fox.isPassenger();
+        if (state instanceof ClientFoxRenderState cfrs) {
+            cfrs.skinOverride = CONFIG.foxSkin;
+        }
     }
 }

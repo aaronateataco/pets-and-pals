@@ -49,4 +49,33 @@ public class ClientBeeRenderer extends PetRenderer<@NotNull ClientBee, @NotNull 
     public BeeRenderState createRenderState() {
         return new BeeRenderState();
     }
+
+    @Override
+    public void extractRenderState(ClientBee bee, BeeRenderState state, float partialTick) {
+        super.extractRenderState(bee, state, partialTick);
+        // vanilla's own BeeRenderer.extractRenderState() populates these five fields;
+        // this renderer never extended that class (it extends the shared PetRenderer
+        // instead), so they were always left at their Java defaults - isOnGround in
+        // particular defaulting to false permanently pins AdultBeeModel/BeeModel's
+        // setupAnim() onto its mid-flight branch (fixed-angle tucked legs, wing-flap
+        // math driven by an ageInTicks that never advances since a preview bee is
+        // never ticked), which is what actually produced the wrong, static pose - not
+        // just a missing animation.
+        //
+        // bee.onGround() alone isn't enough though: MenagerieScreen/AdoptionScreen
+        // render preview bees that are constructed fresh and never added to a level,
+        // so they never receive a real tick (ClientLevel.tickEntity is what
+        // increments tickCount - see ClientLevel.java) - onGround() on such an entity
+        // permanently reads its Java default (false), reproducing the exact same
+        // stuck-flying bug the first fix was meant to solve, just for every preview
+        // thumbnail instead of the in-world pet. tickCount == 0 is the signal that
+        // this bee has never actually been ticked, so treat it as grounded/idle -
+        // a real flying pet bee (ticked every frame once summoned) is unaffected.
+        state.isOnGround = bee.tickCount == 0
+                || (bee.onGround() && bee.getDeltaMovement().lengthSqr() < 1.0E-7);
+        state.hasStinger = true;
+        state.isAngry = false;
+        state.hasNectar = false;
+        state.rollAmount = 0.0f;
+    }
 }

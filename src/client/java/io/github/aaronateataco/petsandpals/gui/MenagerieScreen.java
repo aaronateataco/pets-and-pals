@@ -3,15 +3,25 @@ package io.github.aaronateataco.petsandpals.gui;
 import io.github.aaronateataco.petsandpals.Central;
 import io.github.aaronateataco.petsandpals.PetsConfig;
 import io.github.aaronateataco.petsandpals.PetsConfigScreen;
+import io.github.aaronateataco.petsandpals.PetsInitializer;
+import io.github.aaronateataco.petsandpals.cloud.PetsCloudClient;
+import io.github.aaronateataco.petsandpals.cloud.PlayerKeystore;
+import io.github.aaronateataco.petsandpals.cloud.dto.AdoptAdditionalResponse;
 import io.github.aaronateataco.petsandpals.enums.PetList;
 import io.github.aaronateataco.petsandpals.mob.AbstractPet;
+import io.github.aaronateataco.petsandpals.ui.Theme;
+import io.github.aaronateataco.petsandpals.ui.ThemedButton;
 import me.shedaniel.autoconfig.AutoConfig;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractSliderButton;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.LivingEntity;
 
 import java.lang.reflect.Field;
@@ -25,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.UUID;
 import java.util.function.DoubleConsumer;
 
 import static io.github.aaronateataco.petsandpals.Central.CONFIG;
@@ -87,8 +98,31 @@ public class MenagerieScreen extends Screen {
     private boolean draggingDandelion = false;
     private float lockFlashSeconds = -1.0F;
 
+    // --- adopt-a-new-species prompt (3-day cooldown, currency-skippable - see
+    // cloudflare-worker/worker.js's /v1/pets/adopt-additional) ---
+    private static final int SKIP_COOLDOWN_COST = 500; // mirrors worker.js's SKIP_COOLDOWN_COST
+    private PetList adoptPromptSpecies;
+    private String adoptStatusMessage;
+    private boolean adoptInFlight = false;
+    private Button adoptFreeButton;
+    private Button adoptSkipButton;
+    private Button buyCoinsButton;
+    private Button adoptCancelButton;
+    private int adoptPanelLeft, adoptPanelTop, adoptPanelW, adoptPanelH;
+
     // element categories
     private enum Element { ALL, LAND, SKY, SEA }
+
+    // each tab's pixel-art icon position, filled in during init()'s tab-building loop
+    private final Map<Element, Integer> tabIconX = new java.util.EnumMap<>(Element.class);
+    private int tabIconY;
+    private static final Map<Element, Identifier> CATEGORY_ICONS = new java.util.EnumMap<>(Element.class);
+    static {
+        CATEGORY_ICONS.put(Element.ALL, Identifier.fromNamespaceAndPath(PetsInitializer.MOD_ID, "theme/category/all"));
+        CATEGORY_ICONS.put(Element.LAND, Identifier.fromNamespaceAndPath(PetsInitializer.MOD_ID, "theme/category/land"));
+        CATEGORY_ICONS.put(Element.SKY, Identifier.fromNamespaceAndPath(PetsInitializer.MOD_ID, "theme/category/sky"));
+        CATEGORY_ICONS.put(Element.SEA, Identifier.fromNamespaceAndPath(PetsInitializer.MOD_ID, "theme/category/sea"));
+    }
 
     // public builds only unlock the polished pets for now; a .pnp_testing file in
     // the game dir (dev instances have one) opens the whole catalog
@@ -153,31 +187,37 @@ public class MenagerieScreen extends Screen {
         this.previewX = 12 + (leftWidth - this.previewW) / 2;
         this.previewY = 22;
         int arrowY = this.previewY + this.previewH / 2 - 10;
-        this.track(Button.builder(Component.literal("<"), b -> this.cycleSelected(-1))
-                .bounds(this.previewX - 26, arrowY, 20, 20).build());
-        this.track(Button.builder(Component.literal(">"), b -> this.cycleSelected(1))
-                .bounds(this.previewX + this.previewW + 6, arrowY, 20, 20).build());
+        this.track(ThemedButton.of(this.previewX - 26, arrowY, 20, 20,
+                Component.literal("<"), b -> this.cycleSelected(-1)));
+        this.track(ThemedButton.of(this.previewX + this.previewW + 6, arrowY, 20, 20,
+                Component.literal(">"), b -> this.cycleSelected(1)));
 
-        // element toggles sit under the preview, search under those
+        // element toggles sit under the preview, search under those - each carries a
+        // small pixel-art category icon (see gen_category_icons.py), drawn separately
+        // in extractRenderState since ThemedButton only ever draws a background+label
+        int tabW = 46;
         int tabY = this.previewY + this.previewH + 24;
-        int tabX = 12 + (leftWidth - 4 * 36 + 2) / 2;
+        int tabX = 12 + (leftWidth - Element.values().length * tabW + 2) / 2;
+        this.tabIconX.clear();
         for (Element el : Element.values()) {
             Element tabElement = el;
-            Button tab = Button.builder(Component.literal(switch (el) {
+            ThemedButton tab = ThemedButton.of(tabX, tabY, tabW, 18, Component.literal(switch (el) {
                 case ALL -> "All"; case LAND -> "Land"; case SKY -> "Sky"; case SEA -> "Sea";
             }), b -> {
                 this.element = tabElement;
                 this.page = 0;
                 this.applyFilter();
                 this.rebuildGrid();
-            }).bounds(tabX, tabY, 34, 18).build();
+            });
             // sky/sea catalogs open up alongside the rest of the roster
             if ((el == Element.SKY || el == Element.SEA) && !this.testingCatalog) {
                 tab.active = false;
                 tab.setTooltip(net.minecraft.client.gui.components.Tooltip.create(
                         Component.literal("Coming soon")));
             }
-            tabX += 36;
+            this.tabIconX.put(el, tabX + 3);
+            this.tabIconY = tabY + 4;
+            tabX += tabW + 2;
             this.track(tab);
         }
 
@@ -199,40 +239,40 @@ public class MenagerieScreen extends Screen {
         this.gridLeft = 12 + (leftWidth - (this.columns * (CELL_WIDTH + CELL_GAP) - CELL_GAP)) / 2;
 
         int pageY = this.height - 28;
-        this.prevButton = this.track(Button.builder(Component.literal("<"), b -> {
+        this.prevButton = this.track(ThemedButton.of(12, pageY, 20, 20, Component.literal("<"), b -> {
             if (this.page > 0) this.page--;
             this.rebuildGrid();
-        }).bounds(12, pageY, 20, 20).build());
-        this.nextButton = this.track(Button.builder(Component.literal(">"), b -> {
+        }));
+        this.nextButton = this.track(ThemedButton.of(36, pageY, 20, 20, Component.literal(">"), b -> {
             if ((this.page + 1) * this.pageSize() < this.filtered.size()) this.page++;
             this.rebuildGrid();
-        }).bounds(36, pageY, 20, 20).build());
+        }));
 
         int panelX = this.width - PANEL_WIDTH - 6;
         int y = GRID_TOP + PREVIEW_HEIGHT + 4;
-        this.summonButton = this.track(Button.builder(Component.literal("Summon"), b -> this.summonSelected())
-                .bounds(panelX, y, PANEL_WIDTH, 20).build());
+        this.summonButton = this.track(ThemedButton.of(panelX, y, PANEL_WIDTH, 20,
+                Component.literal("Summon"), b -> this.summonSelected()));
         this.updateSummonState();
         y += 24;
-        this.track(Button.builder(this.petToggleLabel(), b -> {
+        this.track(ThemedButton.of(panelX, y, PANEL_WIDTH, 20, this.petToggleLabel(), b -> {
             CONFIG.petOn = !Boolean.TRUE.equals(CONFIG.petOn);
             if (CONFIG.petOn) Central.summonPet();
             else Central.despawnPet();
             b.setMessage(this.petToggleLabel());
-        }).bounds(panelX, y, PANEL_WIDTH, 20).build());
+        }));
         y += 24;
-        this.nameTagButton = this.track(Button.builder(Component.literal("Name Tag..."), b -> this.enterNaming())
-                .bounds(panelX, y, PANEL_WIDTH, 20).build());
+        this.nameTagButton = this.track(ThemedButton.of(panelX, y, PANEL_WIDTH, 20,
+                Component.literal("Name Tag..."), b -> this.enterNaming()));
         y += 24;
-        this.skinButton = this.track(Button.builder(this.skinLabel(), b -> {
+        this.skinButton = this.track(ThemedButton.of(panelX, y, PANEL_WIDTH, 20, this.skinLabel(), b -> {
             this.cycleSkin();
             b.setMessage(this.skinLabel());
-        }).bounds(panelX, y, PANEL_WIDTH, 20).build());
+        }));
         y += 24;
-        this.babyToggleButton = this.track(Button.builder(this.babyToggleLabel(), b -> {
+        this.babyToggleButton = this.track(ThemedButton.of(panelX, y, PANEL_WIDTH, 20, this.babyToggleLabel(), b -> {
             Central.setPetBaby(!CONFIG.isBaby);
             b.setMessage(this.babyToggleLabel());
-        }).bounds(panelX, y, PANEL_WIDTH, 20).build());
+        }));
         y += 24;
         this.track(new PercentSlider(panelX, y, PANEL_WIDTH, 20, "Speed", 0.25, 3.0,
                 CONFIG.petSpeed, value -> CONFIG.petSpeed = (float) value));
@@ -240,15 +280,15 @@ public class MenagerieScreen extends Screen {
         this.track(new PercentSlider(panelX, y, PANEL_WIDTH, 20, "Volume", 0.0, 1.0,
                 CONFIG.petVolume == null ? 1.0f : CONFIG.petVolume, value -> CONFIG.petVolume = (float) value));
         y += 24;
-        this.raftWoodButton = this.track(Button.builder(this.raftWoodLabel(), b -> {
+        this.raftWoodButton = this.track(ThemedButton.of(panelX, y, PANEL_WIDTH, 20, this.raftWoodLabel(), b -> {
             String[] woods = io.github.aaronateataco.petsandpals.mob.PetRaftBlock.WOODS;
             int i = java.util.Arrays.asList(woods).indexOf(CONFIG.raftWood);
             CONFIG.raftWood = woods[(i + 1) % woods.length];
             this.raftPreview = null;
             b.setMessage(this.raftWoodLabel());
-        }).bounds(panelX, y, PANEL_WIDTH, 20).build());
+        }));
         y += 24;
-        this.cushionButton = this.track(Button.builder(this.cushionLabel(), b -> {
+        this.cushionButton = this.track(ThemedButton.of(panelX, y, PANEL_WIDTH, 20, this.cushionLabel(), b -> {
             // cycles through the 16 dyes plus a bare deck
             List<String> options = new ArrayList<>(List.of(io.github.aaronateataco.petsandpals.mob.PetRaftBlock.DYES));
             options.add("none");
@@ -256,9 +296,9 @@ public class MenagerieScreen extends Screen {
             CONFIG.cushionColor = options.get((i + 1) % options.size());
             this.raftPreview = null;
             b.setMessage(this.cushionLabel());
-        }).bounds(panelX, y, PANEL_WIDTH, 20).build());
+        }));
         y += 28;
-        this.track(Button.builder(Component.literal("Advanced settings..."), b -> {
+        this.track(ThemedButton.of(panelX, y, PANEL_WIDTH, 20, Component.literal("Advanced settings..."), b -> {
             if (this.minecraft == null) return;
             try {
                 this.minecraft.setScreen(PetsConfigScreen.getInstance().getAdvancedConfigScreenFactory().create(this));
@@ -269,10 +309,37 @@ public class MenagerieScreen extends Screen {
                 io.github.aaronateataco.petsandpals.PetsInitializer.LOGGER.error(
                         "[Pets&Pals] Advanced settings screen failed to open for active pet '{}'", CONFIG.activePet, e);
             }
-        }).bounds(panelX, y, PANEL_WIDTH, 20).build());
+        }));
 
-        this.addRenderableWidget(Button.builder(Component.literal("Done"), b -> this.onClose())
-                .bounds(panelX, this.height - 28, PANEL_WIDTH, 20).build());
+        this.addRenderableWidget(ThemedButton.of(panelX, this.height - 28, PANEL_WIDTH, 20,
+                Component.literal("Done"), b -> this.onClose()));
+
+        // adopt-a-new-species prompt: a small centered modal, buttons built once here
+        // and shown/hidden via closeAdoptPrompt()/refreshAdoptPromptState() rather
+        // than rebuilt each time, same pattern the naming page already uses for
+        // nameBox/namingCancelButton. When open, extractRenderState() skips drawing
+        // the preview stage/pet entirely (see the early return there) specifically
+        // so nothing drawn after super.extractRenderState() can paint over these
+        // buttons - the preview stage's own box can genuinely overlap screen-center
+        // on wide layouts, which would otherwise repeat the exact z-order bug this
+        // session already fixed once for AdoptionScreen's Continue button.
+        int adoptButtonW = 200;
+        int adoptCenterX = this.width / 2 - adoptButtonW / 2;
+        int adoptTop = this.height / 2 - 40;
+        int adoptButtonY = adoptTop + 40;
+        this.adoptPanelLeft = adoptCenterX - 8;
+        this.adoptPanelTop = adoptTop - 8;
+        this.adoptPanelW = adoptButtonW + 16;
+        this.adoptPanelH = (adoptButtonY + 48 + 20) - adoptTop + 16;
+        this.adoptFreeButton = this.addRenderableWidget(ThemedButton.of(adoptCenterX, adoptButtonY, adoptButtonW, 20,
+                Component.literal("Adopt"), b -> this.confirmAdopt(false)));
+        this.adoptSkipButton = this.addRenderableWidget(ThemedButton.of(adoptCenterX, adoptButtonY, adoptButtonW, 20,
+                Component.literal("Skip wait"), b -> this.confirmAdopt(true)));
+        this.buyCoinsButton = this.addRenderableWidget(ThemedButton.of(adoptCenterX, adoptButtonY + 24, adoptButtonW, 20,
+                Component.literal("Buy Paw Coins..."), b -> this.buyCurrency()));
+        this.adoptCancelButton = this.addRenderableWidget(ThemedButton.of(adoptCenterX, adoptButtonY + 48, adoptButtonW, 20,
+                Component.literal("Cancel"), b -> this.closeAdoptPrompt()));
+        this.closeAdoptPrompt();
 
         // anvil naming page: a name tag icon the player drags onto the pet stage
         this.tagRestX = 12 + leftWidth / 2 - 80;
@@ -289,8 +356,8 @@ public class MenagerieScreen extends Screen {
         // dandelion icon and its hint text render for baby pets, so the icon covered
         // half the button. Kept at this fixed spot regardless of baby/adult so it
         // doesn't jump around if the age toggle changes without reopening this page.
-        this.namingCancelButton = Button.builder(Component.literal("Cancel"), b -> this.exitNaming())
-                .bounds(this.tagRestX, tabY + 80, 106, 20).build();
+        this.namingCancelButton = ThemedButton.of(this.tagRestX, tabY + 80, 106, 20,
+                Component.literal("Cancel"), b -> this.exitNaming());
         this.namingCancelButton.visible = false;
         this.addRenderableWidget(this.namingCancelButton);
 
@@ -298,6 +365,8 @@ public class MenagerieScreen extends Screen {
         this.rebuildGrid();
         this.applyNamingVisibility();
         this.updateSummonState();
+        this.refreshOwnedPets();
+        this.refreshCurrencyBalance();
     }
 
     /** Registers a widget as catalog-only: hidden while the naming page is open. */
@@ -468,6 +537,155 @@ public class MenagerieScreen extends Screen {
         return this.testingCatalog || PUBLIC_PETS.contains(species.name());
     }
 
+    /** Whether this UUID has ever adopted this species (starter pet included) - the
+     *  currently-active species always counts even before the first cloud refresh
+     *  completes, so a legacy/offline player isn't gated on their own starter pet. */
+    private boolean owned(PetList species) {
+        String name = species.name();
+        return name.equals(CONFIG.activePet) || (CONFIG.ownedSpecies != null && CONFIG.ownedSpecies.contains(name));
+    }
+
+    private void refreshOwnedPets() {
+        if (this.minecraft == null || this.minecraft.player == null) return;
+        UUID uuid = this.minecraft.player.getUUID();
+        PetsCloudClient.getOwnedPets(uuid).thenAccept(resp -> Minecraft.getInstance().execute(() -> {
+            if (resp == null || resp.error != null || resp.species == null) return; // offline - keep local cache
+            CONFIG.ownedSpecies = new java.util.HashSet<>(resp.species);
+            if (resp.lastNonStarterAdoptionAt != null) {
+                CONFIG.lastNonStarterAdoptionAt = resp.lastNonStarterAdoptionAt;
+            }
+            this.rebuildGrid();
+        }));
+    }
+
+    private void refreshCurrencyBalance() {
+        if (this.minecraft == null || this.minecraft.player == null) return;
+        UUID uuid = this.minecraft.player.getUUID();
+        String secret = PlayerKeystore.loadSecret(uuid);
+        if (secret == null) return; // never adopted online yet - nothing to check
+        PetsCloudClient.getCurrencyBalance(uuid, secret).thenAccept(resp -> Minecraft.getInstance().execute(() -> {
+            if (resp == null || resp.error != null || resp.balance == null) return;
+            CONFIG.currencyBalanceCache = resp.balance;
+            this.refreshAdoptPromptState();
+        }));
+    }
+
+    private boolean cooldownActive() {
+        return System.currentTimeMillis() < CONFIG.lastNonStarterAdoptionAt + 3L * 24 * 60 * 60 * 1000;
+    }
+
+    private void openAdoptPrompt(PetList species) {
+        this.adoptPromptSpecies = species;
+        this.adoptStatusMessage = null;
+        this.adoptInFlight = false;
+        this.refreshAdoptPromptState();
+        this.refreshCurrencyBalance();
+    }
+
+    private void closeAdoptPrompt() {
+        this.adoptPromptSpecies = null;
+        this.adoptStatusMessage = null;
+        this.adoptInFlight = false;
+        this.adoptFreeButton.visible = false;
+        this.adoptSkipButton.visible = false;
+        this.buyCoinsButton.visible = false;
+        this.adoptCancelButton.visible = false;
+    }
+
+    private void refreshAdoptPromptState() {
+        if (this.adoptPromptSpecies == null) return;
+        boolean interactable = !this.adoptInFlight;
+        boolean cooldown = this.cooldownActive();
+        this.adoptFreeButton.visible = !cooldown;
+        this.adoptFreeButton.active = interactable && !cooldown;
+        this.adoptSkipButton.visible = cooldown;
+        this.adoptSkipButton.active = interactable && cooldown && CONFIG.currencyBalanceCache >= SKIP_COOLDOWN_COST;
+        this.adoptSkipButton.setMessage(Component.literal(
+                "Skip wait (" + SKIP_COOLDOWN_COST + " coins, have " + CONFIG.currencyBalanceCache + ")"));
+        this.buyCoinsButton.visible = true;
+        this.buyCoinsButton.active = interactable;
+        this.adoptCancelButton.visible = true;
+        this.adoptCancelButton.active = interactable;
+    }
+
+    private void confirmAdopt(boolean skipCooldown) {
+        if (this.adoptPromptSpecies == null || this.minecraft == null || this.minecraft.player == null || this.adoptInFlight) return;
+        UUID uuid = this.minecraft.player.getUUID();
+        String secret = PlayerKeystore.loadSecret(uuid);
+        if (secret == null) {
+            this.adoptStatusMessage = "Adopt your starter pet online first";
+            return;
+        }
+        PetList species = this.adoptPromptSpecies;
+        String modVersion = net.fabricmc.loader.api.FabricLoader.getInstance()
+                .getModContainer(PetsInitializer.MOD_ID)
+                .map(c -> c.getMetadata().getVersion().getFriendlyString())
+                .orElse("unknown");
+        this.adoptInFlight = true;
+        this.adoptStatusMessage = "Adopting...";
+        this.refreshAdoptPromptState();
+        PetsCloudClient.adoptAdditional(uuid, secret, species.name().toLowerCase(Locale.ROOT), skipCooldown, modVersion)
+                .thenAccept(resp -> Minecraft.getInstance().execute(() -> this.handleAdoptAdditionalResponse(species, skipCooldown, resp)));
+    }
+
+    private void handleAdoptAdditionalResponse(PetList species, boolean skipCooldown, AdoptAdditionalResponse resp) {
+        this.adoptInFlight = false;
+        if (resp == null) {
+            this.adoptStatusMessage = "No connection - try again later";
+            this.refreshAdoptPromptState();
+            return;
+        }
+        if (resp.error == null) {
+            CONFIG.ownedSpecies.add(species.name());
+            if (skipCooldown) {
+                CONFIG.currencyBalanceCache = Math.max(0, CONFIG.currencyBalanceCache - SKIP_COOLDOWN_COST);
+            }
+            if (resp.adoptedAt != null) {
+                CONFIG.lastNonStarterAdoptionAt = resp.adoptedAt;
+            }
+            this.saveConfig();
+            this.selected = species;
+            this.applySelected();
+            this.closeAdoptPrompt();
+            this.rebuildGrid();
+            this.updateSummonState();
+            return;
+        }
+        switch (resp.error) {
+            case "cooldown_active" -> {
+                if (resp.nextEligibleAt != null) {
+                    CONFIG.lastNonStarterAdoptionAt = resp.nextEligibleAt - 3L * 24 * 60 * 60 * 1000;
+                }
+                this.adoptStatusMessage = "Still on cooldown";
+            }
+            case "insufficient_currency" -> this.adoptStatusMessage = "Not enough Paw Coins";
+            case "invalid_credentials" -> this.adoptStatusMessage = "Adopt your starter pet online first";
+            default -> this.adoptStatusMessage = "Something went wrong - try again later";
+        }
+        this.refreshAdoptPromptState();
+    }
+
+    private void buyCurrency() {
+        if (this.minecraft == null || this.minecraft.player == null) return;
+        UUID uuid = this.minecraft.player.getUUID();
+        String secret = PlayerKeystore.loadSecret(uuid);
+        if (secret == null) {
+            this.adoptStatusMessage = "Adopt your starter pet online first";
+            return;
+        }
+        this.adoptStatusMessage = "Opening checkout in your browser...";
+        // one fixed pack for now (see worker.js's CURRENCY_PACKS) - a pack picker is
+        // a natural follow-up, not essential for the mechanic to work end to end
+        PetsCloudClient.createCurrencyCheckout(uuid, secret, "medium").thenAccept(resp -> Minecraft.getInstance().execute(() -> {
+            if (resp == null || resp.checkoutUrl == null) {
+                this.adoptStatusMessage = "Couldn't start checkout - try again later";
+                return;
+            }
+            Util.getPlatform().openUri(resp.checkoutUrl);
+            this.adoptStatusMessage = "Check your browser - balance updates shortly after payment";
+        }));
+    }
+
     /** Arrow buttons: browse the roster without summoning anything. */
     private void cycleSelected(int direction) {
         if (this.filtered.isEmpty()) return;
@@ -624,16 +842,23 @@ public class MenagerieScreen extends Screen {
             boolean isActive = species.name().equals(CONFIG.activePet);
             boolean isPublic = PUBLIC_PETS.contains(species.name());
             boolean unlocked = isPublic || this.testingCatalog;
+            boolean isOwned = this.owned(species);
             String label = (isActive ? "✔ " : "") + species.getDisplayName().getString();
             if (this.testingCatalog && !isPublic) {
                 label = "⚗ " + label;
+            } else if (unlocked && !isActive && !isOwned) {
+                label = "$ " + label; // needs adopting - clicking opens the adopt prompt, not an instant switch
             }
-            Button cell = Button.builder(Component.literal(label), b -> {
+            Button cell = ThemedButton.of(x, y, CELL_WIDTH, CELL_HEIGHT, Component.literal(label), b -> {
                 this.selected = species;
-                this.applySelected();
-                this.rebuildGrid();
-                this.updateSummonState();
-            }).bounds(x, y, CELL_WIDTH, CELL_HEIGHT).build();
+                if (this.owned(species)) {
+                    this.applySelected();
+                    this.rebuildGrid();
+                    this.updateSummonState();
+                } else {
+                    this.openAdoptPrompt(species);
+                }
+            });
             cell.active = unlocked && species != this.selected;
             if (!unlocked) {
                 cell.setTooltip(net.minecraft.client.gui.components.Tooltip.create(
@@ -680,21 +905,49 @@ public class MenagerieScreen extends Screen {
 
     @Override
     public void extractRenderState(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
+        // dim first, widgets (super) after: render commands paint in queue order, so
+        // queuing widgets before this dim would let it paint directly over them -
+        // same fix as AdoptionScreen's Continue button needed. Just a translucent
+        // tint, not a collective panel - only the preview stage below gets its own
+        // individual box.
+        graphics.fill(0, 0, this.width, this.height, 0x730B0B0D);
+        if (this.adoptPromptSpecies != null) {
+            Theme.drawInset(graphics, this.adoptPanelLeft, this.adoptPanelTop, this.adoptPanelW, this.adoptPanelH);
+        }
         super.extractRenderState(graphics, mouseX, mouseY, partialTick);
-        graphics.text(this.font, this.title, this.width / 2 - this.font.width(this.title) / 2, 10, 0xFFFFFFFF);
+        graphics.text(this.font, this.title, this.width / 2 - this.font.width(this.title) / 2, 10, Theme.TEXT_HEADER);
         if (this.naming) {
             this.renderNamingPage(graphics, mouseX, mouseY);
         } else {
             graphics.text(this.font, Component.literal("Page " + (this.page + 1) + "/"
                             + (Math.max(0, (this.filtered.size() - 1) / this.pageSize()) + 1)
                             + "  (" + this.filtered.size() + " pets)"),
-                    62, this.height - 22, 0xFFAAAAAA);
+                    62, this.height - 22, Theme.TEXT_SECONDARY);
+        }
+
+        for (Element el : Element.values()) {
+            Identifier icon = CATEGORY_ICONS.get(el);
+            Integer x = this.tabIconX.get(el);
+            if (icon != null && x != null) {
+                graphics.blitSprite(RenderPipelines.GUI_TEXTURED, icon, x, this.tabIconY, 10, 10);
+            }
+        }
+
+        if (this.adoptPromptSpecies != null) {
+            // skip the preview stage/pet render entirely while the adopt modal is
+            // open - its box can genuinely overlap screen-center on wide layouts,
+            // and everything below this point draws after (therefore on top of) the
+            // adoptFreeButton/adoptSkipButton/buyCoinsButton/adoptCancelButton
+            // widgets super.extractRenderState() already drew above
+            this.renderAdoptPrompt(graphics);
+            return;
         }
 
         int boxLeft = this.previewX;
         int boxTop = this.previewY;
         int boxRight = this.previewX + this.previewW;
         int boxBottom = this.previewY + this.previewH;
+        Theme.drawTile(graphics, boxLeft - 2, boxTop - 2, this.previewW + 4, this.previewH + 4, false);
 
         // name + origin centered under the stage
         if (this.selected != null) {
@@ -702,9 +955,9 @@ public class MenagerieScreen extends Screen {
             String origin = originOf(this.selected);
             int nameWidth = this.font.width(name);
             int cx = boxLeft + this.previewW / 2;
-            graphics.text(this.font, Component.literal(name), cx - nameWidth / 2, boxBottom + 4, 0xFFFFFFFF);
+            graphics.text(this.font, Component.literal(name), cx - nameWidth / 2, boxBottom + 4, Theme.TEXT_HEADER);
             graphics.text(this.font, Component.literal(origin),
-                    cx - this.font.width(origin) / 2, boxBottom + 14, 0xFF777777);
+                    cx - this.font.width(origin) / 2, boxBottom + 14, Theme.TEXT_SECONDARY);
         }
 
         // hovering the raft/cushion buttons swaps the stage to the raft itself
@@ -769,9 +1022,8 @@ public class MenagerieScreen extends Screen {
         int panelTop = this.tagRestY - 6;
         int panelRight = this.nameBox.getX() + this.nameBox.getWidth() + 6;
         int panelBottom = this.tagRestY + 80 + 20 + 6; // clears the Cancel button, same spot either way
-        graphics.fill(panelLeft, panelTop, panelRight, panelBottom, 0xC0101010);
-        graphics.outline(panelLeft, panelTop, panelRight, panelBottom, 0xFF555555);
-        graphics.text(this.font, Component.literal("Name your pet"), panelLeft + 4, panelTop - 10, 0xFFFFFFFF);
+        Theme.drawInset(graphics, panelLeft, panelTop, panelRight - panelLeft, panelBottom - panelTop);
+        graphics.text(this.font, Component.literal("Name your pet"), panelLeft + 4, panelTop - 10, Theme.TEXT_HEADER);
 
         // the tag icon itself is drawn last (see renderOverlays) so it stays on
         // top while being dragged across the rest of the screen
@@ -804,6 +1056,23 @@ public class MenagerieScreen extends Screen {
                         this.previewX + this.previewW, this.previewY + this.previewH, 0xFF55FF55);
             }
         }
+    }
+
+    /** Text inside the adopt-prompt panel (the panel background itself is drawn
+     *  earlier, before super.extractRenderState(), so the buttons land on top of it -
+     *  see the comment on that call). */
+    private void renderAdoptPrompt(@NotNull GuiGraphicsExtractor graphics) {
+        if (this.adoptPromptSpecies == null) return;
+        int textLeft = this.adoptPanelLeft + 8;
+        int cx = this.adoptPanelLeft + this.adoptPanelW / 2;
+        String name = this.adoptPromptSpecies.getDisplayName().getString();
+        String title = "Adopt " + name + "?";
+        graphics.text(this.font, Component.literal(title), cx - this.font.width(title) / 2,
+                this.adoptPanelTop + 6, Theme.TEXT_HEADER);
+        String status = this.adoptStatusMessage != null ? this.adoptStatusMessage
+                : this.cooldownActive() ? "On cooldown - pay to adopt now, or wait it out"
+                : "Ready to adopt - free!";
+        graphics.text(this.font, Component.literal(status), textLeft, this.adoptPanelTop + 20, Theme.TEXT_SECONDARY);
     }
 
     /** Draws whatever floats above the normal layout: the dragged tag, the settling

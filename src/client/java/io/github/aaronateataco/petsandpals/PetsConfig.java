@@ -18,6 +18,16 @@ public class PetsConfig implements ConfigData {
     public String activePet;
     /** True once the server has confirmed a starter-pet adoption for this UUID; gates AdoptionScreen. */
     public Boolean hasAdoptedStarterPet;
+    /** Cloud-cached list of non-starter species this UUID has adopted (lowercase
+     *  PetList enum names) - refreshed opportunistically when the Menagerie opens.
+     *  The server ledger is the source of truth; this only hides round-trip latency
+     *  in the catalog UI, same role {@link #hasAdoptedStarterPet} already plays. */
+    public java.util.Set<String> ownedSpecies = new java.util.HashSet<>();
+    /** ms epoch of the last non-starter adoption, or 0 if none - drives the cooldown
+     *  countdown shown before a fresh server check confirms it. */
+    public long lastNonStarterAdoptionAt = 0L;
+    /** Cached Paw Coin balance; same latency-hiding role as the two fields above. */
+    public int currencyBalanceCache = 0;
     public float petSpeed = 1.0f;
     public Float petVolume = 1.0f;
     public String raftWood = "spruce";

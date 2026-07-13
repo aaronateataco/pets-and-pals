@@ -32,6 +32,10 @@ bin/
 
 run/
 
+# wrangler (cloudflare-worker/)
+
+cloudflare-worker/.wrangler/
+
 # java
 
 hs_err_*.log

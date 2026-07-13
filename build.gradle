@@ -90,11 +90,11 @@ jar {
 mavenPublishing {
     publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
     signAllPublications()
-    coordinates("io.github.downloadableduck", "petsmod", "0.8.1")
+    coordinates("io.github.aaronateataco", "pets-and-pals", project.mod_version)
     pom {
-        name = "Pets Mod"
-        description = "Adds client-sided pets into your game"
-        url = "https://github.com/downloadableduck/petsmod"
+        name = "Pets & Pals"
+        description = "Adds client-sided pets into your game - a standalone fork of Pets Mod"
+        url = "https://github.com/aaronateataco/pets-and-pals"
         licenses {
             license {
                 name = "MIT"
@@ -103,14 +103,13 @@ mavenPublishing {
         }
         developers {
             developer {
-                id = "jeff"
-                name = "Jeff"
+                id = "aaronateataco"
             }
         }
         scm {
-            connection = "scm:git:git://github.com/downloadableduck/petsmod.git"
-            developerConnection = "scm:git:ssh://github.com:downloadableduck/petsmod.git"
-            url = "https://github.com/downloadableduck/petsmod"
+            connection = "scm:git:git://github.com/aaronateataco/pets-and-pals.git"
+            developerConnection = "scm:git:ssh://github.com:aaronateataco/pets-and-pals.git"
+            url = "https://github.com/aaronateataco/pets-and-pals"
         }
     }
 }
@@ -119,7 +118,10 @@ mavenPublishing {
     BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     System.out.println("Enter a Modrinth token: ");
     token = br.readLine(); // Enter the token you got from the basics part of this tutorial.
-    projectId = "WwqTyEtB" // Enter your Modrinth project ID here.
+    // WwqTyEtB (the old value here) is the ORIGINAL "Pets Mod" project on Modrinth,
+    // not this fork - confirmed via the Modrinth API. This fork has no Modrinth
+    // listing yet; create one first, then put its real project id here.
+    projectId = "" // Enter your Modrinth project ID here.
     System.out.println("Enter the version number:");
     versionNumber = project.mod_version;
     System.out.println("Enter the version name:");
