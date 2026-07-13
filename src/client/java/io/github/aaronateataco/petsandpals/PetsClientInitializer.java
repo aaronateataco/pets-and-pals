@@ -171,6 +171,7 @@ public class PetsClientInitializer implements ClientModInitializer {
     public void onInitializeClient() {
 
         this.createKeyBinding();
+        this.createShopScreenButtons();
 
         EntityRenderers.register(PetsInitializer.PET_ORB,
                 io.github.aaronateataco.petsandpals.rendering.PetOrbRenderer::new);
@@ -352,6 +353,31 @@ public class PetsClientInitializer implements ClientModInitializer {
             if (keyMapping.consumeClick()) {
                 client.setScreen(PetsConfigScreen.getInstance().getModConfigScreenFactory().create(client.screen));
             }
+        });
+    }
+
+    /**
+     * Adds a Shop-opening button to the title screen and the pause menu, bottom-left
+     * corner - the semicolon keybind above only works once a world's loaded, this is
+     * reachable before that (title screen) or without remembering a keybind (pause
+     * menu). Uses Fabric's own {@code ScreenEvents}/{@code Screens} API instead of a
+     * hand-rolled mixin - the public, sanctioned way to add a widget to a screen
+     * this mod doesn't own, rather than merging bytecode into vanilla's own class.
+     */
+    void createShopScreenButtons() {
+        net.fabricmc.fabric.api.client.screen.v1.ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
+            if (!(screen instanceof net.minecraft.client.gui.screens.TitleScreen)
+                    && !(screen instanceof net.minecraft.client.gui.screens.PauseScreen)) {
+                return;
+            }
+            // clear of the title screen's own bottom-left version-string text and
+            // the pause menu's centered button grid (both checked against their
+            // real decompiled init() layouts, not guessed)
+            io.github.aaronateataco.petsandpals.ui.ThemedButton button = io.github.aaronateataco.petsandpals.ui.ThemedButton.of(
+                    4, scaledHeight - 44, 110, 20,
+                    net.minecraft.network.chat.Component.literal("Pets & Pals Shop"),
+                    b -> client.setScreen(new io.github.aaronateataco.petsandpals.gui.MenagerieScreen(screen)));
+            net.fabricmc.fabric.api.client.screen.v1.Screens.getWidgets(screen).add(button);
         });
     }
 }

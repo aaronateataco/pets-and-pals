@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.40.0
+- Fixed baby sheep always rendering full-size adult wool instead of scaled-down baby wool - a `babyModel` was built and never actually used
+- Resized the Shop's left category tabs to read closer to the reference concept art (100x30 -> 120x38)
+- Replaced the species grid's ~70-80 text-labeled buttons with picture-only preview tiles - no more wall of species names, just live mini portraits (species name moved to a hover tooltip), with a small corner badge (owned/needs-adopting) instead of the old text prefixes. Needed its own dedicated pool of disposable preview entities rather than reusing the shared ones the rest of the screen previews with - confirmed those default to a colliding entity id and can literally be the live active pet mid-spawn-animation, the same hazard the adoption screen already had to design around
+- Added a "Find" button (focuses the search box) and a filter button (cycles All/Owned/New) next to search
+- Added a Shop-opening button to both the Minecraft title screen and the pause menu, via Fabric's own screen-widget API rather than a custom mixin
+
 ## 0.39.2
 - Fixed a crash-on-open regression from 0.39.1: opening the Shop crashed immediately every time with a NullPointerException. The previous fix for the adopt prompt not blocking the catalog behind it called a method that unconditionally touched the naming-page's name box, which isn't constructed until later in the same init() pass - the exact ordering hazard `updateSummonState()` elsewhere in this file already defensively null-checks for. Guarded the same way
 

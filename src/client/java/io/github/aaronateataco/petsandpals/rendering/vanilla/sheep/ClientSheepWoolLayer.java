@@ -67,8 +67,11 @@ public class ClientSheepWoolLayer extends RenderLayer<@NotNull SheepRenderState,
             woolColor = 1381656;
         }
 
+        // babyModel was built in the constructor but never actually used here - every
+        // sheep, baby or adult, always got the full-size adult wool geometry, mismatched
+        // against the 0.5x-scaled baby body (see ClientSheepRenderer.scale())
         submitNodeCollector.submitModel(
-                adultModel,
+                CONFIG.isBaby ? babyModel : adultModel,
                 sheepRenderState,
                 poseStack,
                 RenderTypes.entityCutout(SHEEP_WOOL_LOCATION.model()),

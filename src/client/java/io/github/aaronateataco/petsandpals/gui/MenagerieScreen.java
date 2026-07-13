@@ -9,6 +9,7 @@ import io.github.aaronateataco.petsandpals.cloud.PlayerKeystore;
 import io.github.aaronateataco.petsandpals.cloud.dto.AdoptAdditionalResponse;
 import io.github.aaronateataco.petsandpals.enums.PetList;
 import io.github.aaronateataco.petsandpals.mob.AbstractPet;
+import io.github.aaronateataco.petsandpals.ui.PreviewTileButton;
 import io.github.aaronateataco.petsandpals.ui.Theme;
 import io.github.aaronateataco.petsandpals.ui.ThemedButton;
 import me.shedaniel.autoconfig.AutoConfig;
@@ -22,8 +23,11 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.util.Util;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -51,9 +55,10 @@ public class MenagerieScreen extends Screen {
 
     /** species enum name -> live pet instance (Central pre-constructs one of each on summon). */
     private static Map<String, AbstractPet> previewPets;
-    private static final int CELL_WIDTH = 96;
-    private static final int CELL_HEIGHT = 20;
-    private static final int CELL_GAP = 3;
+    // square picture-only tiles now, not wide text-label buttons - matches the
+    // proportions AdoptionScreen's own SIDE_CELL/CENTER_CELL preview tiles use
+    private static final int GRID_CELL = 56;
+    private static final int GRID_GAP = 6;
     private static final int GRID_TOP = 52;
 
     private final Screen parent;
@@ -81,6 +86,9 @@ public class MenagerieScreen extends Screen {
     private int rows = 6;
     private String query = "";
     private Element element = Element.ALL;
+    private enum OwnerFilter { ALL, OWNED, NEW }
+    private OwnerFilter ownerFilter = OwnerFilter.ALL;
+    private Button filterButton;
 
     // anvil naming page: type a name, then drag the tag onto the pet to apply it
     private final List<net.minecraft.client.gui.components.AbstractWidget> catalogWidgets = new ArrayList<>();
@@ -215,8 +223,8 @@ public class MenagerieScreen extends Screen {
         // column anchors off contentLeft instead of a bare screen margin, so it
         // shifts right to make room for the strip.
         int tabStripX = 6;
-        int tabWidth = 100;
-        int tabHeight = 30;
+        int tabWidth = 120;
+        int tabHeight = 38;
         int contentLeft = tabStripX + tabWidth + 10;
         this.contentLeft = contentLeft;
         int leftWidth = this.width - PANEL_WIDTH - 24 - contentLeft;
@@ -259,10 +267,18 @@ public class MenagerieScreen extends Screen {
         this.track(ThemedButton.of(this.previewX + this.previewW + 6, arrowY, 20, 20,
                 Component.literal(">"), b -> this.cycleSelected(1)));
 
+        // search box + a small "Find" button that focuses it, + a filter button
+        // that cycles All/Owned/New (not-yet-adopted) on top of the existing
+        // element/text filters - grouped and centered as one row. Labels stay
+        // plain ASCII rather than icon glyphs on purpose: a Unicode alembic
+        // character used elsewhere in this file for a similar small marker
+        // rendered as a broken fallback glyph in Minecraft's default font (found
+        // via an actual screenshot this session), not worth risking again here.
         int searchY = this.previewY + this.previewH + 24;
-        int searchWidth = Math.min(220, leftWidth - 8);
-        this.searchBox = new EditBox(this.font, contentLeft + (leftWidth - searchWidth) / 2, searchY,
-                searchWidth, 18, Component.literal("Search"));
+        int searchWidth = Math.min(180, leftWidth - 56);
+        int searchGroupWidth = searchWidth + 4 + 20 + 4 + 20;
+        int searchGroupX = contentLeft + (leftWidth - searchGroupWidth) / 2;
+        this.searchBox = new EditBox(this.font, searchGroupX, searchY, searchWidth, 18, Component.literal("Search"));
         this.searchBox.setValue(this.query);
         this.searchBox.setResponder(text -> {
             this.query = text;
@@ -271,11 +287,23 @@ public class MenagerieScreen extends Screen {
             this.rebuildGrid();
         });
         this.track(this.searchBox);
+        this.track(ThemedButton.of(searchGroupX + searchWidth + 4, searchY - 1, 20, 20,
+                Component.literal("Find"), b -> this.setFocused(this.searchBox)));
+        this.filterButton = this.track(ThemedButton.of(searchGroupX + searchWidth + 28, searchY - 1, 20, 20,
+                this.filterLabel(), b -> {
+                    this.ownerFilter = OwnerFilter.values()[(this.ownerFilter.ordinal() + 1) % OwnerFilter.values().length];
+                    b.setMessage(this.filterLabel());
+                    this.page = 0;
+                    this.applyFilter();
+                    this.rebuildGrid();
+                }));
+        this.filterButton.setTooltip(net.minecraft.client.gui.components.Tooltip.create(
+                Component.literal("Filter: cycles All / Owned / New")));
 
         this.gridTop = searchY + 24;
-        this.columns = Math.max(2, leftWidth / (CELL_WIDTH + CELL_GAP));
-        this.rows = Math.max(2, (this.height - this.gridTop - 34) / (CELL_HEIGHT + CELL_GAP));
-        this.gridLeft = contentLeft + (leftWidth - (this.columns * (CELL_WIDTH + CELL_GAP) - CELL_GAP)) / 2;
+        this.columns = Math.max(2, leftWidth / (GRID_CELL + GRID_GAP));
+        this.rows = Math.max(2, (this.height - this.gridTop - 34) / (GRID_CELL + GRID_GAP));
+        this.gridLeft = contentLeft + (leftWidth - (this.columns * (GRID_CELL + GRID_GAP) - GRID_GAP)) / 2;
 
         int pageY = this.height - 28;
         this.prevButton = this.track(ThemedButton.of(contentLeft, pageY, 20, 20, Component.literal("<"), b -> {
@@ -677,6 +705,42 @@ public class MenagerieScreen extends Screen {
         return previewPets;
     }
 
+    // Central's shared static instances (above) are only safe for ONE preview on
+    // screen at a time - confirmed before building this: they default to entity
+    // id=0 (ClientLevel never implements getNextEntityId(), same root cause
+    // AdoptionScreen already had to work around for its own preview tiles), AND
+    // whichever one matches the currently-active species is the literal live
+    // in-world entity (invisible mid-spawn-animation, replaced wholesale on every
+    // summon). A whole grid of them at once needs its own dedicated, disposable,
+    // uniquely-IDed pool instead - built reflectively off each species' own
+    // Central instance (borrowing its class + real EntityType) rather than a
+    // hand-written 77-case switch, since every Client<Species> class was verified
+    // to share the same (EntityType, Level) constructor.
+    private static final java.util.concurrent.atomic.AtomicInteger GRID_PREVIEW_IDS =
+            new java.util.concurrent.atomic.AtomicInteger(-200_000);
+    private final Map<PetList, AbstractPet> gridPreviewCache = new HashMap<>();
+
+    private AbstractPet gridPreview(PetList species) {
+        return this.gridPreviewCache.computeIfAbsent(species, this::freshGridPreview);
+    }
+
+    private AbstractPet freshGridPreview(PetList species) {
+        if (this.minecraft == null || this.minecraft.level == null) return null;
+        AbstractPet template = previewPets().get(species.name().toLowerCase(Locale.ROOT));
+        if (template == null) return null;
+        try {
+            EntityType<?> type = template.getType();
+            Constructor<?> ctor = template.getClass().getConstructor(EntityType.class, Level.class);
+            AbstractPet fresh = (AbstractPet) ctor.newInstance(type, this.minecraft.level);
+            fresh.setId(GRID_PREVIEW_IDS.decrementAndGet());
+            return fresh;
+        } catch (ReflectiveOperationException | ClassCastException e) {
+            io.github.aaronateataco.petsandpals.PetsInitializer.LOGGER.error(
+                    "[Pets&Pals] couldn't build a grid preview for '{}'", species.name(), e);
+            return null;
+        }
+    }
+
     private AbstractPet selectedPreview() {
         if (this.selected == null) return null;
         return previewPets().get(this.selected.name().toLowerCase(Locale.ROOT));
@@ -971,11 +1035,22 @@ public class MenagerieScreen extends Screen {
         return Component.literal(CONFIG.isBaby ? "Baby" : "Adult");
     }
 
+    private Component filterLabel() {
+        return Component.literal(switch (this.ownerFilter) {
+            case ALL -> "All"; case OWNED -> "Owned"; case NEW -> "New";
+        });
+    }
+
     private void applyFilter() {
         String q = this.query.trim().toLowerCase(Locale.ROOT);
         this.filtered = this.allSpecies.stream()
                 .filter(p -> this.element == Element.ALL || elementOf(p) == this.element)
                 .filter(p -> q.isEmpty() || p.getDisplayName().getString().toLowerCase(Locale.ROOT).contains(q))
+                .filter(p -> switch (this.ownerFilter) {
+                    case ALL -> true;
+                    case OWNED -> this.owned(p);
+                    case NEW -> !this.owned(p);
+                })
                 .toList();
     }
 
@@ -988,23 +1063,20 @@ public class MenagerieScreen extends Screen {
             PetList species = this.filtered.get(start + i);
             int col = i % this.columns;
             int row = i / this.columns;
-            int x = this.gridLeft + col * (CELL_WIDTH + CELL_GAP);
-            int y = this.gridTop + row * (CELL_HEIGHT + CELL_GAP);
+            int x = this.gridLeft + col * (GRID_CELL + GRID_GAP);
+            int y = this.gridTop + row * (GRID_CELL + GRID_GAP);
             boolean isActive = species.name().equals(CONFIG.activePet);
             boolean isPublic = PUBLIC_PETS.contains(species.name());
             boolean unlocked = isPublic || this.testingCatalog;
             boolean isOwned = this.owned(species);
-            String label = (isActive ? "✔ " : "") + species.getDisplayName().getString();
-            if (this.testingCatalog && !isPublic) {
-                // plain ASCII, not a Unicode symbol - Minecraft's default font has no
-                // glyph for the alembic character (U+2697) this used to be, which
-                // rendered as an ugly fallback/tofu box on basically every non-public
-                // species in the grid (visible in an actual screenshot, not a guess)
-                label = "T " + label;
-            } else if (unlocked && !isActive && !isOwned) {
-                label = "$ " + label; // needs adopting - clicking opens the adopt prompt, not an instant switch
-            }
-            Button cell = ThemedButton.of(x, y, CELL_WIDTH, CELL_HEIGHT, Component.literal(label), b -> {
+
+            // picture-only tile instead of a text-labeled button - hover tooltip
+            // still carries the species name, a corner badge carries owned/needs-
+            // adopting status instead of the old "✔ "/"$ "/"T " text prefixes
+            PreviewTileButton.Badge badge = (isActive || isOwned) ? PreviewTileButton.Badge.OWNED
+                    : unlocked ? PreviewTileButton.Badge.NEEDS_ADOPTING : PreviewTileButton.Badge.NONE;
+            Button cell = PreviewTileButton.of(x, y, GRID_CELL, this.gridPreview(species),
+                    species == this.selected, badge, b -> {
                 this.selected = species;
                 if (this.owned(species)) {
                     this.applySelected();
@@ -1015,10 +1087,9 @@ public class MenagerieScreen extends Screen {
                 }
             });
             cell.active = unlocked && species != this.selected;
-            if (!unlocked) {
-                cell.setTooltip(net.minecraft.client.gui.components.Tooltip.create(
-                        Component.literal("Coming soon")));
-            }
+            String tooltip = species.getDisplayName().getString()
+                    + (this.testingCatalog && !isPublic ? " (testing)" : !unlocked ? " - Coming soon" : "");
+            cell.setTooltip(net.minecraft.client.gui.components.Tooltip.create(Component.literal(tooltip)));
             this.gridWidgets.add(this.addRenderableWidget(cell));
         }
 
