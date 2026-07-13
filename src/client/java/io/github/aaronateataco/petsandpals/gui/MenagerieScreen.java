@@ -112,6 +112,8 @@ public class MenagerieScreen extends Screen {
     private int adoptPanelLeft, adoptPanelTop, adoptPanelW, adoptPanelH;
     private float bondRewardFlashSeconds = -1.0F;
     private String bondRewardMessage;
+    private Button resetProgressButton;
+    private boolean resetArmed = false;
 
     // element categories
     private enum Element { ALL, LAND, SKY, SEA }
@@ -325,6 +327,21 @@ public class MenagerieScreen extends Screen {
             }
         }));
 
+        if (this.testingCatalog) {
+            y += 24;
+            // destructive + server-side, so this only ever exists in dev/test
+            // instances (same .pnp_testing gate as the rest of the unlocked test
+            // catalog) - never reachable by a real player. Two clicks required:
+            // first arms it (and relabels to make that obvious), second actually
+            // wipes the account. resetArmed resets itself if you navigate away
+            // from the button by clicking anything else in this screen that
+            // rebuilds the grid/panel, since init() runs again on any resize but
+            // NOT on ordinary clicks - acceptable given this is a testing tool,
+            // not something that needs airtight anti-misclick guarantees.
+            this.resetProgressButton = this.track(ThemedButton.of(panelX, y, PANEL_WIDTH, 20,
+                    Component.literal("Reset Progress"), b -> this.resetAccountProgress()));
+        }
+
         this.addRenderableWidget(ThemedButton.of(panelX, this.height - 28, PANEL_WIDTH, 20,
                 Component.literal("Done"), b -> this.onClose()));
 
@@ -399,6 +416,48 @@ public class MenagerieScreen extends Screen {
                 this.bondRewardMessage = "+" + resp.creditedCoins + " Paw Coins earned!";
                 this.bondRewardFlashSeconds = 0.0F;
             }
+        }));
+    }
+
+    /** Testing-only: wipes this UUID's cloud adoptions/currency/bond-claim clock so
+     *  the whole flow can be run through again from scratch. Two clicks required -
+     *  see the button's construction comment in init() for why. */
+    private void resetAccountProgress() {
+        if (this.minecraft == null || this.minecraft.player == null || this.resetProgressButton == null) return;
+        if (!this.resetArmed) {
+            this.resetArmed = true;
+            this.resetProgressButton.setMessage(Component.literal("Click again to confirm"));
+            return;
+        }
+        UUID uuid = this.minecraft.player.getUUID();
+        String secret = PlayerKeystore.loadSecret(uuid);
+        if (secret == null) {
+            this.resetProgressButton.setMessage(Component.literal("No account to reset"));
+            return;
+        }
+        this.resetProgressButton.active = false;
+        this.resetProgressButton.setMessage(Component.literal("Resetting..."));
+        PetsCloudClient.resetAccount(uuid, secret).thenAccept(resp -> Minecraft.getInstance().execute(() -> {
+            this.resetArmed = false;
+            if (this.resetProgressButton != null) this.resetProgressButton.active = true;
+            if (resp == null || resp.error != null) {
+                if (this.resetProgressButton != null) {
+                    this.resetProgressButton.setMessage(Component.literal("Failed - try again"));
+                }
+                return;
+            }
+            // mirror the wipe locally so the UI reflects it immediately instead of
+            // waiting on the next refreshOwnedPets()/refreshCurrencyBalance() poll
+            CONFIG.ownedSpecies.clear();
+            CONFIG.currencyBalanceCache = 0;
+            CONFIG.lastNonStarterAdoptionAt = 0L;
+            CONFIG.hasAdoptedStarterPet = false;
+            this.saveConfig();
+            if (this.resetProgressButton != null) {
+                this.resetProgressButton.setMessage(Component.literal("Reset Progress"));
+            }
+            this.rebuildGrid();
+            this.updateSummonState();
         }));
     }
 

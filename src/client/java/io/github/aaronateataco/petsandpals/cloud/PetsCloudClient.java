@@ -1,6 +1,7 @@
 package io.github.aaronateataco.petsandpals.cloud;
 
 import com.google.gson.Gson;
+import io.github.aaronateataco.petsandpals.cloud.dto.AccountResetResponse;
 import io.github.aaronateataco.petsandpals.cloud.dto.AdoptAdditionalResponse;
 import io.github.aaronateataco.petsandpals.cloud.dto.AdoptResponse;
 import io.github.aaronateataco.petsandpals.cloud.dto.BondClaimResponse;
@@ -105,6 +106,25 @@ public final class PetsCloudClient {
                 .build();
 
         return CompletableFuture.supplyAsync(() -> send(request, BondClaimResponse.class), EXECUTOR);
+    }
+
+    /** Wipes this UUID's cloud gameplay progress (adoptions/currency/bond-claim
+     *  clock) - see worker.js's handleAccountReset for exactly what it does and
+     *  doesn't touch. Testing-only; callers are responsible for gating this behind
+     *  the same .pnp_testing flag every other dev-only feature already uses. */
+    public static CompletableFuture<AccountResetResponse> resetAccount(UUID uuid, String secret) {
+        Map<String, String> body = new HashMap<>();
+        body.put("uuid", uuid.toString());
+        body.put("secret", secret);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(BASE_URL + "/v1/account/reset"))
+                .timeout(REQUEST_TIMEOUT)
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(GSON.toJson(body)))
+                .build();
+
+        return CompletableFuture.supplyAsync(() -> send(request, AccountResetResponse.class), EXECUTOR);
     }
 
     /** Adopts a species beyond the player's starter pet - server-gated by a 3-day

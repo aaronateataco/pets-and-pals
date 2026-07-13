@@ -74,6 +74,10 @@ export default {
       return handleBondClaim(request, env);
     }
 
+    if (request.method === "POST" && pathname === "/v1/account/reset") {
+      return handleAccountReset(request, env);
+    }
+
     if (request.method === "POST" && pathname === "/v1/stripe/webhook") {
       return handleStripeWebhook(request, env);
     }
@@ -362,6 +366,35 @@ async function handleBondClaim(request, env) {
     `SELECT COALESCE(SUM(amount), 0) AS balance FROM currency_ledger WHERE owner_uuid = ?1`
   ).bind(uuid).first();
   return json({ creditedCoins: coins, balance: balRow.balance });
+}
+
+// Wipes this UUID's gameplay progress (adoptions, currency, bond-claim clock) so
+// the whole flow can be tested again from scratch - deliberately does NOT delete
+// the players row/secret (keeps the existing client's stored secret valid) or
+// adoption_events (an audit log, not gameplay state - a reset shouldn't erase
+// history of what actually happened). Client-side this is gated behind the same
+// .pnp_testing marker file every other dev-only catalog feature already uses, so
+// it never ships reachable to a real player by accident.
+async function handleAccountReset(request, env) {
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: "invalid_json" }, 400);
+  }
+  const uuid = typeof body.uuid === "string" ? body.uuid.trim().toLowerCase() : null;
+  const secret = typeof body.secret === "string" ? body.secret : null;
+  if (!(await authenticate(uuid, secret, env))) {
+    return json({ error: "invalid_credentials" }, 401);
+  }
+
+  await env.DB.batch([
+    env.DB.prepare(`DELETE FROM pets WHERE owner_uuid = ?1`).bind(uuid),
+    env.DB.prepare(`DELETE FROM currency_ledger WHERE owner_uuid = ?1`).bind(uuid),
+    env.DB.prepare(`UPDATE players SET last_bond_claim_at = NULL WHERE uuid = ?1`).bind(uuid),
+  ]);
+
+  return json({ reset: true });
 }
 
 // --- Stripe: checkout session creation + webhook ---

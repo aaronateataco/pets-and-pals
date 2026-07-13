@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.38.1
+- Added a "Reset Progress" button to the Shop for wiping a test account's cloud adoptions/currency/bond-claim clock and running through the whole flow again from scratch. Testing-only (same `.pnp_testing` gate the rest of the dev catalog uses) - never visible in a normal build. Requires two clicks to actually fire. Verified live against production with two synthetic test accounts side by side to confirm a reset only ever touches the account it was called for
+
 ## 0.38.0
 - Reworked the Menagerie into a proper Shop layout: Land/Sky/Sea/All category tabs moved from a row under the preview to an icon-only rail down the left edge, and the right-side controls (Summon/Skin/Baby/Speed/Volume/Raft/Cushion/Advanced settings) are now explicitly labeled as the "Equip" section. Same screen, same underlying catalog/adopt-prompt logic - just reorganized
 - Added a free, no-payment way to earn Paw Coins: bond-time rewards. Opening the Shop passively credits coins for real time elapsed since you last opened it (10/hour, capped per claim so returning after a long break doesn't lump-sum a huge payout). Considered a "watch ads" mechanic for this instead and looked into it properly first - real ad SDKs don't have any embedding path into a Java desktop game, and Mojang's guidelines separately restrict mods from showing unrelated third-party ad/brand content without approval, so it would've been a clearer compliance problem than the currency system already shipped, not a safer one. Bond-time rewards are fully first-party instead - no ads, no external content, reuses the mod's own already-planned (previously unused) bond-time schema
