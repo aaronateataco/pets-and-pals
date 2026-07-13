@@ -526,7 +526,15 @@ public class MenagerieScreen extends Screen {
      *  clickable. Previously only gated on naming; the adopt prompt never blocked
      *  anything behind it at all, so the whole species grid stayed fully
      *  interactive while it was open - the main cause of menus reading as stacked
-     *  on top of each other rather than one screen at a time. */
+     *  on top of each other rather than one screen at a time.
+     *
+     *  Null-checks nameBox/namingCancelButton: closeAdoptPrompt() (which calls this)
+     *  is itself called once from inside init(), right after the adopt-prompt
+     *  buttons are constructed, to set their initial hidden state - but nameBox and
+     *  namingCancelButton aren't constructed until the naming-page section further
+     *  down the same init() method, so at that one call site both are still null.
+     *  Crashed every launch until this was guarded (found via an actual crash
+     *  report, not caught in review - the ordering dependency was missed). */
     private void updateContentVisibility() {
         boolean blocked = this.naming || this.adoptPromptSpecies != null;
         for (net.minecraft.client.gui.components.AbstractWidget w : this.catalogWidgets) {
@@ -535,8 +543,12 @@ public class MenagerieScreen extends Screen {
         for (Button w : this.gridWidgets) {
             w.visible = !blocked;
         }
-        this.nameBox.visible = this.naming;
-        this.namingCancelButton.visible = this.naming;
+        if (this.nameBox != null) {
+            this.nameBox.visible = this.naming;
+        }
+        if (this.namingCancelButton != null) {
+            this.namingCancelButton.visible = this.naming;
+        }
     }
 
     // --- drag-the-nametag-onto-the-pet interaction ---

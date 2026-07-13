@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.39.2
+- Fixed a crash-on-open regression from 0.39.1: opening the Shop crashed immediately every time with a NullPointerException. The previous fix for the adopt prompt not blocking the catalog behind it called a method that unconditionally touched the naming-page's name box, which isn't constructed until later in the same init() pass - the exact ordering hazard `updateSummonState()` elsewhere in this file already defensively null-checks for. Guarded the same way
+
 ## 0.39.1
 - Fixed the adopt-confirmation prompt not actually acting like a modal: it never hid the catalog behind it, so all ~70 species buttons and every equip control stayed fully visible and clickable while it was open - clicking through them while the prompt was up could silently reassign what the prompt was even confirming. Now uses the same content-blocking mechanism the naming page already had
 - Removed the adopt prompt's and the naming page's own separate bordered panels - now that the screen has one overall bounded panel, a second nested border on top of it just read as two menus stacked on each other rather than one dialog on one screen
