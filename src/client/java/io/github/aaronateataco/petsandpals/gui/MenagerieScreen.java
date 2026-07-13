@@ -431,7 +431,7 @@ public class MenagerieScreen extends Screen {
 
         this.applyFilter();
         this.rebuildGrid();
-        this.applyNamingVisibility();
+        this.updateContentVisibility();
         this.updateSummonState();
         this.refreshOwnedPets();
         this.refreshCurrencyBalance();
@@ -510,22 +510,30 @@ public class MenagerieScreen extends Screen {
         AbstractPet pet = this.selectedPreview();
         this.nameBox.setValue(pet != null ? pet.getPlainTextName() : "");
         this.setFocused(this.nameBox);
-        this.applyNamingVisibility();
+        this.updateContentVisibility();
     }
 
     private void exitNaming() {
         this.naming = false;
         this.draggingTag = false;
         this.draggingDandelion = false;
-        this.applyNamingVisibility();
+        this.updateContentVisibility();
     }
 
-    private void applyNamingVisibility() {
+    /** Hides the catalog (tabs/search/grid/equip panel) behind whichever single
+     *  overlay page is active - naming or the adopt prompt - so it actually behaves
+     *  like a modal instead of leaving every button underneath it live and
+     *  clickable. Previously only gated on naming; the adopt prompt never blocked
+     *  anything behind it at all, so the whole species grid stayed fully
+     *  interactive while it was open - the main cause of menus reading as stacked
+     *  on top of each other rather than one screen at a time. */
+    private void updateContentVisibility() {
+        boolean blocked = this.naming || this.adoptPromptSpecies != null;
         for (net.minecraft.client.gui.components.AbstractWidget w : this.catalogWidgets) {
-            w.visible = !this.naming;
+            w.visible = !blocked;
         }
         for (Button w : this.gridWidgets) {
-            w.visible = !this.naming;
+            w.visible = !blocked;
         }
         this.nameBox.visible = this.naming;
         this.namingCancelButton.visible = this.naming;
@@ -709,6 +717,7 @@ public class MenagerieScreen extends Screen {
         this.adoptInFlight = false;
         this.refreshAdoptPromptState();
         this.refreshCurrencyBalance();
+        this.updateContentVisibility();
     }
 
     private void closeAdoptPrompt() {
@@ -719,6 +728,7 @@ public class MenagerieScreen extends Screen {
         this.adoptSkipButton.visible = false;
         this.buyCoinsButton.visible = false;
         this.adoptCancelButton.visible = false;
+        this.updateContentVisibility();
     }
 
     private void refreshAdoptPromptState() {
@@ -1051,9 +1061,10 @@ public class MenagerieScreen extends Screen {
         graphics.fill(0, 0, this.width, this.height, 0x400B0B0D);
         Theme.drawInset(graphics, this.leftPanelLeft, this.leftPanelTop,
                 this.leftPanelRight - this.leftPanelLeft, this.leftPanelBottom - this.leftPanelTop);
-        if (this.adoptPromptSpecies != null) {
-            Theme.drawInset(graphics, this.adoptPanelLeft, this.adoptPanelTop, this.adoptPanelW, this.adoptPanelH);
-        }
+        // the adopt prompt no longer draws its own separate bordered box here - now
+        // that it actually hides the catalog behind it (see updateContentVisibility),
+        // a second nested border on top of the panel above just looked like two
+        // menus stacked on each other instead of one dialog on one panel
         if (this.searchBox != null && this.searchBox.visible) {
             // vanilla EditBox's own border reads as near-invisible against this
             // theme's dark backdrop, making it look like a stray black rectangle -
@@ -1189,9 +1200,9 @@ public class MenagerieScreen extends Screen {
     private void renderNamingPage(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
         int panelLeft = this.tagRestX - 6;
         int panelTop = this.tagRestY - 6;
-        int panelRight = this.nameBox.getX() + this.nameBox.getWidth() + 6;
-        int panelBottom = this.tagRestY + 80 + 20 + 6; // clears the Cancel button, same spot either way
-        Theme.drawInset(graphics, panelLeft, panelTop, panelRight - panelLeft, panelBottom - panelTop);
+        // no separate bordered box here anymore - it's already sitting on the one
+        // big panel the whole screen draws now, and a second nested border just
+        // looked like two menus stacked on top of each other
         graphics.text(this.font, Component.literal("Name your pet"), panelLeft + 4, panelTop - 10, Theme.TEXT_HEADER);
 
         // the tag icon itself is drawn last (see renderOverlays) so it stays on

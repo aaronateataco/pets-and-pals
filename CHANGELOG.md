@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.39.1
+- Fixed the adopt-confirmation prompt not actually acting like a modal: it never hid the catalog behind it, so all ~70 species buttons and every equip control stayed fully visible and clickable while it was open - clicking through them while the prompt was up could silently reassign what the prompt was even confirming. Now uses the same content-blocking mechanism the naming page already had
+- Removed the adopt prompt's and the naming page's own separate bordered panels - now that the screen has one overall bounded panel, a second nested border on top of it just read as two menus stacked on each other rather than one dialog on one screen
+
 ## 0.39.0
 - Made the Shop an actual overlay instead of a solid-looking wall: the live game world now renders behind it (it was never rendering at all before - same root cause and fix as the adoption screen's black-background bug from earlier this session, just never applied here), the dim is much lighter, and everything is grouped into one bounded panel with real margin around it instead of every button floating loose across the entire screen. No existing button moved - the panel bounds were computed from the layout that was already there, not a redo of the ~40 already-tuned positions
 
