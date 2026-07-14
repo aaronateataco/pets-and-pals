@@ -33,7 +33,7 @@ public class ClientPandaRenderer extends PetRenderer<@NotNull ClientPanda, @NotN
         switch (CONFIG.pandaSkin) {
             case "normal" -> pandaTexturePath = "textures/entity/panda/panda.png";
             case "lazy" -> pandaTexturePath = "textures/entity/panda/panda_lazy.png";
-            case "agressive" -> pandaTexturePath = "textures/entity/panda/panda_aggressive.png";
+            case "aggressive" -> pandaTexturePath = "textures/entity/panda/panda_aggressive.png";
             case "worried" -> pandaTexturePath = "textures/entity/panda/panda_worried.png";
             case "playful" -> pandaTexturePath = "textures/entity/panda/panda_playful.png";
             case "weak" -> pandaTexturePath = "textures/entity/panda/panda_weak.png";

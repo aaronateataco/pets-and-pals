@@ -4,7 +4,7 @@ import dev.isxander.yacl3.api.NameableEnum;
 import net.minecraft.network.chat.Component;
 
 public enum PandaSkins implements NameableEnum {
-    agressive,
+    aggressive,
     brown,
     lazy,
     normal,

@@ -695,8 +695,8 @@ public class PetsConfigScreen implements ModMenuApi {
                                                             CONFIG.pandaSkin = "normal";
                                                         } else if (Objects.equals(val, "lazy")) {
                                                             CONFIG.pandaSkin = "lazy";
-                                                        } else if (Objects.equals(val, "agressive")) {
-                                                            CONFIG.pandaSkin = "agressive";
+                                                        } else if (Objects.equals(val, "aggressive")) {
+                                                            CONFIG.pandaSkin = "aggressive";
                                                         } else if (Objects.equals(val, "worried")) {
                                                             CONFIG.pandaSkin = "worried";
                                                         } else if (Objects.equals(val, "playful")) {

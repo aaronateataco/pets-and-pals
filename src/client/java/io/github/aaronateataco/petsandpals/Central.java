@@ -1,7 +1,7 @@
 /**
  * so this file got a little messed up and I had to restore it from an earlier save, but that was
  * inside of a JAR, so this was re-created from the de-compiled bytecode, which is why it is
- * a little wierd.
+ * a little weird.
  */
 
 package io.github.aaronateataco.petsandpals;
@@ -59,14 +59,14 @@ import static io.github.aaronateataco.petsandpals.PetsInitializer.MOD_ID;
  */
 public class Central implements ClientModInitializer {
 
-    public static final List<Entity> summonedEntity = new ArrayList();
-    public static final CopyOnWriteArrayList<String> currentSuggestions = new CopyOnWriteArrayList()
+    public static final List<Entity> summonedEntity = new ArrayList<>();
+    public static final CopyOnWriteArrayList<String> currentSuggestions = new CopyOnWriteArrayList<>()
             ;
     public static final List<String> BEE_SKINS = List.of("happy", "angry");
     public static final List<String> FOX_SKINS = List.of("red", "snow");
     public static final List<String> LLAMA_SKINS = List.of("brown", "creamy", "gray", "white");
     public static final List<String> NAUTILUS_SKINS = List.of("nautilus", "zombie", "coral zombie");
-    public static final List<String> PANDA_SKINS = List.of("normal", "lazy", "agressive", "worried", "playful", "weak", "brown");
+    public static final List<String> PANDA_SKINS = List.of("normal", "lazy", "aggressive", "worried", "playful", "weak", "brown");
     public static final List<String> PIGLIN_SKINS = List.of("piglin", "zombified", "brute");
     public static final List<String> WOLF_SKINS = List.of("pale", "ashen", "black", "chestnut", "rusty", "snowy", "spotted", "striped", "woods");
     public static final List<String> PETS_LIST = new ArrayList<>();
@@ -1196,8 +1196,8 @@ public class Central implements ClientModInitializer {
                                 case "lazy":
                                     CONFIG.pandaSkin = "lazy";
                                     break;
-                                case "agressive":
-                                    CONFIG.pandaSkin = "agressive";
+                                case "aggressive":
+                                    CONFIG.pandaSkin = "aggressive";
                                     break;
                                 case "worried":
                                     CONFIG.pandaSkin = "worried";

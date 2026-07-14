@@ -79,9 +79,6 @@ public abstract class AbstractPet extends TamableAnimal {
     /** Adds an entity to the client level, wired up in Central. */
     public static java.util.function.Consumer<net.minecraft.world.entity.Entity> clientEntitySpawner = e -> {};
 
-    /** @deprecated only the legacy custom mob tick logic uses this. */
-    @Deprecated
-    protected int waitingTime = 0;
 
     private boolean perched = false;
     private int combatPerchTimer = 0;
@@ -705,8 +702,4 @@ public abstract class AbstractPet extends TamableAnimal {
         this.setCustomName(Component.literal(string));
     }
 
-    /** @deprecated no-op, kept because the custom mobs still call it. */
-    @Deprecated
-    public void wander() {
-    }
 }
