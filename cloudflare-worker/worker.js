@@ -340,7 +340,7 @@ async function handleBondClaim(request, env) {
   ).bind(uuid).first();
   // first-ever claim (column still NULL): baseline to now, not created_at - a
   // brand-new player shouldn't get a payout for time before they even existed
-  const lastClaim = player.last_bond_claim_at ?? now;
+  const lastClaim = player?.last_bond_claim_at ?? now;
   const elapsedMs = Math.min(now - lastClaim, MAX_BOND_CLAIM_WINDOW_MS);
   const coins = Math.floor((elapsedMs / (60 * 60 * 1000)) * BOND_COINS_PER_HOUR);
 
@@ -447,7 +447,7 @@ async function handleCreateCheckout(request, env) {
         "Content-Type": "application/x-www-form-urlencoded",
         // dedupes an accidental double-click on "buy" from creating two sessions
         // for the same purchase attempt
-        "Idempotency-Key": await sha256Hex(`${uuid}:${packId}:${Math.floor(Date.now() / 60000)}`),
+        "Idempotency-Key": await sha256Hex(`${uuid}:${packId}:${Math.floor(Date.now() / (60 * 60 * 1000))}`),
       },
       body: params.toString(),
     });

@@ -339,7 +339,7 @@ public class Central implements ClientModInitializer {
         breeze = new ClientBreeze(PetsInitializer.BREEZE, world);
         creaking = new ClientCreaking(PetsInitializer.CREAKING, world);
         creeper = new ClientCreeper(PetsInitializer.CREEPER, world);
-        elderGuardian = new ClientElderGuardian(PetsInitializer.ELDER_GUARDIAN_COOKIE, world);
+        elderGuardian = new ClientElderGuardian(PetsInitializer.ELDER_GUARDIAN, world);
         endermite = new ClientEndermite(PetsInitializer.ENDERMITE, world);
         evoker = new ClientEvoker(PetsInitializer.EVOKER, world);
         ghast = new ClientGhast(PetsInitializer.GHAST, world);

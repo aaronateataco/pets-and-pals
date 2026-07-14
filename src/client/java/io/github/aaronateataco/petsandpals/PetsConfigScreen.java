@@ -166,7 +166,7 @@ public class PetsConfigScreen implements ModMenuApi {
                                                                 case "armadillo" -> CONFIG.armadilloName;
                                                                 case "bat" -> CONFIG.batName;
                                                                 case "camel" -> CONFIG.camelName;
-                                                                case "chicken" -> CONFIG.chickenSkin;
+                                                                case "chicken" -> CONFIG.chickenName;
                                                                 case "cod" -> CONFIG.codName;
                                                                 case "copper_golem" -> CONFIG.copperGolemName;
                                                                 case "cow" -> CONFIG.cowName;
@@ -236,7 +236,7 @@ public class PetsConfigScreen implements ModMenuApi {
                                                             case "armadillo" -> CONFIG.armadilloName = name;
                                                             case "bat" -> CONFIG.batName = name;
                                                             case "camel" -> CONFIG.camelName = name;
-                                                            case "chicken" -> CONFIG.chickenSkin = name;
+                                                            case "chicken" -> CONFIG.chickenName = name;
                                                             case "cod" -> CONFIG.codName = name;
                                                             case "copper_golem" -> CONFIG.copperGolemName = name;
                                                             case "cow" -> CONFIG.cowName = name;

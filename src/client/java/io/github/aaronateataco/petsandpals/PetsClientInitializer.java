@@ -223,7 +223,7 @@ public class PetsClientInitializer implements ClientModInitializer {
         EntityRenderers.register(PetsInitializer.PUFFERFISH, ClientPufferFishRenderer::new);
         EntityRenderers.register(PetsInitializer.SPIDER, ClientSpiderRenderer::new);
         EntityRenderers.register(PetsInitializer.WOLF, ClientWolfRenderer::new);
-        EntityRenderers.register(PetsInitializer.ELDER_GUARDIAN_COOKIE, ClientElderGuardianRenderer::new);
+        EntityRenderers.register(PetsInitializer.ELDER_GUARDIAN, ClientElderGuardianRenderer::new);
         EntityRenderers.register(PetsInitializer.HAPPY_GHAST, ClientHappyGhastRenderer::new);
         EntityRenderers.register(PetsInitializer.BLAZE, ClientBlazeRenderer::new);
         EntityRenderers.register(PetsInitializer.BOGGED, ClientBoggedRenderer::new);

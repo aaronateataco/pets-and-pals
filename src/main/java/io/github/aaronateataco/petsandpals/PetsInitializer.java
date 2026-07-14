@@ -373,7 +373,7 @@ public class PetsInitializer implements ModInitializer {
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientwanderingtrader"));
     public static final EntityType<@NotNull ClientWanderingTrader> WANDERING_TRADER = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
-            Identifier.fromNamespaceAndPath(MOD_ID, "clientwandeinrgtrader"),
+            Identifier.fromNamespaceAndPath(MOD_ID, "clientwanderingtrader"),
             EntityType.Builder.of(ClientWanderingTrader::new, MobCategory.AMBIENT)
                     .noSummon()
                     .sized(0.6f, 1.95f)
@@ -591,7 +591,7 @@ public class PetsInitializer implements ModInitializer {
     );
     private static final ResourceKey<@NotNull EntityType<?>> ELDER_GUARDIAN_KEY =
             ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientelderguardian"));
-    public static final EntityType<@NotNull ClientElderGuardian> ELDER_GUARDIAN_COOKIE = Registry.register(
+    public static final EntityType<@NotNull ClientElderGuardian> ELDER_GUARDIAN = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
             Identifier.fromNamespaceAndPath(MOD_ID, "clientelderguardian"),
             EntityType.Builder.of(ClientElderGuardian::new, MobCategory.AMBIENT)
@@ -612,7 +612,7 @@ public class PetsInitializer implements ModInitializer {
                     .build(ENDERMITE_KEY)
     );
     private static final ResourceKey<@NotNull EntityType<?>> EVOKER_KEY =
-            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientwolf"));
+            ResourceKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath(MOD_ID, "clientevoker"));
     public static final EntityType<@NotNull ClientEvoker> EVOKER = Registry.register(
             BuiltInRegistries.ENTITY_TYPE,
             Identifier.fromNamespaceAndPath(MOD_ID, "clientevoker"),
@@ -974,7 +974,7 @@ public class PetsInitializer implements ModInitializer {
         FabricDefaultAttributeRegistry.register(BREEZE, ClientBreeze.createAttributes().build());
         FabricDefaultAttributeRegistry.register(CREAKING, ClientCreaking.createAttributes().build());
         FabricDefaultAttributeRegistry.register(CREEPER, ClientCreeper.createAttributes().build());
-        FabricDefaultAttributeRegistry.register(ELDER_GUARDIAN_COOKIE, ClientElderGuardian.createAttributes().build());
+        FabricDefaultAttributeRegistry.register(ELDER_GUARDIAN, ClientElderGuardian.createAttributes().build());
         FabricDefaultAttributeRegistry.register(ENDERMITE, ClientEndermite.createAttributes().build());
         FabricDefaultAttributeRegistry.register(EVOKER, ClientEvoker.createAttributes().build());
         FabricDefaultAttributeRegistry.register(GHAST, ClientGhast.createAttributes().build());
